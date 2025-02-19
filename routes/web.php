@@ -36,6 +36,7 @@ Route::get('/Gallery', action: [HomeController::class, 'ShowGalleryPage'])->name
 Route::get('/News', action: [HomeController::class, 'ShowNewsPage'])->name('news_page');
 Route::get('/Staff', action: [HomeController::class, 'ShowStaffPage'])->name('Staff_page');
 Route::get('/Elements', action: [HomeController::class, 'ShowElementsPage'])->name('elements_page');
+
 Route::get('/Contact', action: [HomeController::class, 'ShowContactPage'])->name('Contact_page');
 Route::get('/Profile', action: [HomeController::class, 'ShowProfilePage'])->name('profile_page');
 Route::get('/Courses', action: [HomeController::class, 'ShowCoursesPage'])->name('courses_page');
