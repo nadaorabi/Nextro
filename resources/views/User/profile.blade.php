@@ -59,17 +59,17 @@
 
                     {{-- Security Tab --}}
                     <div class="tab-pane fade" id="security">
-                        {{-- @include('profile.partials.security-settings') --}}
+                       @include('profile_parts.security') 
                     </div>
 
                     {{-- Notification Settings Tab --}}
                     <div class="tab-pane fade" id="notification">
-                        {{-- @include('profile.partials.notification-settings') --}}
+                         @include('profile_parts.notification')
                     </div>
 
                     {{-- Billing Settings Tab --}}
                     <div class="tab-pane fade" id="billing">
-                        {{-- @include('profile.partials.billing-settings') --}}
+                        @include('profile_parts.billing') 
                     </div>
                 </div>
             </div>
