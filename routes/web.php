@@ -30,7 +30,7 @@ Route::middleware(['auth'])->group(function () {
     })->name('student.dashboard');
 });
 //صفحات الموقع الرئيسي
-Route::get('/home', action: [HomeController::class, 'ShowHomePage'])->name('home_page');
+Route::get('/', action: [HomeController::class, 'ShowHomePage'])->name('home_page');
 Route::get('/About', action: [HomeController::class, 'ShowAboutPage'])->name('about_page');
 Route::get('/Gallery', action: [HomeController::class, 'ShowGalleryPage'])->name('gallery_page');
 Route::get('/News', action: [HomeController::class, 'ShowNewsPage'])->name('news_page');
