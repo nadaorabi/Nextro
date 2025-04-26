@@ -1,0 +1,148 @@
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/line-awesome/1.3.0/line-awesome/css/line-awesome.min.css">
+<nav class="site-nav mb-5">
+  <div class="pb-2 top-bar mb-3">
+    <div class="container">
+      <div class="row align-items-center">
+
+        <div class="col-6 col-lg-9">
+          <a href="#" class="small mr-3"><span class="icon-question-circle-o mr-2"></span> <span class="d-none d-lg-inline-block">Have a questions?</span></a>
+          <a href="#" class="small mr-3"><span class="icon-phone mr-2"></span> <span class="d-none d-lg-inline-block">0980948211</span></a>
+          <a href="#" class="small mr-3"><span class="icon-envelope mr-2"></span> <span class="d-none d-lg-inline-block">Nextro@gmail.com</span></a>
+        </div>
+
+       <style>
+  .auth-btn {
+    border-radius: 50px;
+    padding: 8px 20px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    font-size: 14px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    border: 1px solid transparent;
+  }
+
+  .auth-btn i {
+    margin-right: 8px;
+    font-size: 16px;
+  }
+
+  .auth-btn.login {
+    background-color: white;
+    color: #007bff;
+    border-color: white;
+  }
+
+  .auth-btn.login:hover {
+    background-color: #f0f0f0;
+    transform: translateY(-2px);
+  }
+
+  .auth-btn.register {
+    background-color: #ffffff;
+    color: #000;
+    border-color: #ddd;
+  }
+
+  .auth-btn.register:hover {
+    background-color: #f8f9fa;
+    transform: translateY(-2px);
+    border-color: #ccc;
+  }
+
+  .auth-btn.profile {
+    background-color: white;
+    color: #28a745;
+    border-color: white;
+  }
+
+  .auth-btn.profile:hover {
+    background-color: #f0f0f0;
+    transform: translateY(-2px);
+  }
+
+  .auth-btn.logout {
+    background-color: transparent;
+    color: white;
+    border: 1px solid white;
+  }
+
+  .auth-btn.logout:hover {
+    background-color: white;
+    color: #dc3545;
+    transform: translateY(-2px);
+  }
+</style>
+
+<div class="col-6 col-lg-3 text-right d-flex justify-content-end align-items-center gap-2">
+  @auth
+    <a href="{{ route('profile_page') }}" class="auth-btn profile me-2">
+      <i class="las la-user"></i> {{ Auth::user()->name }}
+    </a>
+
+    <form action="{{ route('logout') }}" method="POST" style="display:inline;">
+      @csrf
+      <button type="submit" class="auth-btn logout">
+        <i class="las la-sign-out-alt"></i> Logout
+      </button>
+    </form>
+  @else
+    <a href="{{ route('login') }}" class="auth-btn login me-2">
+      <i class="las la-sign-in-alt"></i> Log In
+    </a>
+
+    <a href="{{ route('register') }}" class="auth-btn register">
+      <i class="las la-user-plus"></i> Register
+    </a>
+  @endauth
+</div>
+
+        
+        
+
+      </div>
+    </div>
+  </div>
+
+  <div class="sticky-nav js-sticky-header">
+    <div class="container position-relative">
+      <div class="site-navigation text-center">
+        <a href="index.html" class="logo menu-absolute m-0">Nextro<span class="text-primary">.</span></a>
+
+        <ul class="js-clone-nav d-none d-lg-inline-block site-menu">
+          <li class="{{ request()->routeIs('home_page') ? 'active' : '' }}">
+            <a href="{{ route('home_page') }}">Home</a>
+          </li>
+          <li class="{{ request()->routeIs('about_page') ? 'active' : '' }}">
+            <a href="{{ route('about_page') }}">About</a>
+          </li>
+          <li class="{{ request()->routeIs('Staff_page') ? 'active' : '' }}">
+            <a href="{{ route('Staff_page') }}">Our Staff</a>
+          </li>
+          <li class="{{ request()->routeIs('news_page') ? 'active' : '' }}">
+            <a href="{{ route('news_page') }}">News</a>
+          </li>
+          <li class="{{ request()->routeIs('courses_page') ? 'active' : '' }}">
+            <a href="{{ route('courses_page') }}">Courses</a>
+          </li>
+          
+          <li class="{{ request()->routeIs('Contact_page') ? 'active' : '' }}">
+            <a href="{{ route('Contact_page') }}">Contact</a>
+          </li>
+         
+         
+        </ul>
+
+      
+
+        <a href="#" class="burger ml-auto float-right site-menu-toggle js-menu-toggle d-inline-block d-lg-none light" data-toggle="collapse" data-target="#main-navbar">
+          <span></span>
+        </a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+
