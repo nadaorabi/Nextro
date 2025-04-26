@@ -6,7 +6,7 @@ use App\Http\Controllers\HomeController;
 
 
 
-// صفحات تسجيل المستخدمين اب
+// صفحات تسجيل المستخدمين 
 Route::get('/register', [UserController::class, 'showRegisterForm'])->name('register');
 Route::post('/register', [UserController::class, 'register'])->name('register.post');
 
