@@ -32,6 +32,7 @@
             font-size: 14px; /* صغرنا الأيقونة */
           }
         
+          
           /* Responsive: على الشاشات الصغيرة جدا */
           @media (max-width: 575.98px) {
             .auth-btn {
