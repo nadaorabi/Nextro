@@ -78,6 +78,7 @@
 </style>
 @endpush
 
+
 {{-- سكربتات خاصة --}}
 @push('scripts')
 <script>
