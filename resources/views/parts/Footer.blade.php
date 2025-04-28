@@ -60,7 +60,6 @@
     </div> <!-- /.col-lg-3 -->
 
   </div> <!-- /.row -->
-  © 2025. All Rights Reserved. — Designed with love by Nextro. Distributed by Nextro."
   <div class="row mt-5">
     <div class="col-12 text-center">
       <p class="copyright">Copyright &copy;<script>document.write(new Date().getFullYear());</script>. All Rights Reserved. &mdash; Designed with love by  <a href="{{ route('home_page') }}">Nextro
