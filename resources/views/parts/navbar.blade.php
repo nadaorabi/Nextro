@@ -11,70 +11,88 @@
           <a href="#" class="small mr-3"><span class="icon-envelope mr-2"></span> <span class="d-none d-lg-inline-block">Nextro@gmail.com</span></a>
         </div>
 
-       <style>
-  .auth-btn {
-    border-radius: 50px;
-    padding: 8px 20px;
-    font-weight: 500;
-    transition: all 0.3s ease;
-    display: inline-flex;
-    align-items: center;
-    font-size: 14px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-    border: 1px solid transparent;
-  }
-
-  .auth-btn i {
-    margin-right: 8px;
-    font-size: 16px;
-  }
-
-  .auth-btn.login {
-    background-color: white;
-    color: #007bff;
-    border-color: white;
-  }
-
-  .auth-btn.login:hover {
-    background-color: #f0f0f0;
-    transform: translateY(-2px);
-  }
-
-  .auth-btn.register {
-    background-color: #ffffff;
-    color: #000;
-    border-color: #ddd;
-  }
-
-  .auth-btn.register:hover {
-    background-color: #f8f9fa;
-    transform: translateY(-2px);
-    border-color: #ccc;
-  }
-
-  .auth-btn.profile {
-    background-color: white;
-    color: #28a745;
-    border-color: white;
-  }
-
-  .auth-btn.profile:hover {
-    background-color: #f0f0f0;
-    transform: translateY(-2px);
-  }
-
-  .auth-btn.logout {
-    background-color: transparent;
-    color: white;
-    border: 1px solid white;
-  }
-
-  .auth-btn.logout:hover {
-    background-color: white;
-    color: #dc3545;
-    transform: translateY(-2px);
-  }
-</style>
+        <style>
+          .auth-btn {
+            border-radius: 30px;
+            padding: 4px 10px; /* صغرنا البادينغ أكتر */
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px; /* صغرنا الخط */
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border: 1px solid transparent;
+            height: 36px; /* تحديد ارتفاع مناسب */
+            min-width: 90px; /* تحديد عرض مبدأي للزر */
+          }
+        
+          .auth-btn i {
+            margin-right: 4px;
+            font-size: 14px; /* صغرنا الأيقونة */
+          }
+        
+          /* Responsive: على الشاشات الصغيرة جدا */
+          @media (max-width: 575.98px) {
+            .auth-btn {
+              padding: 3px 8px;
+              font-size: 11px;
+              height: 34px;
+              min-width: 80px;
+            }
+            .auth-btn i {
+              margin-right: 3px;
+              font-size: 13px;
+            }
+          }
+        
+          .auth-btn.login {
+            background-color: white;
+            color: #007bff;
+            border-color: white;
+          }
+        
+          .auth-btn.login:hover {
+            background-color: #f0f0f0;
+            transform: translateY(-2px);
+          }
+        
+          .auth-btn.register {
+            background-color: #ffffff;
+            color: #000;
+            border-color: #ddd;
+          }
+        
+          .auth-btn.register:hover {
+            background-color: #f8f9fa;
+            transform: translateY(-2px);
+            border-color: #ccc;
+          }
+        
+          .auth-btn.profile {
+            background-color: white;
+            color: #28a745;
+            border-color: white;
+          }
+        
+          .auth-btn.profile:hover {
+            background-color: #f0f0f0;
+            transform: translateY(-2px);
+          }
+        
+          .auth-btn.logout {
+            background-color: transparent;
+            color: white;
+            border: 1px solid white;
+          }
+        
+          .auth-btn.logout:hover {
+            background-color: white;
+            color: #dc3545;
+            transform: translateY(-2px);
+          }
+        </style>
+        
 
 <div class="col-6 col-lg-3 text-right d-flex justify-content-end align-items-center gap-2">
   @auth
