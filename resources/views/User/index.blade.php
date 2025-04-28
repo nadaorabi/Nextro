@@ -112,6 +112,6 @@
 {{-- @include('components.testimonials') --}}
 
 {{-- Why Choose Us --}}
-{{-- @include('components.why-choose-us') --}} --}}
+{{-- @include('components.why-choose-us') --}} 
 
 @endsection
