@@ -1,4 +1,3 @@
-
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/line-awesome/1.3.0/line-awesome/css/line-awesome.min.css">
 <nav class="site-nav mb-5">
   <div class="pb-2 top-bar mb-3">
@@ -112,7 +111,7 @@
       <i class="las la-sign-in-alt"></i> Log In
     </a>
 
-    <a href="{{ route('register') }}" class="auth-btn register">
+    <a href="{{ route('register') }}" class="auth-btn register ms-2">
       <i class="las la-user-plus"></i> Register
     </a>
   @endauth
