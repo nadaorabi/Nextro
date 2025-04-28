@@ -368,6 +368,7 @@
                             <label class="custom-control-label" for="customSwitch3"></label>
                           </div>
                         </li>
+                        
                         <li class="list-group-item has-icon">
                           Events
                           <div class="custom-control custom-control-nolabel custom-switch ml-auto">
