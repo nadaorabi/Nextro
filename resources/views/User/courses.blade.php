@@ -82,7 +82,7 @@
 @push('scripts')
 <script>
   AOS.init();
-  
+  // malik
   const filterButtons = document.querySelectorAll('.filter-btn');
   const courseCards = document.querySelectorAll('.course-card');
 
