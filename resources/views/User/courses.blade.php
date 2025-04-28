@@ -15,98 +15,86 @@
 @endsection
 
 @section('content')
+<div class="container py-5">
 
-{{-- أزرار الفلترة --}}
-<div class="container my-5">
-  <div class="d-flex flex-wrap justify-content-center mb-4">
-    <button class="filter-btn active" data-filter="all">الكل</button>
-    <button class="filter-btn" data-filter="تاسع">تاسع</button>
-    <button class="filter-btn" data-filter="بكالوريا">بكالوريا</button>
-    <button class="filter-btn" data-filter="ثانوي">ثانوي</button>
-    <button class="filter-btn" data-filter="لغات">لغات</button>
+  <!-- فلترة الكورسات -->
+  <div class="text-center mb-4">
+    <button class="btn btn-primary filter-button" data-filter="all">الكل</button>
+    <button class="btn btn-outline-primary filter-button" data-filter="design">تصميم</button>
+    <button class="btn btn-outline-primary filter-button" data-filter="programming">برمجة</button>
+    <button class="btn btn-outline-primary filter-button" data-filter="marketing">تسويق</button>
   </div>
 
-  {{-- بطاقات الكورسات --}}
-  <div class="row" id="courses-list">
-    @foreach([
-      ['title' => 'الرياضيات - تاسع', 'type' => 'تاسع', 'price' => '$30', 'image' => 'images/course1.jpg'],
-      ['title' => 'الفيزياء - بكالوريا', 'type' => 'بكالوريا', 'price' => '$50', 'image' => 'images/course2.jpg'],
-      ['title' => 'اللغة الإنجليزية - لغات', 'type' => 'لغات', 'price' => '$25', 'image' => 'images/course3.jpg'],
-      ['title' => 'الكيمياء - ثانوي', 'type' => 'ثانوي', 'price' => '$40', 'image' => 'images/course4.jpg'],
-      ['title' => 'العربية - تاسع', 'type' => 'تاسع', 'price' => '$20', 'image' => 'images/course5.jpg'],
-    ] as $course)
-    <div class="col-md-6 col-lg-4 mb-4 course-card" data-type="{{ $course['type'] }}">
-      <div class="card shadow-sm h-100">
-        <img src="{{ asset($course['image']) }}" class="card-img-top" alt="Course Image" style="height:200px;object-fit:cover;">
-        <div class="card-body d-flex flex-column">
-          <h5 class="card-title">{{ $course['title'] }}</h5>
-          <p class="text-muted mb-2">النوع: {{ $course['type'] }}</p>
-          <p class="text-primary fw-bold">{{ $course['price'] }}</p>
-          <a href="#" class="btn btn-outline-primary mt-auto">تفاصيل</a>
+  <!-- عرض الكورسات -->
+  <div class="row" id="courses-container">
+    <!-- كورس 1 -->
+    <div class="col-md-4 mb-4 course-item" data-category="design">
+      <div class="card h-100">
+        <img src="{{ asset('images/course1.jpg') }}" class="card-img-top" alt="تصميم جرافيكي">
+        <div class="card-body">
+          <h5 class="card-title">دورة التصميم الجرافيكي</h5>
+          <p class="card-text">تعلم أساسيات التصميم باستخدام أدوات احترافية.</p>
+          <a href="#" class="btn btn-primary">عرض الدورة</a>
         </div>
       </div>
     </div>
-    @endforeach
+
+    <!-- كورس 2 -->
+    <div class="col-md-4 mb-4 course-item" data-category="programming">
+      <div class="card h-100">
+        <img src="{{ asset('images/course2.jpg') }}" class="card-img-top" alt="برمجة الويب">
+        <div class="card-body">
+          <h5 class="card-title">دورة برمجة الويب</h5>
+          <p class="card-text">تعلم تطوير مواقع الويب باستخدام HTML, CSS, JavaScript.</p>
+          <a href="#" class="btn btn-primary">عرض الدورة</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- كورس 3 -->
+    <div class="col-md-4 mb-4 course-item" data-category="marketing">
+      <div class="card h-100">
+        <img src="{{ asset('images/course3.jpg') }}" class="card-img-top" alt="التسويق الرقمي">
+        <div class="card-body">
+          <h5 class="card-title">دورة التسويق الرقمي</h5>
+          <p class="card-text">استراتيجيات التسويق عبر الإنترنت لزيادة المبيعات.</p>
+          <a href="#" class="btn btn-primary">عرض الدورة</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- يمكنك إضافة المزيد من الكورسات بنفس الطريقة -->
   </div>
+
 </div>
 
-@endsection
-
-{{-- ستايلات خاصة --}}
-@push('styles')
-<style>
-  .filter-btn {
-    border-radius: 30px;
-    padding: 8px 20px;
-    margin: 5px;
-    border: 1px solid #0d6efd;
-    background: white;
-    color: #0d6efd;
-    transition: 0.3s;
-  }
-  .filter-btn.active, .filter-btn:hover {
-    background: #0d6efd;
-    color: white;
-  }
-  .course-card {
-    transition: all 0.3s ease-in-out;
-  }
-  .course-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-  }
-  
-</style>
-@endpush
-
-
-{{-- سكربتات خاصة --}}
-@push('scripts')
+<!-- كود جافاسكريبت للفلترة -->
 <script>
-  AOS.init();
-  // malik
-  const filterButtons = document.querySelectorAll('.filter-btn');
-  const courseCards = document.querySelectorAll('.course-card');
+  document.addEventListener('DOMContentLoaded', function () {
+    const buttons = document.querySelectorAll('.filter-button');
+    const items = document.querySelectorAll('.course-item');
 
-  filterButtons.forEach(button => {
-    button.addEventListener('click', () => {
-      filterButtons.forEach(btn => btn.classList.remove('active'));
-      button.classList.add('active');
+    buttons.forEach(button => {
+      button.addEventListener('click', function () {
+        const filter = this.getAttribute('data-filter');
 
-      const filter = button.getAttribute('data-filter');
+        items.forEach(item => {
+          if (filter === 'all' || item.getAttribute('data-category') === filter) {
+            item.style.display = 'block';
+          } else {
+            item.style.display = 'none';
+          }
+        });
 
-      courseCards.forEach(card => {
-        if (filter === 'all' || card.dataset.type === filter) {
-          card.style.display = 'block';
-          setTimeout(() => {
-            card.style.opacity = 1;
-          }, 10);
-        } else {
-          card.style.display = 'none';
-          card.style.opacity = 0;
-        }
+        // تغيير لون الزر النشط
+        buttons.forEach(btn => btn.classList.remove('btn-primary'));
+        buttons.forEach(btn => btn.classList.add('btn-outline-primary'));
+        this.classList.add('btn-primary');
+        this.classList.remove('btn-outline-primary');
       });
     });
   });
 </script>
-@endpush
+
+
+@endsection
