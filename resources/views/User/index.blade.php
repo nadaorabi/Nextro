@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Courses')
+@section('title', 'home')
 
 @section('hero')
 <div class="untree_co-hero overlay" style="background-image: url('{{ asset('images/hero-img-1-min.jpg') }}');">
