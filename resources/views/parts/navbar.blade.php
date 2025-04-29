@@ -91,6 +91,11 @@
             color: #dc3545;
             transform: translateY(-2px);
           }
+          .auth-btn:not(:first-child) {
+  margin-left: 6px;
+}
+
+
         </style>
         
 
