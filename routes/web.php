@@ -7,13 +7,13 @@ use App\Http\Controllers\HomeController;
 
 
 // صفحات تسجيبيل المستخدمين 
-Route::get('/register', [UserController::class, 'showRegisterForm'])->name('register');
-Route::post('/register', [UserController::class, 'register'])->name('register.post');
+Route::get('/user/register', [UserController::class, 'showRegisterForm'])->name('register');
+Route::post('/user/register', [UserController::class, 'register'])->name('register.post');
 
 // صفحات تسجيل الدخول والخروج
-Route::get('/login', [UserController::class, 'showLoginForm'])->name('login');
-Route::post('/login', [UserController::class, 'login'])->name('login.post');
-Route::post('/logout', [UserController::class, 'logout'])->name('logout')->middleware('auth');
+Route::get('/user/login', [UserController::class, 'showLoginForm'])->name('login');
+Route::post('/user/login', [UserController::class, 'login'])->name('login.post');
+Route::post('/user/logout', [UserController::class, 'logout'])->name('logout')->middleware('auth');
 
 // صفحات خاصة لكل دور
 Route::middleware(['auth'])->group(function () {

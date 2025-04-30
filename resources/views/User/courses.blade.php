@@ -13,6 +13,7 @@
     <div class="row align-items-center justify-content-center">
       <div class="col-12 text-center">
         <h1 class="mb-4 heading text-white" data-aos="fade-up">دوراتنا التعليمية</h1>
+        <a href="#courses-container" class="btn btn-secondary btn-lg mt-3" data-aos="fade-up" data-aos-delay="200">استكشف الدورات</a>
       </div>
     </div>
   </div>
