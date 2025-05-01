@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\TeacherController;
 
 
 
@@ -14,6 +15,21 @@ Route::post('/user/register', [UserController::class, 'register'])->name('regist
 Route::get('/user/login', [UserController::class, 'showLoginForm'])->name('login');
 Route::post('/user/login', [UserController::class, 'login'])->name('login.post');
 Route::post('/user/logout', [UserController::class, 'logout'])->name('logout')->middleware('auth');
+
+// صفحات المدرسين
+Route::prefix('teacher')->group(function () {
+    Route::middleware('guest')->group(function () {
+        Route::get('login', [TeacherController::class, 'showLoginForm'])->name('teacher.login');
+        Route::post('login', [TeacherController::class, 'login'])->name('teacher.login.post');
+        Route::get('register', [TeacherController::class, 'showRegisterForm'])->name('teacher.register');
+        Route::post('register', [TeacherController::class, 'register'])->name('teacher.register.post');
+    });
+
+    Route::middleware(['auth', 'teacher'])->group(function () {
+        Route::get('dashboard', [TeacherController::class, 'dashboard'])->name('teacher.dashboard');
+        Route::post('logout', [TeacherController::class, 'logout'])->name('teacher.logout');
+    });
+});
 
 // صفحات خاصة لكل دور
 Route::middleware(['auth'])->group(function () {

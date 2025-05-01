@@ -51,22 +51,10 @@
               <input type="password" id="password_confirmation" name="password_confirmation" class="form-control" placeholder="تأكيد كلمة المرور" required>
             </div>
 
-            {{-- Role Selection --}}
-            <div class="col-12 mb-3">
-              <select name="role" id="role" class="form-select" required>
-                <option value="student" {{ old('role') == 'student' ? 'selected' : '' }}>طالب</option>
-                <option value="teacher" {{ old('role') == 'teacher' ? 'selected' : '' }}>مدرس</option>
-                <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>أدمن</option>
-              </select>
-              @error('role') <div class="text-danger mt-1">{{ $message }}</div> @enderror
-            </div>
-
             {{-- Terms and Conditions --}}
-            <div class="col-12 mb-3">
-              <label class="control control--checkbox">
-                <span class="caption">أوافق على <a href="#">الشروط والأحكام</a></span>
-                <input type="checkbox" id="terms" name="terms" class="form-check-input" required>
-              </label>
+            <div class="col-12 mb-3 form-check">
+              <input type="checkbox" id="terms" name="terms" class="form-check-input" required>
+              <label for="terms" class="form-check-label">أوافق على الشروط والأحكام</label>
               @error('terms') <div class="text-danger mt-1">{{ $message }}</div> @enderror
             </div>
 

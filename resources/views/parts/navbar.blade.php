@@ -119,6 +119,9 @@
     <a href="{{ route('register') }}" class="auth-btn register ms-2">
       <i class="las la-user-plus"></i> Register
     </a>
+    <a href="{{ route('teacher.login') }}" class="auth-btn register ms-2">
+      <i class="las la-user-plus"></i> login_tech
+    </a>
   @endauth
 </div>
 
