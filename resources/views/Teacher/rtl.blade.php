@@ -18,20 +18,20 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <link rel="apple-touch-icon" sizes="76x76" href="../assets/img/apple-icon.png">
-  <link rel="icon" type="image/png" href="../assets/img/favicon.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="{{ asset('images/apple-icon.png') }}">
+  <link rel="icon" type="image/png" href="{{ asset('images/favicon.png') }}">
   <title>
     Argon Dashboard 3 by Creative Tim
   </title>
   <!--     Fonts and icons     -->
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
   <!-- Nucleo Icons -->
-  <link href="https://demos.creative-tim.com/argon-dashboard-pro/assets/css/nucleo-icons.css" rel="stylesheet" />
-  <link href="https://demos.creative-tim.com/argon-dashboard-pro/assets/css/nucleo-svg.css" rel="stylesheet" />
+  <link href="{{ asset('css/nucleo-icons.css') }}" rel="stylesheet" />
+  <link href="{{ asset('css/nucleo-svg.css') }}" rel="stylesheet" />
   <!-- Font Awesome Icons -->
   <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
   <!-- CSS Files -->
-  <link id="pagestyle" href="../assets/css/argon-dashboard.css?v=2.1.0" rel="stylesheet" />
+  <link id="pagestyle" href="{{ asset('css/argon-dashboard.css') }}" rel="stylesheet" />
 </head>
 
 <body class="g-sidenav-show rtl  bg-gray-100">
@@ -40,7 +40,7 @@
     <div class="sidenav-header">
       <i class="fas fa-times p-3 cursor-pointer text-secondary opacity-5 position-absolute start-0 top-0 d-none d-xl-none" aria-hidden="true" id="iconSidenav"></i>
       <a class="navbar-brand m-0" href=" https://demos.creative-tim.com/argon-dashboard/pages/dashboard.html " target="_blank">
-        <img src="../assets/img/logo-ct-dark.png" width="26px" height="26px" class="navbar-brand-img h-100" alt="main_logo">
+        <img src="{{ asset('images/logo-ct-dark.png') }}" width="26px" height="26px" class="navbar-brand-img h-100" alt="main_logo">
         <span class="me-1 font-weight-bold">Creative Tim</span>
       </a>
     </div>
@@ -118,7 +118,7 @@
     </div>
     <div class="sidenav-footer mx-3 ">
       <div class="card card-plain shadow-none" id="sidenavCard">
-        <img class="w-50 mx-auto" src="../assets/img/illustrations/icon-documentation.svg" alt="sidebar_illustration">
+        <img class="w-50 mx-auto" src="{{ asset('images/illustrations/icon-documentation.svg') }}" alt="sidebar_illustration">
         <div class="card-body text-center p-3 w-100 pt-0">
           <div class="docs-info">
             <h6 class="mb-0 text-center">تحتاج مساعدة?</h6>
@@ -969,11 +969,11 @@
     </div>
   </div>
   <!--   Core JS Files   -->
-  <script src="../assets/js/core/popper.min.js"></script>
-  <script src="../assets/js/core/bootstrap.min.js"></script>
-  <script src="../assets/js/plugins/perfect-scrollbar.min.js"></script>
-  <script src="../assets/js/plugins/smooth-scrollbar.min.js"></script>
-  <script src="../assets/js/plugins/chartjs.min.js"></script>
+  <script src="{{ asset('js/core/popper.min.js') }}"></script>
+  <script src="{{ asset('js/core/bootstrap.min.js') }}"></script>
+  <script src="{{ asset('js/plugins/perfect-scrollbar.min.js') }}"></script>
+  <script src="{{ asset('js/plugins/smooth-scrollbar.min.js') }}"></script>
+  <script src="{{ asset('js/plugins/chartjs.min.js') }}"></script>
   <script>
     var ctx1 = document.getElementById("chart-line").getContext("2d");
 
@@ -1069,7 +1069,7 @@
   <!-- Github buttons -->
   <script async defer src="https://buttons.github.io/buttons.js"></script>
   <!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->
-  <script src="../assets/js/argon-dashboard.min.js?v=2.1.0"></script>
+  <script src="{{ asset('js/argon-dashboard.min.js') }}"></script>
 </body>
 
 </html>
