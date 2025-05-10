@@ -40,7 +40,36 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/teacher/dashboard', function () {
         return view('teacher.dashboard');
     })->name('teacher.dashboard');
+    //صفحات  المدرسين
+    Route::get('/teacher/billing', function () {
+        return view('teacher.billing');
+    })->name('teacher.billing');
 
+
+    Route::get('/teacher/profile', function () {
+        return view('teacher.profile');
+    })->name('teacher.profile');
+
+ Route::get('/teacher/rtl', function () {
+        return view('teacher.rtl');
+    })->name('teacher.rtl');
+
+    Route::get('/teacher/sign-in', function () {
+        return view('teacher.sign-in');
+    })->name('teacher.sign-in');
+
+    Route::get('/teacher/sign-up', function () {
+        return view('teacher.sign-up');
+    })->name('teacher.sign-up');
+
+    Route::get('/teacher/tables', function () {
+        return view('teacher.tables');
+    })->name('teacher.tables');
+
+    Route::get('/teacher/virtual-reality', function () {
+        return view('/teacher/virtual-reality');
+    })->name('teacher.virtual-reality');
+//الطلاب 
     Route::get('/student/dashboard', function () {
         return view('student.dashboard');
     })->name('student.dashboard');
