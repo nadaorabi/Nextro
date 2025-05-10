@@ -1,6 +1,14 @@
 <div class="tab-pane" id="course-registration">
   <h6 class="mb-4">Registered Courses</h6>
 
+  <!-- Filter Buttons -->
+  <div class="mb-3">
+    <button class="btn btn-outline-primary btn-sm filter-btn active" data-filter="all">All</button>
+    <button class="btn btn-outline-primary btn-sm filter-btn" data-filter="Skills">Skills</button>
+    <button class="btn btn-outline-primary btn-sm filter-btn" data-filter="Academics">Academics</button>
+    <button class="btn btn-outline-primary btn-sm filter-btn" data-filter="Bachelor">Bachelor</button>
+  </div>
+
   <!-- Search Box -->
   <div class="form-group mb-4">
     <input type="text" class="form-control" id="courseSearch" placeholder="Search courses...">
@@ -9,7 +17,7 @@
   <div class="row" id="courseList">
 
     <!-- Course Card 1 -->
-    <div class="col-md-4 col-sm-6 mb-4 course-card">
+    <div class="col-md-4 col-sm-6 mb-4 course-card" data-category="Skills">
       <div class="card shadow-sm border-0" style="font-size: 14px;">
         <div class="position-relative">
           <img src="{{ asset('images/img_3.jpg') }}" class="card-img-top" alt="Course Image" style="height: 150px; object-fit: cover;">
@@ -31,7 +39,7 @@
     </div>
 
     <!-- Course Card 2 -->
-    <div class="col-md-4 col-sm-6 mb-4 course-card">
+    <div class="col-md-4 col-sm-6 mb-4 course-card" data-category="Academics">
       <div class="card shadow-sm border-0" style="font-size: 14px;">
         <div class="position-relative">
           <img src="{{ asset('images/img_4.jpg') }}" class="card-img-top" alt="Course Image" style="height: 150px; object-fit: cover;">
@@ -53,7 +61,7 @@
     </div>
 
     <!-- Course Card 3 -->
-    <div class="col-md-4 col-sm-6 mb-4 course-card">
+    <div class="col-md-4 col-sm-6 mb-4 course-card" data-category="Bachelor">
       <div class="card shadow-sm border-0" style="font-size: 14px;">
         <div class="position-relative">
           <img src="{{ asset('images/img_5.jpg') }}" class="card-img-top" alt="Course Image" style="height: 150px; object-fit: cover;">
@@ -77,15 +85,36 @@
   </div>
 </div>
 
-<!-- JS to filter cards by search -->
+<!-- JavaScript for filter and search -->
 <script>
-  document.getElementById('courseSearch').addEventListener('input', function () {
-    const keyword = this.value.toLowerCase();
+  window.addEventListener("DOMContentLoaded", function () {
+    // عناصر الفلترة
+    const filterButtons = document.querySelectorAll('.filter-btn');
     const cards = document.querySelectorAll('.course-card');
 
-    cards.forEach(card => {
-      const text = card.innerText.toLowerCase();
-      card.style.display = text.includes(keyword) ? 'block' : 'none';
+    filterButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        // إزالة active من جميع الأزرار
+        filterButtons.forEach(btn => btn.classList.remove('active'));
+        button.classList.add('active');
+
+        const filter = button.getAttribute('data-filter');
+
+        cards.forEach(card => {
+          const category = card.getAttribute('data-category');
+          card.style.display = (filter === 'all' || category === filter) ? 'block' : 'none';
+        });
+      });
+    });
+
+    // البحث
+    document.getElementById('courseSearch').addEventListener('input', function () {
+      const keyword = this.value.toLowerCase();
+      cards.forEach(card => {
+        const text = card.innerText.toLowerCase();
+        card.style.display = text.includes(keyword) ? 'block' : 'none';
+      });
     });
   });
 </script>
+
