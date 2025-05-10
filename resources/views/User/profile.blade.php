@@ -81,6 +81,11 @@
               <a href="#Academic-Status" data-toggle="tab" class="nav-item nav-link">
                 <i class="fas fa-graduation-cap mr-2"></i> Academic Status
               </a>
+                <!--  Scan QR -->
+                <a href="#QR" data-toggle="tab" class="nav-item nav-link">
+                  <i class="fas fa-qrcode mr-2"></i> Scan QR
+                </a>
+                
             
             </nav>
             
@@ -91,38 +96,106 @@
 
         <div class="col-md-8">
             <div class="card">
-              <div class="card-header border-bottom mb-3 d-flex d-md-none">
-                <ul class="nav nav-tabs card-header-tabs nav-gap-x-1" role="tablist">
-                  <li class="nav-item">
-                    <a href="#profile" data-toggle="tab" class="nav-link has-icon active"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-user"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="#academic-Documents" data-toggle="tab" class="nav-link has-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-settings"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="#Contact-Us" data-toggle="tab" class="nav-link has-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-shield"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg></a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="#notification" data-toggle="tab" class="nav-link has-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-bell"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg></a>
-                  </li>
-                 
-                  <li class="nav-item">
-                    <a href="#registered-Courses" data-toggle="tab" class="nav-link has-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-credit-card"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg></a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="#attendance-Record" data-toggle="tab" class="nav-link has-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-credit-card"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg></a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="#grade" data-toggle="tab" class="nav-link has-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-credit-card"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg></a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="#Financial-Status" data-toggle="tab" class="nav-link has-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-credit-card"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg></a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="#Academic-Status" data-toggle="tab" class="nav-link has-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-credit-card"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg></a>
-                  </li>
-                </ul>
+            <!-- قائمة منسدلة بديلة عن <select> تظهر فقط في الموبايل -->
+              <div class="card-header d-block d-md-none">
+                <div class="dropdown">
+                  <button class="btn btn-outline-primary btn-block dropdown-toggle text-left" type="button" id="mobileDropdownBtn"
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fas fa-user-circle mr-2"></i>
+                    <span id="mobileDropdownLabel">Profile Information</span>
+                  </button>
+                  <div class="dropdown-menu w-100" aria-labelledby="mobileDropdownBtn">
+                    <a class="dropdown-item" href="#profile"><i class="fas fa-user-circle mr-2"></i> Profile Information</a>
+                    <a class="dropdown-item" href="#academic-Documents"><i class="fas fa-file-alt mr-2"></i> Academic Documents</a>
+                    <a class="dropdown-item" href="#Contact-Us"><i class="fas fa-envelope mr-2"></i> Contact Us</a>
+                    <a class="dropdown-item" href="#notification"><i class="fas fa-bell mr-2"></i> Notification</a>
+                    <a class="dropdown-item" href="#registered-Courses"><i class="fas fa-list mr-2"></i> Registered Courses</a>
+                    <a class="dropdown-item" href="#attendance-Record"><i class="fas fa-calendar-check mr-2"></i> Attendance Record</a>
+                    <a class="dropdown-item" href="#grade"><i class="fas fa-chart-line mr-2"></i> Grades</a>
+                    <a class="dropdown-item" href="#Financial-Status"><i class="fas fa-wallet mr-2"></i> Financial Status</a>
+                    <a class="dropdown-item" href="#Academic-Status"><i class="fas fa-graduation-cap mr-2"></i> Academic Status</a>
+                    <a class="dropdown-item" href="#QR"><i class="fas fa-qrcode mr-2"></i> Scan QR</a>
+                  </div>
+                </div>
               </div>
+              
+              <script>
+                document.addEventListener('DOMContentLoaded', function () {
+                  const links = document.querySelectorAll('.dropdown-menu .dropdown-item');
+                  const label = document.getElementById('mobileDropdownLabel');
+              
+                  links.forEach(link => {
+                    link.addEventListener('click', function (e) {
+                      e.preventDefault();
+              
+                      const targetHref = this.getAttribute('href');
+                      const text = this.textContent.trim();
+              
+                      // Update active tab in sidebar
+                      document.querySelectorAll('#studentProfileTabs a').forEach(el => el.classList.remove('active'));
+                      const sidebarLink = document.querySelector(`#studentProfileTabs a[href="${targetHref}"]`);
+                      if (sidebarLink) sidebarLink.classList.add('active');
+              
+                      // Update tab pane
+                      document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('show', 'active'));
+                      const targetPane = document.querySelector(targetHref);
+                      if (targetPane) targetPane.classList.add('show', 'active');
+              
+                      // Update dropdown button label
+                      label.innerHTML = text;
+              
+                      // Scroll to tab
+                      targetPane?.scrollIntoView({ behavior: 'smooth' });
+                    });
+                  });
+              
+                  // On page load: set dropdown label to active tab
+                  const activeTab = document.querySelector('.tab-pane.show.active');
+                  if (activeTab) {
+                    const activeLink = document.querySelector(`.dropdown-menu a[href="#${activeTab.id}"]`);
+                    if (activeLink) label.innerHTML = activeLink.textContent.trim();
+                  }
+                });
+              </script>
+              
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const links = document.querySelectorAll('.dropdown-menu .dropdown-item');
+    links.forEach(link => {
+      link.addEventListener('click', function (e) {
+        e.preventDefault();
+
+        // Remove active class from all tab buttons
+        document.querySelectorAll('#studentProfileTabs a').forEach(el => el.classList.remove('active'));
+
+        // Activate the clicked tab in sidebar (desktop version hidden on mobile)
+        const targetHref = this.getAttribute('href');
+        const sidebarLink = document.querySelector(`#studentProfileTabs a[href="${targetHref}"]`);
+        if (sidebarLink) sidebarLink.classList.add('active');
+
+        // Activate the target tab pane
+        document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('show', 'active'));
+        const targetPane = document.querySelector(targetHref);
+        if (targetPane) targetPane.classList.add('show', 'active');
+
+        // Optional: Scroll to the tab content (helpful on mobile)
+        targetPane?.scrollIntoView({ behavior: 'smooth' });
+      });
+    });
+  });
+</script>
+
+            
+            <script>
+              document.addEventListener('DOMContentLoaded', function() {
+                const select = document.getElementById('mobileNavTabs');
+                select.addEventListener('change', function() {
+                  const target = document.querySelector(`a[href="${this.value}"]`);
+                  if (target) target.click();
+                });
+              });
+            </script>
+            
                 <div class="card-body tab-content">
                     {{-- Profile Information Tab --}}
                     <div class="tab-pane fade show active" id="profile">
@@ -164,6 +237,10 @@
                {{-- Academic Status Tab --}}
                <div class="tab-pane fade" id="Academic-Status">
                 @include('profile_parts.Academic-Status') 
+            </div>
+              {{-- Scan QR Tab --}}
+              <div class="tab-pane fade" id="QR">
+                @include('profile_parts.QR') 
             </div>
                 </div>
             </div>

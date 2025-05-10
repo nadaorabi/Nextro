@@ -1,63 +1,57 @@
 <div class="tab-pane" id="account">
-  <h6 class="mb-4">تسجيل الحضور</h6>
+  <h6 class="mb-4">Request an Official Document</h6>
 
-  <p class="text-muted mb-4 text-center">قم بمسح رمز QR لإثبات حضورك.</p>
+  <form>
 
-  <!-- زر بدء المسح -->
-  <div class="text-center mb-4">
-    <button class="btn btn-outline-primary btn-lg d-flex flex-column align-items-center mx-auto"
-            style="width: 200px;" onclick="startQRScanner()">
-      <i class="fas fa-qrcode fa-2x mb-2"></i>
-      <span>مسح رمز QR</span>
-    </button>
-  </div>
+    <!-- Program Type -->
+    <div class="form-group">
+      <label for="programType">Program Type</label>
+      <select class="form-control" id="programType">
+        <option value="baccalaureate">Baccalaureate</option>
+        <option value="grade9">Grade 9</option>
+        <option value="languages">Language Courses</option>
+      </select>
+    </div>
 
-  <!-- منطقة عرض الكاميرا -->
-  <div id="qr-reader" style="width: 100%; max-width: 350px; margin: 0 auto; display: none;"></div>
+    <!-- Document Type -->
+    <div class="form-group">
+      <label for="documentType">Document Type</label>
+      <select class="form-control" id="documentType">
+        <option value="attendance_certificate">Attendance Certificate</option>
+        <option value="final_report">Academic Performance Report</option>
+        <option value="attendance_summary">Attendance Summary</option>
+        <option value="financial_status">Financial Statement / Payments</option>
+        <option value="language_course_certificate">Language Course Completion Certificate</option>
+      </select>
+    </div>
 
-  <!-- نتيجة QR -->
-  <div class="text-center mt-4" id="qr-result" style="font-weight: bold; color: green;"></div>
+    <!-- Semester -->
+    <div class="form-group">
+      <label for="semester">Semester</label>
+      <select class="form-control" id="semester">
+        <option value="first">First Semester</option>
+        <option value="second">Second Semester</option>
+        <option value="summer">Summer Term</option>
+      </select>
+    </div>
 
-  <!-- مكتبة HTML5 QR -->
-  <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+    <!-- Additional Notes -->
+    <div class="form-group">
+      <label for="notes">Additional Notes (optional)</label>
+      <textarea class="form-control" id="notes" rows="3" placeholder="e.g., Required for university application or job..."></textarea>
+    </div>
 
-  <!-- JS لتشغيل الكاميرا -->
-  <script>
-    function startQRScanner() {
-      const qrReader = document.getElementById("qr-reader");
-      const qrResult = document.getElementById("qr-result");
+    <hr>
 
-      qrReader.style.display = "block";
-      qrResult.innerText = "جارٍ فتح الكاميرا...";
+    <!-- Submit Button -->
+    <div class="text-right">
+      <button class="btn btn-primary" type="submit">
+        <i class="fas fa-print mr-1"></i> Submit Request / Print Document
+      </button>
+    </div>
+  </form>
 
-      const html5QrCode = new Html5Qrcode("qr-reader");
-
-      html5QrCode.start(
-        { facingMode: "environment" },
-        {
-          fps: 10,
-          qrbox: 250
-        },
-        qrCodeMessage => {
-          html5QrCode.stop().then(() => {
-            qrReader.style.display = "none";
-            qrResult.innerHTML = `✅ تم تسجيل الحضور بنجاح<br><small style="font-size:14px;">الكود: ${qrCodeMessage}</small>`;
-          }).catch(err => {
-            qrResult.innerText = "فشل في إيقاف الكاميرا.";
-            console.error(err);
-          });
-        },
-        errorMessage => {
-          // تجاهل أخطاء المسح اللحظية
-        }
-      ).catch(err => {
-        qrResult.innerText = "تعذر تشغيل الكاميرا. الرجاء السماح بالوصول.";
-        console.error(err);
-      });
-    }
-  </script>
-
-  <!-- تنسيقات -->
+  <!-- Styling -->
   <style>
     .tab-pane {
       background-color: #fdfdfd;
@@ -68,17 +62,20 @@
     h6 {
       font-weight: bold;
       font-size: 20px;
-      text-align: center;
     }
 
-    .btn span {
+    label {
+      font-weight: 500;
+    }
+
+    .form-control {
+      border-radius: 6px;
+    }
+
+    .btn-primary {
+      border-radius: 6px;
+      padding: 10px 24px;
       font-size: 15px;
-    }
-
-    #qr-reader {
-      border: 2px solid #007bff;
-      border-radius: 10px;
-      padding: 10px;
     }
   </style>
 </div>
