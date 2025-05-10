@@ -1,59 +1,22 @@
 <div class="tab-pane" id="notification">
-    <h6>NOTIFICATION SETTINGS</h6>
-    <hr>
-    <form>
-      <div class="form-group">
-        <label class="d-block mb-0">Security Alerts</label>
-        <div class="small text-muted mb-3">Receive security alert notifications via email</div>
-        <div class="custom-control custom-checkbox">
-          <input type="checkbox" class="custom-control-input" id="customCheck1" checked="">
-          <label class="custom-control-label" for="customCheck1">Email each time a vulnerability is found</label>
-        </div>
-        <div class="custom-control custom-checkbox">
-          <input type="checkbox" class="custom-control-input" id="customCheck2" checked="">
-          <label class="custom-control-label" for="customCheck2">Email a digest summary of vulnerability</label>
-        </div>
-      </div>
-      <div class="form-group mb-0">
-        <label class="d-block">SMS Notifications</label>
-        <ul class="list-group list-group-sm">
-          <li class="list-group-item has-icon">
-            Comments
-            <div class="custom-control custom-control-nolabel custom-switch ml-auto">
-              <input type="checkbox" class="custom-control-input" id="customSwitch1" checked="">
-              <label class="custom-control-label" for="customSwitch1"></label>
-            </div>
-          </li>
-          <li class="list-group-item has-icon">
-            Updates From People
-            <div class="custom-control custom-control-nolabel custom-switch ml-auto">
-              <input type="checkbox" class="custom-control-input" id="customSwitch2">
-              <label class="custom-control-label" for="customSwitch2"></label>
-            </div>
-          </li>
-          <li class="list-group-item has-icon">
-            Reminders
-            <div class="custom-control custom-control-nolabel custom-switch ml-auto">
-              <input type="checkbox" class="custom-control-input" id="customSwitch3" checked="">
-              <label class="custom-control-label" for="customSwitch3"></label>
-            </div>
-          </li>
-          
-          <li class="list-group-item has-icon">
-            Events
-            <div class="custom-control custom-control-nolabel custom-switch ml-auto">
-              <input type="checkbox" class="custom-control-input" id="customSwitch4" checked="">
-              <label class="custom-control-label" for="customSwitch4"></label>
-            </div>
-          </li>
-          <li class="list-group-item has-icon">
-            Pages You Follow
-            <div class="custom-control custom-control-nolabel custom-switch ml-auto">
-              <input type="checkbox" class="custom-control-input" id="customSwitch5">
-              <label class="custom-control-label" for="customSwitch5"></label>
-            </div>
-          </li>
-        </ul>
-      </div>
-    </form>
-  </div>
+  <h6>Notifications</h6>
+  <hr>
+  <ul class="list-group">
+    <li class="list-group-item d-flex justify-content-between align-items-center">
+      📚 New Lecture: "Introduction to Programming" at 10:00 AM
+      <span class="badge badge-primary badge-pill">Today</span>
+    </li>
+    <li class="list-group-item d-flex justify-content-between align-items-center">
+      📝 Upcoming Exam: Mathematics course this Sunday
+      <span class="badge badge-warning badge-pill">Soon</span>
+    </li>
+    <li class="list-group-item d-flex justify-content-between align-items-center">
+      ⏰ Registration deadline for the new semester is May 15
+      <span class="badge badge-danger badge-pill">Reminder</span>
+    </li>
+    <li class="list-group-item d-flex justify-content-between align-items-center">
+      📄 Academic performance report for this semester is now available
+      <span class="badge badge-success badge-pill">Available</span>
+    </li>
+  </ul>
+</div>
