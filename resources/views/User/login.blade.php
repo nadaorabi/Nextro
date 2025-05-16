@@ -24,6 +24,7 @@
   <div class="container">
     <div class="row mb-5 justify-content-center">
       <div class="col-lg-5 mx-auto order-1" data-aos="fade-up" data-aos-delay="200">
+        {{-- Form --}}
         <form action="{{ route('login.post') }}" method="POST" class="p-4 border rounded shadow-sm bg-white">
           @csrf
           <div class="row">
@@ -57,6 +58,25 @@
             </div>
           </div>
         </form>
+
+        {{-- Errors --}}
+        @if($errors->any())
+        <div class="alert alert-danger mt-3">
+          <ul class="mb-0">
+            @foreach($errors->all() as $error)
+              <li>{{ $error }}</li>
+            @endforeach
+          </ul>
+        </div>
+        @endif
+
+        {{-- Success Message --}}
+        @if(session('success'))
+        <div class="alert alert-success mt-3">
+          {{ session('success') }}
+        </div>
+        @endif
+
       </div>
     </div>
   </div>

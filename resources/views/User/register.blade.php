@@ -51,6 +51,11 @@
               <input type="password" id="password_confirmation" name="password_confirmation" class="form-control" placeholder="تأكيد كلمة المرور" required>
             </div>
 
+            {{-- حقل الدور (role) --}}
+            <div class="col-12 mb-3">
+              <input type="hidden" name="role" value="student">
+            </div>
+
             {{-- Terms and Conditions --}}
             <div class="col-12 mb-3 form-check">
               <input type="checkbox" id="terms" name="terms" class="form-check-input" required>
