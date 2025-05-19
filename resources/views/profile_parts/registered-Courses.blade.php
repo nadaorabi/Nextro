@@ -2,12 +2,24 @@
   <h6 class="mb-4">Registered Courses</h6>
 
   <!-- Filter Buttons -->
-  <div class="mb-3">
-    <button class="btn btn-outline-primary btn-sm filter-btn active" data-filter="all">All</button>
-    <button class="btn btn-outline-primary btn-sm filter-btn" data-filter="Skills">Skills</button>
-    <button class="btn btn-outline-primary btn-sm filter-btn" data-filter="Academics">Academics</button>
-    <button class="btn btn-outline-primary btn-sm filter-btn" data-filter="Bachelor">Bachelor</button>
+ <div class="mb-3 text-center">
+  <div class="d-flex flex-row justify-content-center gap-2 flex-wrap">
+    <button class="btn btn-outline-primary filter-btn active" data-filter="all">All</button>
+    <button class="btn btn-outline-primary filter-btn" data-filter="Skills">Skills</button>
+    <button class="btn btn-outline-primary filter-btn" data-filter="Academics">Academics</button>
+    <button class="btn btn-outline-primary filter-btn" data-filter="Bachelor">Bachelor</button>
   </div>
+</div>
+
+<style>
+  @media (max-width: 576px) {
+    .filter-btn {
+      font-size: 12px;
+      padding: 4px 6px;
+    }
+  }
+</style>
+
 
   <!-- Search Box -->
   <div class="form-group mb-4">

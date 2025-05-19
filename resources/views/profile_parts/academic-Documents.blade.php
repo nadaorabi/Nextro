@@ -1,81 +1,110 @@
-<div class="tab-pane" id="account">
-  <h6 class="mb-4">Request an Official Document</h6>
+<style>
+  .tab-pane {
+    background-color: #fdfdfd;
+    padding: 20px;
+    border-radius: 10px;
+  }
 
-  <form>
+  h6 {
+    font-weight: bold;
+    font-size: 20px;
+  }
 
-    <!-- Program Type -->
-    <div class="form-group">
-      <label for="programType">Program Type</label>
-      <select class="form-control" id="programType">
-        <option value="baccalaureate">Baccalaureate</option>
-        <option value="grade9">Grade 9</option>
-        <option value="languages">Language Courses</option>
-      </select>
-    </div>
+  label {
+    font-weight: 500;
+  }
 
-    <!-- Document Type -->
-    <div class="form-group">
-      <label for="documentType">Document Type</label>
-      <select class="form-control" id="documentType">
-        <option value="attendance_certificate">Attendance Certificate</option>
-        <option value="final_report">Academic Performance Report</option>
-        <option value="attendance_summary">Attendance Summary</option>
-        <option value="financial_status">Financial Statement / Payments</option>
-        <option value="language_course_certificate">Language Course Completion Certificate</option>
-      </select>
-    </div>
+  .form-control {
+    border-radius: 6px;
+  }
 
-    <!-- Semester -->
-    <div class="form-group">
-      <label for="semester">Semester</label>
-      <select class="form-control" id="semester">
-        <option value="first">First Semester</option>
-        <option value="second">Second Semester</option>
-        <option value="summer">Summer Term</option>
-      </select>
-    </div>
+  .btn-primary {
+    border-radius: 6px;
+    padding: 10px 24px;
+    font-size: 15px;
+  }
 
-    <!-- Additional Notes -->
-    <div class="form-group">
-      <label for="notes">Additional Notes (optional)</label>
-      <textarea class="form-control" id="notes" rows="3" placeholder="e.g., Required for university application or job..."></textarea>
-    </div>
-
-    <hr>
-
-    <!-- Submit Button -->
-    <div class="text-right">
-      <button class="btn btn-primary" type="submit">
-        <i class="fas fa-print mr-1"></i> Submit Request / Print Document
-      </button>
-    </div>
-  </form>
-
-  <!-- Styling -->
-  <style>
-    .tab-pane {
-      background-color: #fdfdfd;
-      padding: 20px;
-      border-radius: 10px;
+  @media (max-width: 768px) {
+    .form-control {
+      font-size: 14px;
+      padding: 10px;
     }
 
     h6 {
-      font-weight: bold;
-      font-size: 20px;
-    }
-
-    label {
-      font-weight: 500;
-    }
-
-    .form-control {
-      border-radius: 6px;
+      font-size: 18px;
     }
 
     .btn-primary {
-      border-radius: 6px;
-      padding: 10px 24px;
-      font-size: 15px;
+      font-size: 14px;
+      padding: 8px 20px;
     }
-  </style>
+  }
+
+  @media (max-width: 576px) {
+    .form-control {
+      font-size: 13px;
+      padding: 8px;
+    }
+
+    h6 {
+      font-size: 16px;
+    }
+
+    .btn-primary {
+      font-size: 13px;
+      padding: 6px 18px;
+    }
+  }
+</style>
+
+<div class="container-fluid py-4">
+  <div class="w-100 mx-auto" style="max-width: 700px;">
+    <div class="tab-pane">
+      <h6 class="mb-4 text-center">Official Document Request</h6>
+
+      <form>
+        <div class="mb-3">
+          <label for="programType" class="form-label">Program Type</label>
+          <select class="form-control" id="programType">
+            <option value="baccalaureate">Baccalaureate</option>
+            <option value="grade9">Grade 9</option>
+            <option value="languages">Language Courses</option>
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label for="documentType" class="form-label">Document Type</label>
+          <select class="form-control" id="documentType">
+            <option value="attendance_certificate">Attendance Certificate</option>
+            <option value="final_report">Academic Performance Report</option>
+            <option value="attendance_summary">Attendance Summary</option>
+            <option value="financial_status">Financial Statement / Payments</option>
+            <option value="language_course_certificate">Language Course Completion Certificate</option>
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label for="semester" class="form-label">Semester</label>
+          <select class="form-control" id="semester">
+            <option value="first">First Semester</option>
+            <option value="second">Second Semester</option>
+            <option value="summer">Summer Semester</option>
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label for="notes" class="form-label">Additional Notes (Optional)</label>
+          <textarea class="form-control" id="notes" rows="3" placeholder="e.g., Required for university or work..."></textarea>
+        </div>
+
+        <hr>
+
+        <div class="text-center">
+          <button class="btn btn-primary" type="submit">
+            <i class="fas fa-print me-2"></i> Submit Request 
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
 </div>

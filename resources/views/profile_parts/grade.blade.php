@@ -1,14 +1,12 @@
-<div class="tab-pane" id="grades">
-    <h6 class="mb-3">Grades</h6>
+<div class="container-fluid px-2">
+  <div class="tab-pane">
+    <h6 class="text-center mb-3">📊 Student Grades</h6>
     <hr>
-  
-    <!-- تنبيه في حال عدم وجود درجات -->
-    <!-- <div class="alert alert-warning text-center">No grades available at the moment.</div> -->
-  
-    <!-- جدول الدرجات -->
+
+    <!-- Grades Table -->
     <div class="table-responsive">
-      <table class="table table-bordered table-striped">
-        <thead class="thead-dark">
+      <table class="table text-center w-100">
+        <thead class="thead-light">
           <tr>
             <th>Subject</th>
             <th>Grade</th>
@@ -44,11 +42,29 @@
         </tbody>
       </table>
     </div>
-  
-    <!-- متوسط الدرجات أو ملخص -->
-    <div class="mt-4 p-3 bg-light border rounded">
+
+    <!-- GPA Summary -->
+    <div class="mt-4 p-3 bg-light rounded text-center">
       <strong>GPA:</strong> 3.5 / 4.0<br>
       <strong>Status:</strong> Good Standing
     </div>
   </div>
-  
+</div>
+
+<style>
+  @media (max-width: 576px) {
+    .table {
+      font-size: 12px;
+    }
+    th, td {
+      padding: 8px;
+      white-space: nowrap;
+    }
+    .container-fluid {
+      padding: 0;
+    }
+    .tab-pane {
+      padding: 10px;
+    }
+  }
+</style>

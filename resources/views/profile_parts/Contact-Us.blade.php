@@ -1,5 +1,5 @@
 <div class="tab-pane" id="academic-support">
-  <h6>Send Inquiry or Request Support</h6>
+  <h6 class="text-center">Send Inquiry or Request Support</h6>
   <hr>
 
   <form>
@@ -30,15 +30,17 @@
 
     <div class="form-group mb-3">
       <label for="attachment">Attach File (optional)</label>
-      <input type="file" class="form-control-file" id="attachment">
+      <input type="file" class="form-control" id="attachment">
     </div>
 
-    <button type="submit" class="btn btn-primary">Send Request</button>
+    <div class="d-flex flex-column flex-md-row justify-content-center gap-3">
+      <button type="submit" class="btn btn-primary btn-lg w-100 w-md-auto">Send Request</button>
+    </div>
   </form>
 
   <hr>
 
-  <div class="small text-muted">
+  <div class="small text-muted text-center">
     Your message will be sent directly to the selected instructor or support office. Please allow up to 48 hours for a response.
   </div>
 </div>
