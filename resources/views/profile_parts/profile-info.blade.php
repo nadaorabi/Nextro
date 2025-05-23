@@ -13,6 +13,7 @@
     border: 1px solid #ccc;
   }
 
+  
   .form-control:read-only {
     background-color: #f5f5f5;
     cursor: default;
@@ -64,17 +65,48 @@
       padding: 0.8rem !important;
     }
   }
+  img.rounded-circle {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  object-fit: cover; /* ✅ يجعل الصورة تملأ الدائرة تمامًا */
+  object-position: center center;
+  display: block;
+  margin: 0 auto;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  background-color: #fff;
+}
+@media (max-width: 768px) {
+  img.rounded-circle {
+    width: 90px !important;
+    height: 90px !important;
+  }
+}
+@media (max-width: 576px) {
+  img.rounded-circle {
+    width: 80px !important;
+    height: 80px !important;
+  }
+}
+
 </style>
 
 <div class="container py-4 d-flex justify-content-center">
   <div class="w-100 mx-auto" style="max-width: 700px;">
     
     <div class="text-center mb-4">
-      <img src="images/staff_1.jpg" alt="Profile Picture" class="rounded-circle border shadow">
-      <h4 class="mt-3 mb-1 fw-semibold">Student Profile</h4>
-      <p class="text-muted mb-0">kenneth@example.com</p>
+      <img src="{{ asset('images/staff_1.jpg') }}" alt="Profile Picture" class="rounded-circle">
+    
+      @auth
+        <h4 class="mt-3 mb-1 fw-semibold">{{ Auth::user()->name }}</h4>
+        <p class="text-muted mb-0">{{ Auth::user()->email }}</p>
+      @else
+        <h4 class="mt-3 mb-1 fw-semibold">Student Name</h4>
+        <p class="text-muted mb-0">email@example.com</p>
+      @endauth
     </div>
-
+    
+  
     <form id="studentProfileForm" class="bg-white p-4 shadow-sm rounded-4">
       <div class="row gy-3">
         <div class="col-12">
