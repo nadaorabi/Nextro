@@ -2,25 +2,24 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
+
+// use App\Models\User;
+// use Illuminate\Support\Facades\Auth;
+// use Illuminate\Support\Facades\Hash;
 
 class TeacherController extends Controller
 {
-    /**
-     * عرض نموذج تسجيل الدخول للمدرسين
-     */
+   
     public function showLoginForm()
     {
-        return view('Teacher.login');
+        return view('teacher.sign-in');
     }
 
-    /**
-     * معالجة تسجيل الدخول للمدرسين
-     */
     public function login(Request $request)
     {
         $credentials = $request->validate([
@@ -30,12 +29,12 @@ class TeacherController extends Controller
 
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
-            
+
             if ($user->isTeacher()) {
                 $request->session()->regenerate();
                 return redirect()->intended(route('teacher.dashboard'));
             }
-            
+
             Auth::logout();
             return back()->withErrors([
                 'email' => 'هذا الحساب ليس حساب مدرس.',
@@ -43,21 +42,16 @@ class TeacherController extends Controller
         }
 
         return back()->withErrors([
-            'email' => 'بيانات الاعتماد المقدمة غير متطابقة مع سجلاتنا.',
+            'email' => 'بيانات الاعتماد غير صحيحة.',
         ]);
     }
 
-    /**
-     * عرض نموذج إنشاء حساب للمدرسين
-     */
+    // ========== التسجيل ==========
     public function showRegisterForm()
     {
-        return view('Teacher.register');
+        return view('teacher.sign-up');
     }
 
-    /**
-     * معالجة إنشاء حساب للمدرسين
-     */
     public function register(Request $request)
     {
         $request->validate([
@@ -79,24 +73,23 @@ class TeacherController extends Controller
         return redirect()->route('teacher.dashboard');
     }
 
-    /**
-     * عرض لوحة تحكم المدرسين
-     */
-    public function dashboard()
-    {
-        return view('Teacher.dashboard');
-    }
-
-    /**
-     * تسجيل الخروج
-     */
+    // ========== تسجيل الخروج ==========
     public function logout(Request $request)
     {
         Auth::logout();
-
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-
         return redirect('/');
     }
-} 
+  
+    public function dashboard()         { return view('teacher.dashboard'); }
+    public function billing()           { return view('teacher.billing'); }
+    public function profile()           { return view('teacher.profile'); }
+    public function rtl()               { return view('teacher.rtl'); }
+    public function tables()            { return view('teacher.tables'); }
+    public function virtualReality()    { return view('teacher.virtual-reality'); }
+    public function students()          { return view('teacher.students'); }
+    public function materials()         { return view('teacher.materials'); }
+    public function complaints()        { return view('teacher.complaints'); }
+    public function finance()           { return view('teacher.finance'); }
+}

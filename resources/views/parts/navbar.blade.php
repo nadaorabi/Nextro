@@ -101,11 +101,21 @@
 
 <div class="col-6 col-lg-3 text-right d-flex justify-content-end align-items-center gap-2">
   @auth
-    <a href="{{ route('profile_page') }}" class="auth-btn profile me-2">
-      <i class="las la-user"></i> {{ Auth::user()->name }}
-    </a>
+    {{-- إذا كان يوزر عادي --}}
+    @if(Auth::user()->isUser())
+      <a href="{{ route('profile_page') }}" class="auth-btn profile me-2">
+        <i class="las la-user"></i> {{ Auth::user()->name }}
+      </a>
+    @endif
 
-    <form action="{{ route('logout') }}" method="POST" style="display:inline;">
+    {{-- إذا كان مدرس --}}
+    @if(Auth::user()->isTeacher())
+      <a href="{{ route('teacher.dashboard') }}" class="auth-btn profile me-2">
+        <i class="las la-chalkboard-teacher"></i> لوحة تحكم الأستاذ
+      </a>
+    @endif
+
+    <form action="{{ Auth::user()->isTeacher() ? route('teacher.logout') : route('logout') }}" method="POST" style="display:inline;">
       @csrf
       <button type="submit" class="auth-btn logout">
         <i class="las la-sign-out-alt"></i> Logout
@@ -115,12 +125,11 @@
     <a href="{{ route('login') }}" class="auth-btn login me-2">
       <i class="las la-sign-in-alt"></i> Log In
     </a>
-
     <a href="{{ route('register') }}" class="auth-btn register ms-2">
       <i class="las la-user-plus"></i> Register
     </a>
     <a href="{{ route('teacher.login') }}" class="auth-btn register ms-2">
-      <i class="las la-user-plus"></i> login_tech
+      <i class="las la-user-tie"></i> Teacher Login
     </a>
   @endauth
 </div>
