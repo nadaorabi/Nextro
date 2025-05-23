@@ -13,6 +13,8 @@ Route::get('user/login', [UserController::class, 'showLoginForm'])->name('login'
 Route::post('user/login1', [UserController::class, 'login'])->name('login.post');
 Route::get('user/register', [UserController::class, 'showRegisterForm'])->name('register');
 Route::post('user/register1', [UserController::class, 'register'])->name('register.post');
+Route::post('user/logout', [UserController::class, 'logout'])->name('logout');
+
 
 // راوتات تتطلب أن يكون المستخدم مسجل دخوله كمستخدم عادي فقط للكورسات
 Route::get('user/Courses', [HomeController::class, 'ShowCoursesPage'])->middleware('isUser')->name('courses_page');

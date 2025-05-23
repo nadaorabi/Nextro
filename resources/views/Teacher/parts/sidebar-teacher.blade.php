@@ -1,3 +1,5 @@
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 <style>
 .sidenav {
   height: auto !important;
@@ -202,7 +204,7 @@
         target="_blank">
         
         <div style="width: 100%; text-align: center; margin-top: -40px;">
-          <a href="index.html" class="logo menu-absolute m-0" style="font-size: 2rem; font-weight: bold; letter-spacing: 2px; display: inline-block;">
+          <a href="{{ route('home_page') }}" class="logo menu-absolute m-0" style="font-size: 2rem; font-weight: bold; letter-spacing: 2px; display: inline-block;">
             Nextro<span class="text-primary">.</span>
           </a>
         </div>
