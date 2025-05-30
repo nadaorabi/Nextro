@@ -130,7 +130,7 @@
           `;
         });
         document.getElementById('materialsLoader').style.display = 'none';
-      }, 600); // وقت مؤقت لمحاكاة التحميل
+      }, 50); // وقت مؤقت لمحاكاة التحميل
     }
     document.querySelectorAll('#filterBtns .btn').forEach(btn => {
       btn.addEventListener('click', function() {

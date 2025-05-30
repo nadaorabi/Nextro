@@ -129,7 +129,7 @@
       <i class="las la-user-plus"></i> Register
     </a>
     <a href="{{ route('teacher.login') }}" class="auth-btn register ms-2">
-      <i class="las la-user-tie"></i> Teacher Login
+      <i class="las la-user-tie"></i> Teacher 
     </a>
   @endauth
 </div>

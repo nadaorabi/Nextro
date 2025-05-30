@@ -52,19 +52,19 @@
       <div class="collapse navbar-collapse justify-content-end" id="navigation">
         <ul class="navbar-nav">
           <li class="nav-item">
-            <a class="nav-link me-2" href="../pages/profile.html">
+            <a class="nav-link me-2" href="{{ route('home_page') }}">
               <i class="fa fa-user opacity-6 text-dark me-1"></i>
-              Profile
+              Website
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link me-2" href="../pages/sign-up.html">
+            <a class="nav-link me-2" href="{{ route('teacher.sign-up') }}">
               <i class="fas fa-user-circle opacity-6 text-dark me-1"></i>
               Sign Up
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link me-2" href="../pages/sign-in.html">
+            <a class="nav-link me-2" href="">
               <i class="fas fa-key opacity-6 text-dark me-1"></i>
               Sign In
             </a>
