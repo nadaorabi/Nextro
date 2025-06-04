@@ -240,6 +240,16 @@
             <span class="nav-link-text ms-1">Students</span>
           </a>
         </li>
+      <li class="nav-item">
+  <a class="nav-link {{ request()->routeIs('teacher.QR-scan') ? 'active' : '' }}" href="{{ route('teacher.QR-scan') }}">
+    <div
+      class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+      <i class="fas fa-qrcode text-dark text-sm opacity-10"></i>
+    </div>
+    <span class="nav-link-text ms-1">QR-scan </span>
+  </a>
+</li>
+
         <li class="nav-item">
           <a class="nav-link {{ request()->routeIs('teacher.materials') ? 'active' : '' }}" href="{{ route('teacher.materials') }}">
             <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">

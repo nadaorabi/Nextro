@@ -41,7 +41,7 @@ Route::prefix('teacher')->middleware('isTeacher')->group(function () {
     Route::get('profile', [TeacherController::class, 'profile'])->name('teacher.profile');
    
     Route::get('tables', [TeacherController::class, 'tables'])->name('teacher.tables');
-    
+    Route::get('QR-scan', [TeacherController::class, 'QR_scan'])->name('teacher.QR-scan');
     Route::get('students', [TeacherController::class, 'students'])->name('teacher.students');
     Route::get('materials', [TeacherController::class, 'materials'])->name('teacher.materials');
     Route::get('complaints', [TeacherController::class, 'complaints'])->name('teacher.complaints');

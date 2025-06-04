@@ -92,4 +92,6 @@ class TeacherController extends Controller
     public function materials()         { return view('teacher.materials'); }
     public function complaints()        { return view('teacher.complaints'); }
     public function finance()           { return view('teacher.finance'); }
+  public function QR_scan()           { return view('teacher.QR-scan'); }
+
 }
