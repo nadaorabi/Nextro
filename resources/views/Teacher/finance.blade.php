@@ -55,86 +55,98 @@
   @include('teacher.parts.sidebar-teacher')
   <div class="main-content position-relative max-height-vh-100 h-100">
     <div class="container-fluid py-4">
-      <!-- إحصائيات سريعة -->
-      <div class="row mb-4">
-        <div class="col-xl-4 col-sm-6 mb-4">
-          <div class="card finance-card">
-            <div class="stat-card income">
-              <div class="d-flex justify-content-between align-items-center">
-                <div>
-                  <h6 class="mb-0">إجمالي الإيرادات</h6>
-                  <h3 class="mb-0">$24,500</h3>
+      <div class="row">
+        <!-- Revenue Card -->
+        <div class="col-xl-4 col-sm-6 mb-xl-0 mb-4">
+          <div class="card">
+            <div class="card-body p-3">
+              <div class="row">
+                <div class="col-8">
+                  <div class="numbers">
+                    <p class="text-sm mb-0 text-uppercase font-weight-bold">Total Revenue</p>
+                    <h5 class="font-weight-bolder mb-0">
+                      $4,300
+                      <span class="text-success text-sm font-weight-bolder">+15%</span>
+                    </h5>
+                  </div>
                 </div>
-                <div class="icon icon-shape bg-white text-center rounded-circle">
-                  <i class="fas fa-arrow-up text-success"></i>
+                <div class="col-4 text-end">
+                  <div class="icon icon-shape bg-gradient-primary shadow-primary text-center rounded-circle">
+                    <i class="ni ni-money-coins text-lg opacity-10" aria-hidden="true"></i>
+                  </div>
                 </div>
               </div>
-              <p class="mt-3 mb-0 text-sm">
-                <span class="text-white me-2">
-                  <i class="fas fa-arrow-up"></i> 3.48%
-                </span>
-                <span class="text-white">من الشهر الماضي</span>
-              </p>
             </div>
           </div>
         </div>
-        <div class="col-xl-4 col-sm-6 mb-4">
-          <div class="card finance-card">
-            <div class="stat-card expenses">
-              <div class="d-flex justify-content-between align-items-center">
-                <div>
-                  <h6 class="mb-0">إجمالي المصروفات</h6>
-                  <h3 class="mb-0">$12,300</h3>
+
+        <!-- Received Card -->
+        <div class="col-xl-4 col-sm-6 mb-xl-0 mb-4">
+          <div class="card">
+            <div class="card-body p-3">
+              <div class="row">
+                <div class="col-8">
+                  <div class="numbers">
+                    <p class="text-sm mb-0 text-uppercase font-weight-bold">Received Amount</p>
+                    <h5 class="font-weight-bolder mb-0">
+                      $3,800
+                      <span class="text-success text-sm font-weight-bolder">+12%</span>
+                    </h5>
+                  </div>
                 </div>
-                <div class="icon icon-shape bg-white text-center rounded-circle">
-                  <i class="fas fa-arrow-down text-danger"></i>
+                <div class="col-4 text-end">
+                  <div class="icon icon-shape bg-gradient-success shadow-success text-center rounded-circle">
+                    <i class="ni ni-paper-diploma text-lg opacity-10" aria-hidden="true"></i>
+                  </div>
                 </div>
               </div>
-              <p class="mt-3 mb-0 text-sm">
-                <span class="text-white me-2">
-                  <i class="fas fa-arrow-down"></i> 2.15%
-                </span>
-                <span class="text-white">من الشهر الماضي</span>
-              </p>
             </div>
           </div>
         </div>
-        <div class="col-xl-4 col-sm-6 mb-4">
-          <div class="card finance-card">
-            <div class="stat-card balance">
-              <div class="d-flex justify-content-between align-items-center">
-                <div>
-                  <h6 class="mb-0">الرصيد الحالي</h6>
-                  <h3 class="mb-0">$12,200</h3>
+
+        <!-- Balance Card -->
+        <div class="col-xl-4 col-sm-6">
+          <div class="card">
+            <div class="card-body p-3">
+              <div class="row">
+                <div class="col-8">
+                  <div class="numbers">
+                    <p class="text-sm mb-0 text-uppercase font-weight-bold">Current Balance</p>
+                    <h5 class="font-weight-bolder mb-0">
+                      $500
+                      <span class="text-danger text-sm font-weight-bolder">-3%</span>
+                    </h5>
+                  </div>
                 </div>
-                <div class="icon icon-shape bg-white text-center rounded-circle">
-                  <i class="fas fa-wallet text-primary"></i>
+                <div class="col-4 text-end">
+                  <div class="icon icon-shape bg-gradient-warning shadow-warning text-center rounded-circle">
+                    <i class="ni ni-cart text-lg opacity-10" aria-hidden="true"></i>
+                  </div>
                 </div>
               </div>
-              <p class="mt-3 mb-0 text-sm">
-                <span class="text-white me-2">
-                  <i class="fas fa-arrow-up"></i> 1.33%
-                </span>
-                <span class="text-white">من الشهر الماضي</span>
-              </p>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- المعاملات المالية -->
-      <div class="row">
+      <!-- Transaction History -->
+      <div class="row mt-4">
         <div class="col-12">
           <div class="card mb-4">
             <div class="card-header pb-0">
               <div class="row">
                 <div class="col-6 d-flex align-items-center">
-                  <h6 class="mb-0">المعاملات المالية</h6>
+                  <h6 class="mb-0">Transaction History</h6>
                 </div>
                 <div class="col-6 text-end">
-                  <button class="btn btn-primary btn-sm mb-0">
-                    <i class="fas fa-plus me-2"></i>إضافة معاملة
-                  </button>
+                  <div class="d-flex justify-content-end gap-2">
+                    <select class="form-select form-select-sm" style="width: auto;" id="yearFilter">
+                      <option value="">All Years</option>
+                      <option value="2024">2024</option>
+                      <option value="2023">2023</option>
+                    </select>
+                    <input type="date" class="form-control form-control-sm" style="width: auto;" id="dateFilter">
+                  </div>
                 </div>
               </div>
             </div>
@@ -143,103 +155,126 @@
                 <table class="table align-items-center mb-0">
                   <thead>
                     <tr>
-                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">التفاصيل</th>
-                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">النوع</th>
-                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">المبلغ</th>
-                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">التاريخ</th>
-                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">الحالة</th>
-                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">الإجراءات</th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Date</th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Description</th>
+                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Type</th>
+                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Amount</th>
+                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Status</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <tr class="transaction-row">
+                    <!-- Student Registration -->
+                    <tr>
                       <td>
                         <div class="d-flex px-2 py-1">
                           <div class="d-flex flex-column justify-content-center">
-                            <h6 class="mb-0 text-sm">رسوم الطلاب</h6>
-                            <p class="text-xs text-secondary mb-0">دفعة شهرية</p>
+                            <h6 class="mb-0 text-sm">23/04/2024</h6>
                           </div>
                         </div>
                       </td>
                       <td>
-                        <span class="badge badge-sm bg-gradient-success">إيراد</span>
+                        <p class="text-xs font-weight-bold mb-0">Student Registration - Ahmed Mohamed</p>
                       </td>
                       <td class="align-middle text-center text-sm">
-                        <span class="text-success text-xs font-weight-bold">+$5,000</span>
+                        <span class="badge badge-sm bg-gradient-success">Income</span>
                       </td>
                       <td class="align-middle text-center">
-                        <span class="text-secondary text-xs font-weight-bold">23/04/2024</span>
+                        <span class="text-secondary text-xs font-weight-bold">+$1,000</span>
                       </td>
                       <td class="align-middle text-center">
-                        <span class="badge badge-sm bg-gradient-success">مكتمل</span>
-                      </td>
-                      <td class="align-middle text-center">
-                        <button type="button" class="btn btn-link text-primary text-gradient px-3 mb-0">
-                          <i class="fas fa-eye me-2"></i>عرض
-                        </button>
-                        <button type="button" class="btn btn-link text-danger text-gradient px-3 mb-0">
-                          <i class="fas fa-trash-alt me-2"></i>حذف
-                        </button>
+                        <span class="badge badge-sm bg-gradient-success">Completed</span>
                       </td>
                     </tr>
-                    <tr class="transaction-row">
+
+                    <!-- Withdrawal -->
+                    <tr>
                       <td>
                         <div class="d-flex px-2 py-1">
                           <div class="d-flex flex-column justify-content-center">
-                            <h6 class="mb-0 text-sm">مصاريف المكتب</h6>
-                            <p class="text-xs text-secondary mb-0">مستلزمات مكتبية</p>
+                            <h6 class="mb-0 text-sm">22/04/2024</h6>
                           </div>
                         </div>
                       </td>
                       <td>
-                        <span class="badge badge-sm bg-gradient-danger">مصروف</span>
+                        <p class="text-xs font-weight-bold mb-0">Withdrawal to Bank Account</p>
                       </td>
                       <td class="align-middle text-center text-sm">
-                        <span class="text-danger text-xs font-weight-bold">-$300</span>
+                        <span class="badge badge-sm bg-gradient-danger">Expense</span>
                       </td>
                       <td class="align-middle text-center">
-                        <span class="text-secondary text-xs font-weight-bold">22/04/2024</span>
+                        <span class="text-secondary text-xs font-weight-bold">-$500</span>
                       </td>
                       <td class="align-middle text-center">
-                        <span class="badge badge-sm bg-gradient-success">مكتمل</span>
-                      </td>
-                      <td class="align-middle text-center">
-                        <button type="button" class="btn btn-link text-primary text-gradient px-3 mb-0">
-                          <i class="fas fa-eye me-2"></i>عرض
-                        </button>
-                        <button type="button" class="btn btn-link text-danger text-gradient px-3 mb-0">
-                          <i class="fas fa-trash-alt me-2"></i>حذف
-                        </button>
+                        <span class="badge badge-sm bg-gradient-success">Completed</span>
                       </td>
                     </tr>
-                    <tr class="transaction-row">
+
+                    <!-- Student Registration -->
+                    <tr>
                       <td>
                         <div class="d-flex px-2 py-1">
                           <div class="d-flex flex-column justify-content-center">
-                            <h6 class="mb-0 text-sm">راتب المعلمين</h6>
-                            <p class="text-xs text-secondary mb-0">رواتب شهرية</p>
+                            <h6 class="mb-0 text-sm">21/04/2024</h6>
                           </div>
                         </div>
                       </td>
                       <td>
-                        <span class="badge badge-sm bg-gradient-danger">مصروف</span>
+                        <p class="text-xs font-weight-bold mb-0">Student Registration - Sara Ahmed</p>
                       </td>
                       <td class="align-middle text-center text-sm">
-                        <span class="text-danger text-xs font-weight-bold">-$8,000</span>
+                        <span class="badge badge-sm bg-gradient-success">Income</span>
                       </td>
                       <td class="align-middle text-center">
-                        <span class="text-secondary text-xs font-weight-bold">21/04/2024</span>
+                        <span class="text-secondary text-xs font-weight-bold">+$1,000</span>
                       </td>
                       <td class="align-middle text-center">
-                        <span class="badge badge-sm bg-gradient-warning">قيد المعالجة</span>
+                        <span class="badge badge-sm bg-gradient-success">Completed</span>
+                      </td>
+                    </tr>
+
+                    <!-- Student Registration -->
+                    <tr>
+                      <td>
+                        <div class="d-flex px-2 py-1">
+                          <div class="d-flex flex-column justify-content-center">
+                            <h6 class="mb-0 text-sm">20/04/2024</h6>
+                          </div>
+                        </div>
+                      </td>
+                      <td>
+                        <p class="text-xs font-weight-bold mb-0">Student Registration - Mohamed Ali</p>
+                      </td>
+                      <td class="align-middle text-center text-sm">
+                        <span class="badge badge-sm bg-gradient-success">Income</span>
                       </td>
                       <td class="align-middle text-center">
-                        <button type="button" class="btn btn-link text-primary text-gradient px-3 mb-0">
-                          <i class="fas fa-eye me-2"></i>عرض
-                        </button>
-                        <button type="button" class="btn btn-link text-danger text-gradient px-3 mb-0">
-                          <i class="fas fa-trash-alt me-2"></i>حذف
-                        </button>
+                        <span class="text-secondary text-xs font-weight-bold">+$1,000</span>
+                      </td>
+                      <td class="align-middle text-center">
+                        <span class="badge badge-sm bg-gradient-success">Completed</span>
+                      </td>
+                    </tr>
+
+                    <!-- Student Registration -->
+                    <tr>
+                      <td>
+                        <div class="d-flex px-2 py-1">
+                          <div class="d-flex flex-column justify-content-center">
+                            <h6 class="mb-0 text-sm">19/04/2024</h6>
+                          </div>
+                        </div>
+                      </td>
+                      <td>
+                        <p class="text-xs font-weight-bold mb-0">Student Registration - Fatima Hassan</p>
+                      </td>
+                      <td class="align-middle text-center text-sm">
+                        <span class="badge badge-sm bg-gradient-success">Income</span>
+                      </td>
+                      <td class="align-middle text-center">
+                        <span class="text-secondary text-xs font-weight-bold">+$1,000</span>
+                      </td>
+                      <td class="align-middle text-center">
+                        <span class="badge badge-sm bg-gradient-success">Completed</span>
                       </td>
                     </tr>
                   </tbody>
@@ -258,6 +293,41 @@
   <script src="{{ asset('js/plugins/perfect-scrollbar.min.js') }}"></script>
   <script src="{{ asset('js/plugins/smooth-scrollbar.min.js') }}"></script>
   <script src="{{ asset('js/argon-dashboard.min.js') }}"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const yearFilter = document.getElementById('yearFilter');
+      const dateFilter = document.getElementById('dateFilter');
+      const tableRows = document.querySelectorAll('tbody tr');
+
+      function filterTransactions() {
+        const selectedYear = yearFilter.value;
+        const selectedDate = dateFilter.value;
+
+        tableRows.forEach(row => {
+          const dateCell = row.querySelector('h6.mb-0');
+          const rowDate = new Date(dateCell.textContent.split('/').reverse().join('-'));
+          
+          let showRow = true;
+
+          if (selectedYear && rowDate.getFullYear().toString() !== selectedYear) {
+            showRow = false;
+          }
+
+          if (selectedDate) {
+            const filterDate = new Date(selectedDate);
+            if (rowDate.toDateString() !== filterDate.toDateString()) {
+              showRow = false;
+            }
+          }
+
+          row.style.display = showRow ? '' : 'none';
+        });
+      }
+
+      yearFilter.addEventListener('change', filterTransactions);
+      dateFilter.addEventListener('change', filterTransactions);
+    });
+  </script>
 </body>
 
 </html> 

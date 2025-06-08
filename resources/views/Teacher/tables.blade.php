@@ -7,7 +7,7 @@
   <link rel="apple-touch-icon" sizes="76x76" href="{{ asset('images/apple-icon.png') }}">
   <link rel="icon" type="image/png" href="{{ asset('images/favicon.png') }}">
   <title>
-   tables 
+    Class Schedule
   </title>
   <!--     Fonts and icons     -->
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
@@ -18,6 +18,64 @@
   <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
   <!-- CSS Files -->
   <link id="pagestyle" href="{{ asset('css/argon-dashboard.css') }}" rel="stylesheet" />
+  <style>
+    .schedule-card {
+      transition: all 0.3s ease;
+      border: none;
+      box-shadow: 0 0 2rem 0 rgba(136, 152, 170, .15);
+    }
+    .schedule-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 0.5rem 2rem 0 rgba(136, 152, 170, .2);
+    }
+    .table-row {
+      transition: all 0.2s ease;
+    }
+    .table-row:hover {
+      background-color: #f8f9fe !important;
+      transform: scale(1.01);
+    }
+    .time-badge {
+      background: linear-gradient(45deg, #5e72e4, #825ee4);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 50px;
+      font-size: 0.875rem;
+    }
+    .room-badge {
+      background: linear-gradient(45deg, #11cdef, #1171ef);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 50px;
+      font-size: 0.875rem;
+    }
+    .subject-badge {
+      background: linear-gradient(45deg, #fb6340, #fbb140);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 50px;
+      font-size: 0.875rem;
+    }
+    .table-header {
+      background: linear-gradient(45deg, #5e72e4, #825ee4) !important;
+    }
+    .table-container {
+      border-radius: 1rem;
+      overflow: hidden;
+      box-shadow: 0 0 2rem 0 rgba(136, 152, 170, .15);
+    }
+    .schedule-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #344767;
+      margin-bottom: 1rem;
+    }
+    .schedule-subtitle {
+      color: #67748e;
+      font-size: 1rem;
+      margin-bottom: 2rem;
+    }
+  </style>
 </head>
 
 <body class="g-sidenav-show   bg-gray-100">
@@ -36,55 +94,122 @@
      
       <div class="row">
         <div class="col-12">
-          <div class="card mb-4">
-            <div class="card-header pb-0 d-flex align-items-center">
-              <i class="fa fa-calendar-alt text-primary me-2" style="font-size:1.3rem;"></i>
-              <h5 class="mb-0">Math Teacher Schedule</h5>
+          <div class="schedule-card card mb-4">
+            <div class="card-header pb-0">
+              <div class="d-flex align-items-center">
+                <i class="fa fa-calendar-alt text-primary me-2" style="font-size:1.5rem;"></i>
+                <div>
+                  <h5 class="schedule-title mb-0">Class Schedule</h5>
+                  <p class="schedule-subtitle mb-0">Teacher's Schedule for Current Semester</p>
+                </div>
+              </div>
             </div>
             <div class="card-body px-0 pt-0 pb-2">
               <div class="table-responsive p-0">
-                <table class="table align-items-center mb-0 table-striped" style="border-radius: 16px; overflow: hidden;">
-                  <thead style="background: #8795e5; color: #fff;">
-                    <tr>
-                      <th class="text-uppercase text-xxs font-weight-bolder opacity-8">Day</th>
-                      <th class="text-uppercase text-xxs font-weight-bolder opacity-8">Time</th>
-                      <th class="text-uppercase text-xxs font-weight-bolder opacity-8">Room</th>
-                      <th class="text-uppercase text-xxs font-weight-bolder opacity-8">Subject</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr style="background: #f5f7fb;">
-                      <td>Sunday</td>
-                      <td><i class="fa fa-clock text-primary me-1"></i>08:00 - 09:00</td>
-                      <td><i class="fa fa-door-open text-info me-1"></i>201</td>
-                      <td>Mathematics</td>
-                    </tr>
-                    <tr>
-                      <td>Monday</td>
-                      <td><i class="fa fa-clock text-primary me-1"></i>10:00 - 11:00</td>
-                      <td><i class="fa fa-door-open text-info me-1"></i>105</td>
-                      <td>Mathematics</td>
-                    </tr>
-                    <tr style="background: #f5f7fb;">
-                      <td>Tuesday</td>
-                      <td><i class="fa fa-clock text-primary me-1"></i>09:00 - 10:00</td>
-                      <td><i class="fa fa-door-open text-info me-1"></i>210</td>
-                      <td>Mathematics</td>
-                    </tr>
-                    <tr>
-                      <td>Wednesday</td>
-                      <td><i class="fa fa-clock text-primary me-1"></i>11:00 - 12:00</td>
-                      <td><i class="fa fa-door-open text-info me-1"></i>305</td>
-                      <td>Mathematics</td>
-                    </tr>
-                    <tr style="background: #f5f7fb;">
-                      <td>Thursday</td>
-                      <td><i class="fa fa-clock text-primary me-1"></i>08:00 - 09:00</td>
-                      <td><i class="fa fa-door-open text-info me-1"></i>201</td>
-                      <td>Mathematics</td>
-                    </tr>
-                  </tbody>
-                </table>
+                <div class="table-container">
+                  <table class="table align-items-center mb-0">
+                    <thead class="table-header">
+                      <tr>
+                        <th class="text-uppercase text-white text-xxs font-weight-bolder opacity-8 ps-4">Day</th>
+                        <th class="text-uppercase text-white text-xxs font-weight-bolder opacity-8">Time</th>
+                        <th class="text-uppercase text-white text-xxs font-weight-bolder opacity-8">Room</th>
+                        <th class="text-uppercase text-white text-xxs font-weight-bolder opacity-8">Subject</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr class="table-row">
+                        <td class="ps-4">
+                          <span class="text-secondary text-xs font-weight-bold">Sunday</span>
+                        </td>
+                        <td>
+                          <span class="time-badge">
+                            <i class="fa fa-clock me-1"></i>08:00 - 09:00
+                          </span>
+                        </td>
+                        <td>
+                          <span class="room-badge">
+                            <i class="fa fa-door-open me-1"></i>201
+                          </span>
+                        </td>
+                        <td>
+                          <span class="subject-badge">Mathematics</span>
+                        </td>
+                      </tr>
+                      <tr class="table-row">
+                        <td class="ps-4">
+                          <span class="text-secondary text-xs font-weight-bold">Monday</span>
+                        </td>
+                        <td>
+                          <span class="time-badge">
+                            <i class="fa fa-clock me-1"></i>10:00 - 11:00
+                          </span>
+                        </td>
+                        <td>
+                          <span class="room-badge">
+                            <i class="fa fa-door-open me-1"></i>105
+                          </span>
+                        </td>
+                        <td>
+                          <span class="subject-badge">Mathematics</span>
+                        </td>
+                      </tr>
+                      <tr class="table-row">
+                        <td class="ps-4">
+                          <span class="text-secondary text-xs font-weight-bold">Tuesday</span>
+                        </td>
+                        <td>
+                          <span class="time-badge">
+                            <i class="fa fa-clock me-1"></i>09:00 - 10:00
+                          </span>
+                        </td>
+                        <td>
+                          <span class="room-badge">
+                            <i class="fa fa-door-open me-1"></i>210
+                          </span>
+                        </td>
+                        <td>
+                          <span class="subject-badge">Mathematics</span>
+                        </td>
+                      </tr>
+                      <tr class="table-row">
+                        <td class="ps-4">
+                          <span class="text-secondary text-xs font-weight-bold">Wednesday</span>
+                        </td>
+                        <td>
+                          <span class="time-badge">
+                            <i class="fa fa-clock me-1"></i>11:00 - 12:00
+                          </span>
+                        </td>
+                        <td>
+                          <span class="room-badge">
+                            <i class="fa fa-door-open me-1"></i>305
+                          </span>
+                        </td>
+                        <td>
+                          <span class="subject-badge">Mathematics</span>
+                        </td>
+                      </tr>
+                      <tr class="table-row">
+                        <td class="ps-4">
+                          <span class="text-secondary text-xs font-weight-bold">Thursday</span>
+                        </td>
+                        <td>
+                          <span class="time-badge">
+                            <i class="fa fa-clock me-1"></i>08:00 - 09:00
+                          </span>
+                        </td>
+                        <td>
+                          <span class="room-badge">
+                            <i class="fa fa-door-open me-1"></i>201
+                          </span>
+                        </td>
+                        <td>
+                          <span class="subject-badge">Mathematics</span>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
           </div>

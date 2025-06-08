@@ -31,18 +31,18 @@
     <!-- End Navbar -->
     <div class="container-fluid py-4">
       <div class="row">
-    <!-- عدد الصفوف -->
+    <!-- Number of Classes -->
         <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
           <div class="card">
             <div class="card-body p-3">
               <div class="row">
                 <div class="col-8">
                   <div class="numbers">
-                <p class="text-sm mb-0 text-uppercase font-weight-bold">صفوفي الحالية</p>
+                <p class="text-sm mb-0 text-uppercase font-weight-bold">My Current Classes</p>
                 <h5 class="font-weight-bolder">5</h5>
                     <p class="mb-0">
                   <span class="text-success text-sm font-weight-bolder">+1</span>
-                  منذ الفصل الماضي
+                  Since last semester
                     </p>
                   </div>
                 </div>
@@ -55,18 +55,18 @@
         </div>
       </div>
     </div>
-    <!-- عدد الطلاب -->
+    <!-- Number of Students -->
         <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
           <div class="card">
             <div class="card-body p-3">
               <div class="row">
                 <div class="col-8">
                   <div class="numbers">
-                <p class="text-sm mb-0 text-uppercase font-weight-bold">عدد الطلاب</p>
+                <p class="text-sm mb-0 text-uppercase font-weight-bold">Number of Students</p>
                 <h5 class="font-weight-bolder">120</h5>
                     <p class="mb-0">
                   <span class="text-success text-sm font-weight-bolder">+3</span>
-                  هذا الأسبوع
+                  This week
                     </p>
                   </div>
                 </div>
@@ -79,18 +79,18 @@
         </div>
       </div>
     </div>
-    <!-- الواجبات الجديدة -->
+    <!-- New Assignments -->
         <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
           <div class="card">
             <div class="card-body p-3">
               <div class="row">
                 <div class="col-8">
                   <div class="numbers">
-                <p class="text-sm mb-0 text-uppercase font-weight-bold">الواجبات المستلمة</p>
+                <p class="text-sm mb-0 text-uppercase font-weight-bold">Assignments Received</p>
                 <h5 class="font-weight-bolder">37</h5>
                     <p class="mb-0">
                   <span class="text-danger text-sm font-weight-bolder">+10</span>
-                  اليوم
+                  Today
                     </p>
                   </div>
                 </div>
@@ -103,18 +103,18 @@
         </div>
       </div>
     </div>
-    <!-- الاختبارات المصححة -->
+    <!-- Graded Exams -->
         <div class="col-xl-3 col-sm-6">
           <div class="card">
             <div class="card-body p-3">
               <div class="row">
                 <div class="col-8">
                   <div class="numbers">
-                <p class="text-sm mb-0 text-uppercase font-weight-bold">الاختبارات المصححة</p>
+                <p class="text-sm mb-0 text-uppercase font-weight-bold">Graded Exams</p>
                 <h5 class="font-weight-bolder">22</h5>
                     <p class="mb-0">
                   <span class="text-success text-sm font-weight-bolder">+4</span>
-                  هذا الأسبوع
+                  This week
                     </p>
                   </div>
                 </div>
@@ -129,7 +129,7 @@
     </div>
   </div>
 
-  <!-- الرسم البياني والمهام السريعة بجانب بعض -->
+  <!-- Student Performance Chart and Quick Tasks -->
       <div class="row mt-4">
     <!-- Student Performance Chart -->
         <div class="col-lg-7 mb-lg-0 mb-4">
@@ -210,7 +210,7 @@
         </div>
       </div>
 
-  <!-- جدول أداء الفصول وقسم الكاروسيل بجانب بعض -->
+  <!-- Class Performance Table and Carousel -->
   <div class="row mt-4">
     <!-- Class Performance Table -->
     <div class="col-lg-7 mb-lg-0 mb-4">

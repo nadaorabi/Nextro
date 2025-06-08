@@ -1,4 +1,3 @@
-
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 <style>
 .sidenav {
@@ -18,6 +17,9 @@
   height: auto !important;
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* IE 10+ */
+  z-index: 1050;
+  background: #fff !important;
+  box-shadow: 0 0 2rem 0 rgba(136, 152, 170, .15);
 }
 .sidenav .collapse.navbar-collapse {
   height: 100% !important;
@@ -76,6 +78,8 @@
     margin-left: 0 !important;
   }
 }
+/* Remove sidebar overlay and keep sidebar solid */
+#sidebar-overlay { display: none !important; }
 </style>
 <div class="min-height-300 position-absolute w-100" style="background: rgb(156, 200, 247);"></div>
   <nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl " id="navbarBlur"
@@ -198,7 +202,7 @@
     class="sidenav bg-white navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-4 "
     id="sidenav-main">
     <div class="sidenav-header">
-      <i class="fas fa-times p-3 cursor-pointer text-secondary opacity-5 position-absolute end-0 top-0 d-none d-xl-none"
+      <i class="fas fa-times p-3 cursor-pointer text-secondary opacity-8 position-absolute end-0 top-0 d-block d-xl-none"
         aria-hidden="true" id="iconSidenav"></i>
       <a class="navbar-brand m-0" href=" https://demos.creative-tim.com/argon-dashboard/pages/dashboard.html "
         target="_blank">
@@ -275,13 +279,13 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link {{ request()->routeIs('teacher.billing') ? 'active' : '' }}" href="{{ route('teacher.billing') }}">
+          <!-- <a class="nav-link {{ request()->routeIs('teacher.billing') ? 'active' : '' }}" href="{{ route('teacher.billing') }}">
             <div
               class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
               <i class="ni ni-credit-card text-dark text-sm opacity-10"></i>
             </div>
             <span class="nav-link-text ms-1">Billing</span>
-          </a>
+          </a> -->
         </li>
         
         
@@ -298,22 +302,22 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link {{ request()->routeIs('teacher.login') ? 'active' : '' }}" href="{{ route('teacher.login') }}">
+          <!-- <a class="nav-link {{ request()->routeIs('teacher.login') ? 'active' : '' }}" href="{{ route('teacher.login') }}">
             <div
               class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
               <i class="ni ni-single-copy-04 text-dark text-sm opacity-10"></i>
             </div>
             <span class="nav-link-text ms-1">Sign In</span>
-          </a>
+          </a> -->
         </li>
         <li class="nav-item">
-          <a class="nav-link {{ request()->routeIs('teacher.sign-up') ? 'active' : '' }}" href="{{ route('teacher.sign-up') }}">
+          <!-- <a class="nav-link {{ request()->routeIs('teacher.sign-up') ? 'active' : '' }}" href="{{ route('teacher.sign-up') }}">
             <div
               class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
               <i class="ni ni-collection text-dark text-sm opacity-10"></i>
             </div>
             <span class="nav-link-text ms-1">Sign Up</span>
-          </a>
+          </a> -->
         </li>
       </ul>
     </div>
@@ -370,4 +374,92 @@
       return false;
     });
   });
+// Sidebar close button for mobile
+document.addEventListener('DOMContentLoaded', function() {
+  var closeBtn = document.getElementById('iconSidenav');
+  var body = document.body;
+  if (closeBtn) {
+    closeBtn.addEventListener('click', function() {
+      body.classList.remove('g-sidenav-pinned');
+      var sidenav = document.getElementById('sidenav-main');
+      if (sidenav) {
+        sidenav.style.transform = 'translateX(-290px)';
+      }
+    });
+  }
+});
+document.addEventListener('DOMContentLoaded', function() {
+  var sidenavToggler = document.getElementById('iconNavbarSidenav');
+  var closeBtn = document.getElementById('iconSidenav');
+  var body = document.body;
+  var sidenav = document.getElementById('sidenav-main');
+
+  function showSidebar() {
+    body.classList.add('g-sidenav-pinned');
+    if (sidenav) sidenav.style.transform = 'translateX(0)';
+  }
+  function hideSidebar() {
+    body.classList.remove('g-sidenav-pinned');
+    if (sidenav) sidenav.style.transform = 'translateX(-290px)';
+  }
+
+  if (sidenavToggler) {
+    sidenavToggler.addEventListener('click', function() {
+      if (body.classList.contains('g-sidenav-pinned')) {
+        hideSidebar();
+      } else {
+        showSidebar();
+      }
+    });
+  }
+  if (closeBtn) {
+    closeBtn.addEventListener('click', hideSidebar);
+  }
+});
+// --- Robust Sidebar Toggle for All Pages & Devices ---
+(function() {
+  var sidenavToggler = document.getElementById('iconNavbarSidenav');
+  var closeBtn = document.getElementById('iconSidenav');
+  var body = document.body;
+  var sidenav = document.getElementById('sidenav-main');
+  function showSidebar() {
+    body.classList.add('g-sidenav-pinned');
+    if (sidenav) sidenav.style.transform = 'translateX(0)';
+  }
+  function hideSidebar() {
+    body.classList.remove('g-sidenav-pinned');
+    if (sidenav) sidenav.style.transform = 'translateX(-290px)';
+  }
+  function isMobile() {
+    return window.innerWidth <= 991;
+  }
+  if (sidenavToggler) {
+    sidenavToggler.onclick = function(e) {
+      e.preventDefault();
+      if (body.classList.contains('g-sidenav-pinned')) {
+        hideSidebar();
+      } else {
+        showSidebar();
+      }
+    };
+  }
+  if (closeBtn) {
+    closeBtn.onclick = function(e) {
+      e.preventDefault();
+      hideSidebar();
+    };
+  }
+  function handleSidebarOnResize() {
+    if (!sidenav) return;
+    if (isMobile()) {
+      hideSidebar();
+      if (sidenavToggler) sidenavToggler.style.display = 'block';
+    } else {
+      showSidebar();
+      if (sidenavToggler) sidenavToggler.style.display = 'none';
+    }
+  }
+  window.addEventListener('resize', handleSidebarOnResize);
+  handleSidebarOnResize();
+})();
 </script>
