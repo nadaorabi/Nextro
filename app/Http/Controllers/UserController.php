@@ -54,8 +54,16 @@ class UserController extends Controller
         ]);
 
         if (Auth::attempt($credentials)) {
-            session()->regenerate(); 
-            return redirect()->route('home_page')->with('success', 'تم تسجيل الدخول بنجاح!');
+            $user = Auth::user();
+            if ($user->role == 'user' || $user->role == 'student') {
+                $request->session()->regenerate(); 
+                return redirect()->route('home_page')->with('success', 'تم تسجيل الدخول بنجاح!');
+            } else {
+                Auth::logout();
+                return back()->withErrors([
+                    'email' => 'This account belongs to a staff member (teacher or admin). Please use the staff login page to access your account.'
+                ]);
+            }
         }
 
         // العودة مع رسالة خطأ في حال كانت بيانات الاعتماد غير صحيحة

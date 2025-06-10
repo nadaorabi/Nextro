@@ -128,8 +128,8 @@
     <a href="{{ route('register') }}" class="auth-btn register ms-2">
       <i class="las la-user-plus"></i> Register
     </a>
-    <a href="{{ route('teacher.login') }}" class="auth-btn register ms-2">
-      <i class="las la-user-tie"></i> Teacher 
+    <a href="{{ route('staff.login') }}" class="auth-btn register ms-2">
+      <i class="las la-user-tie"></i> Staff 
     </a>
   @endauth
 </div>

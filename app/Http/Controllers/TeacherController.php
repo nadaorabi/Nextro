@@ -29,15 +29,18 @@ class TeacherController extends Controller
 
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
-
-            if ($user->isTeacher()) {
+            if ($user->role == 'teacher') {
                 $request->session()->regenerate();
+                session()->flash('welcome', 'أهلاً وسهلاً بك مدرس');
                 return redirect()->intended(route('teacher.dashboard'));
+            } elseif ($user->role == 'admin') {
+                $request->session()->regenerate();
+                session()->flash('welcome', 'أهلاً وسهلاً بك مسؤول النظام');
+                return redirect()->route('admin.dashboard');
             }
-
             Auth::logout();
             return back()->withErrors([
-                'email' => 'هذا الحساب ليس حساب مدرس.',
+                'email' => 'هذا الحساب غير مصرح له بالدخول من هنا.'
             ]);
         }
 
@@ -79,10 +82,17 @@ class TeacherController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect('/');
+        return redirect()->route('staff.login');
     }
   
-    public function dashboard()         { return view('teacher.dashboard'); }
+    public function dashboard()
+    {
+        if (auth()->user()->role == 'teacher') {
+            session()->flash('welcome', 'أهلاً وسهلاً بك مدرس');
+        }
+        return view('teacher.dashboard');
+    }
+
     public function billing()           { return view('teacher.billing'); }
     public function profile()           { return view('teacher.profile'); }
     public function rtl()               { return view('teacher.rtl'); }

@@ -7,7 +7,7 @@
   <link rel="apple-touch-icon" sizes="76x76" href="{{ asset('images/apple-icon.png') }}">
   <link rel="icon" type="image/png" href="{{ asset('images/favicon.png') }}">
   <title>
-    Staff Sign Up
+    Teacher sign-up 
   </title>
   <!--     Fonts and icons     -->
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
@@ -97,7 +97,7 @@
               </div>
             </div>
             <div class="card-body">
-              <form method="POST" action="{{ route('staff.register.post') }}">
+              <form method="POST" action="{{ route('teacher.register.post') }}">
                 @csrf
                 <div class="mb-3">
                   <input type="text" name="name" class="form-control" placeholder="Name" aria-label="Name" value="{{ old('name') }}" required>

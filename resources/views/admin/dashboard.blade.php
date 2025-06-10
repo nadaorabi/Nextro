@@ -8,7 +8,7 @@
   <link rel="icon" type="image/png" href="{{ asset('images/favicon.png') }}">
 
   <title>
-  dashboard teacher
+  dashboard admin
   </title>
   <!--     Fonts and icons     -->
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
@@ -23,7 +23,7 @@
 
 <body class="g-sidenav-show   bg-gray-100">
  
-  @include('teacher.parts.sidebar-teacher')
+  @include('admin.parts.sidebar-admin')
 
   <main class="main-content position-relative border-radius-lg ">
     <!-- Navbar -->

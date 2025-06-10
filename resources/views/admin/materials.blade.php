@@ -264,8 +264,8 @@
   </style>
 </head>
 <body class="g-sidenav-show">
-  @include('teacher.parts.sidebar-teacher')
-  <main class="main-content position-relative max-height-vh-100 h-100">
+@include('admin.parts.sidebar-admin')
+<main class="main-content position-relative max-height-vh-100 h-100">
     <div class="container-fluid py-4">
       <div class="materials-header">
         <div class="materials-title">
@@ -397,7 +397,7 @@
     }
     document.getElementById('subjectFilter').addEventListener('change', function() {
       selectedSubject = this.value;
-        renderMaterials();
+      renderMaterials();
     });
     document.getElementById('materialSearch').addEventListener('input', renderMaterials);
     function removeMaterial(id) {

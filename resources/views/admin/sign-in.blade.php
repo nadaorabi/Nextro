@@ -23,7 +23,7 @@
   <link rel="apple-touch-icon" sizes="76x76" href="{{ asset('images/apple-icon.png') }}">
   <link rel="icon" type="image/png" href="{{ asset('images/favicon.png') }}">
   <title>
-    Staff Sign In
+    Teacher Sign In
   </title>
   <!--     Fonts and icons     -->
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
@@ -51,20 +51,20 @@
       <!-- الروابط في اليمين -->
       <div class="collapse navbar-collapse justify-content-end" id="navigation">
         <ul class="navbar-nav">
-          <li class="nav-item">
-            <!-- <a class="nav-link me-2" href="{{ route('home_page') }}">
+          <!-- <li class="nav-item">
+            <a class="nav-link me-2" href="{{ route('home_page') }}">
               <i class="fa fa-user opacity-6 text-dark me-1"></i>
               Website
-            </a> -->
-          </li>
+            </a>
+          </li> -->
           <!-- <li class="nav-item">
-            <a class="nav-link me-2" href="{{ route('staff.sign-up') }}">
+            <a class="nav-link me-2" href="{{ route('teacher.sign-up') }}">
               <i class="fas fa-user-circle opacity-6 text-dark me-1"></i>
               Sign Up
             </a>
           </li> -->
           <!-- <li class="nav-item">
-            <a class="nav-link me-2" href="{{ route('staff.login') }}">
+            <a class="nav-link me-2" href="">
               <i class="fas fa-key opacity-6 text-dark me-1"></i>
               Sign In
             </a>
@@ -103,7 +103,7 @@
                   <p class="mb-0">Enter your email and password to sign in</p>
                 </div>
                 <div class="card-body">
-                  <form method="POST" action="{{ route('staff.login.post') }}">
+                  <form action="{{ route('staff.login.post') }}" method="POST" role="form">
                     @csrf
                     <div class="mb-3">
                       <input type="email" name="email" class="form-control form-control-lg" placeholder="Email" aria-label="Email" required>
@@ -130,7 +130,10 @@
                   @endif
                 </div>
                 <div class="card-footer text-center pt-0 px-lg-2 px-1">
-                  <p class="text-sm mt-3 mb-0">Don't have an account? <a href="{{ route('staff.sign-up') }}" class="text-dark font-weight-bolder">Sign up</a></p>
+                  <p class="mb-4 text-sm mx-auto">
+                    Don't have an account?
+                    <a href="{{ route('teacher.sign-up') }}" class="text-primary text-gradient font-weight-bold">Sign up</a>
+                  </p>
                 </div>
               </div>
             </div>

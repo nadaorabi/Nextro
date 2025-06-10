@@ -15,9 +15,9 @@ class IsTeacher
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (!auth()->check() || !auth()->user()->isTeacher()) {
-            return redirect('/')->with('error', 'غير مصرح لك بالدخول كمدرس.');
+        if (auth()->check() && auth()->user()->role == 'teacher') {
+            return $next($request);
         }
-        return $next($request);
+        return redirect()->route('login');
     }
 }

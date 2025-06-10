@@ -227,8 +227,8 @@
 </head>
 
 <body class="g-sidenav-show bg-gray-100">
-  @include('teacher.parts.sidebar-teacher')
-  <div class="main-content position-relative max-height-vh-100 h-100">
+@include('admin.parts.sidebar-admin')
+<div class="main-content position-relative max-height-vh-100 h-100">
     <div class="container-fluid py-4">
       <div class="row">
         <div class="col-12">
@@ -478,22 +478,22 @@
         if (window.innerWidth <= 600) {
           renderMobileComplaints(searchTerm);
         } else {
-        complaintRows.forEach(row => {
-          const studentName = row.querySelector('h6').textContent.toLowerCase();
-          const studentEmail = row.querySelector('p.text-secondary').textContent.toLowerCase();
-          const complaintText = row.querySelector('td:nth-child(2) p').textContent.toLowerCase();
-          const complaintDetails = row.querySelector('td:nth-child(2) p:last-child').textContent.toLowerCase();
+          complaintRows.forEach(row => {
+            const studentName = row.querySelector('h6').textContent.toLowerCase();
+            const studentEmail = row.querySelector('p.text-secondary').textContent.toLowerCase();
+            const complaintText = row.querySelector('td:nth-child(2) p').textContent.toLowerCase();
+            const complaintDetails = row.querySelector('td:nth-child(2) p:last-child').textContent.toLowerCase();
             if (
               studentName.includes(searchTerm) ||
-              studentEmail.includes(searchTerm) || 
-              complaintText.includes(searchTerm) || 
+              studentEmail.includes(searchTerm) ||
+              complaintText.includes(searchTerm) ||
               complaintDetails.includes(searchTerm)
             ) {
-            row.style.display = '';
-          } else {
-            row.style.display = 'none';
-          }
-        });
+              row.style.display = '';
+            } else {
+              row.style.display = 'none';
+            }
+          });
         }
       });
       // Re-render on resize

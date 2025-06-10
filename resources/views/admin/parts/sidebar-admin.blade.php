@@ -94,7 +94,7 @@
           </div>
           <ul class="navbar-nav  justify-content-end">
             <li class="nav-item d-flex align-items-center">
-              <form action="{{ route('teacher.logout') }}" method="POST" style="display:inline;">
+              <form action="{{ route('admin.logout') }}" method="POST" style="display:inline;">
                 @csrf
                 <button type="submit" class="nav-link text-white font-weight-bold px-0 bg-transparent border-0" style="outline:none;">
                   <i class="fa fa-sign-out-alt me-sm-1"></i>
@@ -119,7 +119,7 @@
             <li class="nav-item dropdown pe-2 d-flex align-items-center">
               <div class="d-flex align-items-center flex-row flex-md-row flex-sm-row flex-wrap gap-2 gap-md-2 gap-lg-2 user-profile-navbar position-relative">
                 <i class="fa fa-bell cursor-pointer me-2 d-none d-sm-inline"></i>
-                <a href="{{ route('teacher.profile') }}" class="d-flex align-items-center text-decoration-none">
+                <a href="{{ route('admin.profile') }}" class="d-flex align-items-center text-decoration-none">
                   <i class="fa fa-bell cursor-pointer me-2 d-inline d-sm-none" style="font-size: 22px;"></i>
                   <img src="{{ asset('images/team-2.jpg') }}" class="avatar avatar-sm rounded-circle me-2 profile-img" style="width: 32px; height: 32px; object-fit: cover;">
                   <span class="text-white fw-bold d-none d-sm-inline user-name" style="white-space:nowrap;">{{ Auth::user()->name ?? 'Teacher' }}</span>
@@ -218,7 +218,7 @@
     <div class="collapse navbar-collapse  w-auto " id="sidenav-collapse-main">
       <ul class="navbar-nav">
         <li class="nav-item">
-          <a class="nav-link {{ request()->routeIs('teacher.dashboard') ? 'active' : '' }}" href="{{ route('teacher.dashboard') }}">
+          <a class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}" href="{{ route('admin.dashboard') }}">
             <div
               class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
               <i class="ni ni-tv-2 text-dark text-sm opacity-10"></i>
@@ -227,7 +227,7 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link {{ request()->routeIs('teacher.tables') ? 'active' : '' }}" href="{{ route('teacher.tables') }}">
+          <a class="nav-link {{ request()->routeIs('admin.tables') ? 'active' : '' }}" href="{{ route('admin.tables') }}">
             <div
               class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
               <i class="ni ni-calendar-grid-58 text-dark text-sm opacity-10"></i>
@@ -236,7 +236,7 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link {{ request()->routeIs('teacher.students') ? 'active' : '' }}" href="{{ route('teacher.students') }}">
+          <a class="nav-link {{ request()->routeIs('admin.students') ? 'active' : '' }}" href="{{ route('admin.students') }}">
             <div
               class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
               <i class="ni ni-single-02 text-dark text-sm opacity-10"></i>
@@ -245,7 +245,7 @@
           </a>
         </li>
       <li class="nav-item">
-  <a class="nav-link {{ request()->routeIs('teacher.QR-scan') ? 'active' : '' }}" href="{{ route('teacher.QR-scan') }}">
+  <a class="nav-link {{ request()->routeIs('admin.QR-scan') ? 'active' : '' }}" href="{{ route('admin.QR-scan') }}">
     <div
       class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
       <i class="fas fa-qrcode text-dark text-sm opacity-10"></i>
@@ -255,7 +255,7 @@
 </li>
 
         <li class="nav-item">
-          <a class="nav-link {{ request()->routeIs('teacher.materials') ? 'active' : '' }}" href="{{ route('teacher.materials') }}">
+          <a class="nav-link {{ request()->routeIs('admin.materials') ? 'active' : '' }}" href="{{ route('admin.materials') }}">
             <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
               <i class="fa fa-file-upload text-dark text-sm opacity-10"></i>
             </div>
@@ -263,7 +263,7 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link {{ request()->routeIs('teacher.complaints') ? 'active' : '' }}" href="{{ route('teacher.complaints') }}">
+          <a class="nav-link {{ request()->routeIs('admin.complaints') ? 'active' : '' }}" href="{{ route('admin.complaints') }}">
             <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
               <i class="fa fa-comments text-dark text-sm opacity-10"></i>
             </div>
@@ -271,7 +271,7 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link {{ request()->routeIs('teacher.finance') ? 'active' : '' }}" href="{{ route('teacher.finance') }}">
+          <a class="nav-link {{ request()->routeIs('admin.finance') ? 'active' : '' }}" href="{{ route('admin.finance') }}">
             <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
               <i class="fa fa-money-bill-wave text-dark text-sm opacity-10"></i>
             </div>
@@ -279,21 +279,19 @@
           </a>
         </li>
         <li class="nav-item">
-          <!-- <a class="nav-link {{ request()->routeIs('teacher.billing') ? 'active' : '' }}" href="{{ route('teacher.billing') }}">
+          <a class="nav-link {{ request()->routeIs('admin.billing') ? 'active' : '' }}" href="{{ route('admin.billing') }}">
             <div
               class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
               <i class="ni ni-credit-card text-dark text-sm opacity-10"></i>
             </div>
             <span class="nav-link-text ms-1">Billing</span>
-          </a> -->
+          </a>
         </li>
-        
-        
         <li class="nav-item mt-3">
           <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">Account pages</h6>
         </li>
         <li class="nav-item">
-          <a class="nav-link {{ request()->routeIs('teacher.profile') ? 'active' : '' }}" href="{{ route('teacher.profile') }}">
+          <a class="nav-link {{ request()->routeIs('admin.profile') ? 'active' : '' }}" href="{{ route('admin.profile') }}">
             <div
               class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
               <i class="ni ni-single-02 text-dark text-sm opacity-10"></i>
@@ -301,8 +299,6 @@
             <span class="nav-link-text ms-1">Profile</span>
           </a>
         </li>
-     
-        
       </ul>
     </div>
   

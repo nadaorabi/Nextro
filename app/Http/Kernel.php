@@ -66,4 +66,17 @@ class Kernel extends HttpKernel
         'isTeacher' => \App\Http\Middleware\IsTeacher::class,
         'isUser' => \App\Http\Middleware\IsUser::class,
     ];
+
+    /**
+     * The application's route middleware.
+     *
+     * These middleware may be assigned to groups or used individually.
+     *
+     * @var array<string, class-string|string>
+     */
+    protected $routeMiddleware = [
+        // ... existing middleware ...
+        'isAdmin' => \App\Http\Middleware\IsAdmin::class,
+        'isTeacher' => \App\Http\Middleware\IsTeacher::class,
+    ];
 }
