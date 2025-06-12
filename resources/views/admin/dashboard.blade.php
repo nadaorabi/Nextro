@@ -26,6 +26,34 @@
   @include('admin.parts.sidebar-admin')
 
   <main class="main-content position-relative border-radius-lg ">
+    <!-- Animated Welcome Message -->
+    <div class="container mt-4 text-center">
+      <h1 class="welcome-animated">Welcome, Admin 👋</h1>
+    </div>
+    <style>
+    .welcome-animated {
+        display: inline-block;
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: #007bff;
+        animation: bounce 1.5s infinite alternate, gradientMove 3s linear infinite;
+        letter-spacing: 2px;
+        margin-top: 20px;
+        background: linear-gradient(90deg, #007bff, #00c6ff, #007bff);
+        background-size: 200% 200%;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    @keyframes bounce {
+        0%   { transform: translateY(0); }
+        100% { transform: translateY(-20px); }
+    }
+    @keyframes gradientMove {
+        0% { background-position: 0% 50%; }
+        100% { background-position: 100% 50%; }
+    }
+    </style>
+    <!-- End Animated Welcome Message -->
     <!-- Navbar -->
   
     <!-- End Navbar -->
