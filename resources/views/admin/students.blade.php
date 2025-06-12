@@ -13,6 +13,8 @@
   <link href="https://demos.creative-tim.com/argon-dashboard-pro/assets/css/nucleo-svg.css" rel="stylesheet" />
   <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
   <link id="pagestyle" href="{{ asset('css/argon-dashboard.css') }}" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
     body {
       font-family: 'Inter', 'Cairo', sans-serif;
@@ -273,6 +275,22 @@
         font-size: 0.97rem;
       }
     }
+    .modal-lg { max-width: 500px; }
+    .qr-preview { display: flex; flex-direction: column; align-items: center; margin-top: 10px; }
+    .students-table th, .students-table td { vertical-align: middle; }
+    .student-avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; margin-right: 8px; }
+    .table thead { background: #f1f5f9; }
+    .table-striped > tbody > tr:nth-of-type(odd) { background-color: #f6faff; }
+    .badge { font-size: 0.95em; }
+    .btn { font-size: 0.95em; }
+    .modal-lg { max-width: 420px; }
+    .qr-preview { display: flex; flex-direction: column; align-items: center; margin-top: 10px; }
+    .form-label { font-weight: 600; }
+    @media (max-width: 600px) {
+      .students-table th, .students-table td { font-size: 0.93rem; padding: 8px 4px; }
+      .student-avatar { width: 30px; height: 30px; }
+      .modal-lg { max-width: 98vw; }
+    }
   </style>
 </head>
 
@@ -281,55 +299,108 @@
   
   <main class="main-content position-relative max-height-vh-100 h-100">
     <div class="container-fluid py-4">
-      <div class="filter-bar" id="courseFilterBar">
-        <button type="button" class="filter-pill active" data-course="all">
-          <span class="filter-icon"><i class="fas fa-users"></i></span>
-          All <span class="count" id="all-count">0</span>
-        </button>
-        <button type="button" class="filter-pill" data-course="Mathematics">
-          <span class="filter-icon"><i class="fas fa-calculator"></i></span>
-          Mathematics <span class="count" id="math-count">0</span>
-        </button>
-        <button type="button" class="filter-pill" data-course="Science">
-          <span class="filter-icon"><i class="fas fa-flask"></i></span>
-          Science <span class="count" id="science-count">0</span>
-        </button>
-        <button type="button" class="filter-pill" data-course="English">
-          <span class="filter-icon"><i class="fas fa-book"></i></span>
-          English <span class="count" id="english-count">0</span>
-        </button>
-        <button type="button" class="filter-pill" data-course="History">
-          <span class="filter-icon"><i class="fas fa-landmark"></i></span>
-          History <span class="count" id="history-count">0</span>
+      <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4 gap-3">
+        <h2 class="fw-bold text-primary mb-0">Students Management</h2>
+        <button class="btn btn-success shadow-sm px-4" data-bs-toggle="modal" data-bs-target="#addStudentModal">
+          <i class="fas fa-user-plus me-1"></i> Add Student
         </button>
       </div>
-      <div class="glass-search">
-        <span class="search-icon"><i class="fas fa-search"></i></span>
-        <input type="text" id="studentSearch" placeholder="Search student by name...">
+      <div class="row g-2 mb-3">
+        <div class="col-12 col-md-4">
+          <input type="text" id="searchInput" class="form-control shadow-sm" placeholder="Search by name or email...">
         </div>
+        <div class="col-6 col-md-3">
+          <select id="courseFilter" class="form-select shadow-sm">
+            <option value="">All Courses</option>
+            <option>Mathematics</option>
+            <option>Science</option>
+            <option>English</option>
+            <option>History</option>
+          </select>
+        </div>
+        <div class="col-6 col-md-3">
+          <select id="statusFilter" class="form-select shadow-sm">
+            <option value="">All Status</option>
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+          </select>
+        </div>
+      </div>
       <div class="students-count-bar" id="studentsCountBar">
         Showing <span id="current-count">0</span> students
+      </div>
+      <div class="card border-0 shadow-sm">
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table table-hover table-striped students-table mb-0 align-middle">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Course</th>
+                  <th>Status</th>
+                  <th>QR</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="studentsTableBody">
+                <!-- Students will be rendered here -->
+              </tbody>
+            </table>
           </div>
-      <div class="students-table">
-        <div class="table-responsive">
-          <table class="table align-items-center mb-0">
-            <thead>
-              <tr>
-                <th>Student</th>
-                <th>Course</th>
-                <th>Email</th>
-                <th>Phone</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody id="studentsList">
-              <!-- Student rows will be populated by JavaScript -->
-            </tbody>
-          </table>
         </div>
       </div>
     </div>
   </main>
+
+  <!-- Add Student Modal -->
+  <div class="modal fade" id="addStudentModal" tabindex="-1" aria-labelledby="addStudentModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title fw-bold" id="addStudentModalLabel">Add New Student</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="addStudentForm">
+            <div class="mb-3">
+              <label for="studentName" class="form-label">Name</label>
+              <input type="text" class="form-control" id="studentName" required>
+            </div>
+            <div class="mb-3">
+              <label for="studentEmail" class="form-label">Email</label>
+              <input type="email" class="form-control" id="studentEmail" required>
+            </div>
+            <div class="mb-3">
+              <label for="studentPhone" class="form-label">Phone</label>
+              <input type="text" class="form-control" id="studentPhone" required>
+            </div>
+            <div class="mb-3">
+              <label for="studentCourse" class="form-label">Course</label>
+              <select class="form-select" id="studentCourse" required>
+                <option value="">Select Course</option>
+                <option>Mathematics</option>
+                <option>Science</option>
+                <option>English</option>
+                <option>History</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-success w-100">Save</button>
+          </form>
+          <div id="studentResult" class="mt-4" style="display:none;">
+            <h6 class="fw-bold text-success mb-2">Student Created!</h6>
+            <div class="mb-2"><b>Password:</b> <span id="generatedPassword" class="text-primary"></span></div>
+            <div class="qr-preview">
+              <canvas id="studentQR"></canvas>
+              <div class="mt-2"><b>QR Code (unique):</b></div>
+              <div id="qrValue" class="small text-muted"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- Core JS Files -->
   <script src="{{ asset('js/core/popper.min.js') }}"></script>
@@ -337,146 +408,103 @@
   <script src="{{ asset('js/plugins/perfect-scrollbar.min.js') }}"></script>
   <script src="{{ asset('js/plugins/smooth-scrollbar.min.js') }}"></script>
   <script src="{{ asset('js/argon-dashboard.min.js') }}"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    // Sample student data
-    const students = [
-      {
-        id: 1,
-        name: 'Ali Hassan',
-        course: 'Mathematics',
-        img: 'https://randomuser.me/api/portraits/men/32.jpg',
-        email: 'ali@example.com',
-        phone: '+20 123 456 7890'
-      },
-      {
-        id: 2,
-        name: 'Sara Ahmed',
-        course: 'Science',
-        img: 'https://randomuser.me/api/portraits/women/44.jpg',
-        email: 'sara@example.com',
-        phone: '+20 123 456 7891'
-      },
-      {
-        id: 3,
-        name: 'John Smith',
-        course: 'English',
-        img: 'https://randomuser.me/api/portraits/men/45.jpg',
-        email: 'john@example.com',
-        phone: '+20 123 456 7892'
-      },
-      {
-        id: 4,
-        name: 'Mona Khaled',
-        course: 'History',
-        img: 'https://randomuser.me/api/portraits/women/65.jpg',
-        email: 'mona@example.com',
-        phone: '+20 123 456 7893'
-      },
-      {
-        id: 5,
-        name: 'Omar Youssef',
-        course: 'Mathematics',
-        img: 'https://randomuser.me/api/portraits/men/36.jpg',
-        email: 'omar@example.com',
-        phone: '+20 123 456 7894'
-      },
-      {
-        id: 6,
-        name: 'Lina Samir',
-        course: 'Science',
-        img: 'https://randomuser.me/api/portraits/women/50.jpg',
-        email: 'lina@example.com',
-        phone: '+20 123 456 7895'
-      }
+    // Sample data
+    let students = [
+      {id: 1, name: 'Ali Hassan', email: 'ali@example.com', phone: '+20 123 456 7890', course: 'Mathematics', status: 'active', qr: 'QR1', password: 'pass1', img: 'https://randomuser.me/api/portraits/men/32.jpg'},
+      {id: 2, name: 'Sara Ahmed', email: 'sara@example.com', phone: '+20 123 456 7891', course: 'Science', status: 'inactive', qr: 'QR2', password: 'pass2', img: 'https://randomuser.me/api/portraits/women/44.jpg'},
     ];
 
-    let selectedCourse = 'all';
-
-    function updateCourseCounts() {
-      const counts = {
-        'all': students.length,
-        'Mathematics': students.filter(s => s.course === 'Mathematics').length,
-        'Science': students.filter(s => s.course === 'Science').length,
-        'English': students.filter(s => s.course === 'English').length,
-        'History': students.filter(s => s.course === 'History').length
-      };
-
-      Object.keys(counts).forEach(course => {
-        const countElement = document.getElementById(`${course.toLowerCase()}-count`);
-        if (countElement) {
-          countElement.textContent = counts[course];
-        }
-      });
-    }
-
     function renderStudents() {
-      const search = document.getElementById('studentSearch').value.toLowerCase();
-      const list = document.getElementById('studentsList');
-      list.innerHTML = '';
-
-      const filteredStudents = students.filter(stu =>
-        (selectedCourse === 'all' || stu.course === selectedCourse) &&
-        (stu.name.toLowerCase().includes(search))
+      const tbody = document.getElementById('studentsTableBody');
+      const search = document.getElementById('searchInput').value.toLowerCase();
+      const course = document.getElementById('courseFilter').value;
+      const status = document.getElementById('statusFilter').value;
+      tbody.innerHTML = '';
+      let filtered = students.filter(s =>
+        (s.name.toLowerCase().includes(search) || s.email.toLowerCase().includes(search)) &&
+        (course === '' || s.course === course) &&
+        (status === '' || s.status === status)
       );
-
-      document.getElementById('current-count').textContent = filteredStudents.length;
-
-      filteredStudents.forEach((stu, idx) => {
-        let courseClass = '';
-        if (stu.course === 'Mathematics') courseClass = 'math';
-        if (stu.course === 'Science') courseClass = 'science';
-        if (stu.course === 'English') courseClass = 'english';
-        if (stu.course === 'History') courseClass = 'history';
-        list.innerHTML += `
-          <tr style="animation-delay:${idx * 0.07}s">
-            <td>
-              <div class="student-info">
-                <img src="${stu.img}" class="student-avatar" alt="${stu.name}">
-                <span class="student-name">${stu.name}</span>
-            </div>
-            </td>
-            <td>
-              <a href="#" class="student-course ${courseClass}">${stu.course}</a>
-            </td>
-            <td>
-              <span class="student-contact"><i class="fas fa-envelope"></i> ${stu.email}</span>
-            </td>
-            <td>
-              <span class="student-contact"><i class="fas fa-phone"></i> ${stu.phone}</span>
-            </td>
-            <td>
-              <button class="message-btn" onclick="sendMessage('${stu.name}')">
-                <i class="fas fa-paper-plane"></i>
-                <span class="btn-text">Message</span>
-              </button>
-            </td>
-          </tr>
-        `;
+      filtered.forEach((s, i) => {
+        tbody.innerHTML += `<tr>
+          <td>${i+1}</td>
+          <td><div class="d-flex align-items-center"><img src="${s.img}" class="student-avatar" alt="${s.name}"><span class="student-name">${s.name}</span></div></td>
+          <td>${s.email}</td>
+          <td><span class="badge bg-light text-dark">${s.course}</span></td>
+          <td><span class="badge bg-${s.status==='active'?'success':'secondary'}">${s.status.charAt(0).toUpperCase()+s.status.slice(1)}</span></td>
+          <td><span class="badge bg-info">${s.qr}</span></td>
+          <td>
+            <button class="btn btn-sm btn-outline-info me-1" onclick="viewStudent(${s.id})"><i class="fas fa-eye"></i></button>
+            <button class="btn btn-sm btn-outline-warning me-1" onclick="editStudent(${s.id})"><i class="fas fa-edit"></i></button>
+            <button class="btn btn-sm btn-outline-danger" onclick="deleteStudent(${s.id})"><i class="fas fa-trash"></i></button>
+          </td>
+        </tr>`;
       });
+      document.getElementById('current-count').textContent = filtered.length;
     }
 
-    function sendMessage(studentName) {
-      alert(`Message form will open for ${studentName}`);
-      // Here you can implement the actual messaging functionality
-    }
+    document.getElementById('searchInput').addEventListener('input', renderStudents);
+    document.getElementById('courseFilter').addEventListener('change', renderStudents);
+    document.getElementById('statusFilter').addEventListener('change', renderStudents);
 
-    // Event Listeners
-    document.getElementById('studentSearch').addEventListener('input', renderStudents);
-
-    document.querySelectorAll('.filter-pill').forEach(btn => {
-      btn.addEventListener('click', function() {
-        document.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active'));
-        this.classList.add('active');
-        selectedCourse = this.getAttribute('data-course');
-        renderStudents();
-      });
-    });
-
-    // Initialize
-    window.onload = function() {
-      updateCourseCounts();
+    // Add Student Modal Logic
+    const addStudentForm = document.getElementById('addStudentForm');
+    addStudentForm.onsubmit = function(e) {
+      e.preventDefault();
+      // Generate password and QR
+      const password = Math.random().toString(36).slice(-8);
+      const qrValue = 'STU-' + Date.now() + '-' + Math.random().toString(36).substr(2,6);
+      // Add to students array
+      const newStudent = {
+        id: students.length+1,
+        name: document.getElementById('studentName').value,
+        email: document.getElementById('studentEmail').value,
+        phone: document.getElementById('studentPhone').value,
+        course: document.getElementById('studentCourse').value,
+        status: 'active',
+        qr: qrValue,
+        password: password,
+        img: 'https://randomuser.me/api/portraits/men/' + (30 + Math.floor(Math.random()*50)) + '.jpg'
+      };
+      students.push(newStudent);
       renderStudents();
+      // Show result
+      document.getElementById('studentResult').style.display = '';
+      document.getElementById('generatedPassword').textContent = password;
+      document.getElementById('qrValue').textContent = qrValue;
+      // Generate QR code
+      const qr = new QRious({
+        element: document.getElementById('studentQR'),
+        value: qrValue,
+        size: 120
+      });
+      // Reset form fields
+      addStudentForm.reset();
+      // Hide result after 6 seconds and close modal
+      setTimeout(()=>{
+        document.getElementById('studentResult').style.display = 'none';
+        var modal = bootstrap.Modal.getInstance(document.getElementById('addStudentModal'));
+        modal.hide();
+      }, 6000);
     };
+
+    function viewStudent(id) {
+      alert('View student #' + id);
+    }
+    function editStudent(id) {
+      alert('Edit student #' + id);
+    }
+    function deleteStudent(id) {
+      if(confirm('Delete student #' + id + '?')) {
+        students = students.filter(s => s.id !== id);
+        renderStudents();
+      }
+    }
+
+    // Initial render
+    renderStudents();
   </script>
 </body>
 
