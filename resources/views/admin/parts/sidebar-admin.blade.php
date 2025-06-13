@@ -223,39 +223,238 @@
               class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
               <i class="ni ni-tv-2 text-dark text-sm opacity-10"></i>
             </div>
-            <span class="nav-link-text ms-1">Dashboard</span>
+            <span class="nav-link-text ms-1">لوحة التحكم</span>
           </a>
         </li>
+
+        <!-- إدارة الحسابات -->
         <li class="nav-item">
-          <a class="nav-link" href="#" id="staffDropdown" data-bs-toggle="collapse" data-bs-target="#staffSubmenu" aria-expanded="false">
+          <a class="nav-link" href="#" id="accountsDropdown" data-bs-toggle="collapse" data-bs-target="#accountsSubmenu" aria-expanded="false">
             <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-              <i class="ni ni-calendar-grid-58 text-dark text-sm opacity-10"></i>
+              <i class="fas fa-users-cog text-dark text-sm opacity-10"></i>
             </div>
-            <span class="nav-link-text ms-1">Staff</span>
+            <span class="nav-link-text ms-1">إدارة الحسابات</span>
           </a>
-          <ul class="nav flex-column ms-4 collapse" id="staffSubmenu">
-             <li class="nav-item">
-              <a class="nav-link" href="{{ route('admin.students') }}">
+          <ul class="nav flex-column ms-4 collapse" id="accountsSubmenu">
+            <!-- طلاب -->
+            <li class="nav-item">
+              <a class="nav-link" href="#" id="studentsDropdown" data-bs-toggle="collapse" data-bs-target="#studentsSubmenu" aria-expanded="false">
                 <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                   <i class="fas fa-user-graduate text-dark text-sm opacity-10"></i>
                 </div>
-                <span class="nav-link-text ms-1">Students</span>
+                <span class="nav-link-text ms-1">طلاب</span>
               </a>
+              <ul class="nav flex-column ms-4 collapse" id="studentsSubmenu">
+                <li class="nav-item">
+                  <a class="nav-link" href="{{ route('admin.accounts.students.create') }}">
+                    <i class="fas fa-user-plus me-2"></i>
+                    إضافة طالب
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{{ route('admin.accounts.students.list') }}">
+                    <i class="fas fa-list me-2"></i>
+                    استعراض الطلاب
+                  </a>
+                </li>
+              </ul>
             </li>
+            <!-- أساتذة -->
             <li class="nav-item">
-              <a class="nav-link" href="#">
+              <a class="nav-link" href="#" id="teachersDropdown" data-bs-toggle="collapse" data-bs-target="#teachersSubmenu" aria-expanded="false">
                 <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                   <i class="fas fa-chalkboard-teacher text-dark text-sm opacity-10"></i>
                 </div>
-                <span class="nav-link-text ms-1">Teachers</span>
+                <span class="nav-link-text ms-1">أساتذة</span>
+              </a>
+              <ul class="nav flex-column ms-4 collapse" id="teachersSubmenu">
+                <li class="nav-item">
+                  <a class="nav-link" href="{{ route('admin.accounts.teachers.create') }}">
+                    <i class="fas fa-user-plus me-2"></i>
+                    إضافة أستاذ
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{{ route('admin.accounts.teachers.list') }}">
+                    <i class="fas fa-list me-2"></i>
+                    استعراض الأساتذة
+                  </a>
+                </li>
+              </ul>
+            </li>
+            <!-- مسؤولين -->
+            <li class="nav-item">
+              <a class="nav-link" href="#" id="adminsDropdown" data-bs-toggle="collapse" data-bs-target="#adminsSubmenu" aria-expanded="false">
+                <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                  <i class="fas fa-user-shield text-dark text-sm opacity-10"></i>
+                </div>
+                <span class="nav-link-text ms-1">مسؤولين</span>
+              </a>
+              <ul class="nav flex-column ms-4 collapse" id="adminsSubmenu">
+                <li class="nav-item">
+                  <a class="nav-link" href="{{ route('admin.accounts.admins.create') }}">
+                    <i class="fas fa-user-plus me-2"></i>
+                    إضافة مسؤول
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{{ route('admin.accounts.admins.list') }}">
+                    <i class="fas fa-list me-2"></i>
+                    استعراض المسؤولين
+                  </a>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+
+        <!-- إدارة المواد التعليمية -->
+        <li class="nav-item">
+          <a class="nav-link" href="#" id="coursesDropdown" data-bs-toggle="collapse" data-bs-target="#coursesSubmenu" aria-expanded="false">
+            <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+              <i class="fas fa-book text-dark text-sm opacity-10"></i>
+            </div>
+            <span class="nav-link-text ms-1">إدارة المواد التعليمية</span>
+          </a>
+          <ul class="nav flex-column ms-4 collapse" id="coursesSubmenu">
+            <li class="nav-item">
+              <a class="nav-link" href="{{ route('admin.educational-materials.create') }}">
+                <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                  <i class="fas fa-plus text-dark text-sm opacity-10"></i>
+                </div>
+                <span class="nav-link-text ms-1">Add Material / New Course</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ route('admin.educational-materials.edit') }}">
+                <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                  <i class="fas fa-edit text-dark text-sm opacity-10"></i>
+                </div>
+                <span class="nav-link-text ms-1">Edit Educational Material</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ route('admin.educational-materials.link') }}">
+                <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                  <i class="fas fa-link text-dark text-sm opacity-10"></i>
+                </div>
+                <span class="nav-link-text ms-1">Link Material to Teacher & Schedule</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ route('admin.educational-materials.list') }}">
+                <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                  <i class="fas fa-list text-dark text-sm opacity-10"></i>
+                </div>
+                <span class="nav-link-text ms-1">View Materials & Link Details</span>
+              </a>
+            </li>
+          </ul>
+        </li>
+
+        <!-- المتابعة والإشراف -->
+        <li class="nav-item">
+          <a class="nav-link" href="#" id="monitoringDropdown" data-bs-toggle="collapse" data-bs-target="#monitoringSubmenu" aria-expanded="false">
+            <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+              <i class="fas fa-clipboard-check text-dark text-sm opacity-10"></i>
+            </div>
+            <span class="nav-link-text ms-1">المتابعة والإشراف</span>
+          </a>
+          <ul class="nav flex-column ms-4 collapse" id="monitoringSubmenu">
+            <li class="nav-item">
+              <a class="nav-link" href="#">
+                <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                  <i class="fas fa-chart-bar text-dark text-sm opacity-10"></i>
+                </div>
+                <span class="nav-link-text ms-1">تتبع الحضور والغياب</span>
               </a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#">
                 <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                  <i class="fas fa-user-shield text-dark text-sm opacity-10"></i>
+                  <i class="fas fa-envelope text-dark text-sm opacity-10"></i>
                 </div>
-                <span class="nav-link-text ms-1">Admins</span>
+                <span class="nav-link-text ms-1">استعراض الشكاوى</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">
+                <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                  <i class="fas fa-qrcode text-dark text-sm opacity-10"></i>
+                </div>
+                <span class="nav-link-text ms-1">مسح QR حسب المادة</span>
+              </a>
+            </li>
+          </ul>
+        </li>
+
+        <!-- الجدول والمالية -->
+        <li class="nav-item">
+          <a class="nav-link" href="#" id="scheduleDropdown" data-bs-toggle="collapse" data-bs-target="#scheduleSubmenu" aria-expanded="false">
+            <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+              <i class="fas fa-calendar-alt text-dark text-sm opacity-10"></i>
+            </div>
+            <span class="nav-link-text ms-1">الجدول والمالية</span>
+          </a>
+          <ul class="nav flex-column ms-4 collapse" id="scheduleSubmenu">
+            <li class="nav-item">
+              <a class="nav-link" href="#">
+                <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                  <i class="fas fa-clock text-dark text-sm opacity-10"></i>
+                </div>
+                <span class="nav-link-text ms-1">إعداد وتعديل الجدول الأسبوعي</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">
+                <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                  <i class="fas fa-money-bill-wave text-dark text-sm opacity-10"></i>
+                </div>
+                <span class="nav-link-text ms-1">إدارة المدفوعات</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">
+                <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                  <i class="fas fa-file-invoice text-dark text-sm opacity-10"></i>
+                </div>
+                <span class="nav-link-text ms-1">إصدار إيصالات مالية</span>
+              </a>
+            </li>
+          </ul>
+        </li>
+
+        <!-- إدارة القاعات والمرافق -->
+        <li class="nav-item">
+          <a class="nav-link" href="#" id="facilitiesDropdown" data-bs-toggle="collapse" data-bs-target="#facilitiesSubmenu" aria-expanded="false">
+            <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+              <i class="fas fa-building text-dark text-sm opacity-10"></i>
+            </div>
+            <span class="nav-link-text ms-1">إدارة القاعات والمرافق</span>
+          </a>
+          <ul class="nav flex-column ms-4 collapse" id="facilitiesSubmenu">
+            <li class="nav-item">
+              <a class="nav-link" href="#">
+                <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                  <i class="fas fa-door-open text-dark text-sm opacity-10"></i>
+                </div>
+                <span class="nav-link-text ms-1">إضافة / تعديل قاعة</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">
+                <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                  <i class="fas fa-calendar-week text-dark text-sm opacity-10"></i>
+                </div>
+                <span class="nav-link-text ms-1">جدولة القاعات</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">
+                <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                  <i class="fas fa-broom text-dark text-sm opacity-10"></i>
+                </div>
+                <span class="nav-link-text ms-1">إدارة توفر المرافق</span>
               </a>
             </li>
           </ul>

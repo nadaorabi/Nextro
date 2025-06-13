@@ -46,6 +46,18 @@ Route::prefix('admin')->middleware('isAdmin')->name('admin.')->group(function ()
     Route::get('finance', [AdminController::class, 'finance'])->name('finance');
     Route::get('profile', [AdminController::class, 'profile'])->name('profile');
     Route::post('logout', [AdminController::class, 'logout'])->name('logout');
+    // إدارة الحسابات
+    Route::get('accounts/students/create', [AdminController::class, 'studentsCreate'])->name('accounts.students.create');
+    Route::get('accounts/students/list', [AdminController::class, 'studentsList'])->name('accounts.students.list');
+    Route::get('accounts/teachers/create', [AdminController::class, 'teachersCreate'])->name('accounts.teachers.create');
+    Route::get('accounts/teachers/list', [AdminController::class, 'teachersList'])->name('accounts.teachers.list');
+    Route::get('accounts/admins/create', [AdminController::class, 'adminsCreate'])->name('accounts.admins.create');
+    Route::get('accounts/admins/list', [AdminController::class, 'adminsList'])->name('accounts.admins.list');
+    // إدارة المواد التعليميه
+    Route::get('educational-materials/create', [AdminController::class, 'materialsCreate'])->name('educational-materials.create');
+    Route::get('educational-materials/edit', [AdminController::class, 'materialsEdit'])->name('educational-materials.edit');
+    Route::get('educational-materials/link', [AdminController::class, 'materialsLink'])->name('educational-materials.link');
+    Route::get('educational-materials/list', [AdminController::class, 'materialsList'])->name('educational-materials.list');
 });
 
 // راوتات المدرس
