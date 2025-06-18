@@ -49,54 +49,42 @@
               <p class="lead">This page is for adding a new student to the system.</p>
               <form action="{{ route('admin.accounts.students.create') }}" method="POST" class="text-start">
                   @csrf
-                  <div class="mb-3 row align-items-center">
-                      <label class="form-label col-md-3 col-form-label text-start">Student Name</label>
-                      <div class="col-md-9">
-                        <input type="text" name="name" class="form-control" required>
-                      </div>
+                  <div class="mb-3">
+                      <label class="form-label">Student Name</label>
+                      <input type="text" name="name" class="form-control w-100" required>
                   </div>
-                  <div class="mb-3 row align-items-center">
-                      <label class="form-label col-md-3 col-form-label text-start">Email</label>
-                      <div class="col-md-9">
-                        <input type="email" name="email" class="form-control" required>
-                      </div>
+                  <div class="mb-3">
+                      <label class="form-label">Email</label>
+                      <input type="email" name="email" class="form-control w-100" required>
                   </div>
-                  <div class="mb-3 row align-items-center">
-                      <label class="form-label col-md-3 col-form-label text-start">Password</label>
-                      <div class="col-md-9">
-                        <input type="password" name="password" class="form-control" required>
-                      </div>
+                  <div class="mb-3">
+                      <label class="form-label">Password</label>
+                      <input type="password" name="password" class="form-control w-100" required>
                   </div>
-                  <div class="mb-3 row align-items-center">
-                      <label class="form-label col-md-3 col-form-label text-start">Confirm Password</label>
-                      <div class="col-md-9">
-                        <input type="password" name="password_confirmation" class="form-control" required>
-                      </div>
+                  <div class="mb-3">
+                      <label class="form-label">Confirm Password</label>
+                      <input type="password" name="password_confirmation" class="form-control w-100" required>
                   </div>
-                  <div class="mb-3 row align-items-center">
-                      <label class="form-label col-md-3 col-form-label text-start">Grade</label>
-                      <div class="col-md-9">
-                        <select name="grade" class="form-select" required>
-                            <option value="">Select grade</option>
-                            <option value="8">8th</option>
-                            <option value="9">9th</option>
-                            <option value="10">10th</option>
-                            <option value="11">11th</option>
-                            <option value="12">12th</option>
-                        </select>
-                      </div>
+                  <div class="mb-3">
+                      <label class="form-label">Grade</label>
+                      <select name="grade" class="form-select w-100" required>
+                          <option value="">Select grade</option>
+                          <option value="8">8th</option>
+                          <option value="9">9th</option>
+                          <option value="10">10th</option>
+                          <option value="11">11th</option>
+                          <option value="12">12th</option>
+                      </select>
                   </div>
-                  <div class="mb-3 row align-items-center">
-                      <label class="form-label col-md-3 col-form-label text-start">Status</label>
-                      <div class="col-md-9">
-                        <select name="status" class="form-select" required>
-                            <option value="active">Active</option>
-                            <option value="inactive">Inactive</option>
-                        </select>
-                      </div>
+                  <div class="mb-3">
+                      <label class="form-label">Status</label>
+                      <select name="status" class="form-select w-100" required>
+                          <option value="active">Active</option>
+                          <option value="inactive">Inactive</option>
+                      </select>
                   </div>
                   <div class="text-center">
-                      <button type="submit" class="btn btn-primary">Add Student</button>
+                      <button type="submit" class="btn btn-primary w-100">Add Student</button>
                   </div>
               </form>
             </div>

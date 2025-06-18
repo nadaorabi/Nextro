@@ -65,6 +65,7 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'isTeacher' => \App\Http\Middleware\IsTeacher::class,
         'isUser' => \App\Http\Middleware\IsUser::class,
+        'isAdmin' => \App\Http\Middleware\IsAdmin::class,
     ];
 
     /**
@@ -76,7 +77,5 @@ class Kernel extends HttpKernel
      */
     protected $routeMiddleware = [
         // ... existing middleware ...
-        'isAdmin' => \App\Http\Middleware\IsAdmin::class,
-        'isTeacher' => \App\Http\Middleware\IsTeacher::class,
     ];
 }

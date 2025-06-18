@@ -6,11 +6,13 @@
   overflow-y: visible !important;
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* IE 10+ */
+  direction: ltr !important;
 }
 .sidenav .navbar-nav {
   height: auto !important;
   overflow: visible !important;
   display: block !important;
+  direction: ltr !important;
 }
 #sidenav-main {
   overflow-y: visible !important;
@@ -20,6 +22,7 @@
   z-index: 1050;
   background: #fff !important;
   box-shadow: 0 0 2rem 0 rgba(136, 152, 170, .15);
+  direction: ltr !important;
 }
 .sidenav .collapse.navbar-collapse {
   height: 100% !important;
@@ -80,6 +83,65 @@
 }
 /* Remove sidebar overlay and keep sidebar solid */
 #sidebar-overlay { display: none !important; }
+
+/* Improved submenu styling */
+.nav-item .nav-link {
+  padding: 0.675rem 1rem;
+  color: #344767;
+  display: flex;
+  align-items: center;
+}
+
+.nav-item .nav-link i {
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.nav-item .nav-link .nav-link-text {
+  margin-left: 0.5rem;
+}
+
+/* Submenu indentation and spacing */
+.nav-item .collapse .nav-item .nav-link {
+  padding-left: 2.5rem;
+}
+
+.nav-item .collapse .nav-item .collapse .nav-link {
+  padding-left: 3.5rem;
+}
+
+/* Active state styling */
+.nav-link.active,
+.nav-link:hover {
+  background-color: #f8f9fa;
+  border-radius: 0.5rem;
+}
+
+/* Icon container styling */
+.icon-shape {
+  width: 32px;
+  height: 32px;
+  background-position: center;
+  border-radius: 0.5rem;
+}
+
+/* Submenu arrow indicators */
+.nav-link[data-bs-toggle="collapse"]::after {
+  content: '\f105';
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  margin-left: auto;
+  transition: transform 0.2s;
+}
+
+.nav-link[data-bs-toggle="collapse"][aria-expanded="true"]::after {
+  transform: rotate(90deg);
+}
+
+/* Improved collapse animation */
+.collapse {
+  transition: all 0.2s ease;
+}
 </style>
 <div class="min-height-300 position-absolute w-100" style="background: rgb(156, 200, 247);"></div>
   <nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl " id="navbarBlur"
@@ -216,7 +278,7 @@
     </div>
     <hr class="horizontal dark mt-0">
     <div class="collapse navbar-collapse  w-auto " id="sidenav-collapse-main">
-      <ul class="navbar-nav">
+      <ul class="navbar-nav" id="sidebarAccordion">
         <li class="nav-item">
           <a class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}" href="{{ route('admin.dashboard') }}">
             <div
@@ -229,13 +291,13 @@
 
         <!-- إدارة الحسابات -->
         <li class="nav-item">
-          <a class="nav-link" href="#" id="accountsDropdown" data-bs-toggle="collapse" data-bs-target="#accountsSubmenu" aria-expanded="false">
+          <a class="nav-link {{ request()->routeIs('admin.accounts.*') ? 'active' : '' }}" href="#" id="accountsDropdown" data-bs-toggle="collapse" data-bs-target="#accountsSubmenu" aria-expanded="{{ request()->routeIs('admin.accounts.*') ? 'true' : 'false' }}">
             <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
               <i class="fas fa-users-cog text-dark text-sm opacity-10"></i>
             </div>
             <span class="nav-link-text ms-1">إدارة الحسابات</span>
           </a>
-          <ul class="nav flex-column ms-4 collapse" id="accountsSubmenu">
+          <ul class="nav flex-column ms-4 collapse {{ request()->routeIs('admin.accounts.*') ? 'show' : '' }}" id="accountsSubmenu" data-bs-parent="#sidebarAccordion">
             <!-- طلاب -->
             <li class="nav-item">
               <a class="nav-link" href="#" id="studentsDropdown" data-bs-toggle="collapse" data-bs-target="#studentsSubmenu" aria-expanded="false">
@@ -310,15 +372,15 @@
 
         <!-- إدارة المواد التعليمية -->
         <li class="nav-item">
-          <a class="nav-link" href="#" id="coursesDropdown" data-bs-toggle="collapse" data-bs-target="#coursesSubmenu" aria-expanded="false">
+          <a class="nav-link {{ request()->routeIs('admin.educational-materials.*') ? 'active' : '' }}" href="#" id="coursesDropdown" data-bs-toggle="collapse" data-bs-target="#coursesSubmenu" aria-expanded="{{ request()->routeIs('admin.educational-materials.*') ? 'true' : 'false' }}">
             <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
               <i class="fas fa-book text-dark text-sm opacity-10"></i>
             </div>
             <span class="nav-link-text ms-1">إدارة المواد التعليمية</span>
           </a>
-          <ul class="nav flex-column ms-4 collapse" id="coursesSubmenu">
+          <ul class="nav flex-column ms-4 collapse {{ request()->routeIs('admin.educational-materials.*') ? 'show' : '' }}" id="coursesSubmenu" data-bs-parent="#sidebarAccordion">
             <li class="nav-item">
-              <a class="nav-link" href="{{ route('admin.educational-materials.create') }}">
+              <a class="nav-link {{ request()->routeIs('admin.educational-materials.create') ? 'active' : '' }}" href="{{ route('admin.educational-materials.create') }}">
                 <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                   <i class="fas fa-plus text-dark text-sm opacity-10"></i>
                 </div>
@@ -326,16 +388,7 @@
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{{ route('admin.educational-materials.edit') }}">
-                <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                  <i class="fas fa-edit text-dark text-sm opacity-10"></i>
-                </div>
-                <span class="nav-link-text ms-1">Edit Educational Material</span>
-              </a>
-            </li>
-           
-            <li class="nav-item">
-              <a class="nav-link" href="{{ route('admin.educational-materials.list') }}">
+              <a class="nav-link {{ request()->routeIs('admin.educational-materials.list') ? 'active' : '' }}" href="{{ route('admin.educational-materials.list') }}">
                 <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                   <i class="fas fa-list text-dark text-sm opacity-10"></i>
                 </div>
@@ -347,71 +400,83 @@
 
         <!-- المتابعة والإشراف -->
         <li class="nav-item">
-          <a class="nav-link" href="#" id="monitoringDropdown" data-bs-toggle="collapse" data-bs-target="#monitoringSubmenu" aria-expanded="false">
+          <a class="nav-link {{ request()->routeIs('admin.supervision.*') ? 'active' : '' }}" href="#" id="monitoringDropdown" data-bs-toggle="collapse" data-bs-target="#monitoringSubmenu" aria-expanded="{{ request()->routeIs('admin.supervision.*') ? 'true' : 'false' }}">
             <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
               <i class="fas fa-clipboard-check text-dark text-sm opacity-10"></i>
             </div>
             <span class="nav-link-text ms-1">المتابعة والإشراف</span>
           </a>
-          <ul class="nav flex-column ms-4 collapse" id="monitoringSubmenu">
+          <ul class="nav flex-column ms-4 collapse {{ request()->routeIs('admin.supervision.*') ? 'show' : '' }}" id="monitoringSubmenu" data-bs-parent="#sidebarAccordion">
             <li class="nav-item">
-              <a class="nav-link" href="#">
-                <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                  <i class="fas fa-chart-bar text-dark text-sm opacity-10"></i>
-                </div>
-                <span class="nav-link-text ms-1">تتبع الحضور والغياب</span>
+              <a class="nav-link" href="{{ route('admin.supervision.attendance') }}">
+                <i class="fas fa-user-check"></i>
+                <span class="nav-link-text">الحضور</span>
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">
-                <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                  <i class="fas fa-envelope text-dark text-sm opacity-10"></i>
-                </div>
-                <span class="nav-link-text ms-1">استعراض الشكاوى</span>
+              <a class="nav-link" href="{{ route('admin.supervision.complaints') }}">
+                <i class="fas fa-exclamation-circle"></i>
+                <span class="nav-link-text">الشكاوى</span>
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">
-                <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                  <i class="fas fa-qrcode text-dark text-sm opacity-10"></i>
-                </div>
-                <span class="nav-link-text ms-1">مسح QR حسب المادة</span>
+              <a class="nav-link" href="{{ route('admin.supervision.qr') }}">
+                <i class="fas fa-qrcode"></i>
+                <span class="nav-link-text">QR حسب المادة</span>
               </a>
             </li>
           </ul>
         </li>
 
-        <!-- الجدول والمالية -->
+        <!-- الجداول -->
         <li class="nav-item">
-          <a class="nav-link" href="#" id="scheduleDropdown" data-bs-toggle="collapse" data-bs-target="#scheduleSubmenu" aria-expanded="false">
+          <a class="nav-link" href="#" id="scheduleDropdown" data-bs-toggle="collapse" data-bs-target="#scheduleSubmenu">
             <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
               <i class="fas fa-calendar-alt text-dark text-sm opacity-10"></i>
             </div>
-            <span class="nav-link-text ms-1">الجدول والمالية</span>
+            <span class="nav-link-text ms-1">الجداول</span>
           </a>
-          <ul class="nav flex-column ms-4 collapse" id="scheduleSubmenu">
+          <ul class="nav flex-column ms-4 collapse" id="scheduleSubmenu" data-bs-parent="#sidebarAccordion">
             <li class="nav-item">
-              <a class="nav-link" href="#">
+              <a class="nav-link" href="{{ route('admin.tables.create') }}">
                 <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                  <i class="fas fa-clock text-dark text-sm opacity-10"></i>
+                  <i class="fas fa-plus text-dark text-sm opacity-10"></i>
                 </div>
-                <span class="nav-link-text ms-1">إعداد وتعديل الجدول الأسبوعي</span>
+                <span class="nav-link-text ms-1">إنشاء جدول</span>
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">
+              <a class="nav-link" href="{{ route('admin.tables.edit') }}">
                 <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                  <i class="fas fa-money-bill-wave text-dark text-sm opacity-10"></i>
+                  <i class="fas fa-edit text-dark text-sm opacity-10"></i>
                 </div>
-                <span class="nav-link-text ms-1">إدارة المدفوعات</span>
+                <span class="nav-link-text ms-1">تعديل جدول</span>
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">
+              <a class="nav-link" href="{{ route('admin.tables.list') }}">
                 <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                  <i class="fas fa-file-invoice text-dark text-sm opacity-10"></i>
+                  <i class="fas fa-list text-dark text-sm opacity-10"></i>
                 </div>
-                <span class="nav-link-text ms-1">إصدار إيصالات مالية</span>
+                <span class="nav-link-text ms-1">استعراض الجداول</span>
+              </a>
+            </li>
+          </ul>
+        </li>
+
+        <!-- المالية -->
+        <li class="nav-item">
+          <a class="nav-link {{ request()->routeIs('admin.finance.*') ? 'active' : '' }}" href="#" id="financeDropdown" data-bs-toggle="collapse" data-bs-target="#financeSubmenu" aria-expanded="{{ request()->routeIs('admin.finance.*') ? 'true' : 'false' }}">
+            <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+              <i class="fas fa-coins text-success text-sm opacity-10"></i>
+            </div>
+            <span class="nav-link-text ms-1">المالية</span>
+          </a>
+          <ul class="nav flex-column ms-4 collapse {{ request()->routeIs('admin.finance.*') ? 'show' : '' }}" id="financeSubmenu" data-bs-parent="#sidebarAccordion">
+            <li class="nav-item">
+              <a class="nav-link" href="{{ route('admin.finance.payments') }}">
+                <i class="fas fa-money-bill-wave me-2"></i>
+                <span class="nav-link-text">إدارة المدفوعات والإيصالات</span>
               </a>
             </li>
           </ul>
@@ -419,35 +484,29 @@
 
         <!-- إدارة القاعات والمرافق -->
         <li class="nav-item">
-          <a class="nav-link" href="#" id="facilitiesDropdown" data-bs-toggle="collapse" data-bs-target="#facilitiesSubmenu" aria-expanded="false">
+          <a class="nav-link {{ request()->routeIs('admin.facilities.*') ? 'active' : '' }}" href="#" id="facilitiesDropdown" data-bs-toggle="collapse" data-bs-target="#facilitiesSubmenu" aria-expanded="{{ request()->routeIs('admin.facilities.*') ? 'true' : 'false' }}">
             <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-              <i class="fas fa-building text-dark text-sm opacity-10"></i>
+              <i class="fas fa-building text-primary text-sm opacity-10"></i>
             </div>
             <span class="nav-link-text ms-1">إدارة القاعات والمرافق</span>
           </a>
-          <ul class="nav flex-column ms-4 collapse" id="facilitiesSubmenu">
+          <ul class="nav flex-column ms-4 collapse {{ request()->routeIs('admin.facilities.*') ? 'show' : '' }}" id="facilitiesSubmenu" data-bs-parent="#sidebarAccordion">
             <li class="nav-item">
-              <a class="nav-link" href="#">
-                <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                  <i class="fas fa-door-open text-dark text-sm opacity-10"></i>
-                </div>
-                <span class="nav-link-text ms-1">إضافة / تعديل قاعة</span>
+              <a class="nav-link" href="{{ route('admin.facilities.halls.create') }}">
+                <i class="fas fa-plus-circle me-2"></i>
+                <span class="nav-link-text">إضافة/تعديل قاعة</span>
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">
-                <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                  <i class="fas fa-calendar-week text-dark text-sm opacity-10"></i>
-                </div>
-                <span class="nav-link-text ms-1">جدولة القاعات</span>
+              <a class="nav-link" href="{{ route('admin.facilities.halls.list') }}">
+                <i class="fas fa-list me-2"></i>
+                <span class="nav-link-text">جدولة القاعات</span>
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">
-                <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                  <i class="fas fa-broom text-dark text-sm opacity-10"></i>
-                </div>
-                <span class="nav-link-text ms-1">إدارة توفر المرافق</span>
+              <a class="nav-link" href="{{ route('admin.facilities.manage') }}">
+                <i class="fas fa-cogs me-2"></i>
+                <span class="nav-link-text">إدارة توفير المرافق</span>
               </a>
             </li>
           </ul>
@@ -457,142 +516,144 @@
   
   </aside>
 <script>
-// عند تحميل الصفحة، استرجع الخيارات وطبقها
-  window.addEventListener('DOMContentLoaded', function() {
-    var sidenav = document.getElementById('sidenav-main');
-    var darkMode = localStorage.getItem('darkMode');
-    if (darkMode === 'on') {
-      document.body.classList.add('dark-version');
-      if (sidenav) {
-        sidenav.classList.remove('bg-white');
-        sidenav.classList.add('bg-gradient-dark');
+// Base sidebar functionality
+document.addEventListener('DOMContentLoaded', function() {
+  // Store references to all collapsible elements
+  const collapseElements = document.querySelectorAll('[data-bs-toggle="collapse"]');
+  
+  // Function to close all other menus at the same level
+  function closeOtherMenus(currentMenu) {
+    const parent = currentMenu.closest('.nav-item');
+    const level = parent.parentElement;
+    const siblingMenus = level.querySelectorAll('[data-bs-toggle="collapse"]');
+    
+    siblingMenus.forEach(menu => {
+      if (menu !== currentMenu) {
+        const targetId = menu.getAttribute('data-bs-target');
+        const target = document.querySelector(targetId);
+        if (target && target.classList.contains('show')) {
+          bootstrap.Collapse.getInstance(target).hide();
+          menu.setAttribute('aria-expanded', 'false');
+        }
       }
-      var darkSwitch = document.getElementById('dark-version');
-      if (darkSwitch && !darkSwitch.checked) darkSwitch.checked = true;
+    });
+  }
+
+  // Add click handlers to all collapsible elements
+  collapseElements.forEach(element => {
+    element.addEventListener('click', function(e) {
+      e.preventDefault();
+      
+      // Only close other menus if clicking a top-level or second-level menu
+      const isTopLevel = !element.closest('.collapse');
+      const isSecondLevel = element.closest('.collapse') && !element.closest('.collapse .collapse');
+      
+      if (isTopLevel || isSecondLevel) {
+        closeOtherMenus(this);
+      }
+      
+      // Toggle the clicked menu
+      const targetId = this.getAttribute('data-bs-target');
+      const target = document.querySelector(targetId);
+      
+      if (target) {
+        bootstrap.Collapse.getOrCreateInstance(target).toggle();
+      }
+    });
+  });
+
+  // Initialize active states based on current route
+  const currentPath = window.location.pathname;
+  const activeLink = document.querySelector(`a[href="${currentPath}"]`);
+  
+  if (activeLink) {
+    activeLink.classList.add('active');
+    
+    // Open parent collapses
+    let parent = activeLink.closest('.collapse');
+    while (parent) {
+      const trigger = document.querySelector(`[data-bs-target="#${parent.id}"]`);
+      if (trigger) {
+        trigger.setAttribute('aria-expanded', 'true');
+        parent.classList.add('show');
+      }
+      parent = parent.closest('.nav-item')?.closest('.collapse');
+    }
+  }
+});
+
+// Dark mode handling
+const handleDarkMode = () => {
+  const darkSwitch = document.getElementById('dark-version');
+  const sidenav = document.getElementById('sidenav-main');
+  
+  if (!darkSwitch || !sidenav) return;
+  
+  const updateDarkMode = (isDark) => {
+    if (isDark) {
+      document.body.classList.add('dark-version');
+      sidenav.classList.remove('bg-white');
+      sidenav.classList.add('bg-gradient-dark');
     } else {
       document.body.classList.remove('dark-version');
-      if (sidenav) {
-        sidenav.classList.remove('bg-gradient-dark');
-        sidenav.classList.add('bg-white');
-      }
-      var darkSwitch = document.getElementById('dark-version');
-      if (darkSwitch && darkSwitch.checked) darkSwitch.checked = false;
+      sidenav.classList.remove('bg-gradient-dark');
+      sidenav.classList.add('bg-white');
     }
-  });
-// عند تفعيل أو إلغاء الدارك مود
-  var darkSwitch = document.getElementById('dark-version');
-  if (darkSwitch) {
-    darkSwitch.addEventListener('change', function() {
-      localStorage.setItem('darkMode', darkSwitch.checked ? 'on' : 'off');
-      var sidenav = document.getElementById('sidenav-main');
-      if (darkSwitch.checked) {
-        document.body.classList.add('dark-version');
-        if (sidenav) {
-          sidenav.classList.remove('bg-white');
-          sidenav.classList.add('bg-gradient-dark');
-        }
-      } else {
-        document.body.classList.remove('dark-version');
-        if (sidenav) {
-          sidenav.classList.remove('bg-gradient-dark');
-          sidenav.classList.add('bg-white');
-        }
-      }
-    });
-  }
-// تجاهل خيارات ألوان السايدبار من الكونفيجوراتور
-  document.querySelectorAll('.badge.filter').forEach(function(badge) {
-    badge.addEventListener('click', function(e) {
-      e.preventDefault();
-      return false;
-    });
-  });
-// Sidebar close button for mobile
-document.addEventListener('DOMContentLoaded', function() {
-  var closeBtn = document.getElementById('iconSidenav');
-  var body = document.body;
-  if (closeBtn) {
-    closeBtn.addEventListener('click', function() {
-      body.classList.remove('g-sidenav-pinned');
-      var sidenav = document.getElementById('sidenav-main');
-      if (sidenav) {
-        sidenav.style.transform = 'translateX(-290px)';
-      }
-    });
-  }
-});
-document.addEventListener('DOMContentLoaded', function() {
-  var sidenavToggler = document.getElementById('iconNavbarSidenav');
-  var closeBtn = document.getElementById('iconSidenav');
-  var body = document.body;
-  var sidenav = document.getElementById('sidenav-main');
+    localStorage.setItem('darkMode', isDark ? 'on' : 'off');
+  };
+  
+  // Initialize from localStorage
+  const savedDarkMode = localStorage.getItem('darkMode') === 'on';
+  updateDarkMode(savedDarkMode);
+  darkSwitch.checked = savedDarkMode;
+  
+  // Handle changes
+  darkSwitch.addEventListener('change', () => updateDarkMode(darkSwitch.checked));
+};
 
-  function showSidebar() {
-    body.classList.add('g-sidenav-pinned');
-    if (sidenav) sidenav.style.transform = 'translateX(0)';
-  }
-  function hideSidebar() {
-    body.classList.remove('g-sidenav-pinned');
-    if (sidenav) sidenav.style.transform = 'translateX(-290px)';
-  }
-
-  if (sidenavToggler) {
-    sidenavToggler.addEventListener('click', function() {
-      if (body.classList.contains('g-sidenav-pinned')) {
-        hideSidebar();
-      } else {
-        showSidebar();
-      }
-    });
-  }
-  if (closeBtn) {
-    closeBtn.addEventListener('click', hideSidebar);
-  }
-});
-// --- Robust Sidebar Toggle for All Pages & Devices ---
-(function() {
-  var sidenavToggler = document.getElementById('iconNavbarSidenav');
-  var closeBtn = document.getElementById('iconSidenav');
-  var body = document.body;
-  var sidenav = document.getElementById('sidenav-main');
-  function showSidebar() {
-    body.classList.add('g-sidenav-pinned');
-    if (sidenav) sidenav.style.transform = 'translateX(0)';
-  }
-  function hideSidebar() {
-    body.classList.remove('g-sidenav-pinned');
-    if (sidenav) sidenav.style.transform = 'translateX(-290px)';
-  }
-  function isMobile() {
-    return window.innerWidth <= 991;
-  }
-  if (sidenavToggler) {
-    sidenavToggler.onclick = function(e) {
-      e.preventDefault();
-      if (body.classList.contains('g-sidenav-pinned')) {
-        hideSidebar();
-      } else {
-        showSidebar();
-      }
-    };
-  }
-  if (closeBtn) {
-    closeBtn.onclick = function(e) {
-      e.preventDefault();
-      hideSidebar();
-    };
-  }
-  function handleSidebarOnResize() {
-    if (!sidenav) return;
-    if (isMobile()) {
-      hideSidebar();
-      if (sidenavToggler) sidenavToggler.style.display = 'block';
+// Mobile sidebar handling
+const handleMobileSidebar = () => {
+  const sidenavToggler = document.getElementById('iconNavbarSidenav');
+  const closeBtn = document.getElementById('iconSidenav');
+  const sidenav = document.getElementById('sidenav-main');
+  const body = document.body;
+  
+  const toggleSidebar = (show) => {
+    if (show) {
+      body.classList.add('g-sidenav-pinned');
+      sidenav.style.transform = 'translateX(0)';
     } else {
-      showSidebar();
-      if (sidenavToggler) sidenavToggler.style.display = 'none';
+      body.classList.remove('g-sidenav-pinned');
+      sidenav.style.transform = 'translateX(-290px)';
     }
+  };
+  
+  if (sidenavToggler) {
+    sidenavToggler.addEventListener('click', () => {
+      toggleSidebar(!body.classList.contains('g-sidenav-pinned'));
+    });
   }
-  window.addEventListener('resize', handleSidebarOnResize);
-  handleSidebarOnResize();
-})();
+  
+  if (closeBtn) {
+    closeBtn.addEventListener('click', () => toggleSidebar(false));
+  }
+  
+  // Handle resize
+  const handleResize = () => {
+    const isMobile = window.innerWidth <= 991;
+    toggleSidebar(!isMobile);
+    if (sidenavToggler) {
+      sidenavToggler.style.display = isMobile ? 'block' : 'none';
+    }
+  };
+  
+  window.addEventListener('resize', handleResize);
+  handleResize();
+};
+
+// Initialize all functionality
+document.addEventListener('DOMContentLoaded', () => {
+  handleDarkMode();
+  handleMobileSidebar();
+});
 </script>

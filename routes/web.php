@@ -58,6 +58,23 @@ Route::prefix('admin')->middleware('isAdmin')->name('admin.')->group(function ()
     Route::get('educational-materials/edit', [AdminController::class, 'materialsEdit'])->name('educational-materials.edit');
     Route::get('educational-materials/link', [AdminController::class, 'materialsLink'])->name('educational-materials.link');
     Route::get('educational-materials/list', [AdminController::class, 'materialsList'])->name('educational-materials.list');
+    // المتابعة والإشراف
+    Route::get('supervision/attendance', [AdminController::class, 'supervisionAttendance'])->name('supervision.attendance');
+    Route::get('supervision/complaints', [AdminController::class, 'supervisionComplaints'])->name('supervision.complaints');
+    Route::get('supervision/qr', [AdminController::class, 'supervisionQR'])->name('supervision.qr');
+    // جداول
+    Route::get('tables/create', [AdminController::class, 'tablesCreate'])->name('tables.create');
+    Route::get('tables/edit', [AdminController::class, 'tablesEdit'])->name('tables.edit');
+    Route::get('tables/list', [AdminController::class, 'tablesList'])->name('tables.list');
+    // إدارة القاعات والمرافق
+    Route::prefix('facilities')->name('facilities.')->group(function () {
+        Route::get('halls/create', [AdminController::class, 'hallsCreate'])->name('halls.create');
+        Route::post('halls/store', [AdminController::class, 'hallsStore'])->name('halls.store');
+        Route::get('halls/list', [AdminController::class, 'hallsList'])->name('halls.list');
+        Route::get('manage', [AdminController::class, 'facilitiesManage'])->name('manage');
+    });
+    // مالية
+    Route::get('finance/payments', [AdminController::class, 'financePayments'])->name('finance.payments');
 });
 
 // راوتات المدرس
@@ -73,3 +90,4 @@ Route::prefix('teacher')->middleware('isTeacher')->name('teacher.')->group(funct
     Route::get('profile', [TeacherController::class, 'profile'])->name('profile');
     Route::post('logout', [TeacherController::class, 'logout'])->name('logout');
 });
+

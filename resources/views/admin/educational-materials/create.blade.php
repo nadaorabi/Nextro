@@ -118,63 +118,53 @@
                 إضافة مادة أو دورة جديدة
               </h4>
               <form action="#" method="POST" class="text-start" enctype="multipart/form-data">
-                  <div class="mb-3 row align-items-center">
-                      <label class="form-label col-md-3 col-form-label text-start">اسم المادة أو الدورة</label>
-                      <div class="col-md-9">
-                        <input type="text" name="name" class="form-control" required placeholder="أدخل اسم المادة أو الدورة">
-                      </div>
+                <div class="mb-3">
+                  <label class="form-label">اسم المادة أو الدورة</label>
+                  <input type="text" name="name" class="form-control" required placeholder="أدخل اسم المادة أو الدورة">
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">الوصف</label>
+                  <textarea name="description" class="form-control" rows="3" placeholder="أدخل وصف المادة أو الدورة"></textarea>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">النوع</label>
+                  <select name="type" class="form-select" required>
+                    <option value="">-- اختر --</option>
+                    <option value="مادة">مادة</option>
+                    <option value="دورة">دورة</option>
+                  </select>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">إضافة المادة إلى دورة (اختياري)</label>
+                  <select name="course_id" class="form-select">
+                    <option value="">-- بدون ربط --</option>
+                    <option value="1">دورة البرمجة الشاملة</option>
+                    <option value="2">دورة اللغة الإنجليزية المكثفة</option>
+                    <option value="3">دورة الرياضيات المتقدمة</option>
+                  </select>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">اختر الأستاذ</label>
+                  <div class="form-check mb-2">
+                    <input class="form-check-input" type="radio" name="teacher" id="teacher1" value="1" required>
+                    <label class="form-check-label" for="teacher1">أ. محمد الأحمد</label>
                   </div>
-                  <div class="mb-3 row align-items-center">
-                      <label class="form-label col-md-3 col-form-label text-start">الوصف</label>
-                      <div class="col-md-9">
-                        <textarea name="description" class="form-control" rows="3" placeholder="أدخل وصف المادة أو الدورة"></textarea>
-                      </div>
+                  <div class="form-check mb-2">
+                    <input class="form-check-input" type="radio" name="teacher" id="teacher2" value="2">
+                    <label class="form-check-label" for="teacher2">أ. سارة يوسف</label>
                   </div>
-                  <div class="mb-3 row align-items-center">
-                      <label class="form-label col-md-3 col-form-label text-start">النوع</label>
-                      <div class="col-md-9">
-                        <select name="type" class="form-select" required>
-                            <option value="">-- اختر --</option>
-                            <option value="مادة">مادة</option>
-                            <option value="دورة">دورة</option>
-                        </select>
-                      </div>
+                  <div class="form-check mb-2">
+                    <input class="form-check-input" type="radio" name="teacher" id="teacher3" value="3">
+                    <label class="form-check-label" for="teacher3">د. خالد العلي</label>
                   </div>
-                  <div class="mb-3 row align-items-center">
-                      <label class="form-label col-md-3 col-form-label text-start">إضافة المادة إلى دورة (اختياري)</label>
-                      <div class="col-md-9">
-                        <select name="course_id" class="form-select">
-                            <option value="">-- بدون ربط --</option>
-                            <option value="1">دورة البرمجة الشاملة</option>
-                            <option value="2">دورة اللغة الإنجليزية المكثفة</option>
-                            <option value="3">دورة الرياضيات المتقدمة</option>
-                        </select>
-                      </div>
+                  <div class="form-check mb-2">
+                    <input class="form-check-input" type="radio" name="teacher" id="teacher4" value="4">
+                    <label class="form-check-label" for="teacher4">أ. ريم الحسن</label>
                   </div>
-                  <div class="mb-3 row align-items-center">
-                      <label class="form-label col-md-3 col-form-label text-start">اختر الأستاذ</label>
-                      <div class="col-md-9">
-                        <div class="form-check mb-2">
-                            <input class="form-check-input" type="radio" name="teacher" id="teacher1" value="1" required>
-                            <label class="form-check-label" for="teacher1">أ. محمد الأحمد</label>
-                        </div>
-                        <div class="form-check mb-2">
-                            <input class="form-check-input" type="radio" name="teacher" id="teacher2" value="2">
-                            <label class="form-check-label" for="teacher2">أ. سارة يوسف</label>
-                        </div>
-                        <div class="form-check mb-2">
-                            <input class="form-check-input" type="radio" name="teacher" id="teacher3" value="3">
-                            <label class="form-check-label" for="teacher3">د. خالد العلي</label>
-                        </div>
-                        <div class="form-check mb-2">
-                            <input class="form-check-input" type="radio" name="teacher" id="teacher4" value="4">
-                            <label class="form-check-label" for="teacher4">أ. ريم الحسن</label>
-                        </div>
-                      </div>
-                  </div>
-                  <div class="text-center">
-                      <button type="submit" class="btn btn-primary">إضافة</button>
-                  </div>
+                </div>
+                <div class="text-center">
+                  <button type="submit" class="btn btn-primary">إضافة</button>
+                </div>
               </form>
             </div>
           </div>

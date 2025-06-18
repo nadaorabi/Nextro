@@ -48,54 +48,40 @@
             <div class="card-body text-center">
               <p class="lead">This page is for adding a new admin to the system.</p>
               <form action="#" method="POST" class="text-start" enctype="multipart/form-data">
-                  <div class="mb-3 row align-items-center">
-                      <label class="form-label col-md-3 col-form-label text-start">Full Name</label>
-                      <div class="col-md-9">
-                        <input type="text" name="name" class="form-control" required>
-                      </div>
+                  <div class="mb-3">
+                      <label class="form-label">Full Name</label>
+                      <input type="text" name="name" class="form-control w-100" required>
                   </div>
-                  <div class="mb-3 row align-items-center">
-                      <label class="form-label col-md-3 col-form-label text-start">Email</label>
-                      <div class="col-md-9">
-                        <input type="email" name="email" class="form-control" required>
-                      </div>
+                  <div class="mb-3">
+                      <label class="form-label">Email</label>
+                      <input type="email" name="email" class="form-control w-100" required>
                   </div>
-                  <div class="mb-3 row align-items-center">
-                      <label class="form-label col-md-3 col-form-label text-start">Phone Number</label>
-                      <div class="col-md-9">
-                        <input type="tel" name="phone" class="form-control" required>
-                      </div>
+                  <div class="mb-3">
+                      <label class="form-label">Phone Number</label>
+                      <input type="tel" name="phone" class="form-control w-100" required>
                   </div>
-                  <div class="mb-3 row align-items-center">
-                      <label class="form-label col-md-3 col-form-label text-start">Role</label>
-                      <div class="col-md-9">
-                        <select name="role" class="form-select" required>
-                            <option value="">Select Role</option>
-                            <option value="superadmin">Super Admin</option>
-                            <option value="admin">Admin</option>
-                        </select>
-                      </div>
+                  <div class="mb-3">
+                      <label class="form-label">Role</label>
+                      <select name="role" class="form-select w-100" required>
+                          <option value="">Select Role</option>
+                          <option value="superadmin">Super Admin</option>
+                          <option value="admin">Admin</option>
+                      </select>
                   </div>
-                  <div class="mb-3 row align-items-center">
-                      <label class="form-label col-md-3 col-form-label text-start">Password</label>
-                      <div class="col-md-9">
-                        <input type="password" name="password" class="form-control" required>
-                      </div>
+                  <div class="mb-3">
+                      <label class="form-label">Password</label>
+                      <input type="password" name="password" class="form-control w-100" required>
                   </div>
-                  <div class="mb-3 row align-items-center">
-                      <label class="form-label col-md-3 col-form-label text-start">Confirm Password</label>
-                      <div class="col-md-9">
-                        <input type="password" name="password_confirmation" class="form-control" required>
-                      </div>
+                  <div class="mb-3">
+                      <label class="form-label">Confirm Password</label>
+                      <input type="password" name="password_confirmation" class="form-control w-100" required>
                   </div>
-                  <div class="mb-3 row align-items-center">
-                      <label class="form-label col-md-3 col-form-label text-start">Profile Photo</label>
-                      <div class="col-md-9">
-                        <input type="file" name="photo" class="form-control" accept="image/*">
-                      </div>
+                  <div class="mb-3">
+                      <label class="form-label">Profile Photo</label>
+                      <input type="file" name="photo" class="form-control w-100" accept="image/*">
                   </div>
                   <div class="text-center">
-                      <button type="submit" class="btn btn-primary">Add Admin</button>
+                      <button type="submit" class="btn btn-primary w-100">Add Admin</button>
                   </div>
               </form>
             </div>
