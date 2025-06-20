@@ -15,15 +15,19 @@
     <style>
         .custom-icon-style {
             display: inline-block;
-            transform: translateY(-4px); /* You can adjust this value for vertical alignment */
+            transform: translateY(-4px);
+            /* You can adjust this value for vertical alignment */
         }
+
         @media print {
-            body > *:not(#studentCardPrintArea) {
+            body>*:not(#studentCardPrintArea) {
                 display: none;
             }
+
             .modal-backdrop {
                 display: none !important;
             }
+
             #studentCardModal {
                 display: block !important;
                 opacity: 1 !important;
@@ -35,15 +39,19 @@
                 height: 100% !important;
                 overflow: visible !important;
             }
+
             .modal-dialog {
                 margin: 0 !important;
                 max-width: 100% !important;
                 width: 100% !important;
             }
+
             #studentCardPrintArea {
                 visibility: visible;
             }
-            .modal-footer, .modal-header .btn-close {
+
+            .modal-footer,
+            .modal-header .btn-close {
                 display: none;
             }
         }
@@ -52,11 +60,11 @@
 
 <body class="g-sidenav-show bg-gray-100">
     <div class="min-height-300 bg-primary position-absolute w-100"></div>
-    
+
     @include('admin.parts.sidebar-admin')
 
     <main class="main-content position-relative border-radius-lg overflow-hidden">
-        
+
         <div class="container-fluid py-4">
             <div class="row">
                 <div class="col-12">
@@ -85,17 +93,20 @@
                                     <div class="row">
                                         <div class="col-8">
                                             <div class="numbers">
-                                                <p class="text-sm mb-0 text-uppercase font-weight-bold">Total Students</p>
-                                                <h5 class="font-weight-bolder">1500</h5>
+                                                <p class="text-sm mb-0 text-uppercase font-weight-bold">Total Students
+                                                </p>
+                                                <h5 class="font-weight-bolder">{{ $totalStudents }}</h5>
                                                 <p class="mb-0">
-                                                    <span class="text-success text-sm font-weight-bolder">+50</span>
+                                                    <span class="text-success text-sm font-weight-bolder">+{{ $studentsThisMonth }}</span>
                                                     this month
                                                 </p>
                                             </div>
                                         </div>
                                         <div class="col-4">
-                                            <div class="icon icon-shape bg-gradient-primary shadow-primary text-center rounded-circle">
-                                                <i class="ni ni-hat-3 text-lg opacity-10 custom-icon-style" aria-hidden="true"></i>
+                                            <div
+                                                class="icon icon-shape bg-gradient-primary shadow-primary text-center rounded-circle">
+                                                <i class="ni ni-hat-3 text-lg opacity-10 custom-icon-style"
+                                                    aria-hidden="true"></i>
                                             </div>
                                         </div>
                                     </div>
@@ -110,16 +121,18 @@
                                         <div class="col-8">
                                             <div class="numbers">
                                                 <p class="text-sm mb-0 text-uppercase font-weight-bold">Active</p>
-                                                <h5 class="font-weight-bolder">1450</h5>
+                                                <h5 class="font-weight-bolder">{{ $activeStudents }}</h5>
                                                 <p class="mb-0">
-                                                    <span class="text-success text-sm font-weight-bolder">97%</span>
+                                                    <span class="text-success text-sm font-weight-bolder">{{ round(($activeStudents/$totalStudents)*100) }}%</span>
                                                     of students
                                                 </p>
                                             </div>
                                         </div>
                                         <div class="col-4">
-                                            <div class="icon icon-shape bg-gradient-success shadow-success text-center rounded-circle">
-                                                <i class="ni ni-check-bold text-lg opacity-10 custom-icon-style" aria-hidden="true"></i>
+                                            <div
+                                                class="icon icon-shape bg-gradient-success shadow-success text-center rounded-circle">
+                                                <i class="ni ni-check-bold text-lg opacity-10 custom-icon-style"
+                                                    aria-hidden="true"></i>
                                             </div>
                                         </div>
                                     </div>
@@ -134,15 +147,18 @@
                                         <div class="col-8">
                                             <div class="numbers">
                                                 <p class="text-sm mb-0 text-uppercase font-weight-bold">Graduated</p>
-                                                <h5 class="font-weight-bolder">25</h5>
+                                                <h5 class="font-weight-bolder">{{ $graduatedStudents }}</h5>
                                                 <p class="mb-0">
-                                                    <span class="text-info text-sm font-weight-bolder">5</span> this year
+                                                    <span class="text-info text-sm font-weight-bolder">5</span> this
+                                                    year
                                                 </p>
                                             </div>
                                         </div>
                                         <div class="col-4">
-                                            <div class="icon icon-shape bg-gradient-info shadow-info text-center rounded-circle">
-                                                <i class="ni ni-trophy text-lg opacity-10 custom-icon-style" aria-hidden="true"></i>
+                                            <div
+                                                class="icon icon-shape bg-gradient-info shadow-info text-center rounded-circle">
+                                                <i class="ni ni-trophy text-lg opacity-10 custom-icon-style"
+                                                    aria-hidden="true"></i>
                                             </div>
                                         </div>
                                     </div>
@@ -157,7 +173,7 @@
                                         <div class="col-8">
                                             <div class="numbers">
                                                 <p class="text-sm mb-0 text-uppercase font-weight-bold">Blocked</p>
-                                                <h5 class="font-weight-bolder">25</h5>
+                                                <h5 class="font-weight-bolder">{{ $blockedStudents }}</h5>
                                                 <p class="mb-0">
                                                     <span class="text-danger text-sm font-weight-bolder">account</span>
                                                     blocked
@@ -165,8 +181,10 @@
                                             </div>
                                         </div>
                                         <div class="col-4">
-                                            <div class="icon icon-shape bg-gradient-danger shadow-danger text-center rounded-circle">
-                                                <i class="ni ni-fat-delete text-lg opacity-10 custom-icon-style" aria-hidden="true"></i>
+                                            <div
+                                                class="icon icon-shape bg-gradient-danger shadow-danger text-center rounded-circle">
+                                                <i class="ni ni-fat-delete text-lg opacity-10 custom-icon-style"
+                                                    aria-hidden="true"></i>
                                             </div>
                                         </div>
                                     </div>
@@ -218,218 +236,118 @@
                                         <label class="form-label">Search</label>
                                         <div class="input-group">
                                             <span class="input-group-text"><i class="fas fa-search"></i></span>
-                                            <input id="search-input" type="text" class="form-control" placeholder="Search by name, email, or ID...">
+                                            <input id="search-input" type="text" class="form-control"
+                                                placeholder="Search by name, email, or ID...">
                                         </div>
                                     </div>
                                 </div>
-                           </div>
+                            </div>
                         </div>
                     </div>
 
                     <!-- Students Table -->
                     <div class="card">
-                        <div class="card-header pb-0">
-                           
-                        </div>
                         <div class="card-body px-0 pt-0 pb-2">
                             <div class="table-responsive p-0">
                                 <table id="students-table" class="table align-items-center mb-0">
                                     <thead>
                                         <tr>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Student</th>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">ID</th>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Level</th>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Status</th>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Registration Date</th>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">QR</th>
-                                            <th class="text-secondary opacity-7">Actions</th>
+                                            <th>Student</th>
+                                            <th>ID</th>
+                                            <th>Password</th>
+                                            <th>Status</th>
+                                            <th>Registration Date</th>
+                                            <th>QR</th>
+                                            <th>Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>
-                                                <div class="d-flex px-2 py-1">
-                                                    <div>
-                                                        <img src="{{ asset('images/team-1.jpg') }}" class="avatar avatar-sm me-3" alt="user1">
+                                        @foreach ($students as $student)
+                                            <tr>
+                                                <td>
+                                                    <div class="d-flex px-2 py-1">
+                                                        <div>
+                                                            <img src="{{ asset($student->avatar ?? 'images/default-avatar.png') }}"
+                                                                class="avatar avatar-sm me-3">
+                                                        </div>
+                                                        <div class="d-flex flex-column justify-content-center">
+                                                            <h6 class="mb-0 text-sm">{{ $student->name }}</h6>
+                                                            <p class="text-xs text-secondary mb-0">
+                                                                {{ $student->email ?? '-' }}</p>
+                                                        </div>
                                                     </div>
-                                                    <div class="d-flex flex-column justify-content-center">
-                                                        <h6 class="mb-0 text-sm">Youssef Ahmed</h6>
-                                                        <p class="text-xs text-secondary mb-0">youssef@example.com</p>
+                                                </td>
+                                                <td>
+                                                    <p class="text-xs font-weight-bold mb-0">{{ $student->login_id }}</p>
+                                                </td>
+                                                <td>
+                                                    <p class="text-xs font-weight-bold mb-0">{{ $student->plain_password ?? '-' }}</p>
+                                                </td>
+
+                                                <td>
+                                                    <span
+                                                        class="badge badge-sm {{ $student->is_active ? 'bg-gradient-success' : 'bg-gradient-secondary' }}">
+                                                        {{ $student->is_active ? 'Active' : 'Inactive' }}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <p class="text-xs font-weight-bold mb-0">
+                                                        {{ $student->created_at->format('Y-m-d') }}</p>
+                                                </td>
+                                                <td>
+                                                    <button class="btn btn-link text-secondary p-2 qr-button"
+                                                        data-bs-toggle="modal" data-bs-target="#studentCardModal"
+                                                        data-name="{{ $student->name }}" data-id="{{ $student->login_id }}"
+                                        
+                                                        data-email="{{ $student->email ?? '-' }}"
+                                                        data-avatar="{{ asset($student->avatar ?? 'images/default-avatar.png') }}"
+                                                        data-registration-date="{{ $student->created_at->format('Y-m-d') }}">
+                                                        <i class="fas fa-qrcode"></i>
+                                                    </button>
+                                                </td>
+                                                <td class="align-middle">
+                                                    <div class="d-flex align-items-center gap-2">
+                                                        <a href="{{ route('admin.accounts.students.edit', $student->id) }}"
+                                                            class="btn btn-link text-info p-2">
+                                                            <i class="fas fa-edit"></i>
+                                                        </a>
+                                                        <a href="{{ route('admin.accounts.students.show', $student->id) }}"
+                                                            class="btn btn-link text-primary p-2">
+                                                            <i class="fas fa-eye"></i>
+                                                        </a>
+                                                        <form action="{{ route('admin.accounts.students.destroy', $student->id) }}"
+                                                            method="POST" onsubmit="return confirm('Are you sure?')">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="submit" class="btn btn-link text-danger p-2">
+                                                                <i class="fas fa-trash"></i>
+                                                            </button>
+                                                        </form>
                                                     </div>
-                                                </div>
-                                            </td>
-                                             <td>
-                                                <p class="text-xs font-weight-bold mb-0">STU-001</p>
-                                            </td>
-                                            <td>
-                                                <p class="text-xs font-weight-bold mb-0">Level 3</p>
-                                            </td>
-                                            <td>
-                                                <span class="badge badge-sm bg-gradient-success">Active</span>
-                                            </td>
-                                            <td>
-                                                <p class="text-xs font-weight-bold mb-0">2023-09-01</p>
-                                            </td>
-                                            <td>
-                                                <button class="btn btn-link text-secondary p-2 qr-button" data-bs-toggle="modal" data-bs-target="#studentCardModal"
-                                                    data-name="Youssef Ahmed"
-                                                    data-id="STU-001"
-                                                    data-level="Level 3"
-                                                    data-email="youssef@example.com"
-                                                    data-avatar="{{ asset('images/team-1.jpg') }}"
-                                                    data-registration-date="2023-09-01">
-                                                    <i class="fas fa-qrcode"></i>
-                                                </button>
-                                            </td>
-                                            <td class="align-middle">
-                                                <div class="d-flex align-items-center gap-2">
-                                                    <button class="btn btn-link text-info p-2" data-bs-toggle="modal" data-bs-target="#editStudentModal">
-                                                        <i class="fas fa-edit"></i>
-                                                    </button>
-                                                     <button class="btn btn-link text-primary p-2">
-                                                        <i class="fas fa-eye"></i>
-                                                    </button>
-                                                    <button class="btn btn-link text-danger p-2" data-bs-toggle="modal" data-bs-target="#deleteConfirmModal">
-                                                        <i class="fas fa-trash"></i>
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div class="d-flex px-2 py-1">
-                                                    <div>
-                                                        <img src="{{ asset('images/team-2.jpg') }}" class="avatar avatar-sm me-3" alt="user2">
-                                                    </div>
-                                                    <div class="d-flex flex-column justify-content-center">
-                                                        <h6 class="mb-0 text-sm">Hana Mostafa</h6>
-                                                        <p class="text-xs text-secondary mb-0">hana@example.com</p>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                             <td>
-                                                <p class="text-xs font-weight-bold mb-0">STU-002</p>
-                                            </td>
-                                            <td>
-                                                <p class="text-xs font-weight-bold mb-0">Level 4</p>
-                                            </td>
-                                            <td>
-                                                <span class="badge badge-sm bg-gradient-success">Active</span>
-                                            </td>
-                                            <td>
-                                                <p class="text-xs font-weight-bold mb-0">2022-09-01</p>
-                                            </td>
-                                            <td>
-                                                <button class="btn btn-link text-secondary p-2 qr-button" data-bs-toggle="modal" data-bs-target="#studentCardModal"
-                                                    data-name="Hana Mostafa"
-                                                    data-id="STU-002"
-                                                    data-level="Level 4"
-                                                    data-email="hana@example.com"
-                                                    data-avatar="{{ asset('images/team-2.jpg') }}"
-                                                    data-registration-date="2022-09-01">
-                                                    <i class="fas fa-qrcode"></i>
-                                                </button>
-                                            </td>
-                                            <td class="align-middle">
-                                                <div class="d-flex align-items-center gap-2">
-                                                    <button class="btn btn-link text-info p-2" data-bs-toggle="modal" data-bs-target="#editStudentModal">
-                                                        <i class="fas fa-edit"></i>
-                                                    </button>
-                                                     <button class="btn btn-link text-primary p-2">
-                                                        <i class="fas fa-eye"></i>
-                                                    </button>
-                                                    <button class="btn btn-link text-danger p-2" data-bs-toggle="modal" data-bs-target="#deleteConfirmModal">
-                                                        <i class="fas fa-trash"></i>
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div class="d-flex px-2 py-1">
-                                                    <div>
-                                                        <img src="{{ asset('images/team-3.jpg') }}" class="avatar avatar-sm me-3" alt="user3">
-                                                    </div>
-                                                    <div class="d-flex flex-column justify-content-center">
-                                                        <h6 class="mb-0 text-sm">Khaled Ali</h6>
-                                                        <p class="text-xs text-secondary mb-0">khaled@example.com</p>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                             <td>
-                                                <p class="text-xs font-weight-bold mb-0">STU-003</p>
-                                            </td>
-                                            <td>
-                                                <p class="text-xs font-weight-bold mb-0">Level 2</p>
-                                            </td>
-                                            <td>
-                                                <span class="badge badge-sm bg-gradient-info">Graduated</span>
-                                            </td>
-                                            <td>
-                                                <p class="text-xs font-weight-bold mb-0">2021-09-01</p>
-                                            </td>
-                                            <td>
-                                                <button class="btn btn-link text-secondary p-2 qr-button" data-bs-toggle="modal" data-bs-target="#studentCardModal"
-                                                    data-name="Khaled Ali"
-                                                    data-id="STU-003"
-                                                    data-level="Level 2"
-                                                    data-email="khaled@example.com"
-                                                    data-avatar="{{ asset('images/team-3.jpg') }}"
-                                                    data-registration-date="2021-09-01">
-                                                    <i class="fas fa-qrcode"></i>
-                                                </button>
-                                            </td>
-                                            <td class="align-middle">
-                                                <div class="d-flex align-items-center gap-2">
-                                                    <button class="btn btn-link text-info p-2" data-bs-toggle="modal" data-bs-target="#editStudentModal">
-                                                        <i class="fas fa-edit"></i>
-                                                    </button>
-                                                     <button class="btn btn-link text-primary p-2">
-                                                        <i class="fas fa-eye"></i>
-                                                    </button>
-                                                    <button class="btn btn-link text-danger p-2" data-bs-toggle="modal" data-bs-target="#deleteConfirmModal">
-                                                        <i class="fas fa-trash"></i>
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
+                                                </td>
+                                            </tr>
+                                        @endforeach
                                     </tbody>
                                 </table>
                             </div>
 
                             <!-- Pagination -->
                             <div class="d-flex justify-content-between align-items-center p-3">
-                                <p class="text-sm mb-0">Showing 1-10 of 1500 students</p>
-                                <nav aria-label="Page navigation example">
-                                    <ul class="pagination justify-content-end mb-0">
-                                        <li class="page-item disabled">
-                                            <a class="page-link" href="javascript:;" tabindex="-1">
-                                                <i class="fa fa-angle-left"></i>
-                                                <span class="sr-only">Previous</span>
-                                            </a>
-                                        </li>
-                                        <li class="page-item active"><a class="page-link" href="javascript:;">1</a></li>
-                                        <li class="page-item"><a class="page-link" href="javascript:;">2</a></li>
-                                        <li class="page-item"><a class="page-link" href="javascript:;">...</a></li>
-                                        <li class="page-item"><a class="page-link" href="javascript:;">150</a></li>
-                                        <li class="page-item">
-                                            <a class="page-link" href="javascript:;">
-                                                <i class="fa fa-angle-right"></i>
-                                                <span class="sr-only">Next</span>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </nav>
+                                <p class="text-sm mb-0">Showing {{ $students->firstItem() }} -
+                                    {{ $students->lastItem() }} of {{ $students->total() }} students</p>
+                                {{ $students->links('pagination::bootstrap-4') }}
                             </div>
                         </div>
                     </div>
+
                 </div>
             </div>
         </div>
     </main>
 
     <!-- Modal Student Card -->
-    <div class="modal fade" id="studentCardModal" tabindex="-1" aria-labelledby="studentCardModalLabel" aria-hidden="true">
+    <div class="modal fade" id="studentCardModal" tabindex="-1" aria-labelledby="studentCardModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
@@ -441,7 +359,8 @@
                         <div class="card-body">
                             <!-- Student Image and Name -->
                             <div class="d-flex align-items-center mb-4">
-                                <img src="" id="modal-student-avatar" alt="Student Avatar" class="avatar avatar-xl rounded-circle me-3">
+                                <img src="" id="modal-student-avatar" alt="Student Avatar"
+                                    class="avatar avatar-xl rounded-circle me-3">
                                 <div>
                                     <h5 class="mb-0" id="modal-student-name"></h5>
                                     <p class="text-sm text-muted mb-0" id="modal-student-email"></p>
@@ -456,34 +375,36 @@
                             <!-- Student Details -->
                             <hr class="my-3">
                             <div class="text-center">
-                               <div class="row">
-                                   <div class="col-4">
-                                       <strong class="d-block text-xs text-muted">ID</strong>
-                                       <span id="modal-student-id" class="font-weight-bold"></span>
-                                   </div>
-                                   <div class="col-4">
-                                       <strong class="d-block text-xs text-muted">Level</strong>
-                                       <span id="modal-student-level" class="font-weight-bold"></span>
-                                   </div>
-                                   <div class="col-4">
-                                       <strong class="d-block text-xs text-muted">Registered</strong>
-                                       <span id="modal-student-reg-date" class="font-weight-bold"></span>
-                                   </div>
-                               </div>
+                                <div class="row">
+                                    <div class="col-4">
+                                        <strong class="d-block text-xs text-muted">ID</strong>
+                                        <span id="modal-student-id" class="font-weight-bold"></span>
+                                    </div>
+                                    <div class="col-4">
+                                        <strong class="d-block text-xs text-muted">Level</strong>
+                                        <span id="modal-student-level" class="font-weight-bold"></span>
+                                    </div>
+                                    <div class="col-4">
+                                        <strong class="d-block text-xs text-muted">Registered</strong>
+                                        <span id="modal-student-reg-date" class="font-weight-bold"></span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" onclick="printStudentCard()"><i class="fas fa-print"></i> Print</button>
+                    <button type="button" class="btn btn-primary" onclick="printStudentCard()"><i
+                            class="fas fa-print"></i> Print</button>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Modal Edit Student -->
-    <div class="modal fade" id="editStudentModal" tabindex="-1" aria-labelledby="editStudentModalLabel" aria-hidden="true">
+    <div class="modal fade" id="editStudentModal" tabindex="-1" aria-labelledby="editStudentModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -500,7 +421,7 @@
                             <label class="form-label">Email</label>
                             <input type="email" class="form-control" value="youssef@example.com" required>
                         </div>
-                         <div class="mb-3">
+                        <div class="mb-3">
                             <label class="form-label">Student ID</label>
                             <input type="text" class="form-control" value="STU-001" readonly>
                         </div>
@@ -536,7 +457,8 @@
     </div>
 
     <!-- Modal Delete Confirmation -->
-    <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
+    <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -572,7 +494,7 @@
         }
     </script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const searchInput = document.getElementById('search-input');
             const statusFilter = document.getElementById('status-filter');
             const levelFilter = document.getElementById('level-filter');
@@ -594,7 +516,7 @@
                     const status = row.cells[3].textContent.trim();
                     const registrationDateText = row.cells[4].textContent.trim();
                     const registrationDate = registrationDateText ? new Date(registrationDateText) : null;
-                    
+
                     const searchMatch = name.includes(searchText) || email.includes(searchText) || studentId.includes(searchText);
                     const statusMatch = statusValue === '' || status === statusValue;
                     const levelMatch = levelValue === '' || level === levelValue;
@@ -634,57 +556,57 @@
         });
     </script>
     <script>
-    var qrcode = null; // Declare qrcode variable in a broader scope
+        var qrcode = null; // Declare qrcode variable in a broader scope
 
-    document.addEventListener('DOMContentLoaded', function() {
-        // Initialize QR Code generator
-        qrcode = new QRCode(document.getElementById("qrcode"), {
-            width : 128,
-            height : 128
-        });
-
-        const studentCardModal = document.getElementById('studentCardModal');
-        studentCardModal.addEventListener('show.bs.modal', function (event) {
-            const button = event.relatedTarget;
-            const name = button.getAttribute('data-name');
-            const id = button.getAttribute('data-id');
-            const level = button.getAttribute('data-level');
-            const email = button.getAttribute('data-email');
-            const avatar = button.getAttribute('data-avatar');
-            const regDate = button.getAttribute('data-registration-date');
-
-            const modalTitle = studentCardModal.querySelector('.modal-title');
-            const studentName = studentCardModal.querySelector('#modal-student-name');
-            const studentId = studentCardModal.querySelector('#modal-student-id');
-            const studentLevel = studentCardModal.querySelector('#modal-student-level');
-            const studentEmail = studentCardModal.querySelector('#modal-student-email');
-            const studentAvatar = studentCardModal.querySelector('#modal-student-avatar');
-            const studentRegDate = studentCardModal.querySelector('#modal-student-reg-date');
-            
-            modalTitle.textContent = 'Student ID Card: ' + name;
-            studentName.textContent = name;
-            studentId.textContent = id;
-            studentLevel.textContent = level;
-            studentEmail.textContent = email;
-            studentAvatar.src = avatar;
-            studentRegDate.textContent = regDate;
-
-            // Clear previous QR code and generate new one
-            document.getElementById('qrcode').innerHTML = '';
-            new QRCode(document.getElementById('qrcode'), {
-                text: `Name: ${name}\nID: ${id}\nLevel: ${level}`,
+        document.addEventListener('DOMContentLoaded', function () {
+            // Initialize QR Code generator
+            qrcode = new QRCode(document.getElementById("qrcode"), {
                 width: 128,
-                height: 128,
-                colorDark : "#000000",
-                colorLight : "#ffffff",
-                correctLevel : QRCode.CorrectLevel.H
+                height: 128
+            });
+
+            const studentCardModal = document.getElementById('studentCardModal');
+            studentCardModal.addEventListener('show.bs.modal', function (event) {
+                const button = event.relatedTarget;
+                const name = button.getAttribute('data-name');
+                const id = button.getAttribute('data-id');
+                const level = button.getAttribute('data-level');
+                const email = button.getAttribute('data-email');
+                const avatar = button.getAttribute('data-avatar');
+                const regDate = button.getAttribute('data-registration-date');
+
+                const modalTitle = studentCardModal.querySelector('.modal-title');
+                const studentName = studentCardModal.querySelector('#modal-student-name');
+                const studentId = studentCardModal.querySelector('#modal-student-id');
+                const studentLevel = studentCardModal.querySelector('#modal-student-level');
+                const studentEmail = studentCardModal.querySelector('#modal-student-email');
+                const studentAvatar = studentCardModal.querySelector('#modal-student-avatar');
+                const studentRegDate = studentCardModal.querySelector('#modal-student-reg-date');
+
+                modalTitle.textContent = 'Student ID Card: ' + name;
+                studentName.textContent = name;
+                studentId.textContent = id;
+                studentLevel.textContent = level;
+                studentEmail.textContent = email;
+                studentAvatar.src = avatar;
+                studentRegDate.textContent = regDate;
+
+                // Clear previous QR code and generate new one
+                document.getElementById('qrcode').innerHTML = '';
+                new QRCode(document.getElementById('qrcode'), {
+                    text: `Name: ${name}\nID: ${id}\nLevel: ${level}`,
+                    width: 128,
+                    height: 128,
+                    colorDark: "#000000",
+                    colorLight: "#ffffff",
+                    correctLevel: QRCode.CorrectLevel.H
+                });
             });
         });
-    });
 
-    function printStudentCard() {
-        window.print();
-    }
+        function printStudentCard() {
+            window.print();
+        }
     </script>
     <!-- Github buttons -->
     <script async defer src="https://buttons.github.io/buttons.js"></script>
@@ -692,4 +614,4 @@
     <script src="{{ asset('js/argon-dashboard.min.js?v=2.1.0') }}"></script>
 </body>
 
-</html> 
+</html>

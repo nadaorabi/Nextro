@@ -13,19 +13,21 @@ class AdminSeeder extends Seeder
     {
         // حساب أدمن
         User::updateOrCreate(
-            ['email' => 'admin@example.com'],
+            ['login_id' => '20201020'],
             [
                 'name' => 'Admin',
-                'password' => bcrypt('password'),
+                'mobile' => '0965121663',
+                'password' => bcrypt('12345678'),
                 'role' => 'admin'
             ]
         );
 
         // حساب مدرس
         User::updateOrCreate(
-            ['email' => 'teacher@example.com'],
+            ['login_id' => '20201010'],
             [
                 'name' => 'Teacher',
+                'mobile' => '0965121662',
                 'password' => bcrypt('password'),
                 'role' => 'teacher'
             ]

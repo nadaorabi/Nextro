@@ -4,7 +4,13 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\TeacherController;
-use App\Http\Controllers\AdminController;
+use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\Educational\CategoryController;
+use App\Http\Controllers\Admin\Accounts\StudentController;
+use App\Http\Controllers\Admin\Educational\CourseController;
+use App\Http\Controllers\Admin\Educational\PackageController;
+
+use App\Models\Category;
 
 // الصفحة الرئيسية
 Route::get('/', [HomeController::class, 'ShowHomePage'])->name('home_page');
@@ -47,13 +53,28 @@ Route::prefix('admin')->middleware('isAdmin')->name('admin.')->group(function ()
     Route::get('profile', [AdminController::class, 'profile'])->name('profile');
     Route::post('logout', [AdminController::class, 'logout'])->name('logout');
     // إدارة الحسابات
-    Route::get('accounts/students/create', [AdminController::class, 'studentsCreate'])->name('accounts.students.create');
-    Route::get('accounts/students/list', [AdminController::class, 'studentsList'])->name('accounts.students.list');
+    Route::get('accounts/students/create', [StudentController::class, 'create'])->name('accounts.students.create');
+    Route::post('accounts/students/store', [StudentController::class, 'store'])->name('accounts.students.store');
+    Route::get('accounts/students/list', [StudentController::class, 'index'])->name('accounts.students.list');
+    Route::get('accounts/students/edit', [StudentController::class, 'edit'])->name('accounts.students.edit');
+    Route::get('accounts/students/show', [StudentController::class, 'show'])->name('accounts.students.show');
+    Route::get('accounts/students/destroy', [StudentController::class, 'destroy'])->name('accounts.students.destroy');
+    /////////////
     Route::get('accounts/teachers/create', [AdminController::class, 'teachersCreate'])->name('accounts.teachers.create');
     Route::get('accounts/teachers/list', [AdminController::class, 'teachersList'])->name('accounts.teachers.list');
     Route::get('accounts/admins/create', [AdminController::class, 'adminsCreate'])->name('accounts.admins.create');
     Route::get('accounts/admins/list', [AdminController::class, 'adminsList'])->name('accounts.admins.list');
     // إدارة المواد التعليميه
+    Route::get('educational-categories/create', [CategoryController::class, 'create'])->name('educational-categories.create');
+    Route::post('educational-categories/store', [CategoryController::class, 'store'])->name('educational-categories.store');
+    Route::get('educational-categories/list', [CategoryController::class, 'index'])->name('educational-categories.index');
+
+    Route::get('educational-courses/list', [CourseController::class, 'index'])->name('educational-courses.index');
+    Route::get('educational-courses/create', [CourseController::class, 'create'])->name('educational-courses.create');
+
+    Route::get('educational-packages/list', [PackageController::class, 'index'])->name('educational-packages.index');
+    Route::get('educational-packages/create', [PackageController::class, 'create'])->name('educational-packages.create');
+
     Route::get('educational-materials/create', [AdminController::class, 'materialsCreate'])->name('educational-materials.create');
     Route::get('educational-materials/edit', [AdminController::class, 'materialsEdit'])->name('educational-materials.edit');
     Route::get('educational-materials/link', [AdminController::class, 'materialsLink'])->name('educational-materials.link');

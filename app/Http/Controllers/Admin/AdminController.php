@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Schedule;
 use App\Models\Subject;
@@ -22,12 +23,30 @@ class AdminController extends Controller
         return view('Admin.dashboard');
     }
 
-    public function billing() { return view('admin.billing'); }
-    public function tables() { return view('admin.tables'); }
-    public function students() { return view('admin.students'); }
-    public function QR_scan() { return view('admin.QR-scan'); }
-    public function materials() { return view('admin.materials'); }
-    public function complaints() { return view('admin.complaints'); }
+    public function billing()
+    {
+        return view('admin.billing');
+    }
+    public function tables()
+    {
+        return view('admin.tables');
+    }
+    public function students()
+    {
+        return view('admin.students');
+    }
+    public function QR_scan()
+    {
+        return view('admin.QR-scan');
+    }
+    public function materials()
+    {
+        return view('admin.materials');
+    }
+    public function complaints()
+    {
+        return view('admin.complaints');
+    }
     public function finance()
     {
         return view('admin.finance.finance');
@@ -36,32 +55,83 @@ class AdminController extends Controller
     {
         return view('admin.finance.reports');
     }
-    public function profile() { return view('admin.profile'); }
+    public function profile()
+    {
+        return view('admin.profile');
+    }
 
     // إدارة حسابات: طلاب
-    public function studentsCreate() { return view('admin.accounts.students-create'); }
-    public function studentsList() { return view('admin.accounts.students-list'); }
+    public function studentsCreate()
+    {
+        return view('admin.accounts.students-create');
+    }
+    public function studentsList()
+    {
+        return view('admin.accounts.students-list');
+    }
     // إدارة حسابات: أساتذة
-    public function teachersCreate() { return view('admin.accounts.teachers-create'); }
-    public function teachersList() { return view('admin.accounts.teachers-list'); }
+    public function teachersCreate()
+    {
+        return view('admin.accounts.teachers-create');
+    }
+    public function teachersList()
+    {
+        return view('admin.accounts.teachers-list');
+    }
     // إدارة حسابات: مسؤولين
-    public function adminsCreate() { return view('admin.accounts.admins-create'); }
-    public function adminsList() { return view('admin.accounts.admins-list'); }
+    public function adminsCreate()
+    {
+        return view('admin.accounts.admins-create');
+    }
+    public function adminsList()
+    {
+        return view('admin.accounts.admins-list');
+    }
 
     // Educational Materials Management
-    public function materialsCreate() { return view('admin.educational-materials.create'); }
-    public function materialsEdit() { return view('admin.educational-materials.edit'); }
-    public function materialsLink() { return view('admin.educational-materials.link'); }
-    public function materialsList() { return view('admin.educational-materials.list'); }
+    public function materialsCreate()
+    {
+        return view('admin.educational-materials.create');
+    }
+    public function materialsEdit()
+    {
+        return view('admin.educational-materials.edit');
+    }
+    public function materialsLink()
+    {
+        return view('admin.educational-materials.link');
+    }
+    public function materialsList()
+    {
+        return view('admin.educational-materials.list');
+    }
 
-    public function supervisionAttendance() { return view('admin.supervision.attendance'); }
-    public function supervisionComplaints() { return view('admin.supervision.complaints'); }
-    public function supervisionQR() { return view('admin.supervision.qr'); }
+    public function supervisionAttendance()
+    {
+        return view('admin.supervision.attendance');
+    }
+    public function supervisionComplaints()
+    {
+        return view('admin.supervision.complaints');
+    }
+    public function supervisionQR()
+    {
+        return view('admin.supervision.qr');
+    }
 
     // جداول
-    public function tablesCreate() { return view('admin.tables.create'); }
-    public function tablesEdit() { return view('admin.tables.edit'); }
-    public function tablesList() { return view('admin.tables.list'); }
+    public function tablesCreate()
+    {
+        return view('admin.tables.create');
+    }
+    public function tablesEdit()
+    {
+        return view('admin.tables.edit');
+    }
+    public function tablesList()
+    {
+        return view('admin.tables.list');
+    }
     // إدارة القاعات والمرافق
     public function hallsCreate()
     {
@@ -81,7 +151,7 @@ class AdminController extends Controller
 
         // Here you would typically store the hall in your database
         // For now, we'll just redirect back with success message
-        
+
         return redirect()->route('admin.facilities.halls.list')
             ->with('success', 'Hall created successfully');
     }
@@ -91,7 +161,10 @@ class AdminController extends Controller
         return view('admin.facilities.halls-list');
     }
 
-    public function facilitiesManage() { return view('admin.facilities.facilities-manage'); }
+    public function facilitiesManage()
+    {
+        return view('admin.facilities.facilities-manage');
+    }
 
     // مالية
     public function financePayments()
@@ -150,7 +223,7 @@ class AdminController extends Controller
     public function updatePayment(Request $request, $id)
     {
         $payment = Payment::findOrFail($id);
-        
+
         $validated = $request->validate([
             'amount' => 'sometimes|numeric|min:0',
             'type' => 'sometimes|in:tuition,books,activities,other',
@@ -185,12 +258,12 @@ class AdminController extends Controller
     public function deletePayment($id)
     {
         $payment = Payment::findOrFail($id);
-        
+
         // حذف الإيصال المرتبط إن وجد
         if ($payment->receipt) {
             $payment->receipt->delete();
         }
-        
+
         $payment->delete();
 
         return response()->json([
@@ -205,7 +278,7 @@ class AdminController extends Controller
     public function generateReceipt($id)
     {
         $payment = Payment::with('student')->findOrFail($id);
-        
+
         // إنشاء PDF
         $pdf = PDF::loadView('admin.finance.receipt-pdf', [
             'payment' => $payment
@@ -213,4 +286,4 @@ class AdminController extends Controller
 
         return $pdf->download('receipt-' . $payment->id . '.pdf');
     }
-} 
+}
