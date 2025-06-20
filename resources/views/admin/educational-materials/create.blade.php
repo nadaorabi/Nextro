@@ -105,9 +105,7 @@
 <body class="g-sidenav-show bg-gray-100">
   @include('admin.parts.sidebar-admin')
   <main class="main-content position-relative border-radius-lg ">
-    <div class="container mt-4 text-center">
-      <h1 class="welcome-animated mb-4">إضافة مادة أو دورة جديدة</h1>
-    </div>
+   
     <div class="container py-4">
       <div class="row justify-content-center">
         <div class="col-12" style="max-width:900px;margin:auto;">

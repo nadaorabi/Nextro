@@ -1,314 +1,514 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <link rel="apple-touch-icon" sizes="76x76" href="{{ asset('images/apple-icon.png') }}">
-  <link rel="icon" type="image/png" href="{{ asset('images/favicon.png') }}">
-  <title>Student List</title>
-  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
-  <link href="https://demos.creative-tim.com/argon-dashboard-pro/assets/css/nucleo-icons.css" rel="stylesheet" />
-  <link href="https://demos.creative-tim.com/argon-dashboard-pro/assets/css/nucleo-svg.css" rel="stylesheet" />
-  <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
-  <link id="pagestyle" href="{{ asset('css/argon-dashboard.css?v=2.1.0') }}" rel="stylesheet" />
-</head>
-<body class="g-sidenav-show bg-gray-100">
-  @include('admin.parts.sidebar-admin')
-  <main class="main-content position-relative border-radius-lg ">
-    <div class="container mt-4 text-center">
-      <h1 class="welcome-animated">Student List</h1>
-    </div>
-    <style>
-      .welcome-animated {
-        display: inline-block;
-        font-size: 2.5rem;
-        font-weight: bold;
-        color: #007bff;
-        animation: bounce 1.5s infinite alternate, gradientMove 3s linear infinite;
-        letter-spacing: 2px;
-        margin-top: 20px;
-        background: linear-gradient(90deg, #007bff, #00c6ff, #007bff);
-        background-size: 200% 200%;
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-      }
-      @keyframes bounce {
-        0%   { transform: translateY(0); }
-        100% { transform: translateY(-20px); }
-      }
-      @keyframes gradientMove {
-        0% { background-position: 0% 50%; }
-        100% { background-position: 100% 50%; }
-      }
-      .students-filters {
-        display: flex;
-        gap: 1rem;
-        flex-wrap: wrap;
-        justify-content: flex-start;
-        margin-bottom: 1.5rem;
-      }
-      .students-filters .filter-btn {
-        background: #7b8cff;
-        color: #fff;
-        border: none;
-        border-radius: 2rem;
-        padding: 0.5rem 1.2rem;
-        font-weight: bold;
-        font-size: 1rem;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        opacity: 0.85;
-        transition: background 0.2s, opacity 0.2s;
-      }
-      .students-filters .filter-btn.active, .students-filters .filter-btn:hover {
-        background: linear-gradient(90deg, #7b8cff, #5e72e4);
-        opacity: 1;
-      }
-      .students-filters .filter-count {
-        background: #fff;
-        color: #7b8cff;
-        border-radius: 1rem;
-        padding: 0 0.6em;
-        font-size: 0.9em;
-        font-weight: bold;
-      }
-      .students-search-box {
-        background: #e3eaff;
-        border-radius: 2rem;
-        padding: 0.7rem 1.5rem;
-        display: flex;
-        align-items: center;
-        gap: 0.7rem;
-        margin-bottom: 1.5rem;
-        max-width: 500px;
-        margin-left: auto;
-        margin-right: auto;
-      }
-      .students-search-box input {
-        border: none;
-        background: transparent;
-        outline: none;
-        width: 100%;
-        font-size: 1.1rem;
-        color: #333;
-      }
-      .students-table-header {
-        background: linear-gradient(90deg, #7b8cff, #5e72e4);
-        color: #fff;
-        border-radius: 1rem 1rem 0 0;
-        padding: 1rem 1.5rem;
-        font-size: 1.1rem;
-        font-weight: bold;
-        margin-bottom: 0;
-      }
-      .students-table th, .students-table td {
-        vertical-align: middle !important;
-      }
-      .students-table .student-img {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        object-fit: cover;
-        border: 2px solid #7b8cff;
-        margin-left: 0.5rem;
-      }
-      .students-table .student-name {
-        font-weight: bold;
-        color: #3a3a7c;
-        font-size: 1.1rem;
-      }
-      .students-table .student-course {
-        font-weight: bold;
-      }
-      .students-table .student-action {
-        font-size: 1.3rem;
-        color: #5e72e4;
-        background: #e3eaff;
-        border-radius: 50%;
-        width: 38px;
-        height: 38px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin: 0 2px;
-        transition: background 0.2s, color 0.2s;
-        border: none;
-      }
-      .students-table .student-action:hover {
-        background: #5e72e4;
-        color: #fff;
-      }
-    </style>
-    <div class="container-fluid py-4">
-      <div class="students-filters mb-3">
-        <button class="filter-btn active" type="button" data-course="all"><i class="fas fa-users"></i> All <span class="filter-count">6</span></button>
-        <button class="filter-btn" type="button" data-course="mathematics"><i class="fas fa-calculator"></i> Mathematics <span class="filter-count">0</span></button>
-        <button class="filter-btn" type="button" data-course="science"><i class="fas fa-flask"></i> Science <span class="filter-count">2</span></button>
-        <button class="filter-btn" type="button" data-course="english"><i class="fas fa-language"></i> English <span class="filter-count">1</span></button>
-        <button class="filter-btn" type="button" data-course="history"><i class="fas fa-university"></i> History <span class="filter-count">1</span></button>
-      </div>
-      <div class="students-search-box mb-3">
-        <i class="fas fa-search" style="color:#7b8cff;font-size:1.3rem;"></i>
-        <input type="text" id="studentSearchInput" placeholder="Search student by name...">
-      </div>
-      <div class="students-table-header">Showing 6 students</div>
-      <div class="table-responsive">
-        <table class="table students-table align-middle mb-0">
-          <thead>
-            <tr>
-              <th>Student</th>
-              <th>Course</th>
-              <th>Email</th>
-              <th>Phone</th>
-              <th>Contact</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody id="studentsTableBody">
-            <tr data-course="mathematics">
-              <td>
-                <img src="https://randomuser.me/api/portraits/men/32.jpg" class="student-img" alt="Ali Hassan">
-                <span class="student-name">Ali Hassan</span>
-              </td>
-              <td><span class="student-course" style="color:#6c63ff">Mathematics</span></td>
-              <td><i class="fas fa-envelope me-1"></i> ali@example.com</td>
-              <td><i class="fas fa-phone me-1"></i> +20 123 456 7890</td>
-              <td>
-                <a href="https://wa.me/201234567890" target="_blank" class="student-action" title="WhatsApp"><i class="fab fa-whatsapp" style="color:#25d366"></i></a>
-              </td>
-              <td>
-                <div class="d-flex justify-content-center gap-2">
-                  <button class="student-action" title="Edit"><i class="fas fa-pen"></i></button>
-                  <button class="student-action" title="Delete"><i class="fas fa-trash"></i></button>
-                </div>
-              </td>
-            </tr>
-            <tr data-course="science">
-              <td>
-                <img src="https://randomuser.me/api/portraits/women/44.jpg" class="student-img" alt="Sara Ahmed">
-                <span class="student-name">Sara Ahmed</span>
-              </td>
-              <td><span class="student-course" style="color:#00b894">Science</span></td>
-              <td><i class="fas fa-envelope me-1"></i> sara@example.com</td>
-              <td><i class="fas fa-phone me-1"></i> +20 123 456 7891</td>
-              <td>
-                <a href="https://wa.me/201234567891" target="_blank" class="student-action" title="WhatsApp"><i class="fab fa-whatsapp" style="color:#25d366"></i></a>
-              </td>
-              <td>
-                <div class="d-flex justify-content-center gap-2">
-                  <button class="student-action" title="Edit"><i class="fas fa-pen"></i></button>
-                  <button class="student-action" title="Delete"><i class="fas fa-trash"></i></button>
-                </div>
-              </td>
-            </tr>
-            <tr data-course="english">
-              <td>
-                <img src="https://randomuser.me/api/portraits/men/45.jpg" class="student-img" alt="John Smith">
-                <span class="student-name">John Smith</span>
-              </td>
-              <td><span class="student-course" style="color:#fdcb6e">English</span></td>
-              <td><i class="fas fa-envelope me-1"></i> john@example.com</td>
-              <td><i class="fas fa-phone me-1"></i> +20 123 456 7892</td>
-              <td>
-                <a href="https://wa.me/201234567892" target="_blank" class="student-action" title="WhatsApp"><i class="fab fa-whatsapp" style="color:#25d366"></i></a>
-              </td>
-              <td>
-                <div class="d-flex justify-content-center gap-2">
-                  <button class="student-action" title="Edit"><i class="fas fa-pen"></i></button>
-                  <button class="student-action" title="Delete"><i class="fas fa-trash"></i></button>
-                </div>
-              </td>
-            </tr>
-            <tr data-course="science">
-              <td>
-                <img src="https://randomuser.me/api/portraits/men/46.jpg" class="student-img" alt="Omar Khaled">
-                <span class="student-name">Omar Khaled</span>
-              </td>
-              <td><span class="student-course" style="color:#00b894">Science</span></td>
-              <td><i class="fas fa-envelope me-1"></i> omar@example.com</td>
-              <td><i class="fas fa-phone me-1"></i> +20 123 456 7893</td>
-              <td>
-                <a href="https://wa.me/201234567893" target="_blank" class="student-action" title="WhatsApp"><i class="fab fa-whatsapp" style="color:#25d366"></i></a>
-              </td>
-              <td>
-                <div class="d-flex justify-content-center gap-2">
-                  <button class="student-action" title="Edit"><i class="fas fa-pen"></i></button>
-                  <button class="student-action" title="Delete"><i class="fas fa-trash"></i></button>
-                </div>
-              </td>
-            </tr>
-            <tr data-course="mathematics">
-              <td>
-                <img src="https://randomuser.me/api/portraits/women/47.jpg" class="student-img" alt="Nada Adel">
-                <span class="student-name">Nada Adel</span>
-              </td>
-              <td><span class="student-course" style="color:#6c63ff">Mathematics</span></td>
-              <td><i class="fas fa-envelope me-1"></i> nada@example.com</td>
-              <td><i class="fas fa-phone me-1"></i> +20 123 456 7894</td>
-              <td>
-                <a href="https://wa.me/201234567894" target="_blank" class="student-action" title="WhatsApp"><i class="fab fa-whatsapp" style="color:#25d366"></i></a>
-              </td>
-              <td>
-                <div class="d-flex justify-content-center gap-2">
-                  <button class="student-action" title="Edit"><i class="fas fa-pen"></i></button>
-                  <button class="student-action" title="Delete"><i class="fas fa-trash"></i></button>
-                </div>
-              </td>
-            </tr>
-            <tr data-course="history">
-              <td>
-                <img src="https://randomuser.me/api/portraits/men/48.jpg" class="student-img" alt="Kareem Samir">
-                <span class="student-name">Kareem Samir</span>
-              </td>
-              <td><span class="student-course" style="color:#636e72">History</span></td>
-              <td><i class="fas fa-envelope me-1"></i> kareem@example.com</td>
-              <td><i class="fas fa-phone me-1"></i> +20 123 456 7895</td>
-              <td>
-                <a href="https://wa.me/201234567895" target="_blank" class="student-action" title="WhatsApp"><i class="fab fa-whatsapp" style="color:#25d366"></i></a>
-              </td>
-              <td>
-                <div class="d-flex justify-content-center gap-2">
-                  <button class="student-action" title="Edit"><i class="fas fa-pen"></i></button>
-                  <button class="student-action" title="Delete"><i class="fas fa-trash"></i></button>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-    <script>
-      // بحث فوري بالاسم
-      document.getElementById('studentSearchInput').addEventListener('input', function() {
-        const value = this.value.trim().toLowerCase();
-        document.querySelectorAll('#studentsTableBody tr').forEach(row => {
-          const name = row.querySelector('.student-name').textContent.toLowerCase();
-          row.style.display = name.includes(value) ? '' : 'none';
-        });
-      });
+<html lang="en" dir="LTR">
 
-      // فلترة حسب الكورس
-      document.querySelectorAll('.students-filters .filter-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-          document.querySelectorAll('.students-filters .filter-btn').forEach(b => b.classList.remove('active'));
-          this.classList.add('active');
-          const course = this.getAttribute('data-course');
-          document.querySelectorAll('#studentsTableBody tr').forEach(row => {
-            if (course === 'all' || row.getAttribute('data-course') === course) {
-              row.style.display = '';
-            } else {
-              row.style.display = 'none';
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="apple-touch-icon" sizes="76x76" href="{{ asset('images/apple-icon.png') }}">
+    <link rel="icon" type="image/png" href="{{ asset('images/favicon.png') }}">
+    <title>Student Accounts Management</title>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
+    <link href="https://demos.creative-tim.com/argon-dashboard-pro/assets/css/nucleo-icons.css" rel="stylesheet" />
+    <link href="https://demos.creative-tim.com/argon-dashboard-pro/assets/css/nucleo-svg.css" rel="stylesheet" />
+    <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+    <link id="pagestyle" href="{{ asset('css/argon-dashboard.css?v=2.1.0') }}" rel="stylesheet" />
+    <style>
+        .custom-icon-style {
+            display: inline-block;
+            transform: translateY(-4px); /* You can adjust this value for vertical alignment */
+        }
+    </style>
+</head>
+
+<body class="g-sidenav-show bg-gray-100">
+    <div class="min-height-300 bg-primary position-absolute w-100"></div>
+    
+    @include('admin.parts.sidebar-admin')
+
+    <main class="main-content position-relative border-radius-lg overflow-hidden">
+        
+        <div class="container-fluid py-4">
+            <div class="row">
+                <div class="col-12">
+                    <!-- Welcome Card -->
+                    <div class="card mb-4">
+                        <div class="card-body p-3">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <h1 class="text-gradient text-primary">Student Accounts Management 🎓</h1>
+                                    <p class="mb-0">Manage, add, and edit student accounts</p>
+                                </div>
+                                <div class="col-lg-6 text-end">
+                                    <a href="{{ url('admin/accounts/students/create') }}" class="btn btn-primary mb-0">
+                                        <i class="fas fa-plus"></i>&nbsp;&nbsp;Add New Student
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Statistics Cards -->
+                    <div class="row mb-4">
+                        <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+                            <div class="card">
+                                <div class="card-body p-3">
+                                    <div class="row">
+                                        <div class="col-8">
+                                            <div class="numbers">
+                                                <p class="text-sm mb-0 text-uppercase font-weight-bold">Total Students</p>
+                                                <h5 class="font-weight-bolder">1500</h5>
+                                                <p class="mb-0">
+                                                    <span class="text-success text-sm font-weight-bolder">+50</span>
+                                                    this month
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="col-4">
+                                            <div class="icon icon-shape bg-gradient-primary shadow-primary text-center rounded-circle">
+                                                <i class="ni ni-hat-3 text-lg opacity-10 custom-icon-style" aria-hidden="true"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+                            <div class="card">
+                                <div class="card-body p-3">
+                                    <div class="row">
+                                        <div class="col-8">
+                                            <div class="numbers">
+                                                <p class="text-sm mb-0 text-uppercase font-weight-bold">Active</p>
+                                                <h5 class="font-weight-bolder">1450</h5>
+                                                <p class="mb-0">
+                                                    <span class="text-success text-sm font-weight-bolder">97%</span>
+                                                    of students
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="col-4">
+                                            <div class="icon icon-shape bg-gradient-success shadow-success text-center rounded-circle">
+                                                <i class="ni ni-check-bold text-lg opacity-10 custom-icon-style" aria-hidden="true"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+                            <div class="card">
+                                <div class="card-body p-3">
+                                    <div class="row">
+                                        <div class="col-8">
+                                            <div class="numbers">
+                                                <p class="text-sm mb-0 text-uppercase font-weight-bold">Graduated</p>
+                                                <h5 class="font-weight-bolder">25</h5>
+                                                <p class="mb-0">
+                                                    <span class="text-info text-sm font-weight-bolder">5</span> this year
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="col-4">
+                                            <div class="icon icon-shape bg-gradient-info shadow-info text-center rounded-circle">
+                                                <i class="ni ni-trophy text-lg opacity-10 custom-icon-style" aria-hidden="true"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-3 col-sm-6">
+                            <div class="card">
+                                <div class="card-body p-3">
+                                    <div class="row">
+                                        <div class="col-8">
+                                            <div class="numbers">
+                                                <p class="text-sm mb-0 text-uppercase font-weight-bold">Blocked</p>
+                                                <h5 class="font-weight-bolder">25</h5>
+                                                <p class="mb-0">
+                                                    <span class="text-danger text-sm font-weight-bolder">account</span>
+                                                    blocked
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="col-4">
+                                            <div class="icon icon-shape bg-gradient-danger shadow-danger text-center rounded-circle">
+                                                <i class="ni ni-fat-delete text-lg opacity-10 custom-icon-style" aria-hidden="true"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Filters -->
+                    <div class="card mb-4">
+                        <div class="card-body p-3">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="form-label">Status</label>
+                                        <select id="status-filter" class="form-select">
+                                            <option value="">All Statuses</option>
+                                            <option>Active</option>
+                                            <option>Graduated</option>
+                                            <option>Blocked</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="form-label">Level</label>
+                                        <select id="level-filter" class="form-select">
+                                            <option value="">All Levels</option>
+                                            <option>Level 1</option>
+                                            <option>Level 2</option>
+                                            <option>Level 3</option>
+                                            <option>Level 4</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="form-label">Registration Date</label>
+                                        <select id="date-filter" class="form-select">
+                                            <option value="">All Dates</option>
+                                            <option value="this_month">This Month</option>
+                                            <option value="last_month">Last Month</option>
+                                            <option value="last_3_months">Last 3 Months</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="form-label">Search</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="fas fa-search"></i></span>
+                                            <input id="search-input" type="text" class="form-control" placeholder="Search by name, email, or ID...">
+                                        </div>
+                                    </div>
+                                </div>
+                           </div>
+                        </div>
+                    </div>
+
+                    <!-- Students Table -->
+                    <div class="card">
+                        <div class="card-header pb-0">
+                           
+                        </div>
+                        <div class="card-body px-0 pt-0 pb-2">
+                            <div class="table-responsive p-0">
+                                <table id="students-table" class="table align-items-center mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Student</th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">ID</th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Level</th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Status</th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Registration Date</th>
+                                            <th class="text-secondary opacity-7">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex px-2 py-1">
+                                                    <div>
+                                                        <img src="{{ asset('images/team-1.jpg') }}" class="avatar avatar-sm me-3" alt="user1">
+                                                    </div>
+                                                    <div class="d-flex flex-column justify-content-center">
+                                                        <h6 class="mb-0 text-sm">Youssef Ahmed</h6>
+                                                        <p class="text-xs text-secondary mb-0">youssef@example.com</p>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                             <td>
+                                                <p class="text-xs font-weight-bold mb-0">STU-001</p>
+                                            </td>
+                                            <td>
+                                                <p class="text-xs font-weight-bold mb-0">Level 3</p>
+                                            </td>
+                                            <td>
+                                                <span class="badge badge-sm bg-gradient-success">Active</span>
+                                            </td>
+                                            <td>
+                                                <p class="text-xs font-weight-bold mb-0">2023-09-01</p>
+                                            </td>
+                                            <td class="align-middle">
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <button class="btn btn-link text-info p-2" data-bs-toggle="modal" data-bs-target="#editStudentModal">
+                                                        <i class="fas fa-edit"></i>
+                                                    </button>
+                                                     <button class="btn btn-link text-primary p-2">
+                                                        <i class="fas fa-eye"></i>
+                                                    </button>
+                                                    <button class="btn btn-link text-danger p-2" data-bs-toggle="modal" data-bs-target="#deleteConfirmModal">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex px-2 py-1">
+                                                    <div>
+                                                        <img src="{{ asset('images/team-2.jpg') }}" class="avatar avatar-sm me-3" alt="user2">
+                                                    </div>
+                                                    <div class="d-flex flex-column justify-content-center">
+                                                        <h6 class="mb-0 text-sm">Hana Mostafa</h6>
+                                                        <p class="text-xs text-secondary mb-0">hana@example.com</p>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                             <td>
+                                                <p class="text-xs font-weight-bold mb-0">STU-002</p>
+                                            </td>
+                                            <td>
+                                                <p class="text-xs font-weight-bold mb-0">Level 4</p>
+                                            </td>
+                                            <td>
+                                                <span class="badge badge-sm bg-gradient-success">Active</span>
+                                            </td>
+                                            <td>
+                                                <p class="text-xs font-weight-bold mb-0">2022-09-01</p>
+                                            </td>
+                                            <td class="align-middle">
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <button class="btn btn-link text-info p-2" data-bs-toggle="modal" data-bs-target="#editStudentModal">
+                                                        <i class="fas fa-edit"></i>
+                                                    </button>
+                                                     <button class="btn btn-link text-primary p-2">
+                                                        <i class="fas fa-eye"></i>
+                                                    </button>
+                                                    <button class="btn btn-link text-danger p-2" data-bs-toggle="modal" data-bs-target="#deleteConfirmModal">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex px-2 py-1">
+                                                    <div>
+                                                        <img src="{{ asset('images/team-3.jpg') }}" class="avatar avatar-sm me-3" alt="user3">
+                                                    </div>
+                                                    <div class="d-flex flex-column justify-content-center">
+                                                        <h6 class="mb-0 text-sm">Khaled Ali</h6>
+                                                        <p class="text-xs text-secondary mb-0">khaled@example.com</p>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                             <td>
+                                                <p class="text-xs font-weight-bold mb-0">STU-003</p>
+                                            </td>
+                                            <td>
+                                                <p class="text-xs font-weight-bold mb-0">Level 2</p>
+                                            </td>
+                                            <td>
+                                                <span class="badge badge-sm bg-gradient-info">Graduated</span>
+                                            </td>
+                                            <td>
+                                                <p class="text-xs font-weight-bold mb-0">2021-09-01</p>
+                                            </td>
+                                            <td class="align-middle">
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <button class="btn btn-link text-info p-2" data-bs-toggle="modal" data-bs-target="#editStudentModal">
+                                                        <i class="fas fa-edit"></i>
+                                                    </button>
+                                                     <button class="btn btn-link text-primary p-2">
+                                                        <i class="fas fa-eye"></i>
+                                                    </button>
+                                                    <button class="btn btn-link text-danger p-2" data-bs-toggle="modal" data-bs-target="#deleteConfirmModal">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Pagination -->
+                            <div class="d-flex justify-content-between align-items-center p-3">
+                                <p class="text-sm mb-0">Showing 1-10 of 1500 students</p>
+                                <nav aria-label="Page navigation example">
+                                    <ul class="pagination justify-content-end mb-0">
+                                        <li class="page-item disabled">
+                                            <a class="page-link" href="javascript:;" tabindex="-1">
+                                                <i class="fa fa-angle-left"></i>
+                                                <span class="sr-only">Previous</span>
+                                            </a>
+                                        </li>
+                                        <li class="page-item active"><a class="page-link" href="javascript:;">1</a></li>
+                                        <li class="page-item"><a class="page-link" href="javascript:;">2</a></li>
+                                        <li class="page-item"><a class="page-link" href="javascript:;">...</a></li>
+                                        <li class="page-item"><a class="page-link" href="javascript:;">150</a></li>
+                                        <li class="page-item">
+                                            <a class="page-link" href="javascript:;">
+                                                <i class="fa fa-angle-right"></i>
+                                                <span class="sr-only">Next</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal Edit Student -->
+    <div class="modal fade" id="editStudentModal" tabindex="-1" aria-labelledby="editStudentModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editStudentModalLabel">Edit Student Data</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="mb-3">
+                            <label class="form-label">Full Name</label>
+                            <input type="text" class="form-control" value="Youssef Ahmed" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-control" value="youssef@example.com" required>
+                        </div>
+                         <div class="mb-3">
+                            <label class="form-label">Student ID</label>
+                            <input type="text" class="form-control" value="STU-001" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Level</label>
+                            <select class="form-select" required>
+                                <option>Level 1</option>
+                                <option>Level 2</option>
+                                <option selected>Level 3</option>
+                                <option>Level 4</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Phone Number</label>
+                            <input type="tel" class="form-control" value="0123456789">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Delete Confirmation -->
+    <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteConfirmModalLabel">Confirm Deletion</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="mb-0">Are you sure you want to delete the student account "Youssef Ahmed"?</p>
+                    <p class="text-danger mb-0">This action cannot be undone.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger">Confirm Deletion</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--   Core JS Files   -->
+    <script src="{{ asset('js/core/popper.min.js') }}"></script>
+    <script src="{{ asset('js/core/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('js/plugins/perfect-scrollbar.min.js') }}"></script>
+    <script src="{{ asset('js/plugins/smooth-scrollbar.min.js') }}"></script>
+    <script>
+        var win = navigator.platform.indexOf('Win') > -1;
+        if (win && document.querySelector('#sidenav-scrollbar')) {
+            var options = {
+                damping: '0.5'
             }
-          });
-        });
-      });
+            Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
+        }
     </script>
-  </main>
-  <script src="{{ asset('js/core/popper.min.js') }}"></script>
-  <script src="{{ asset('js/core/bootstrap.min.js') }}"></script>
-  <script src="{{ asset('js/plugins/perfect-scrollbar.min.js') }}"></script>
-  <script src="{{ asset('js/plugins/smooth-scrollbar.min.js') }}"></script>
-  <script src="{{ asset('js/argon-dashboard.min.js?v=2.1.0') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('search-input');
+            const statusFilter = document.getElementById('status-filter');
+            const levelFilter = document.getElementById('level-filter');
+            const dateFilter = document.getElementById('date-filter');
+            const studentsTable = document.getElementById('students-table');
+            const tableRows = studentsTable.querySelectorAll('tbody tr');
+
+            function filterStudents() {
+                const searchText = searchInput.value.toLowerCase();
+                const statusValue = statusFilter.value;
+                const levelValue = levelFilter.value;
+                const dateValue = dateFilter.value;
+
+                tableRows.forEach(row => {
+                    const name = row.cells[0].querySelector('h6').textContent.toLowerCase();
+                    const email = row.cells[0].querySelector('p').textContent.toLowerCase();
+                    const studentId = row.cells[1].textContent.toLowerCase().trim();
+                    const level = row.cells[2].textContent.trim();
+                    const status = row.cells[3].textContent.trim();
+                    const registrationDateText = row.cells[4].textContent.trim();
+                    const registrationDate = registrationDateText ? new Date(registrationDateText) : null;
+                    
+                    const searchMatch = name.includes(searchText) || email.includes(searchText) || studentId.includes(searchText);
+                    const statusMatch = statusValue === '' || status === statusValue;
+                    const levelMatch = levelValue === '' || level === levelValue;
+
+                    let dateMatch = true;
+                    if (dateValue && registrationDate) {
+                        const today = new Date();
+                        today.setHours(0, 0, 0, 0);
+
+                        if (dateValue === 'this_month') {
+                            dateMatch = registrationDate.getFullYear() === today.getFullYear() && registrationDate.getMonth() === today.getMonth();
+                        } else if (dateValue === 'last_month') {
+                            const lastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+                            const thisMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+                            dateMatch = registrationDate >= lastMonth && registrationDate < thisMonth;
+                        } else if (dateValue === 'last_3_months') {
+                            const threeMonthsAgo = new Date(today.getFullYear(), today.getMonth() - 3, today.getDate());
+                            dateMatch = registrationDate >= threeMonthsAgo && registrationDate <= new Date();
+                        }
+                    } else if (dateValue !== '') {
+                        dateMatch = false;
+                    }
+
+
+                    if (searchMatch && statusMatch && levelMatch && dateMatch) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            }
+
+            searchInput.addEventListener('keyup', filterStudents);
+            statusFilter.addEventListener('change', filterStudents);
+            levelFilter.addEventListener('change', filterStudents);
+            dateFilter.addEventListener('change', filterStudents);
+        });
+    </script>
+    <!-- Github buttons -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->
+    <script src="{{ asset('js/argon-dashboard.min.js?v=2.1.0') }}"></script>
 </body>
+
 </html> 

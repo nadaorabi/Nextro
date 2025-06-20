@@ -15,9 +15,7 @@
 <body class="g-sidenav-show bg-gray-100">
   @include('admin.parts.sidebar-admin')
   <main class="main-content position-relative border-radius-lg ">
-    <div class="container mt-4 text-center">
-      <h1 class="welcome-animated">Add Student</h1>
-    </div>
+
     <style>
       .welcome-animated {
         display: inline-block;
