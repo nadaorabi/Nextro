@@ -17,6 +17,36 @@
             display: inline-block;
             transform: translateY(-4px); /* You can adjust this value for vertical alignment */
         }
+        @media print {
+            body > *:not(#studentCardPrintArea) {
+                display: none;
+            }
+            .modal-backdrop {
+                display: none !important;
+            }
+            #studentCardModal {
+                display: block !important;
+                opacity: 1 !important;
+                visibility: visible !important;
+                position: absolute !important;
+                top: 0 !important;
+                left: 0 !important;
+                width: 100% !important;
+                height: 100% !important;
+                overflow: visible !important;
+            }
+            .modal-dialog {
+                margin: 0 !important;
+                max-width: 100% !important;
+                width: 100% !important;
+            }
+            #studentCardPrintArea {
+                visibility: visible;
+            }
+            .modal-footer, .modal-header .btn-close {
+                display: none;
+            }
+        }
     </style>
 </head>
 
@@ -211,6 +241,7 @@
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Level</th>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Status</th>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Registration Date</th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">QR</th>
                                             <th class="text-secondary opacity-7">Actions</th>
                                         </tr>
                                     </thead>
@@ -238,6 +269,17 @@
                                             </td>
                                             <td>
                                                 <p class="text-xs font-weight-bold mb-0">2023-09-01</p>
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-link text-secondary p-2 qr-button" data-bs-toggle="modal" data-bs-target="#studentCardModal"
+                                                    data-name="Youssef Ahmed"
+                                                    data-id="STU-001"
+                                                    data-level="Level 3"
+                                                    data-email="youssef@example.com"
+                                                    data-avatar="{{ asset('images/team-1.jpg') }}"
+                                                    data-registration-date="2023-09-01">
+                                                    <i class="fas fa-qrcode"></i>
+                                                </button>
                                             </td>
                                             <td class="align-middle">
                                                 <div class="d-flex align-items-center gap-2">
@@ -277,6 +319,17 @@
                                             <td>
                                                 <p class="text-xs font-weight-bold mb-0">2022-09-01</p>
                                             </td>
+                                            <td>
+                                                <button class="btn btn-link text-secondary p-2 qr-button" data-bs-toggle="modal" data-bs-target="#studentCardModal"
+                                                    data-name="Hana Mostafa"
+                                                    data-id="STU-002"
+                                                    data-level="Level 4"
+                                                    data-email="hana@example.com"
+                                                    data-avatar="{{ asset('images/team-2.jpg') }}"
+                                                    data-registration-date="2022-09-01">
+                                                    <i class="fas fa-qrcode"></i>
+                                                </button>
+                                            </td>
                                             <td class="align-middle">
                                                 <div class="d-flex align-items-center gap-2">
                                                     <button class="btn btn-link text-info p-2" data-bs-toggle="modal" data-bs-target="#editStudentModal">
@@ -314,6 +367,17 @@
                                             </td>
                                             <td>
                                                 <p class="text-xs font-weight-bold mb-0">2021-09-01</p>
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-link text-secondary p-2 qr-button" data-bs-toggle="modal" data-bs-target="#studentCardModal"
+                                                    data-name="Khaled Ali"
+                                                    data-id="STU-003"
+                                                    data-level="Level 2"
+                                                    data-email="khaled@example.com"
+                                                    data-avatar="{{ asset('images/team-3.jpg') }}"
+                                                    data-registration-date="2021-09-01">
+                                                    <i class="fas fa-qrcode"></i>
+                                                </button>
                                             </td>
                                             <td class="align-middle">
                                                 <div class="d-flex align-items-center gap-2">
@@ -364,6 +428,60 @@
         </div>
     </main>
 
+    <!-- Modal Student Card -->
+    <div class="modal fade" id="studentCardModal" tabindex="-1" aria-labelledby="studentCardModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="studentCardModalLabel">Student ID Card</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="studentCardPrintArea">
+                    <div class="card card-plain">
+                        <div class="card-body">
+                            <!-- Student Image and Name -->
+                            <div class="d-flex align-items-center mb-4">
+                                <img src="" id="modal-student-avatar" alt="Student Avatar" class="avatar avatar-xl rounded-circle me-3">
+                                <div>
+                                    <h5 class="mb-0" id="modal-student-name"></h5>
+                                    <p class="text-sm text-muted mb-0" id="modal-student-email"></p>
+                                </div>
+                            </div>
+
+                            <!-- QR Code -->
+                            <div class="d-flex justify-content-center my-4">
+                                <div id="qrcode"></div>
+                            </div>
+
+                            <!-- Student Details -->
+                            <hr class="my-3">
+                            <div class="text-center">
+                               <div class="row">
+                                   <div class="col-4">
+                                       <strong class="d-block text-xs text-muted">ID</strong>
+                                       <span id="modal-student-id" class="font-weight-bold"></span>
+                                   </div>
+                                   <div class="col-4">
+                                       <strong class="d-block text-xs text-muted">Level</strong>
+                                       <span id="modal-student-level" class="font-weight-bold"></span>
+                                   </div>
+                                   <div class="col-4">
+                                       <strong class="d-block text-xs text-muted">Registered</strong>
+                                       <span id="modal-student-reg-date" class="font-weight-bold"></span>
+                                   </div>
+                               </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="printStudentCard()"><i class="fas fa-print"></i> Print</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Modal Edit Student -->
     <div class="modal fade" id="editStudentModal" tabindex="-1" aria-labelledby="editStudentModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -393,6 +511,14 @@
                                 <option>Level 2</option>
                                 <option selected>Level 3</option>
                                 <option>Level 4</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Status</label>
+                            <select class="form-select" required>
+                                <option selected>Active</option>
+                                <option>Graduated</option>
+                                <option>Blocked</option>
                             </select>
                         </div>
                         <div class="mb-3">
@@ -434,6 +560,8 @@
     <script src="{{ asset('js/core/bootstrap.min.js') }}"></script>
     <script src="{{ asset('js/plugins/perfect-scrollbar.min.js') }}"></script>
     <script src="{{ asset('js/plugins/smooth-scrollbar.min.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
     <script>
         var win = navigator.platform.indexOf('Win') > -1;
         if (win && document.querySelector('#sidenav-scrollbar')) {
@@ -504,6 +632,59 @@
             levelFilter.addEventListener('change', filterStudents);
             dateFilter.addEventListener('change', filterStudents);
         });
+    </script>
+    <script>
+    var qrcode = null; // Declare qrcode variable in a broader scope
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize QR Code generator
+        qrcode = new QRCode(document.getElementById("qrcode"), {
+            width : 128,
+            height : 128
+        });
+
+        const studentCardModal = document.getElementById('studentCardModal');
+        studentCardModal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+            const name = button.getAttribute('data-name');
+            const id = button.getAttribute('data-id');
+            const level = button.getAttribute('data-level');
+            const email = button.getAttribute('data-email');
+            const avatar = button.getAttribute('data-avatar');
+            const regDate = button.getAttribute('data-registration-date');
+
+            const modalTitle = studentCardModal.querySelector('.modal-title');
+            const studentName = studentCardModal.querySelector('#modal-student-name');
+            const studentId = studentCardModal.querySelector('#modal-student-id');
+            const studentLevel = studentCardModal.querySelector('#modal-student-level');
+            const studentEmail = studentCardModal.querySelector('#modal-student-email');
+            const studentAvatar = studentCardModal.querySelector('#modal-student-avatar');
+            const studentRegDate = studentCardModal.querySelector('#modal-student-reg-date');
+            
+            modalTitle.textContent = 'Student ID Card: ' + name;
+            studentName.textContent = name;
+            studentId.textContent = id;
+            studentLevel.textContent = level;
+            studentEmail.textContent = email;
+            studentAvatar.src = avatar;
+            studentRegDate.textContent = regDate;
+
+            // Clear previous QR code and generate new one
+            document.getElementById('qrcode').innerHTML = '';
+            new QRCode(document.getElementById('qrcode'), {
+                text: `Name: ${name}\nID: ${id}\nLevel: ${level}`,
+                width: 128,
+                height: 128,
+                colorDark : "#000000",
+                colorLight : "#ffffff",
+                correctLevel : QRCode.CorrectLevel.H
+            });
+        });
+    });
+
+    function printStudentCard() {
+        window.print();
+    }
     </script>
     <!-- Github buttons -->
     <script async defer src="https://buttons.github.io/buttons.js"></script>

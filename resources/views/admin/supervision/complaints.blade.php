@@ -250,7 +250,7 @@
                 </div>
               </div>
             </div>
-          </div>
+    </div>
 
           <!-- Filters -->
           <div class="card mb-4">
@@ -261,11 +261,11 @@
                     <label class="form-label">الدورة</label>
                     <select id="courseSelect" class="form-select">
                       <option value="">جميع الدورات</option>
-                      <option value="1">دورة الرياضيات</option>
-                      <option value="2">دورة اللغة العربية</option>
+                  <option value="1">دورة الرياضيات</option>
+                  <option value="2">دورة اللغة العربية</option>
                       <option value="3">دورة الفيزياء</option>
                       <option value="4">دورة الكيمياء</option>
-                    </select>
+                </select>
                   </div>
                 </div>
                 <div class="col-md-3">
@@ -273,7 +273,7 @@
                     <label class="form-label">المادة</label>
                     <select id="materialSelect" class="form-select">
                       <option value="">جميع المواد</option>
-                    </select>
+                </select>
                   </div>
                 </div>
                 <div class="col-md-3">
@@ -281,10 +281,10 @@
                     <label class="form-label">الحالة</label>
                     <select id="statusSelect" class="form-select">
                       <option value="">جميع الحالات</option>
-                      <option value="open">مفتوحة</option>
-                      <option value="pending">قيد المراجعة</option>
-                      <option value="closed">مغلقة</option>
-                    </select>
+                  <option value="open">مفتوحة</option>
+                  <option value="pending">قيد المراجعة</option>
+                  <option value="closed">مغلقة</option>
+                </select>
                   </div>
                 </div>
                 <div class="col-md-3">

@@ -236,7 +236,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+    </div>
 
                     <!-- Filters -->
                     <div class="card mb-4">
@@ -247,11 +247,11 @@
                                         <label class="form-label">الدورة</label>
                                         <select id="courseSelect" class="form-select">
                                             <option value="">جميع الدورات</option>
-                                            <option value="1">دورة الرياضيات</option>
-                                            <option value="2">دورة اللغة العربية</option>
+                  <option value="1">دورة الرياضيات</option>
+                  <option value="2">دورة اللغة العربية</option>
                                             <option value="3">دورة الفيزياء</option>
                                             <option value="4">دورة الكيمياء</option>
-                                        </select>
+                </select>
                                     </div>
                                 </div>
                                 <div class="col-md-3">
@@ -259,7 +259,7 @@
                                         <label class="form-label">المادة</label>
                                         <select id="materialSelect" class="form-select">
                                             <option value="">جميع المواد</option>
-                                        </select>
+                </select>
                                     </div>
                                 </div>
                                 <div class="col-md-3">
@@ -289,8 +289,8 @@
                         <div class="card-body px-0 pt-0 pb-2">
                             <div class="table-responsive p-0">
                                 <table id="attendance-table" class="table align-items-center mb-0">
-                                    <thead>
-                                        <tr>
+                  <thead>
+                    <tr>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">الطالب</th>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">الدورة</th>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">المادة</th>
@@ -298,13 +298,13 @@
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">الحالة</th>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">ملاحظة</th>
                                             <th class="text-secondary opacity-7">الإجراءات</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="attendanceTableBody">
+                    </tr>
+                  </thead>
+                  <tbody id="attendanceTableBody">
                                         <!-- سيتم ملء البيانات بواسطة JavaScript -->
-                                    </tbody>
-                                </table>
-                            </div>
+                  </tbody>
+                </table>
+              </div>
 
                             <!-- Pagination -->
                             <div class="d-flex justify-content-between align-items-center p-3">
@@ -331,12 +331,12 @@
                                     </ul>
                                 </nav>
                             </div>
-                        </div>
-                    </div>
-                </div>
             </div>
+          </div>
         </div>
-    </main>
+      </div>
+    </div>
+  </main>
 
     <!-- Modal Edit Attendance -->
     <div class="modal fade" id="editAttendanceModal" tabindex="-1" aria-labelledby="editAttendanceModalLabel" aria-hidden="true">
@@ -429,46 +429,46 @@
             Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
         }
     </script>
-    <script>
-        // بيانات تجريبية
-        const courses = [
-            {id: 1, name: 'دورة الرياضيات', materials: ['رياضيات 1', 'رياضيات 2']},
+  <script>
+  // بيانات تجريبية
+  const courses = [
+    {id: 1, name: 'دورة الرياضيات', materials: ['رياضيات 1', 'رياضيات 2']},
             {id: 2, name: 'دورة اللغة العربية', materials: ['نحو', 'بلاغة']},
             {id: 3, name: 'دورة الفيزياء', materials: ['فيزياء 1', 'فيزياء 2']},
             {id: 4, name: 'دورة الكيمياء', materials: ['كيمياء 1', 'كيمياء 2']}
-        ];
+  ];
         
-        const attendanceData = [
-            {id: 1, student: 'محمد الأحمد', courseId: 1, course: 'دورة الرياضيات', material: 'رياضيات 1', date: '2024-06-01', status: 'present', note: ''},
-            {id: 2, student: 'سارة يوسف', courseId: 1, course: 'دورة الرياضيات', material: 'رياضيات 2', date: '2024-06-01', status: 'absent', note: 'مريض'},
-            {id: 3, student: 'خالد العلي', courseId: 2, course: 'دورة اللغة العربية', material: 'بلاغة', date: '2024-06-01', status: 'present', note: ''},
+  const attendanceData = [
+    {id: 1, student: 'محمد الأحمد', courseId: 1, course: 'دورة الرياضيات', material: 'رياضيات 1', date: '2024-06-01', status: 'present', note: ''},
+    {id: 2, student: 'سارة يوسف', courseId: 1, course: 'دورة الرياضيات', material: 'رياضيات 2', date: '2024-06-01', status: 'absent', note: 'مريض'},
+    {id: 3, student: 'خالد العلي', courseId: 2, course: 'دورة اللغة العربية', material: 'بلاغة', date: '2024-06-01', status: 'present', note: ''},
             {id: 4, student: 'فاطمة محمد', courseId: 2, course: 'دورة اللغة العربية', material: 'نحو', date: '2024-06-01', status: 'present', note: ''},
             {id: 5, student: 'أحمد حسن', courseId: 3, course: 'دورة الفيزياء', material: 'فيزياء 1', date: '2024-06-01', status: 'absent', note: 'سفر'},
             {id: 6, student: 'نور الدين', courseId: 3, course: 'دورة الفيزياء', material: 'فيزياء 2', date: '2024-06-01', status: 'present', note: ''},
             {id: 7, student: 'ليلى أحمد', courseId: 4, course: 'دورة الكيمياء', material: 'كيمياء 1', date: '2024-06-01', status: 'present', note: ''},
             {id: 8, student: 'عمر خالد', courseId: 4, course: 'دورة الكيمياء', material: 'كيمياء 2', date: '2024-06-01', status: 'absent', note: 'موعد طبي'},
-        ];
+  ];
 
-        function updateMaterials() {
-            const courseId = document.getElementById('courseSelect').value;
-            const materialSelect = document.getElementById('materialSelect');
+  function updateMaterials() {
+    const courseId = document.getElementById('courseSelect').value;
+    const materialSelect = document.getElementById('materialSelect');
             materialSelect.innerHTML = '<option value="">جميع المواد</option>';
-            if (!courseId) return;
-            const course = courses.find(c => c.id == courseId);
-            if (course) {
-                course.materials.forEach(mat => {
-                    const opt = document.createElement('option');
-                    opt.value = mat;
-                    opt.textContent = mat;
-                    materialSelect.appendChild(opt);
-                });
-            }
-        }
+    if (!courseId) return;
+    const course = courses.find(c => c.id == courseId);
+    if (course) {
+      course.materials.forEach(mat => {
+        const opt = document.createElement('option');
+        opt.value = mat;
+        opt.textContent = mat;
+        materialSelect.appendChild(opt);
+      });
+    }
+  }
 
-        function renderTable(data) {
-            const tbody = document.getElementById('attendanceTableBody');
-            tbody.innerHTML = data.map((item, idx) => `
-                <tr>
+  function renderTable(data) {
+    const tbody = document.getElementById('attendanceTableBody');
+    tbody.innerHTML = data.map((item, idx) => `
+      <tr>
                     <td>
                         <div class="d-flex px-2 py-1">
                             <div>
@@ -489,11 +489,11 @@
                     <td>
                         <p class="text-xs font-weight-bold mb-0">${item.date}</p>
                     </td>
-                    <td>
-                        <span class="${item.status === 'present' ? 'status-present' : 'status-absent'}">
-                            ${item.status === 'present' ? 'حاضر' : 'غائب'}
-                        </span>
-                    </td>
+        <td>
+          <span class="${item.status === 'present' ? 'status-present' : 'status-absent'}">
+            ${item.status === 'present' ? 'حاضر' : 'غائب'}
+          </span>
+        </td>
                     <td>
                         <p class="text-xs text-secondary mb-0">${item.note || '-'}</p>
                     </td>
@@ -510,25 +510,25 @@
                             </button>
                         </div>
                     </td>
-                </tr>
-            `).join('');
-        }
+      </tr>
+    `).join('');
+  }
 
-        function filterAttendance() {
-            const courseId = document.getElementById('courseSelect').value;
-            const material = document.getElementById('materialSelect').value;
-            const date = document.getElementById('dateSelect').value;
+  function filterAttendance() {
+    const courseId = document.getElementById('courseSelect').value;
+    const material = document.getElementById('materialSelect').value;
+    const date = document.getElementById('dateSelect').value;
             const searchText = document.getElementById('search-input').value.toLowerCase();
             
-            let filtered = attendanceData;
+    let filtered = attendanceData;
             
-            if (courseId) filtered = filtered.filter(a => a.courseId == courseId);
-            if (material) filtered = filtered.filter(a => a.material === material);
-            if (date) filtered = filtered.filter(a => a.date === date);
+    if (courseId) filtered = filtered.filter(a => a.courseId == courseId);
+    if (material) filtered = filtered.filter(a => a.material === material);
+    if (date) filtered = filtered.filter(a => a.date === date);
             if (searchText) filtered = filtered.filter(a => a.student.toLowerCase().includes(searchText));
             
-            renderTable(filtered);
-        }
+    renderTable(filtered);
+  }
 
         function addNewAttendance() {
             // يمكن إضافة منطق إضافة تسجيل حضور جديد هنا
@@ -536,20 +536,20 @@
         }
 
         document.addEventListener('DOMContentLoaded', function() {
-            updateMaterials();
-            renderTable(attendanceData);
+    updateMaterials();
+    renderTable(attendanceData);
             
-            document.getElementById('courseSelect').addEventListener('change', updateMaterials);
+    document.getElementById('courseSelect').addEventListener('change', updateMaterials);
             document.getElementById('courseSelect').addEventListener('change', filterAttendance);
             document.getElementById('materialSelect').addEventListener('change', filterAttendance);
             document.getElementById('dateSelect').addEventListener('change', filterAttendance);
             document.getElementById('search-input').addEventListener('keyup', filterAttendance);
         });
-    </script>
+  </script>
     <!-- Github buttons -->
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     <!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->
-<script src="{{ asset('js/argon-dashboard.min.js?v=2.1.0') }}"></script>
+  <script src="{{ asset('js/argon-dashboard.min.js?v=2.1.0') }}"></script>
 </body>
 
 </html> 
