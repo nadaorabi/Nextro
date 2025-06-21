@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="apple-touch-icon" sizes="76x76" href="{{ asset('images/apple-icon.png') }}">
     <link rel="icon" type="image/png" href="{{ asset('images/favicon.png') }}">
-    <title>Student Accounts Management</title>
+    <title>Student Management</title>
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
     <link href="https://demos.creative-tim.com/argon-dashboard-pro/assets/css/nucleo-icons.css" rel="stylesheet" />
     <link href="https://demos.creative-tim.com/argon-dashboard-pro/assets/css/nucleo-svg.css" rel="stylesheet" />
@@ -68,12 +68,29 @@
         <div class="container-fluid py-4">
             <div class="row">
                 <div class="col-12">
+                    <!-- Success Messages -->
+                    @if(session('success'))
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <i class="fas fa-check-circle me-2"></i>
+                            {{ session('success') }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    @endif
+
+                    @if(session('error'))
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="fas fa-exclamation-circle me-2"></i>
+                            {{ session('error') }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    @endif
+
                     <!-- Welcome Card -->
                     <div class="card mb-4">
                         <div class="card-body p-3">
                             <div class="row">
                                 <div class="col-lg-6">
-                                    <h1 class="text-gradient text-primary">Student Accounts Management 🎓</h1>
+                                    <h1 class="text-gradient text-primary">Student Management</h1>
                                     <p class="mb-0">Manage, add, and edit student accounts</p>
                                 </div>
                                 <div class="col-lg-6 text-end">
@@ -268,7 +285,9 @@
                                                     <div class="d-flex px-2 py-1">
                                                         <div>
                                                             <img src="{{ asset($student->avatar ?? 'images/default-avatar.png') }}"
-                                                                class="avatar avatar-sm me-3">
+                                                                class="avatar avatar-sm me-3" 
+                                                                onerror="this.src='{{ asset('images/default-avatar.png') }}'"
+                                                                alt="{{ $student->name }}">
                                                         </div>
                                                         <div class="d-flex flex-column justify-content-center">
                                                             <h6 class="mb-0 text-sm">{{ $student->name }}</h6>
@@ -298,7 +317,6 @@
                                                     <button class="btn btn-link text-secondary p-2 qr-button"
                                                         data-bs-toggle="modal" data-bs-target="#studentCardModal"
                                                         data-name="{{ $student->name }}" data-id="{{ $student->login_id }}"
-                                        
                                                         data-email="{{ $student->email ?? '-' }}"
                                                         data-avatar="{{ asset($student->avatar ?? 'images/default-avatar.png') }}"
                                                         data-registration-date="{{ $student->created_at->format('Y-m-d') }}">
@@ -316,7 +334,7 @@
                                                             <i class="fas fa-eye"></i>
                                                         </a>
                                                         <form action="{{ route('admin.accounts.students.destroy', $student->id) }}"
-                                                            method="POST" onsubmit="return confirm('Are you sure?')">
+                                                            method="POST" onsubmit="return confirmDelete('{{ $student->name }}')">
                                                             @csrf
                                                             @method('DELETE')
                                                             <button type="submit" class="btn btn-link text-danger p-2">
@@ -360,7 +378,8 @@
                             <!-- Student Image and Name -->
                             <div class="d-flex align-items-center mb-4">
                                 <img src="" id="modal-student-avatar" alt="Student Avatar"
-                                    class="avatar avatar-xl rounded-circle me-3">
+                                    class="avatar avatar-xl rounded-circle me-3"
+                                    onerror="this.src='{{ asset('images/default-avatar.png') }}'">
                                 <div>
                                     <h5 class="mb-0" id="modal-student-name"></h5>
                                     <p class="text-sm text-muted mb-0" id="modal-student-email"></p>
@@ -565,6 +584,13 @@
                 height: 128
             });
 
+            // Handle image loading errors
+            document.querySelectorAll('img[src*="avatar"]').forEach(function(img) {
+                img.addEventListener('error', function() {
+                    this.src = '{{ asset("images/default-avatar.png") }}';
+                });
+            });
+
             const studentCardModal = document.getElementById('studentCardModal');
             studentCardModal.addEventListener('show.bs.modal', function (event) {
                 const button = event.relatedTarget;
@@ -586,15 +612,20 @@
                 modalTitle.textContent = 'Student ID Card: ' + name;
                 studentName.textContent = name;
                 studentId.textContent = id;
-                studentLevel.textContent = level;
+                studentLevel.textContent = level || 'N/A';
                 studentEmail.textContent = email;
                 studentAvatar.src = avatar;
                 studentRegDate.textContent = regDate;
 
-                // Clear previous QR code and generate new one
+                // Handle modal image error
+                studentAvatar.onerror = function() {
+                    this.src = '{{ asset("images/default-avatar.png") }}';
+                };
+
+                // Clear previous QR code and generate new one with only student ID
                 document.getElementById('qrcode').innerHTML = '';
                 new QRCode(document.getElementById('qrcode'), {
-                    text: `Name: ${name}\nID: ${id}\nLevel: ${level}`,
+                    text: id, // Only student ID
                     width: 128,
                     height: 128,
                     colorDark: "#000000",
@@ -606,6 +637,10 @@
 
         function printStudentCard() {
             window.print();
+        }
+
+        function confirmDelete(studentName) {
+            return confirm(`Are you sure you want to delete the student "${studentName}"?\n\nThis action cannot be undone.`);
         }
     </script>
     <!-- Github buttons -->
