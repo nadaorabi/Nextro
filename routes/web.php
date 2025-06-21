@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\Educational\CategoryController;
 use App\Http\Controllers\Admin\Accounts\StudentController;
 use App\Http\Controllers\Admin\Accounts\TeacherController as AdminTeacherController;
+use App\Http\Controllers\Admin\Accounts\AdminController as AdminAccountsController;
 use App\Http\Controllers\Admin\Educational\CourseController;
 use App\Http\Controllers\Admin\Educational\PackageController;
 
@@ -78,9 +79,19 @@ Route::prefix('admin')->middleware('isAdmin')->name('admin.')->group(function ()
         Route::delete('/{id}', [AdminTeacherController::class, 'destroy'])->name('destroy');
     });
 
-    /////////////
-    Route::get('accounts/admins/create', [AdminController::class, 'adminsCreate'])->name('accounts.admins.create');
-    Route::get('accounts/admins/list', [AdminController::class, 'adminsList'])->name('accounts.admins.list');
+    // Admins Management
+    Route::prefix('accounts/admins')->name('accounts.admins.')->group(function () {
+        Route::get('/create', [AdminAccountsController::class, 'create'])->name('create');
+        Route::post('/store', [AdminAccountsController::class, 'store'])->name('store');
+        Route::get('/list', [AdminAccountsController::class, 'index'])->name('list');
+        Route::get('/{id}/edit', [AdminAccountsController::class, 'edit'])->name('edit');
+        Route::put('/{id}', [AdminAccountsController::class, 'update'])->name('update');
+        Route::get('/{id}', [AdminAccountsController::class, 'show'])->name('show');
+        Route::delete('/{id}', [AdminAccountsController::class, 'destroy'])->name('destroy');
+        Route::post('/{id}/toggle-status', [AdminAccountsController::class, 'toggleStatus'])->name('toggle-status');
+        Route::post('/{id}/reset-password', [AdminAccountsController::class, 'resetPassword'])->name('reset-password');
+        Route::get('/{id}/print-credentials', [AdminAccountsController::class, 'printCredentials'])->name('print-credentials');
+    });
     
     // Educational Categories Management
     Route::prefix('educational-categories')->name('educational-categories.')->group(function () {

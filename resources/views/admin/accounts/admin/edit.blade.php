@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="icon" href="{{ asset('images/favicon.png') }}">
+  <title>Edit Admin</title>
+
+  <!-- Fonts and CSS -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
+  <link href="https://demos.creative-tim.com/argon-dashboard-pro/assets/css/nucleo-icons.css" rel="stylesheet" />
+  <link href="https://demos.creative-tim.com/argon-dashboard-pro/assets/css/nucleo-svg.css" rel="stylesheet" />
+  <link rel="stylesheet" href="{{ asset('css/argon-dashboard.css?v=2.1.0') }}">
+  <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+</head>
+
+<body class="g-sidenav-show bg-gray-100">
+  @include('admin.parts.sidebar-admin')
+
+  <main class="main-content position-relative border-radius-lg ">
+    <div class="container py-4">
+      <div class="row justify-content-center">
+        <div class="col-12" style="max-width:800px;margin:auto;">
+          
+          <div class="card shadow-sm mb-4">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <h4 class="mb-0">Edit Admin</h4>
+                  <p class="text-muted mb-0">Update information for {{ $admin->name }}</p>
+                </div>
+                <div>
+                  <a href="{{ route('admin.accounts.admins.show', $admin->id) }}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Back to Details
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          @if (session('success'))
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+              <i class="fas fa-check-circle me-2"></i>
+              {{ session('success') }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+          @endif
+
+          @if ($errors->any())
+            <div class="alert alert-danger">
+              <ul>
+                @foreach ($errors->all() as $error)
+                  <li>{{ $error }}</li>
+                @endforeach
+              </ul>
+            </div>
+          @endif
+
+          <div class="card shadow-sm">
+            <div class="card-body">
+              <form action="{{ route('admin.accounts.admins.update', $admin->id) }}" method="POST">
+                @csrf
+                @method('PUT')
+
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label">Full Name <span class="text-danger">*</span></label>
+                    <input type="text" name="name" class="form-control" value="{{ old('name', $admin->name) }}" required>
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label">Mobile Number <span class="text-danger">*</span></label>
+                    <input type="tel" name="mobile" class="form-control" value="{{ old('mobile', $admin->mobile) }}" required>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label">Email Address <span class="text-danger">*</span></label>
+                    <input type="email" name="email" class="form-control" value="{{ old('email', $admin->email) }}" required>
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label">Address</label>
+                    <input type="text" name="address" class="form-control" value="{{ old('address', $admin->address) }}">
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label">Status <span class="text-danger">*</span></label>
+                    <select name="is_active" class="form-select" required>
+                      <option value="1" {{ old('is_active', $admin->is_active) == 1 ? 'selected' : '' }}>Active</option>
+                      <option value="0" {{ old('is_active', $admin->is_active) == 0 ? 'selected' : '' }}>Inactive</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="mb-3">
+                  <label class="form-label">Notes</label>
+                  <textarea name="notes" class="form-control" rows="3">{{ old('notes', $admin->notes) }}</textarea>
+                </div>
+                
+                <div class="d-flex justify-content-between">
+                  <a href="{{ route('admin.accounts.admins.show', $admin->id) }}" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> Cancel
+                  </a>
+                  <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Update Admin
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="{{ asset('js/core/popper.min.js') }}"></script>
+  <script src="{{ asset('js/core/bootstrap.min.js') }}"></script>
+  <script src="{{ asset('js/plugins/perfect-scrollbar.min.js') }}"></script>
+  <script src="{{ asset('js/plugins/smooth-scrollbar.min.js') }}"></script>
+  <script src="{{ asset('js/argon-dashboard.min.js?v=2.1.0') }}"></script>
+</body>
+</html> 
