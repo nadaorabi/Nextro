@@ -7,6 +7,7 @@ use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\Educational\CategoryController;
 use App\Http\Controllers\Admin\Accounts\StudentController;
+use App\Http\Controllers\Admin\Accounts\TeacherController as AdminTeacherController;
 use App\Http\Controllers\Admin\Educational\CourseController;
 use App\Http\Controllers\Admin\Educational\PackageController;
 
@@ -66,9 +67,18 @@ Route::prefix('admin')->middleware('isAdmin')->name('admin.')->group(function ()
         Route::delete('/{id}', [StudentController::class, 'destroy'])->name('destroy');
     });
 
+    // Teachers Management
+    Route::prefix('accounts/teachers')->name('accounts.teachers.')->group(function () {
+        Route::get('/create', [AdminTeacherController::class, 'create'])->name('create');
+        Route::post('/store', [AdminTeacherController::class, 'store'])->name('store');
+        Route::get('/list', [AdminTeacherController::class, 'index'])->name('list');
+        Route::get('/{id}/edit', [AdminTeacherController::class, 'edit'])->name('edit');
+        Route::put('/{id}', [AdminTeacherController::class, 'update'])->name('update');
+        Route::get('/{id}', [AdminTeacherController::class, 'show'])->name('show');
+        Route::delete('/{id}', [AdminTeacherController::class, 'destroy'])->name('destroy');
+    });
+
     /////////////
-    Route::get('accounts/teachers/create', [AdminController::class, 'teachersCreate'])->name('accounts.teachers.create');
-    Route::get('accounts/teachers/list', [AdminController::class, 'teachersList'])->name('accounts.teachers.list');
     Route::get('accounts/admins/create', [AdminController::class, 'adminsCreate'])->name('accounts.admins.create');
     Route::get('accounts/admins/list', [AdminController::class, 'adminsList'])->name('accounts.admins.list');
     

@@ -72,11 +72,11 @@ class AdminController extends Controller
     // إدارة حسابات: أساتذة
     public function teachersCreate()
     {
-        return view('admin.accounts.teachers-create');
+        return view('admin.accounts.teacher.teachers-create');
     }
     public function teachersList()
     {
-        return view('admin.accounts.teachers-list');
+        return view('admin.accounts.teacher.teachers-list');
     }
     // إدارة حسابات: مسؤولين
     public function adminsCreate()
