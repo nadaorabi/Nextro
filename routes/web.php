@@ -55,16 +55,11 @@ Route::prefix('admin')->middleware('isAdmin')->name('admin.')->group(function ()
     Route::post('logout', [AdminController::class, 'logout'])->name('logout');
 
 
-    Route::get('accounts/students/{id}/edit', [StudentController::class, 'edit'])->name('accounts.students.edit');
-    Route::put('accounts/students/{id}', [StudentController::class, 'update'])->name('accounts.students.update');
-    Route::get('accounts/students/{id}', [StudentController::class, 'show'])->name('accounts.students.show');
-    Route::delete('accounts/students/{id}', [StudentController::class, 'destroy'])->name('accounts.students.destroy');
-
     // Accounts Management
     Route::prefix('accounts/students')->name('accounts.students.')->group(function () {
         Route::get('/create', [StudentController::class, 'create'])->name('create');
         Route::post('/store', [StudentController::class, 'store'])->name('store');
-        Route::get('list', [StudentController::class, 'index'])->name('list');
+        Route::get('/list', [StudentController::class, 'index'])->name('list');
         Route::get('/{id}/edit', [StudentController::class, 'edit'])->name('edit');
         Route::put('/{id}', [StudentController::class, 'update'])->name('update');
         Route::get('/{id}', [StudentController::class, 'show'])->name('show');
