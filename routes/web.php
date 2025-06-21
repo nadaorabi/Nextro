@@ -109,10 +109,22 @@ Route::prefix('admin')->middleware('isAdmin')->name('admin.')->group(function ()
         Route::get('/export', [CourseController::class, 'export'])->name('export');
     });
 
-    Route::get('educational-courses/list', [CourseController::class, 'index'])->name('educational-courses.index');
-    Route::get('educational-courses/create', [CourseController::class, 'create'])->name('educational-courses.create');
-    Route::get('educational-packages/list', [PackageController::class, 'index'])->name('educational-packages.index');
-    Route::get('educational-packages/create', [PackageController::class, 'create'])->name('educational-packages.create');
+    // Educational Packages Management
+    Route::prefix('educational-packages')->name('educational-packages.')->group(function () {
+        Route::get('/', [PackageController::class, 'index'])->name('index');
+        Route::get('/create', [PackageController::class, 'create'])->name('create');
+        Route::post('/store', [PackageController::class, 'store'])->name('store');
+        Route::get('/{package}/edit', [PackageController::class, 'edit'])->name('edit');
+        Route::put('/{package}', [PackageController::class, 'update'])->name('update');
+        Route::delete('/{package}', [PackageController::class, 'destroy'])->name('destroy');
+        Route::get('/{package}', [PackageController::class, 'show'])->name('show');
+        
+        // Additional routes for package management
+        Route::patch('/{package}/toggle-status', [PackageController::class, 'toggleStatus'])->name('toggle-status');
+        Route::post('/{package}/duplicate', [PackageController::class, 'duplicate'])->name('duplicate');
+        Route::post('/bulk-action', [PackageController::class, 'bulkAction'])->name('bulk-action');
+        Route::get('/export', [PackageController::class, 'export'])->name('export');
+    });
 
     Route::get('educational-materials/create', [AdminController::class, 'materialsCreate'])->name('educational-materials.create');
     Route::get('educational-materials/edit', [AdminController::class, 'materialsEdit'])->name('educational-materials.edit');
