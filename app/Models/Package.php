@@ -9,7 +9,18 @@ class Package extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title', 'description', 'category_id', 'price', 'discount_percentage', 'is_active'];
+    protected $fillable = [
+        'name', 
+        'title', 
+        'description', 
+        'category_id', 
+        'price', 
+        'currency',
+        'discount_percentage', 
+        'is_active',
+        'status',
+        'image'
+    ];
 
     public function category() 
     { 

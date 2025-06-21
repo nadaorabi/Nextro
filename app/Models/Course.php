@@ -55,4 +55,11 @@ class Course extends Model
     { 
         return $this->belongsToMany(Package::class, 'package_courses'); 
     }
+
+    // في app/Models/Course.php
+
+public function course_instructors()
+{
+    return $this->hasMany(CourseInstructor::class, 'course_id');
+}
 }
