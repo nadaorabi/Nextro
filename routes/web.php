@@ -62,13 +62,13 @@ Route::prefix('admin')->middleware('isAdmin')->name('admin.')->group(function ()
 
     // Accounts Management
     Route::prefix('accounts/students')->name('accounts.students.')->group(function () {
-        Route::get('accounts/students/create', [StudentController::class, 'create'])->name('create');
-        Route::post('accounts/students/store', [StudentController::class, 'store'])->name('store');
-        Route::get('accounts/students/list', [StudentController::class, 'index'])->name('list');
-        Route::get('accounts/students/{id}/edit', [StudentController::class, 'edit'])->name('edit');
-        Route::put('accounts/students/{id}', [StudentController::class, 'update'])->name('update');
-        Route::get('accounts/students/{id}', [StudentController::class, 'show'])->name('show');
-        Route::delete('accounts/students/{id}', [StudentController::class, 'destroy'])->name('destroy');
+        Route::get('/create', [StudentController::class, 'create'])->name('create');
+        Route::post('/store', [StudentController::class, 'store'])->name('store');
+        Route::get('list', [StudentController::class, 'index'])->name('list');
+        Route::get('/{id}/edit', [StudentController::class, 'edit'])->name('edit');
+        Route::put('/{id}', [StudentController::class, 'update'])->name('update');
+        Route::get('/{id}', [StudentController::class, 'show'])->name('show');
+        Route::delete('/{id}', [StudentController::class, 'destroy'])->name('destroy');
     });
 
     /////////////
