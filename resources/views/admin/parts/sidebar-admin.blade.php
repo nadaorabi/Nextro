@@ -111,7 +111,7 @@
       <div class="ms-md-auto pe-md-3 d-flex align-items-center">
         <div class="input-group">
           <span class="input-group-text text-body"><i class="fas fa-search" aria-hidden="true"></i></span>
-          <input type="text" class="form-control" placeholder="Type here...">
+          <input type="text" class="form-control" placeholder="Search...">
         </div>
       </div>
       <ul class="navbar-nav  justify-content-end">
@@ -148,7 +148,7 @@
               <img src="{{ asset('images/team-2.jpg') }}" class="avatar avatar-sm rounded-circle me-2 profile-img"
                 style="width: 32px; height: 32px; object-fit: cover;">
               <span class="text-white fw-bold d-none d-sm-inline user-name"
-                style="white-space:nowrap;">{{ Auth::user()->name ?? 'Teacher' }}</span>
+                style="white-space:nowrap;">{{ Auth::user()->name ?? 'Admin' }}</span>
             </a>
           </div>
         </li>
@@ -251,11 +251,11 @@
             class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
             <i class="ni ni-tv-2 text-dark text-sm opacity-10"></i>
           </div>
-          <span class="nav-link-text ms-1">لوحة التحكم</span>
+          <span class="nav-link-text ms-1">Dashboard</span>
         </a>
       </li>
 
-      <!-- إدارة الحسابات -->
+      <!-- Account Management -->
       <li class="nav-item">
         <a class="nav-link {{ request()->routeIs('admin.accounts.*') ? 'active' : '' }}" href="#" id="accountsDropdown"
           data-bs-toggle="collapse" data-bs-target="#accountsSubmenu"
@@ -264,11 +264,11 @@
             class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
             <i class="fas fa-users-cog text-dark text-sm opacity-10"></i>
           </div>
-          <span class="nav-link-text ms-1">إدارة الحسابات</span>
+          <span class="nav-link-text ms-1">Account Management</span>
         </a>
         <ul class="nav flex-column ms-4 collapse {{ request()->routeIs('admin.accounts.*') ? 'show' : '' }}"
           id="accountsSubmenu" data-bs-parent="#sidebarAccordion">
-          <!-- طلاب -->
+          <!-- Students -->
           <li class="nav-item">
             <a class="nav-link" href="#" id="studentsDropdown" data-bs-toggle="collapse"
               data-bs-target="#studentsSubmenu" aria-expanded="false">
@@ -276,24 +276,24 @@
                 class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                 <i class="fas fa-user-graduate text-dark text-sm opacity-10"></i>
               </div>
-              <span class="nav-link-text ms-1">طلاب</span>
+              <span class="nav-link-text ms-1">Students</span>
             </a>
             <ul class="nav flex-column ms-4 collapse" id="studentsSubmenu">
               <li class="nav-item">
                 <a class="nav-link" href="{{ route('admin.accounts.students.create') }}">
                   <i class="fas fa-user-plus me-2"></i>
-                  إضافة طالب
+                  Add Student
                 </a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="{{ route('admin.accounts.students.list') }}">
                   <i class="fas fa-list me-2"></i>
-                  استعراض الطلاب
+                  View Students
                 </a>
               </li>
             </ul>
           </li>
-          <!-- أساتذة -->
+          <!-- Teachers -->
           <li class="nav-item">
             <a class="nav-link" href="#" id="teachersDropdown" data-bs-toggle="collapse"
               data-bs-target="#teachersSubmenu" aria-expanded="false">
@@ -301,24 +301,24 @@
                 class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                 <i class="fas fa-chalkboard-teacher text-dark text-sm opacity-10"></i>
               </div>
-              <span class="nav-link-text ms-1">أساتذة</span>
+              <span class="nav-link-text ms-1">Teachers</span>
             </a>
             <ul class="nav flex-column ms-4 collapse" id="teachersSubmenu">
               <li class="nav-item">
                 <a class="nav-link" href="{{ route('admin.accounts.teachers.create') }}">
                   <i class="fas fa-user-plus me-2"></i>
-                  إضافة أستاذ
+                  Add Teacher
                 </a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="{{ route('admin.accounts.teachers.list') }}">
                   <i class="fas fa-list me-2"></i>
-                  استعراض الأساتذة
+                  View Teachers
                 </a>
               </li>
             </ul>
           </li>
-          <!-- مسؤولين -->
+          <!-- Admins -->
           <li class="nav-item">
             <a class="nav-link" href="#" id="adminsDropdown" data-bs-toggle="collapse" data-bs-target="#adminsSubmenu"
               aria-expanded="false">
@@ -326,19 +326,19 @@
                 class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                 <i class="fas fa-user-shield text-dark text-sm opacity-10"></i>
               </div>
-              <span class="nav-link-text ms-1">مسؤولين</span>
+              <span class="nav-link-text ms-1">Admins</span>
             </a>
             <ul class="nav flex-column ms-4 collapse" id="adminsSubmenu">
               <li class="nav-item">
                 <a class="nav-link" href="{{ route('admin.accounts.admins.create') }}">
                   <i class="fas fa-user-plus me-2"></i>
-                  إضافة مسؤول
+                  Add Admin
                 </a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="{{ route('admin.accounts.admins.list') }}">
                   <i class="fas fa-list me-2"></i>
-                  استعراض المسؤولين
+                  View Admins
                 </a>
               </li>
             </ul>
@@ -355,7 +355,7 @@
             class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
             <i class="fas fa-book text-dark text-sm opacity-10"></i>
           </div>
-          <span class="nav-link-text ms-1">Educational Materials Management</span>
+          <span class="nav-link-text ms-1">Educational Materials</span>
         </a>
 
         <ul
@@ -368,7 +368,7 @@
               data-bs-toggle="collapse" href="#categoriesSubmenu"
               aria-expanded="{{ request()->routeIs('admin.educational-categories.*') ? 'true' : 'false' }}">
               <i class="fas fa-folder me-2 text-dark text-sm opacity-10"></i>
-              Category Management
+              Categories
             </a>
             <ul
               class="nav flex-column ms-4 collapse {{ request()->routeIs('admin.educational-categories.*') ? 'show' : '' }}"
@@ -376,13 +376,13 @@
               <li class="nav-item">
                 <a class="nav-link {{ request()->routeIs('admin.educational-categories.create') ? 'active' : '' }}"
                   href="{{ route('admin.educational-categories.create') }}">
-                  <i class="fas fa-plus me-2 text-dark text-sm opacity-10"></i>Create a category
+                  <i class="fas fa-plus me-2 text-dark text-sm opacity-10"></i>Create Category
                 </a>
               </li>
               <li class="nav-item">
                 <a class="nav-link {{ request()->routeIs('admin.educational-categories.index') ? 'active' : '' }}"
                   href="{{ route('admin.educational-categories.index') }}">
-                  <i class="fas fa-list me-2 text-dark text-sm opacity-10"></i>Browse categories
+                  <i class="fas fa-list me-2 text-dark text-sm opacity-10"></i>View Categories
                 </a>
               </li>
             </ul>
@@ -394,7 +394,7 @@
               data-bs-toggle="collapse" href="#materialsInnerSubmenu"
               aria-expanded="{{ request()->routeIs('admin.educational-materials.*') ? 'true' : 'false' }}">
               <i class="fas fa-file-alt me-2 text-dark text-sm opacity-10"></i>
-              Courses management
+              Courses
             </a>
             <ul
               class="nav flex-column ms-4 collapse {{ request()->routeIs('admin.educational-materials.*') ? 'show' : '' }}"
@@ -402,13 +402,13 @@
               <li class="nav-item">
                 <a class="nav-link {{ request()->routeIs('admin.educational-materials.create') ? 'active' : '' }}"
                   href="{{ route('admin.educational-courses.create') }}">
-                  <i class="fas fa-plus me-2 text-dark text-sm opacity-10"></i>Create an course
+                  <i class="fas fa-plus me-2 text-dark text-sm opacity-10"></i>Create Course
                 </a>
               </li>
               <li class="nav-item">
                 <a class="nav-link {{ request()->routeIs('admin.educational-materials.list') ? 'active' : '' }}"
                   href="{{ route('admin.educational-courses.index') }}">
-                  <i class="fas fa-list me-2 text-dark text-sm opacity-10"></i>Browse courses
+                  <i class="fas fa-list me-2 text-dark text-sm opacity-10"></i>View Courses
                 </a>
               </li>
             </ul>
@@ -419,20 +419,20 @@
             <a class="nav-link {{ request()->routeIs('admin.packages.*') ? 'active' : '' }}" data-bs-toggle="collapse"
               href="#packagesSubmenu" aria-expanded="{{ request()->routeIs('admin.packages.*') ? 'true' : 'false' }}">
               <i class="fas fa-box me-2 text-dark text-sm opacity-10"></i>
-              Package management
+              Packages
             </a>
             <ul class="nav flex-column ms-4 collapse {{ request()->routeIs('admin.packages.*') ? 'show' : '' }}"
               id="packagesSubmenu">
               <li class="nav-item">
                 <a class="nav-link {{ request()->routeIs('admin.packages.create') ? 'active' : '' }}"
                   href="{{ route('admin.educational-packages.create') }}">
-                  <i class="fas fa-plus me-2 text-dark text-sm opacity-10"></i>Create a package
+                  <i class="fas fa-plus me-2 text-dark text-sm opacity-10"></i>Create Package
                 </a>
               </li>
               <li class="nav-item">
                 <a class="nav-link {{ request()->routeIs('admin.packages.index') ? 'active' : '' }}"
                   href="{{ route('admin.educational-packages.index') }}">
-                  <i class="fas fa-list me-2 text-dark text-sm opacity-10"></i>Browse packages
+                  <i class="fas fa-list me-2 text-dark text-sm opacity-10"></i>View Packages
                 </a>
               </li>
             </ul>
@@ -442,7 +442,7 @@
       </li>
 
 
-      <!-- المتابعة والإشراف -->
+      <!-- Monitoring and Supervision -->
       <li class="nav-item">
         <a class="nav-link {{ request()->routeIs('admin.supervision.*') ? 'active' : '' }}" href="#"
           id="monitoringDropdown" data-bs-toggle="collapse" data-bs-target="#monitoringSubmenu"
@@ -451,39 +451,39 @@
             class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
             <i class="fas fa-clipboard-check text-dark text-sm opacity-10"></i>
           </div>
-          <span class="nav-link-text ms-1">المتابعة والإشراف</span>
+          <span class="nav-link-text ms-1">Monitoring & Supervision</span>
         </a>
         <ul class="nav flex-column ms-4 collapse {{ request()->routeIs('admin.supervision.*') ? 'show' : '' }}"
           id="monitoringSubmenu" data-bs-parent="#sidebarAccordion">
           <li class="nav-item">
             <a class="nav-link" href="{{ route('admin.supervision.attendance') }}">
               <i class="fas fa-user-check"></i>
-              <span class="nav-link-text">الحضور</span>
+              <span class="nav-link-text">Attendance</span>
             </a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="{{ route('admin.supervision.complaints') }}">
               <i class="fas fa-exclamation-circle"></i>
-              <span class="nav-link-text">الشكاوى</span>
+              <span class="nav-link-text">Complaints</span>
             </a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="{{ route('admin.supervision.qr') }}">
               <i class="fas fa-qrcode"></i>
-              <span class="nav-link-text">QR حسب المادة</span>
+              <span class="nav-link-text">QR by Course</span>
             </a>
           </li>
         </ul>
       </li>
 
-      <!-- الجداول -->
+      <!-- Schedules -->
       <li class="nav-item">
         <a class="nav-link" href="#" id="scheduleDropdown" data-bs-toggle="collapse" data-bs-target="#scheduleSubmenu">
           <div
             class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
             <i class="fas fa-calendar-alt text-dark text-sm opacity-10"></i>
           </div>
-          <span class="nav-link-text ms-1">الجداول</span>
+          <span class="nav-link-text ms-1">Schedules</span>
         </a>
         <ul class="nav flex-column ms-4 collapse" id="scheduleSubmenu" data-bs-parent="#sidebarAccordion">
           <li class="nav-item">
@@ -492,7 +492,7 @@
                 class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                 <i class="fas fa-plus text-dark text-sm opacity-10"></i>
               </div>
-              <span class="nav-link-text ms-1">إنشاء جدول</span>
+              <span class="nav-link-text ms-1">Create Schedule</span>
             </a>
           </li>
           <li class="nav-item">
@@ -501,7 +501,7 @@
                 class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                 <i class="fas fa-edit text-dark text-sm opacity-10"></i>
               </div>
-              <span class="nav-link-text ms-1">تعديل جدول</span>
+              <span class="nav-link-text ms-1">Edit Schedule</span>
             </a>
           </li>
           <li class="nav-item">
@@ -510,13 +510,13 @@
                 class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                 <i class="fas fa-list text-dark text-sm opacity-10"></i>
               </div>
-              <span class="nav-link-text ms-1">استعراض الجداول</span>
+              <span class="nav-link-text ms-1">View Schedules</span>
             </a>
           </li>
         </ul>
       </li>
 
-      <!-- المالية -->
+      <!-- Financial -->
       <li class="nav-item">
         <a class="nav-link {{ request()->routeIs('admin.finance.*') ? 'active' : '' }}"
           href="{{ route('admin.finance.payments') }}">
@@ -524,11 +524,11 @@
             class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
             <i class="fas fa-coins text-success text-sm opacity-10"></i>
           </div>
-          <span class="nav-link-text ms-1">إدارة المالية</span>
+          <span class="nav-link-text ms-1">Financial Management</span>
         </a>
       </li>
 
-      <!-- إدارة القاعات والمرافق -->
+      <!-- Facilities Management -->
       <li class="nav-item">
         <a class="nav-link {{ request()->routeIs('admin.facilities.*') ? 'active' : '' }}" href="#"
           id="facilitiesDropdown" data-bs-toggle="collapse" data-bs-target="#facilitiesSubmenu"
@@ -537,7 +537,7 @@
             class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
             <i class="fas fa-building text-dark text-sm opacity-10"></i>
           </div>
-          <span class="nav-link-text ms-1">إدارة القاعات والمرافق</span>
+          <span class="nav-link-text ms-1">Facilities Management</span>
         </a>
         <ul class="nav flex-column ms-4 collapse {{ request()->routeIs('admin.facilities.*') ? 'show' : '' }}"
           id="facilitiesSubmenu" data-bs-parent="#sidebarAccordion">
@@ -547,7 +547,7 @@
                 class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                 <i class="fas fa-door-open text-dark text-sm opacity-10"></i>
               </div>
-              <span class="nav-link-text ms-1">إضافة / تعديل قاعة</span>
+              <span class="nav-link-text ms-1">Add/Edit Hall</span>
             </a>
           </li>
           <li class="nav-item">
@@ -556,7 +556,7 @@
                 class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                 <i class="fas fa-calendar-week text-dark text-sm opacity-10"></i>
               </div>
-              <span class="nav-link-text ms-1">جدولة القاعات</span>
+              <span class="nav-link-text ms-1">Schedule Halls</span>
             </a>
           </li>
           <li class="nav-item">
@@ -565,7 +565,7 @@
                 class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                 <i class="fas fa-broom text-dark text-sm opacity-10"></i>
               </div>
-              <span class="nav-link-text ms-1">إدارة توفر المرافق</span>
+              <span class="nav-link-text ms-1">Manage Facility Availability</span>
             </a>
           </li>
         </ul>
@@ -575,7 +575,7 @@
 
 </aside>
 <script>
-  // عند تحميل الصفحة، استرجع الخيارات وطبقها
+  // When page loads, retrieve options and apply them
   window.addEventListener('DOMContentLoaded', function () {
     var sidenav = document.getElementById('sidenav-main');
     var darkMode = localStorage.getItem('darkMode');
@@ -597,7 +597,7 @@
       if (darkSwitch && darkSwitch.checked) darkSwitch.checked = false;
     }
   });
-  // عند تفعيل أو إلغاء الدارك مود
+  // When enabling or disabling dark mode
   var darkSwitch = document.getElementById('dark-version');
   if (darkSwitch) {
     darkSwitch.addEventListener('change', function () {
@@ -618,7 +618,7 @@
       }
     });
   }
-  // تجاهل خيارات ألوان السايدبار من الكونفيجوراتور
+  // Ignore sidebar color options from configurator
   document.querySelectorAll('.badge.filter').forEach(function (badge) {
     badge.addEventListener('click', function (e) {
       e.preventDefault();
@@ -700,53 +700,5 @@
         hideSidebar();
       };
     }
-    function handleSidebarOnResize() {
-      if (!sidenav) return;
-      if (isMobile()) {
-        hideSidebar();
-        if (sidenavToggler) sidenavToggler.style.display = 'block';
-      } else {
-        showSidebar();
-        if (sidenavToggler) sidenavToggler.style.display = 'none';
-      }
-    }
-    window.addEventListener('resize', handleSidebarOnResize);
-    handleSidebarOnResize();
   })();
-  // إصلاح تفعيل collapse للسايدبار بعد تحميل الصفحة
-  document.addEventListener('DOMContentLoaded', function () {
-    // إعادة تفعيل collapse للسايدبار إذا لم يعمل تلقائياً
-    var sidebarAccordion = document.getElementById('sidebarAccordion');
-    if (sidebarAccordion) {
-      var collapseElements = sidebarAccordion.querySelectorAll('.collapse');
-      collapseElements.forEach(function (el) {
-        // إذا كان يجب أن يكون مفتوحاً (show) أضف الكلاس
-        if (el.getAttribute('aria-expanded') === 'true' || el.classList.contains('show')) {
-          el.classList.add('show');
-        }
-      });
-    }
-  });
-  // إضافة خاصية الإغلاق التلقائي للقوائم
-  document.addEventListener('DOMContentLoaded', function () {
-    var collapseElements = document.querySelectorAll('[data-bs-toggle="collapse"]');
-
-    collapseElements.forEach(function (element) {
-      element.addEventListener('click', function (e) {
-        var targetId = this.getAttribute('href');
-
-        // إغلاق جميع القوائم الأخرى
-        collapseElements.forEach(function (otherElement) {
-          var otherId = otherElement.getAttribute('href');
-          if (otherId !== targetId) {
-            var otherCollapse = document.querySelector(otherId);
-            if (otherCollapse && otherCollapse.classList.contains('show')) {
-              bootstrap.Collapse.getInstance(otherCollapse).hide();
-              otherElement.setAttribute('aria-expanded', 'false');
-            }
-          }
-        });
-      });
-    });
-  });
 </script>
