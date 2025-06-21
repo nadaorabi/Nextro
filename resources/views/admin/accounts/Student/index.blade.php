@@ -411,6 +411,11 @@
                                                             class="btn btn-link text-primary p-2">
                                                             <i class="fas fa-eye"></i>
                                                         </a>
+                                                        <button class="btn btn-link text-dark p-2"
+                                                            onclick="printCredentials('{{ $student->login_id }}', '{{ $student->plain_password }}')"
+                                                            title="Print Credentials">
+                                                            <i class="fas fa-key"></i>
+                                                        </button>
                                                         <form action="{{ route('admin.accounts.students.destroy', $student->id) }}"
                                                             method="POST" onsubmit="return false;" class="delete-form">
                                                             @csrf
@@ -765,6 +770,40 @@
 
         function printStudentCard() {
             window.print();
+        }
+
+        function printCredentials(studentId, studentPassword) {
+            if (!studentPassword || studentPassword.trim() === '') {
+                alert('Initial password is not available for this student.');
+                return;
+            }
+
+            const printWindow = window.open('', 'PRINT', 'height=400,width=600');
+
+            printWindow.document.write('<html><head><title>Student Credentials</title>');
+            printWindow.document.write('<style>');
+            printWindow.document.write(`
+                body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+                .card { border: 1px solid #ccc; border-radius: 10px; padding: 25px; width: 320px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); text-align: center; }
+                .card h3 { margin-top: 0; color: #333; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 20px; }
+                .card p { font-size: 16px; margin: 15px 0; text-align: left; }
+                .card strong { display: inline-block; width: 90px; color: #555; }
+            `);
+            printWindow.document.write('</style></head><body>');
+            printWindow.document.write('<div class="card">');
+            printWindow.document.write('<h3>Login Details</h3>');
+            printWindow.document.write(`<p><strong>ID:</strong> ${studentId}</p>`);
+            printWindow.document.write(`<p><strong>Password:</strong> ${studentPassword}</p>`);
+            printWindow.document.write('</div>');
+            printWindow.document.write('</body></html>');
+
+            printWindow.document.close();
+            printWindow.focus();
+            
+            setTimeout(function() {
+                printWindow.print();
+                printWindow.close();
+            }, 250);
         }
 
         // Delete confirmation modal functionality
