@@ -19,6 +19,84 @@
             /* You can adjust this value for vertical alignment */
         }
 
+        /* Delete Modal Styles */
+        .delete-modal .modal-content {
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .delete-modal .modal-header {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            padding: 1.5rem;
+        }
+
+        .delete-modal .modal-body {
+            padding: 2rem;
+        }
+
+        .delete-modal .icon-shape {
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .delete-modal .alert-warning {
+            background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+            border: none;
+            border-radius: 10px;
+        }
+
+        .delete-modal .modal-footer {
+            padding: 1.5rem;
+            background: #f8f9fa;
+        }
+
+        .delete-modal .btn {
+            border-radius: 8px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .delete-modal .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .delete-modal .form-control {
+            border-radius: 8px;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+
+        .delete-modal .form-control:focus {
+            border-color: #dc3545;
+            box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+        }
+
+        .delete-modal .form-control.valid {
+            border-color: #28a745;
+            box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+        }
+
+        .delete-modal .form-control.is-invalid {
+            border-color: #dc3545;
+            box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+        }
+
+        /* Animation for modal */
+        .delete-modal.fade .modal-dialog {
+            transform: scale(0.8);
+            transition: transform 0.3s ease-out;
+        }
+
+        .delete-modal.show .modal-dialog {
+            transform: scale(1);
+        }
+
         @media print {
             body>*:not(#studentCardPrintArea) {
                 display: none;
@@ -334,10 +412,12 @@
                                                             <i class="fas fa-eye"></i>
                                                         </a>
                                                         <form action="{{ route('admin.accounts.students.destroy', $student->id) }}"
-                                                            method="POST" onsubmit="return confirmDelete('{{ $student->name }}')">
+                                                            method="POST" onsubmit="return false;" class="delete-form">
                                                             @csrf
                                                             @method('DELETE')
-                                                            <button type="submit" class="btn btn-link text-danger p-2">
+                                                            <button type="button" class="btn btn-link text-danger p-2 delete-btn"
+                                                                    data-student-id="{{ $student->id }}"
+                                                                    data-student-name="{{ $student->name }}">
                                                                 <i class="fas fa-trash"></i>
                                                             </button>
                                                         </form>
@@ -476,21 +556,69 @@
     </div>
 
     <!-- Modal Delete Confirmation -->
-    <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel"
+    <div class="modal fade delete-modal" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel"
         aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="deleteConfirmModalLabel">Confirm Deletion</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header bg-danger text-white border-0">
+                    <div class="d-flex align-items-center">
+                        <div class="icon icon-shape bg-white bg-gradient-danger shadow-danger text-center rounded-circle me-3">
+                            <i class="fas fa-exclamation-triangle text-danger text-lg opacity-10"></i>
+                        </div>
+                        <div>
+                            <h5 class="modal-title mb-0" id="deleteConfirmModalLabel">Confirm Deletion</h5>
+                            <p class="text-white-50 mb-0 small">This action cannot be undone</p>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
-                    <p class="mb-0">Are you sure you want to delete the student account "Youssef Ahmed"?</p>
-                    <p class="text-danger mb-0">This action cannot be undone.</p>
+                <div class="modal-body p-4">
+                    <div class="text-center mb-4">
+                        <div class="icon icon-shape bg-gradient-danger shadow-danger text-center rounded-circle mx-auto mb-3" style="width: 80px; height: 80px;">
+                            <i class="fas fa-user-times text-white text-lg opacity-10" style="font-size: 2rem;"></i>
+                        </div>
+                        <h6 class="text-danger mb-2">Are you sure you want to delete this student?</h6>
+                        <p class="text-muted mb-0" id="deleteStudentName"></p>
+                    </div>
+                    
+                    <div class="alert alert-warning border-0">
+                        <div class="d-flex">
+                            <i class="fas fa-exclamation-triangle text-warning me-2 mt-1"></i>
+                            <div>
+                                <strong>Warning:</strong> This will permanently delete the student account and all associated data.
+                                <ul class="mb-0 mt-2 small">
+                                    <li>Student profile will be removed</li>
+                                    <li>All records will be deleted</li>
+                                    <li>This action cannot be undone</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Confirmation Input -->
+                    <div class="form-group">
+                        <label for="deleteConfirmation" class="form-label text-danger">
+                            <i class="fas fa-keyboard me-2"></i>Type "DELETE" to confirm
+                        </label>
+                        <input type="text" id="deleteConfirmation" class="form-control" 
+                               placeholder="Type DELETE to confirm" 
+                               required>
+                        <div class="form-text text-muted">
+                            This extra step helps prevent accidental deletions.
+                        </div>
+                    </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-danger">Confirm Deletion</button>
+                <div class="modal-footer border-0 bg-light">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-2"></i>Cancel
+                    </button>
+                    <form id="deleteForm" method="POST" style="display: inline;">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-secondary" disabled>
+                            <i class="fas fa-trash me-2"></i>Delete Student
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -639,9 +767,145 @@
             window.print();
         }
 
-        function confirmDelete(studentName) {
-            return confirm(`Are you sure you want to delete the student "${studentName}"?\n\nThis action cannot be undone.`);
-        }
+        // Delete confirmation modal functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const deleteButtons = document.querySelectorAll('.delete-btn');
+            const deleteModal = document.getElementById('deleteConfirmModal');
+            const deleteStudentName = document.getElementById('deleteStudentName');
+            const deleteForm = document.getElementById('deleteForm');
+            const deleteConfirmation = document.getElementById('deleteConfirmation');
+            const deleteSubmitBtn = deleteForm.querySelector('button[type="submit"]');
+
+            deleteButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const studentName = this.getAttribute('data-student-name');
+                    const studentId = this.getAttribute('data-student-id');
+                    const form = this.closest('.delete-form');
+                    
+                    // Update modal content
+                    deleteStudentName.textContent = studentName;
+                    
+                    // Update form action
+                    deleteForm.action = form.action;
+                    
+                    // Reset confirmation input
+                    deleteConfirmation.value = '';
+                    deleteSubmitBtn.disabled = true;
+                    
+                    // Show modal with animation
+                    const modal = new bootstrap.Modal(deleteModal, {
+                        backdrop: 'static',
+                        keyboard: false
+                    });
+                    modal.show();
+                });
+            });
+
+            // Handle confirmation input
+            deleteConfirmation.addEventListener('input', function() {
+                const isConfirmed = this.value.toUpperCase() === 'DELETE';
+                deleteSubmitBtn.disabled = !isConfirmed;
+                
+                // Update input styling
+                this.classList.remove('valid', 'is-invalid');
+                
+                if (this.value.length > 0) {
+                    if (isConfirmed) {
+                        this.classList.add('valid');
+                        deleteSubmitBtn.classList.remove('btn-secondary');
+                        deleteSubmitBtn.classList.add('btn-danger');
+                    } else {
+                        this.classList.add('is-invalid');
+                        deleteSubmitBtn.classList.remove('btn-danger');
+                        deleteSubmitBtn.classList.add('btn-secondary');
+                    }
+                } else {
+                    deleteSubmitBtn.classList.remove('btn-danger');
+                    deleteSubmitBtn.classList.add('btn-secondary');
+                }
+            });
+
+            // Handle form submission
+            deleteForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                if (deleteConfirmation.value.toUpperCase() !== 'DELETE') {
+                    return;
+                }
+                
+                // Show loading state
+                const submitBtn = this.querySelector('button[type="submit"]');
+                const originalText = submitBtn.innerHTML;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Deleting...';
+                submitBtn.disabled = true;
+
+                // Submit the form
+                fetch(this.action, {
+                    method: 'POST',
+                    body: new FormData(this),
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Show success message
+                        submitBtn.innerHTML = '<i class="fas fa-check me-2"></i>Deleted Successfully!';
+                        submitBtn.classList.remove('btn-danger');
+                        submitBtn.classList.add('btn-success');
+                        
+                        // Close modal after delay
+                        setTimeout(() => {
+                            const modal = bootstrap.Modal.getInstance(deleteModal);
+                            modal.hide();
+                            
+                            // Reload page after modal is hidden
+                            setTimeout(() => {
+                                location.reload();
+                            }, 300);
+                        }, 1500);
+                    } else {
+                        throw new Error(data.message || 'Failed to delete student');
+                    }
+                })
+                .catch(error => {
+                    // Reset button state
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                    
+                    // Show error message in modal
+                    const errorDiv = document.createElement('div');
+                    errorDiv.className = 'alert alert-danger mt-3';
+                    errorDiv.innerHTML = '<i class="fas fa-exclamation-circle me-2"></i>' + error.message;
+                    
+                    const modalBody = deleteModal.querySelector('.modal-body');
+                    modalBody.appendChild(errorDiv);
+                    
+                    // Remove error message after 5 seconds
+                    setTimeout(() => {
+                        errorDiv.remove();
+                    }, 5000);
+                });
+            });
+
+            // Reset modal when hidden
+            deleteModal.addEventListener('hidden.bs.modal', function() {
+                const submitBtn = deleteForm.querySelector('button[type="submit"]');
+                submitBtn.innerHTML = '<i class="fas fa-trash me-2"></i>Delete Student';
+                submitBtn.disabled = true;
+                submitBtn.classList.remove('btn-success', 'btn-danger');
+                submitBtn.classList.add('btn-secondary');
+                
+                // Reset confirmation input
+                deleteConfirmation.value = '';
+                deleteConfirmation.classList.remove('valid', 'is-invalid');
+                
+                // Remove any error messages
+                const errorMessages = deleteModal.querySelectorAll('.alert-danger');
+                errorMessages.forEach(msg => msg.remove());
+            });
+        });
     </script>
     <!-- Github buttons -->
     <script async defer src="https://buttons.github.io/buttons.js"></script>

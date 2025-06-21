@@ -141,8 +141,22 @@ class StudentController extends Controller
             
             $student->delete();
             
+            if (request()->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Student deleted successfully'
+                ]);
+            }
+            
             return redirect()->back()->with('success', 'Student deleted successfully');
         } catch (\Exception $e) {
+            if (request()->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Failed to delete student. Please try again.'
+                ], 500);
+            }
+            
             return redirect()->back()->with('error', 'Failed to delete student. Please try again.');
         }
     }
