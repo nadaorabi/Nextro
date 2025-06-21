@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\Educational\CourseController;
 use App\Http\Controllers\Admin\Educational\PackageController;
 
 use App\Models\Category;
+use App\Models\Course;
 
 // الصفحة الرئيسية
 Route::get('/', [HomeController::class, 'ShowHomePage'])->name('home_page');
@@ -52,22 +53,50 @@ Route::prefix('admin')->middleware('isAdmin')->name('admin.')->group(function ()
     Route::get('finance', [AdminController::class, 'finance'])->name('finance');
     Route::get('profile', [AdminController::class, 'profile'])->name('profile');
     Route::post('logout', [AdminController::class, 'logout'])->name('logout');
-    // إدارة الحسابات
-    Route::get('accounts/students/create', [StudentController::class, 'create'])->name('accounts.students.create');
-    Route::post('accounts/students/store', [StudentController::class, 'store'])->name('accounts.students.store');
-    Route::get('accounts/students/list', [StudentController::class, 'index'])->name('accounts.students.list');
-    Route::get('accounts/students/edit', [StudentController::class, 'edit'])->name('accounts.students.edit');
-    Route::get('accounts/students/show', [StudentController::class, 'show'])->name('accounts.students.show');
-    Route::get('accounts/students/destroy', [StudentController::class, 'destroy'])->name('accounts.students.destroy');
+
+
+    Route::get('accounts/students/{id}/edit', [StudentController::class, 'edit'])->name('accounts.students.edit');
+    Route::put('accounts/students/{id}', [StudentController::class, 'update'])->name('accounts.students.update');
+    Route::get('accounts/students/{id}', [StudentController::class, 'show'])->name('accounts.students.show');
+    Route::delete('accounts/students/{id}', [StudentController::class, 'destroy'])->name('accounts.students.destroy');
+
+    // Accounts Management
+    Route::prefix('accounts/students')->name('accounts.students.')->group(function () {
+        Route::get('accounts/students/create', [StudentController::class, 'create'])->name('create');
+        Route::post('accounts/students/store', [StudentController::class, 'store'])->name('store');
+        Route::get('accounts/students/list', [StudentController::class, 'index'])->name('list');
+        Route::get('accounts/students/{id}/edit', [StudentController::class, 'edit'])->name('edit');
+        Route::put('accounts/students/{id}', [StudentController::class, 'update'])->name('update');
+        Route::get('accounts/students/{id}', [StudentController::class, 'show'])->name('show');
+        Route::delete('accounts/students/{id}', [StudentController::class, 'destroy'])->name('destroy');
+    });
+
     /////////////
     Route::get('accounts/teachers/create', [AdminController::class, 'teachersCreate'])->name('accounts.teachers.create');
     Route::get('accounts/teachers/list', [AdminController::class, 'teachersList'])->name('accounts.teachers.list');
     Route::get('accounts/admins/create', [AdminController::class, 'adminsCreate'])->name('accounts.admins.create');
     Route::get('accounts/admins/list', [AdminController::class, 'adminsList'])->name('accounts.admins.list');
-    // إدارة المواد التعليميه
-    Route::get('educational-categories/create', [CategoryController::class, 'create'])->name('educational-categories.create');
-    Route::post('educational-categories/store', [CategoryController::class, 'store'])->name('educational-categories.store');
-    Route::get('educational-categories/list', [CategoryController::class, 'index'])->name('educational-categories.index');
+    
+    // Educational Categories Management
+    Route::prefix('educational-categories')->name('educational-categories.')->group(function () {
+        Route::get('/', [CategoryController::class, 'index'])->name('index');
+        Route::get('/create', [CategoryController::class, 'create'])->name('create');
+        Route::post('/store', [CategoryController::class, 'store'])->name('store');
+        Route::put('/{category}', [CategoryController::class, 'update'])->name('update');
+        Route::delete('/{category}', [CategoryController::class, 'destroy'])->name('destroy');
+        Route::get('show/{category}', [CategoryController::class, 'show'])->name('show');
+    });
+
+    // Educational Courses Management
+    Route::prefix('educational-courses')->name('educational-courses.')->group(function () {
+        Route::get('/', [CourseController::class, 'index'])->name('index');
+        Route::get('/create', [CourseController::class, 'create'])->name('create');
+        Route::get('/edit', [CourseController::class, 'edit'])->name('edit');
+        Route::post('/store', [CourseController::class, 'store'])->name('store');
+        Route::put('/{course}', [CourseController::class, 'update'])->name('update');
+        Route::delete('/{course}', [CourseController::class, 'destroy'])->name('destroy');
+        Route::get('show/{course}', [CourseController::class, 'show'])->name('show');
+    });
 
     Route::get('educational-courses/list', [CourseController::class, 'index'])->name('educational-courses.index');
     Route::get('educational-courses/create', [CourseController::class, 'create'])->name('educational-courses.create');
