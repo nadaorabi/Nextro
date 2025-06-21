@@ -91,11 +91,16 @@ Route::prefix('admin')->middleware('isAdmin')->name('admin.')->group(function ()
         Route::put('/{course}', [CourseController::class, 'update'])->name('update');
         Route::delete('/{course}', [CourseController::class, 'destroy'])->name('destroy');
         Route::get('show/{course}', [CourseController::class, 'show'])->name('show');
+        
+        // Additional routes for course management
+        Route::patch('/{course}/toggle-status', [CourseController::class, 'toggleStatus'])->name('toggle-status');
+        Route::post('/{course}/duplicate', [CourseController::class, 'duplicate'])->name('duplicate');
+        Route::post('/bulk-action', [CourseController::class, 'bulkAction'])->name('bulk-action');
+        Route::get('/export', [CourseController::class, 'export'])->name('export');
     });
 
     Route::get('educational-courses/list', [CourseController::class, 'index'])->name('educational-courses.index');
     Route::get('educational-courses/create', [CourseController::class, 'create'])->name('educational-courses.create');
-
     Route::get('educational-packages/list', [PackageController::class, 'index'])->name('educational-packages.index');
     Route::get('educational-packages/create', [PackageController::class, 'create'])->name('educational-packages.create');
 
@@ -135,4 +140,5 @@ Route::prefix('teacher')->middleware('isTeacher')->name('teacher.')->group(funct
     Route::get('profile', [TeacherController::class, 'profile'])->name('profile');
     Route::post('logout', [TeacherController::class, 'logout'])->name('logout');
 });
+
 
