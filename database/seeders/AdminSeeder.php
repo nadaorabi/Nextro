@@ -15,6 +15,7 @@ class AdminSeeder extends Seeder
         User::updateOrCreate(
             ['login_id' => '20201020'],
             [
+                'email' => 'admin@demo.com',
                 'name' => 'Admin',
                 'mobile' => '0965121663',
                 'password' => bcrypt('12345678'),
