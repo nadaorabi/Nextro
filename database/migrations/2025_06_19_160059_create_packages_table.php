@@ -13,12 +13,14 @@ return new class extends Migration
     {
         Schema::create('packages', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
+            $table->string('name');
             $table->text('description')->nullable();
+            $table->string('image')->nullable();
             $table->foreignId('category_id')->constrained()->onDelete('cascade');
             $table->decimal('price', 10, 2);
+            $table->string('currency')->default('USD');
             $table->decimal('discount_percentage', 5, 2)->default(0);
-            $table->boolean('is_active')->default(true);
+            $table->string('status')->default('active');
             $table->timestamps();
         });
     }
