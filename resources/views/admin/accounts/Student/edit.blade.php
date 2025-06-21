@@ -5,7 +5,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="icon" href="{{ asset('images/favicon.png') }}">
-  <title>Add New Student</title>
+  <title>Edit Student - {{ $student->name }}</title>
 
   <!-- Fonts and CSS -->
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
@@ -28,12 +28,12 @@
             <div class="card-body">
               <div class="d-flex justify-content-between align-items-center">
                 <div>
-                  <h4 class="mb-0">Add New Student</h4>
-                  <p class="text-muted mb-0">Create a new student account</p>
+                  <h4 class="mb-0">Edit Student</h4>
+                  <p class="text-muted mb-0">Update student information</p>
                 </div>
                 <div>
-                  <a href="{{ route('admin.accounts.students.list') }}" class="btn btn-secondary">
-                    <i class="fas fa-arrow-left"></i> Back to List
+                  <a href="{{ route('admin.accounts.students.show', $student->id) }}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Back to Details
                   </a>
                 </div>
               </div>
@@ -68,94 +68,107 @@
             </div>
           @endif
 
-          <!-- Add Form Card -->
+          <!-- Edit Form Card -->
           <div class="card shadow-sm">
             <div class="card-body">
-              <form action="{{ route('admin.accounts.students.store') }}" method="POST" class="text-start" autocomplete="off">
+              <form action="{{ route('admin.accounts.students.update', $student->id) }}" method="POST" class="text-start" autocomplete="off">
                 @csrf
+                @method('PUT')
 
                 <!-- Full Name -->
                 <div class="mb-3">
                   <label class="form-label">Full Name <span class="text-danger">*</span></label>
-                  <input type="text" name="name" class="form-control" value="{{ old('name') }}" required maxlength="255">
+                  <input type="text" name="name" class="form-control" value="{{ old('name', $student->name) }}" required maxlength="255">
                 </div>
 
                 <!-- Father's Name -->
                 <div class="mb-3">
                   <label class="form-label">Father's Name</label>
-                  <input type="text" name="father_name" class="form-control" value="{{ old('father_name') }}" maxlength="255">
+                  <input type="text" name="father_name" class="form-control" value="{{ old('father_name', $student->father_name) }}" maxlength="255">
                 </div>
 
                 <!-- Mother's Name -->
                 <div class="mb-3">
                   <label class="form-label">Mother's Name</label>
-                  <input type="text" name="mother_name" class="form-control" value="{{ old('mother_name') }}" maxlength="255">
+                  <input type="text" name="mother_name" class="form-control" value="{{ old('mother_name', $student->mother_name) }}" maxlength="255">
                 </div>
 
                 <!-- Mobile -->
                 <div class="mb-3">
                   <label class="form-label">Mobile Number <span class="text-danger">*</span></label>
-                  <input type="tel" name="mobile" class="form-control" value="{{ old('mobile') }}" required pattern="[0-9]{9,15}" maxlength="15">
+                  <input type="tel" name="mobile" class="form-control" value="{{ old('mobile', $student->mobile) }}" required pattern="[0-9]{9,15}" maxlength="15">
                 </div>
 
                 <!-- Alt Mobile -->
                 <div class="mb-3">
                   <label class="form-label">Alternative Mobile</label>
-                  <input type="tel" name="alt_mobile" class="form-control" value="{{ old('alt_mobile') }}" pattern="[0-9]{9,15}" maxlength="15">
+                  <input type="tel" name="alt_mobile" class="form-control" value="{{ old('alt_mobile', $student->alt_mobile) }}" pattern="[0-9]{9,15}" maxlength="15">
                 </div>
 
                 <!-- Email -->
                 <div class="mb-3">
                   <label class="form-label">Email</label>
-                  <input type="email" name="email" class="form-control" value="{{ old('email') }}" maxlength="255">
+                  <input type="email" name="email" class="form-control" value="{{ old('email', $student->email) }}" maxlength="255">
                 </div>
 
                 <!-- National ID -->
                 <div class="mb-3">
                   <label class="form-label">National ID</label>
-                  <input type="text" name="national_id" class="form-control" value="{{ old('national_id') }}" maxlength="50">
+                  <input type="text" name="national_id" class="form-control" value="{{ old('national_id', $student->national_id) }}" maxlength="50">
                 </div>
 
                 <!-- Address -->
                 <div class="mb-3">
                   <label class="form-label">Address</label>
-                  <input type="text" name="address" class="form-control" value="{{ old('address') }}" maxlength="255">
+                  <input type="text" name="address" class="form-control" value="{{ old('address', $student->address) }}" maxlength="255">
                 </div>
 
                 <!-- Birth Date -->
                 <div class="mb-3">
                   <label class="form-label">Birth Date</label>
-                  <input type="date" name="birth_date" class="form-control" value="{{ old('birth_date') }}" max="{{ now()->toDateString() }}">
+                  <input type="date" name="birth_date" class="form-control" value="{{ old('birth_date', $student->birth_date) }}" max="{{ now()->toDateString() }}">
                 </div>
 
                 <!-- Notes -->
                 <div class="mb-3">
                   <label class="form-label">Notes</label>
-                  <textarea name="notes" class="form-control" rows="3" maxlength="1000">{{ old('notes') }}</textarea>
+                  <textarea name="notes" class="form-control" rows="3" maxlength="1000">{{ old('notes', $student->notes) }}</textarea>
                 </div>
 
                 <!-- Status -->
                 <div class="mb-3">
                   <label class="form-label">Status <span class="text-danger">*</span></label>
                   <select name="is_active" class="form-select" required>
-                    <option value="1" {{ old('is_active', '1') == '1' ? 'selected' : '' }}>Active</option>
-                    <option value="0" {{ old('is_active') == '0' ? 'selected' : '' }}>Inactive</option>
+                    <option value="1" {{ old('is_active', $student->is_active) == 1 ? 'selected' : '' }}>Active</option>
+                    <option value="2" {{ old('is_active', $student->is_active) == 2 ? 'selected' : '' }}>Graduated</option>
+                    <option value="0" {{ old('is_active', $student->is_active) == 0 ? 'selected' : '' }}>Inactive</option>
                   </select>
                 </div>
 
-                <!-- Information Note -->
-                <div class="alert alert-info">
-                  <i class="fas fa-info-circle me-2"></i>
-                  <strong>Note:</strong> A unique Student ID and password will be automatically generated when the student is created.
+                <!-- Read-only Information -->
+                <div class="card bg-light mb-3">
+                  <div class="card-body">
+                    <h6 class="text-muted mb-3">Account Information (Read-only)</h6>
+                    <div class="row">
+                      <div class="col-md-6">
+                        <label class="form-label text-muted">Student ID</label>
+                        <input type="text" class="form-control" value="{{ $student->login_id }}" readonly>
+                      </div>
+                      <div class="col-md-6">
+                        <label class="form-label text-muted">Registration Date</label>
+                        <input type="text" class="form-control" value="{{ $student->created_at->format('F d, Y') }}" readonly>
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
                 <!-- Submit Buttons -->
                 <div class="d-flex justify-content-between">
-                  <a href="{{ route('admin.accounts.students.list') }}" class="btn btn-secondary">
+                  <a href="{{ route('admin.accounts.students.show', $student->id) }}" class="btn btn-secondary">
                     <i class="fas fa-times"></i> Cancel
                   </a>
                   <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-plus"></i> Add Student
+                    <i class="fas fa-save"></i> Update Student
                   </button>
                 </div>
               </form>
@@ -175,4 +188,4 @@
   <script src="{{ asset('js/argon-dashboard.min.js?v=2.1.0') }}"></script>
 </body>
 
-</html>
+</html> 
