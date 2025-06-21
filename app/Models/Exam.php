@@ -9,7 +9,17 @@ class Exam extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['course_id', 'created_by', 'title', 'exam_date', 'duration'];
+    protected $fillable = [
+        'course_id', 
+        'created_by', 
+        'title', 
+        'description',
+        'date', 
+        'duration',
+        'total_marks',
+        'passing_marks',
+        'status'
+    ];
 
     public function course() 
     { 

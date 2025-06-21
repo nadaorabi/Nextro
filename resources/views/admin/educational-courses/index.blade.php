@@ -111,6 +111,34 @@
         .bg-light-danger {
             background-color: rgba(220, 53, 69, 0.1) !important;
         }
+
+        /* Modal fixes - simplified */
+        .modal-content {
+            pointer-events: auto;
+        }
+
+        /* Ensure form elements work properly */
+        .modal form * {
+            pointer-events: auto;
+        }
+
+        /* Prevent modal from closing when clicking on backdrop */
+        .modal-backdrop {
+            pointer-events: none;
+        }
+
+        .modal {
+            pointer-events: auto;
+        }
+
+        /* Prevent modal from closing when clicking on form elements */
+        .modal input,
+        .modal select,
+        .modal textarea,
+        .modal .form-check-input,
+        .modal .btn {
+            pointer-events: auto;
+        }
     </style>
 @endpush
 
@@ -286,6 +314,7 @@
                             <th>Title</th>
                             <th>Credit Hours</th>
                             <th>Category</th>
+                            <th>Price</th>
                             <th>Status</th>
                             <th>Created</th>
                             <th>Actions</th>
@@ -299,6 +328,25 @@
                                 <td class="text-start">{{ $course->title }}</td>
                                 <td>{{ $course->credit_hours }}</td>
                                 <td>{{ $course->category?->name ?? '-' }}</td>
+                                <td>
+                                    @if($course->is_free)
+                                        <span class="badge bg-success">Free</span>
+                                    @else
+                                        @if($course->hasDiscount())
+                                            <div class="text-decoration-line-through text-muted small">
+                                                {{ $course->formatted_original_price }}
+                                            </div>
+                                            <div class="text-success fw-bold">
+                                                {{ $course->formatted_price }}
+                                            </div>
+                                            <span class="badge bg-danger small">{{ $course->discount_percentage }}% OFF</span>
+                                        @else
+                                            <div class="text-primary fw-bold">
+                                                {{ $course->formatted_price }}
+                                            </div>
+                                        @endif
+                                    @endif
+                                </td>
                                 <td>
                                     <span class="badge bg-{{ $course->status === 'active' ? 'success' : 'secondary' }}">
                                         {{ ucfirst($course->status) }}
@@ -326,8 +374,8 @@
                             </tr>
 
                             <!-- Modal Edit Course -->
-                            <div class="modal fade" id="editCourseModal-{{ $course->id }}" tabindex="-1" aria-labelledby="editCourseModalLabel-{{ $course->id }}" aria-hidden="true">
-                                <div class="modal-dialog modal-lg">
+                            <div class="modal fade" id="editCourseModal-{{ $course->id }}" tabindex="-1" aria-labelledby="editCourseModalLabel-{{ $course->id }}" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+                                <div class="modal-dialog modal-xl">
                                     <form action="{{ route('admin.educational-courses.update', $course->id) }}" method="POST" enctype="multipart/form-data" class="modal-content border-0 shadow-lg">
                                         @csrf
                                         @method('PUT')
@@ -368,15 +416,6 @@
                                                             @endforeach
                                                         </select>
                                                     </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="mb-4">
-                                                        <label class="form-label fw-bold text-primary">
-                                                            <i class="fas fa-align-left me-2"></i>Description
-                                                        </label>
-                                                        <textarea name="description" class="form-control border-2 border-light"
-                                                            rows="6" placeholder="Enter course description...">{{ $course->description }}</textarea>
-                                                    </div>
                                                     <div class="mb-4">
                                                         <label class="form-label fw-bold text-primary">
                                                             <i class="fas fa-toggle-on me-2"></i>Status
@@ -389,6 +428,81 @@
                                                                 <i class="fas fa-archive"></i> Archived
                                                             </option>
                                                         </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="mb-4">
+                                                        <label class="form-label fw-bold text-primary">
+                                                            <i class="fas fa-align-left me-2"></i>Description
+                                                        </label>
+                                                        <textarea name="description" class="form-control border-2 border-light"
+                                                            rows="4" placeholder="Enter course description...">{{ $course->description }}</textarea>
+                                                    </div>
+                                                    
+                                                    <!-- Price Section -->
+                                                    <div class="card mb-4">
+                                                        <div class="card-header bg-light">
+                                                            <h6 class="mb-0 fw-bold">
+                                                                <i class="fas fa-dollar-sign me-2"></i>
+                                                                Pricing Information
+                                                            </h6>
+                                                        </div>
+                                                        <div class="card-body">
+                                                            <div class="mb-3">
+                                                                <div class="form-check">
+                                                                    <input class="form-check-input" type="checkbox" name="is_free" id="isFree-{{ $course->id }}" value="1" 
+                                                                           {{ $course->is_free ? 'checked' : '' }}>
+                                                                    <label class="form-check-label" for="isFree-{{ $course->id }}">
+                                                                        This course is free
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                            
+                                                            <div id="priceFields-{{ $course->id }}" class="{{ $course->is_free ? 'd-none' : '' }}">
+                                                                <div class="row">
+                                                                    <div class="col-md-6">
+                                                                        <div class="mb-3">
+                                                                            <label class="form-label">Price</label>
+                                                                            <input type="number" name="price" class="form-control" 
+                                                                                   step="0.01" min="0" value="{{ $course->price }}">
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-6">
+                                                                        <div class="mb-3">
+                                                                            <label class="form-label">Currency</label>
+                                                                            <select name="currency" class="form-select">
+                                                                                <option value="USD" {{ $course->currency == 'USD' ? 'selected' : '' }}>USD</option>
+                                                                                <option value="SAR" {{ $course->currency == 'SAR' ? 'selected' : '' }}>SAR</option>
+                                                                                <option value="AED" {{ $course->currency == 'AED' ? 'selected' : '' }}>AED</option>
+                                                                                <option value="EUR" {{ $course->currency == 'EUR' ? 'selected' : '' }}>EUR</option>
+                                                                            </select>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                
+                                                                <div class="row">
+                                                                    <div class="col-md-6">
+                                                                        <div class="mb-3">
+                                                                            <label class="form-label">Discount Percentage</label>
+                                                                            <div class="input-group">
+                                                                                <input type="number" name="discount_percentage" class="form-control" 
+                                                                                       step="0.01" min="0" max="100" value="{{ $course->discount_percentage }}">
+                                                                                <span class="input-group-text">%</span>
+                                                                            </div>
+                                                                            <small class="text-muted">Enter 0 for no discount</small>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-6">
+                                                                        <div class="mb-3">
+                                                                            <label class="form-label">Final Price</label>
+                                                                            <div class="form-control-plaintext" id="finalPrice-{{ $course->id }}">
+                                                                                {{ $course->formatted_price }}
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -483,6 +597,170 @@
             form.action = `/admin/educational-courses/${courseId}`;
         }
 
+        // Price calculation functions for modals
+        function setupPriceCalculation(courseId) {
+            const isFreeCheckbox = document.getElementById(`isFree-${courseId}`);
+            const priceFields = document.getElementById(`priceFields-${courseId}`);
+            const priceInput = document.querySelector(`#editCourseModal-${courseId} input[name="price"]`);
+            const discountInput = document.querySelector(`#editCourseModal-${courseId} input[name="discount_percentage"]`);
+            const currencySelect = document.querySelector(`#editCourseModal-${courseId} select[name="currency"]`);
+            const finalPriceElement = document.getElementById(`finalPrice-${courseId}`);
+
+            if (isFreeCheckbox) {
+                isFreeCheckbox.addEventListener('change', function(e) {
+                    if (this.checked) {
+                        priceFields.classList.add('d-none');
+                        if (priceInput) priceInput.value = '0';
+                        if (discountInput) discountInput.value = '0';
+                        updateFinalPrice();
+                    } else {
+                        priceFields.classList.remove('d-none');
+                    }
+                });
+            }
+
+            function updateFinalPrice() {
+                const price = parseFloat(priceInput?.value) || 0;
+                const discount = parseFloat(discountInput?.value) || 0;
+                const currency = currencySelect?.value || 'USD';
+                const isFree = isFreeCheckbox?.checked || false;
+                
+                let finalPrice = 0;
+                
+                if (!isFree && price > 0) {
+                    if (discount > 0) {
+                        const discountAmount = (price * discount) / 100;
+                        finalPrice = price - discountAmount;
+                    } else {
+                        finalPrice = price;
+                    }
+                }
+                
+                if (finalPriceElement) {
+                    if (isFree || finalPrice === 0) {
+                        finalPriceElement.textContent = 'Free';
+                    } else {
+                        finalPriceElement.textContent = `${currency} ${finalPrice.toFixed(2)}`;
+                    }
+                }
+            }
+
+            // Add event listeners for price calculation with proper event handling
+            if (priceInput) {
+                priceInput.addEventListener('input', function(e) {
+                    updateFinalPrice();
+                });
+            }
+            
+            if (discountInput) {
+                discountInput.addEventListener('input', function(e) {
+                    updateFinalPrice();
+                });
+            }
+            
+            if (currencySelect) {
+                currencySelect.addEventListener('change', function(e) {
+                    updateFinalPrice();
+                });
+            }
+
+            // Initialize final price on modal show
+            const modal = document.getElementById(`editCourseModal-${courseId}`);
+            if (modal) {
+                modal.addEventListener('shown.bs.modal', function() {
+                    updateFinalPrice();
+                });
+                
+                // Prevent modal from closing when clicking inside
+                modal.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                });
+                
+                // Prevent modal from closing when clicking on backdrop
+                modal.addEventListener('click', function(e) {
+                    if (e.target === modal) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        return false;
+                    }
+                });
+                
+                // Prevent form submission from closing modal unexpectedly
+                const form = modal.querySelector('form');
+                if (form) {
+                    form.addEventListener('submit', function(e) {
+                        // Remove any previous error states
+                        form.querySelectorAll('.is-invalid').forEach(field => {
+                            field.classList.remove('is-invalid');
+                        });
+                        
+                        // Check required fields
+                        const requiredFields = form.querySelectorAll('[required]');
+                        let hasErrors = false;
+                        
+                        requiredFields.forEach(field => {
+                            if (!field.value.trim()) {
+                                hasErrors = true;
+                                field.classList.add('is-invalid');
+                                
+                                // Add error message
+                                let errorDiv = field.parentNode.querySelector('.invalid-feedback');
+                                if (!errorDiv) {
+                                    errorDiv = document.createElement('div');
+                                    errorDiv.className = 'invalid-feedback';
+                                    field.parentNode.appendChild(errorDiv);
+                                }
+                                errorDiv.textContent = 'This field is required.';
+                            } else {
+                                field.classList.remove('is-invalid');
+                                const errorDiv = field.parentNode.querySelector('.invalid-feedback');
+                                if (errorDiv) {
+                                    errorDiv.remove();
+                                }
+                            }
+                        });
+                        
+                        if (hasErrors) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            
+                            // Show error message
+                            const firstError = form.querySelector('.is-invalid');
+                            if (firstError) {
+                                firstError.focus();
+                            }
+                            
+                            return false;
+                        }
+                        
+                        // If no errors, allow form submission
+                        // Show loading state
+                        const submitBtn = form.querySelector('button[type="submit"]');
+                        if (submitBtn) {
+                            const originalText = submitBtn.innerHTML;
+                            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Saving...';
+                            submitBtn.disabled = true;
+                            
+                            // Re-enable button after 5 seconds if no response
+                            setTimeout(() => {
+                                submitBtn.innerHTML = originalText;
+                                submitBtn.disabled = false;
+                            }, 5000);
+                        }
+                    });
+                }
+                
+                // Prevent ESC key from closing modal
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape' && modal.classList.contains('show')) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        return false;
+                    }
+                });
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', function () {
             const searchInput = document.getElementById('search-input');
             const statusFilter = document.getElementById('status-filter');
@@ -510,6 +788,11 @@
             searchInput.addEventListener('input', filterCourses);
             statusFilter.addEventListener('change', filterCourses);
             categoryFilter.addEventListener('change', filterCourses);
+
+            // Setup price calculation for all course modals
+            @foreach($courses as $course)
+                setupPriceCalculation({{ $course->id }});
+            @endforeach
         });
     </script>
 @endpush

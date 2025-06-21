@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Create Course')
+@section('title', 'Edit Course')
 
 @push('styles')
     <style>
@@ -41,27 +41,45 @@
             <div class="col-12" style="max-width:900px;margin:auto;">
                 <div class="card shadow-sm">
                     <div class="card-body">
-                        <h4 class="mb-4 fw-bold text-primary text-center">
-                            <i class="fas fa-book me-2"></i>
-                            Create New Course
-                        </h4>
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h4 class="mb-0 fw-bold text-primary">
+                                <i class="fas fa-edit me-2"></i>
+                                Edit Course
+                            </h4>
+                            <a href="{{ route('admin.educational-courses.show', $course) }}" class="btn btn-outline-secondary">
+                                <i class="fas fa-eye me-2"></i>
+                                View Course
+                            </a>
+                        </div>
 
-                        <form action="{{ route('admin.educational-courses.store') }}" method="POST">
+                        <form action="{{ route('admin.educational-courses.update', $course) }}" method="POST">
                             @csrf
+                            @method('PUT')
 
                             <div class="mb-3">
                                 <label class="form-label">Title</label>
-                                <input type="text" name="title" class="form-control" required value="{{ old('title') }}">
+                                <input type="text" name="title" class="form-control @error('title') is-invalid @enderror" 
+                                       required value="{{ old('title', $course->title) }}">
+                                @error('title')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
 
                             <div class="mb-3">
                                 <label class="form-label">Description</label>
-                                <textarea name="description" rows="4" class="form-control">{{ old('description') }}</textarea>
+                                <textarea name="description" rows="4" class="form-control @error('description') is-invalid @enderror">{{ old('description', $course->description) }}</textarea>
+                                @error('description')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
 
                             <div class="mb-3">
                                 <label class="form-label">Credit Hours</label>
-                                <input type="number" name="credit_hours" class="form-control" required value="{{ old('credit_hours') }}">
+                                <input type="number" name="credit_hours" class="form-control @error('credit_hours') is-invalid @enderror" 
+                                       required value="{{ old('credit_hours', $course->credit_hours) }}">
+                                @error('credit_hours')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
 
                             <!-- Price Section -->
@@ -77,7 +95,8 @@
                                         <div class="col-md-6">
                                             <div class="mb-3">
                                                 <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" name="is_free" id="isFree" value="1" {{ old('is_free') ? 'checked' : '' }}>
+                                                    <input class="form-check-input" type="checkbox" name="is_free" id="isFree" value="1" 
+                                                           {{ old('is_free', $course->is_free) ? 'checked' : '' }}>
                                                     <label class="form-check-label" for="isFree">
                                                         This course is free
                                                     </label>
@@ -86,23 +105,30 @@
                                         </div>
                                     </div>
                                     
-                                    <div id="priceFields" class="{{ old('is_free') ? 'd-none' : '' }}">
+                                    <div id="priceFields" class="{{ old('is_free', $course->is_free) ? 'd-none' : '' }}">
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <div class="mb-3">
                                                     <label class="form-label">Price</label>
-                                                    <input type="number" name="price" class="form-control" step="0.01" min="0" value="{{ old('price', 0) }}">
+                                                    <input type="number" name="price" class="form-control @error('price') is-invalid @enderror" 
+                                                           step="0.01" min="0" value="{{ old('price', $course->price) }}">
+                                                    @error('price')
+                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                    @enderror
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="mb-3">
                                                     <label class="form-label">Currency</label>
-                                                    <select name="currency" class="form-select">
-                                                        <option value="USD" {{ old('currency', 'USD') == 'USD' ? 'selected' : '' }}>USD</option>
-                                                        <option value="SAR" {{ old('currency') == 'SAR' ? 'selected' : '' }}>SAR</option>
-                                                        <option value="AED" {{ old('currency') == 'AED' ? 'selected' : '' }}>AED</option>
-                                                        <option value="EUR" {{ old('currency') == 'EUR' ? 'selected' : '' }}>EUR</option>
+                                                    <select name="currency" class="form-select @error('currency') is-invalid @enderror">
+                                                        <option value="USD" {{ old('currency', $course->currency) == 'USD' ? 'selected' : '' }}>USD</option>
+                                                        <option value="SAR" {{ old('currency', $course->currency) == 'SAR' ? 'selected' : '' }}>SAR</option>
+                                                        <option value="AED" {{ old('currency', $course->currency) == 'AED' ? 'selected' : '' }}>AED</option>
+                                                        <option value="EUR" {{ old('currency', $course->currency) == 'EUR' ? 'selected' : '' }}>EUR</option>
                                                     </select>
+                                                    @error('currency')
+                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                    @enderror
                                                 </div>
                                             </div>
                                         </div>
@@ -112,17 +138,21 @@
                                                 <div class="mb-3">
                                                     <label class="form-label">Discount Percentage</label>
                                                     <div class="input-group">
-                                                        <input type="number" name="discount_percentage" class="form-control" step="0.01" min="0" max="100" value="{{ old('discount_percentage', 0) }}">
+                                                        <input type="number" name="discount_percentage" class="form-control @error('discount_percentage') is-invalid @enderror" 
+                                                               step="0.01" min="0" max="100" value="{{ old('discount_percentage', $course->discount_percentage) }}">
                                                         <span class="input-group-text">%</span>
                                                     </div>
                                                     <small class="text-muted">Enter 0 for no discount</small>
+                                                    @error('discount_percentage')
+                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                    @enderror
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="mb-3">
                                                     <label class="form-label">Final Price</label>
                                                     <div class="form-control-plaintext" id="finalPrice">
-                                                        $0.00
+                                                        {{ $course->formatted_price }}
                                                     </div>
                                                 </div>
                                             </div>
@@ -133,25 +163,41 @@
 
                             <div class="mb-3">
                                 <label class="form-label">Category</label>
-                                <select name="category_id" class="form-select" required>
+                                <select name="category_id" class="form-select @error('category_id') is-invalid @enderror" required>
                                     <option value="">Select Category</option>
                                     @foreach ($categories as $category)
-                                        <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
+                                        <option value="{{ $category->id }}" 
+                                                {{ old('category_id', $course->category_id) == $category->id ? 'selected' : '' }}>
                                             {{ $category->name }}
                                         </option>
                                     @endforeach
                                 </select>
+                                @error('category_id')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
 
                             <div class="mb-3">
                                 <label class="form-label">Status</label>
-                                <select name="status" class="form-select" required>
-                                    <option value="active" {{ old('status') == 'active' ? 'selected' : '' }}>Active</option>
-                                    <option value="archived" {{ old('status') == 'archived' ? 'selected' : '' }}>Inactive</option>
+                                <select name="status" class="form-select @error('status') is-invalid @enderror" required>
+                                    <option value="active" {{ old('status', $course->status) == 'active' ? 'selected' : '' }}>Active</option>
+                                    <option value="archived" {{ old('status', $course->status) == 'archived' ? 'selected' : '' }}>Inactive</option>
                                 </select>
+                                @error('status')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
 
-                            <button type="submit" class="btn btn-primary">Save</button>
+                            <div class="d-flex justify-content-between">
+                                <a href="{{ route('admin.educational-courses.show', $course) }}" class="btn btn-secondary">
+                                    <i class="fas fa-arrow-left me-2"></i>
+                                    Cancel
+                                </a>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save me-2"></i>
+                                    Update Course
+                                </button>
+                            </div>
                         </form>
 
                     </div>
@@ -215,4 +261,4 @@
             updateFinalPrice();
         });
     </script>
-@endpush
+@endpush 

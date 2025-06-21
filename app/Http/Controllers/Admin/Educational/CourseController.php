@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Course;
 use App\Models\Category;
 use App\Models\Package;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
@@ -58,6 +59,10 @@ class CourseController extends Controller
                 'description' => 'nullable|string|max:1000',
                 'category_id' => 'required|exists:categories,id',
                 'credit_hours' => 'required|integer|min:1|max:999',
+                'price' => 'nullable|numeric|min:0|max:999999.99',
+                'currency' => 'nullable|string|max:10',
+                'discount_percentage' => 'nullable|numeric|min:0|max:100',
+                'is_free' => 'nullable|boolean',
                 'status' => 'required|in:active,archived',
                 'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             ], [
@@ -67,6 +72,12 @@ class CourseController extends Controller
                 'credit_hours.required' => 'Credit hours are required.',
                 'credit_hours.min' => 'Credit hours must be at least 1.',
                 'credit_hours.max' => 'Credit hours cannot exceed 999.',
+                'price.numeric' => 'Price must be a valid number.',
+                'price.min' => 'Price cannot be negative.',
+                'price.max' => 'Price cannot exceed 999,999.99.',
+                'discount_percentage.numeric' => 'Discount percentage must be a valid number.',
+                'discount_percentage.min' => 'Discount percentage cannot be negative.',
+                'discount_percentage.max' => 'Discount percentage cannot exceed 100%.',
                 'image.image' => 'The file must be an image.',
                 'image.max' => 'Image size cannot exceed 2MB.',
             ]);
@@ -77,7 +88,31 @@ class CourseController extends Controller
                     ->withInput();
             }
 
-            $data = $request->only(['title', 'description', 'category_id', 'credit_hours', 'status']);
+            $data = $request->only([
+                'title', 
+                'description', 
+                'category_id', 
+                'credit_hours', 
+                'price',
+                'currency',
+                'discount_percentage',
+                'is_free',
+                'status'
+            ]);
+            
+            // Set default values for price fields
+            if ($request->has('is_free') && $request->is_free) {
+                $data['price'] = 0;
+                $data['discount_percentage'] = 0;
+            }
+            
+            if (!isset($data['currency'])) {
+                $data['currency'] = 'USD';
+            }
+            
+            if (!isset($data['discount_percentage'])) {
+                $data['discount_percentage'] = 0;
+            }
             
             // Handle image upload
             if ($request->hasFile('image')) {
@@ -117,7 +152,12 @@ class CourseController extends Controller
                 'packages'
             ]);
 
-            return view('admin.educational-courses.show', compact('course'));
+            // Get data for modals
+            $categories = Category::where('status', 'active')->get();
+            $teachers = User::where('role', 'teacher')->where('is_active', true)->get();
+            $students = User::where('role', 'student')->where('is_active', true)->get();
+
+            return view('admin.educational-courses.show', compact('course', 'categories', 'teachers', 'students'));
         } catch (\Exception $e) {
             return redirect()->route('admin.educational-courses.index')
                 ->with('error', 'Error loading course details: ' . $e->getMessage());
@@ -145,6 +185,10 @@ class CourseController extends Controller
                 'description' => 'nullable|string|max:1000',
                 'category_id' => 'required|exists:categories,id',
                 'credit_hours' => 'required|integer|min:1|max:999',
+                'price' => 'nullable|numeric|min:0|max:999999.99',
+                'currency' => 'nullable|string|max:10',
+                'discount_percentage' => 'nullable|numeric|min:0|max:100',
+                'is_free' => 'nullable|boolean',
                 'status' => 'required|in:active,archived',
                 'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             ], [
@@ -154,6 +198,12 @@ class CourseController extends Controller
                 'credit_hours.required' => 'Credit hours are required.',
                 'credit_hours.min' => 'Credit hours must be at least 1.',
                 'credit_hours.max' => 'Credit hours cannot exceed 999.',
+                'price.numeric' => 'Price must be a valid number.',
+                'price.min' => 'Price cannot be negative.',
+                'price.max' => 'Price cannot exceed 999,999.99.',
+                'discount_percentage.numeric' => 'Discount percentage must be a valid number.',
+                'discount_percentage.min' => 'Discount percentage cannot be negative.',
+                'discount_percentage.max' => 'Discount percentage cannot exceed 100%.',
                 'image.image' => 'The file must be an image.',
                 'image.max' => 'Image size cannot exceed 2MB.',
             ]);
@@ -164,7 +214,31 @@ class CourseController extends Controller
                     ->withInput();
             }
 
-            $data = $request->only(['title', 'description', 'category_id', 'credit_hours', 'status']);
+            $data = $request->only([
+                'title', 
+                'description', 
+                'category_id', 
+                'credit_hours', 
+                'price',
+                'currency',
+                'discount_percentage',
+                'is_free',
+                'status'
+            ]);
+            
+            // Set default values for price fields
+            if ($request->has('is_free') && $request->is_free) {
+                $data['price'] = 0;
+                $data['discount_percentage'] = 0;
+            }
+            
+            if (!isset($data['currency'])) {
+                $data['currency'] = 'USD';
+            }
+            
+            if (!isset($data['discount_percentage'])) {
+                $data['discount_percentage'] = 0;
+            }
             
             // Handle image upload
             if ($request->hasFile('image')) {

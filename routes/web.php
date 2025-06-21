@@ -119,7 +119,27 @@ Route::prefix('admin')->middleware('isAdmin')->name('admin.')->group(function ()
         Route::post('/bulk-action', [CourseController::class, 'bulkAction'])->name('bulk-action');
         Route::get('/export', [CourseController::class, 'export'])->name('export');
     });
-
+    Route::prefix('course')->name('course.')->group(function () {
+        // Course Instructors
+        Route::post('/instructors/store', [\App\Http\Controllers\Admin\CourseInstructorController::class, 'store'])->name('instructors.store');
+        Route::delete('/instructors/{courseInstructor}', [\App\Http\Controllers\Admin\CourseInstructorController::class, 'destroy'])->name('instructors.destroy');
+        
+        // Course Enrollments
+        Route::post('/enrollments/store', [\App\Http\Controllers\Admin\CourseEnrollmentController::class, 'store'])->name('enrollments.store');
+        Route::delete('/enrollments/{enrollment}', [\App\Http\Controllers\Admin\CourseEnrollmentController::class, 'destroy'])->name('enrollments.destroy');
+        
+        // Course Materials
+        Route::post('/materials/store', [\App\Http\Controllers\Admin\CourseMaterialController::class, 'store'])->name('materials.store');
+        Route::delete('/materials/{material}', [\App\Http\Controllers\Admin\CourseMaterialController::class, 'destroy'])->name('materials.destroy');
+        
+        // Course Exams
+        Route::post('/exams/store', [\App\Http\Controllers\Admin\CourseExamController::class, 'store'])->name('exams.store');
+        Route::delete('/exams/{exam}', [\App\Http\Controllers\Admin\CourseExamController::class, 'destroy'])->name('exams.destroy');
+        
+        // Course Schedules
+        Route::post('/schedules/store', [\App\Http\Controllers\Admin\CourseScheduleController::class, 'store'])->name('schedules.store');
+        Route::delete('/schedules/{schedule}', [\App\Http\Controllers\Admin\CourseScheduleController::class, 'destroy'])->name('schedules.destroy');
+    });
     // Educational Packages Management
     Route::prefix('educational-packages')->name('educational-packages.')->group(function () {
         Route::get('/', [PackageController::class, 'index'])->name('index');

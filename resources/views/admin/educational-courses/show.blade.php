@@ -147,6 +147,60 @@
             margin-bottom: 1rem;
             opacity: 0.5;
         }
+
+        .management-actions {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+        }
+
+        .management-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            border-radius: 10px;
+            padding: 0.75rem 1rem;
+            margin: 0.25rem;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .management-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.5);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-xl {
+            max-width: 90%;
+        }
+
+        .modal-content {
+            border-radius: 15px;
+            border: none;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px 15px 0 0;
+        }
+
+        .form-control, .form-select {
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+            padding: 0.75rem;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
     </style>
 @endpush
 
@@ -165,9 +219,9 @@
                         <a href="{{ route('admin.educational-courses.index') }}" class="btn btn-secondary mb-0 me-2">
                             <i class="fas fa-arrow-left"></i>&nbsp;&nbsp;Back to Courses
                         </a>
-                        <a href="{{ route('admin.educational-courses.edit', $course->id) }}" class="btn btn-primary mb-0">
+                        <button class="btn btn-primary mb-0" data-bs-toggle="modal" data-bs-target="#editCourseModal">
                             <i class="fas fa-edit"></i>&nbsp;&nbsp;Edit Course
-                        </a>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -205,20 +259,42 @@
                             <div class="col-md-6 mb-3">
                                 <div class="info-label">Status</div>
                                 <div class="info-value">
-                                    @if($course->status === 'active')
-                                        <span class="badge badge-status bg-success">Active</span>
+                                    <span class="badge badge-status {{ $course->status == 'active' ? 'bg-success' : 'bg-secondary' }}">
+                                        {{ ucfirst($course->status) }}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="info-label">Price</div>
+                                <div class="info-value">
+                                    @if($course->is_free)
+                                        <span class="badge bg-success">Free</span>
                                     @else
-                                        <span class="badge badge-status bg-secondary">Archived</span>
+                                        <div>
+                                            @if($course->hasDiscount())
+                                                <div class="text-decoration-line-through text-muted">
+                                                    {{ $course->formatted_original_price }}
+                                                </div>
+                                                <div class="text-success fw-bold">
+                                                    {{ $course->formatted_price }}
+                                                    <span class="badge bg-danger ms-2">{{ $course->discount_percentage }}% OFF</span>
+                                                </div>
+                                            @else
+                                                <div class="text-primary fw-bold">
+                                                    {{ $course->formatted_price }}
+                                                </div>
+                                            @endif
+                                        </div>
                                     @endif
                                 </div>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <div class="info-label">Created Date</div>
-                                <div class="info-value">{{ $course->created_at->format('Y-m-d H:i') }}</div>
+                                <div class="info-value">{{ $course->created_at->format('F d, Y \a\t g:i A') }}</div>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <div class="info-label">Last Updated</div>
-                                <div class="info-value">{{ $course->updated_at->format('Y-m-d H:i') }}</div>
+                                <div class="info-value">{{ $course->updated_at->format('F d, Y \a\t g:i A') }}</div>
                             </div>
                         </div>
                         
@@ -337,28 +413,39 @@
                     </div>
                 </div>
 
-                <!-- Quick Actions -->
-                <div class="card info-card">
-                    <div class="card-header pb-0">
-                        <h6 class="section-title">
-                            <i class="fas fa-tools me-2"></i>Quick Actions
-                        </h6>
-                    </div>
-                    <div class="card-body">
-                        <div class="d-grid gap-2">
-                            <button class="btn btn-outline-primary action-btn" onclick="toggleCourseStatus()">
-                                <i class="fas fa-toggle-on me-2"></i>Toggle Status
-                            </button>
-                            <button class="btn btn-outline-info action-btn" onclick="duplicateCourse()">
-                                <i class="fas fa-copy me-2"></i>Duplicate Course
-                            </button>
-                            <button class="btn btn-outline-warning action-btn" onclick="exportCourseData()">
-                                <i class="fas fa-download me-2"></i>Export Data
-                            </button>
-                            <button class="btn btn-outline-danger action-btn" onclick="deleteCourse()">
-                                <i class="fas fa-trash me-2"></i>Delete Course
-                            </button>
-                        </div>
+                <!-- Management Actions -->
+                <div class="management-actions">
+                    <h6 class="text-white mb-3">
+                        <i class="fas fa-tools me-2"></i>Course Management
+                    </h6>
+                    <div class="d-grid gap-2">
+                        <a href="#" class="management-btn" data-bs-toggle="modal" data-bs-target="#addInstructorModal">
+                            <i class="fas fa-user-plus me-2"></i>Add Instructor
+                        </a>
+                        <a href="#" class="management-btn" data-bs-toggle="modal" data-bs-target="#addStudentModal">
+                            <i class="fas fa-user-graduate me-2"></i>Add Student
+                        </a>
+                        <a href="#" class="management-btn" data-bs-toggle="modal" data-bs-target="#addMaterialModal">
+                            <i class="fas fa-file-upload me-2"></i>Add Material
+                        </a>
+                        <a href="#" class="management-btn" data-bs-toggle="modal" data-bs-target="#addExamModal">
+                            <i class="fas fa-clipboard-list me-2"></i>Add Exam
+                        </a>
+                        <a href="#" class="management-btn" data-bs-toggle="modal" data-bs-target="#addScheduleModal">
+                            <i class="fas fa-calendar-plus me-2"></i>Add Schedule
+                        </a>
+                        <a href="#" class="management-btn" onclick="toggleCourseStatus()">
+                            <i class="fas fa-toggle-on me-2"></i>Toggle Status
+                        </a>
+                        <a href="#" class="management-btn" onclick="duplicateCourse()">
+                            <i class="fas fa-copy me-2"></i>Duplicate Course
+                        </a>
+                        <a href="#" class="management-btn" onclick="exportCourseData()">
+                            <i class="fas fa-download me-2"></i>Export Data
+                        </a>
+                        <a href="#" class="management-btn" onclick="deleteCourse()">
+                            <i class="fas fa-trash me-2"></i>Delete Course
+                        </a>
                     </div>
                 </div>
             </div>
@@ -517,6 +604,43 @@
             </div>
         </div>
 
+        <!-- Schedules Section -->
+        <div class="card info-card mb-4">
+            <div class="card-header pb-0">
+                <h6 class="section-title">
+                    <i class="fas fa-calendar-alt me-2"></i>Course Schedules
+                </h6>
+            </div>
+            <div class="card-body">
+                @if($course->schedules && $course->schedules->count() > 0)
+                    <div class="row">
+                        @foreach($course->schedules as $schedule)
+                            <div class="col-md-6 col-lg-4 mb-3">
+                                <div class="list-item">
+                                    <div class="d-flex align-items-center">
+                                        <div class="me-3">
+                                            <i class="fas fa-clock text-success fa-2x"></i>
+                                        </div>
+                                        <div>
+                                            <div class="fw-bold">{{ $schedule->title ?? 'Schedule' }}</div>
+                                            <div class="text-muted small">Day: {{ $schedule->day ?? 'Not set' }}</div>
+                                            <div class="text-muted small">Time: {{ $schedule->time ?? 'Not set' }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                @else
+                    <div class="empty-state">
+                        <i class="fas fa-calendar-alt"></i>
+                        <h5>No Schedules Set</h5>
+                        <p>No schedules have been set for this course yet.</p>
+                    </div>
+                @endif
+            </div>
+        </div>
+
         <!-- Complaints Section -->
         <div class="card info-card mb-4">
             <div class="card-header pb-0">
@@ -586,6 +710,470 @@
         @endif
     </div>
 
+    <!-- Edit Course Modal -->
+    <div class="modal fade" id="editCourseModal" tabindex="-1" aria-labelledby="editCourseModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-xl">
+            <form action="{{ route('admin.educational-courses.update', $course->id) }}" method="POST" enctype="multipart/form-data" class="modal-content border-0 shadow-lg">
+                @csrf
+                @method('PUT')
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold" id="editCourseModalLabel">
+                        <i class="fas fa-edit me-2"></i>Edit Course
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-4">
+                                <label class="form-label fw-bold text-primary">
+                                    <i class="fas fa-book me-2"></i>Course Title
+                                </label>
+                                <input type="text" name="title" value="{{ $course->title }}" 
+                                    class="form-control form-control-lg" 
+                                    placeholder="Enter course title..." required>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label fw-bold text-primary">
+                                    <i class="fas fa-clock me-2"></i>Credit Hours
+                                </label>
+                                <input type="number" name="credit_hours" value="{{ $course->credit_hours }}" 
+                                    class="form-control form-control-lg" 
+                                    placeholder="Enter credit hours..." required>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label fw-bold text-primary">
+                                    <i class="fas fa-tag me-2"></i>Category
+                                </label>
+                                <select name="category_id" class="form-select form-select-lg" required>
+                                    @foreach ($categories ?? [] as $cat)
+                                        <option value="{{ $cat->id }}" {{ $course->category_id == $cat->id ? 'selected' : '' }}>
+                                            {{ $cat->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label fw-bold text-primary">
+                                    <i class="fas fa-toggle-on me-2"></i>Status
+                                </label>
+                                <select name="status" class="form-select form-select-lg">
+                                    <option value="active" {{ $course->status === 'active' ? 'selected' : '' }}>
+                                        Active
+                                    </option>
+                                    <option value="archived" {{ $course->status === 'archived' ? 'selected' : '' }}>
+                                        Archived
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-4">
+                                <label class="form-label fw-bold text-primary">
+                                    <i class="fas fa-align-left me-2"></i>Description
+                                </label>
+                                <textarea name="description" class="form-control"
+                                    rows="4" placeholder="Enter course description...">{{ $course->description }}</textarea>
+                            </div>
+                            
+                            <!-- Price Section -->
+                            <div class="card mb-4">
+                                <div class="card-header bg-light">
+                                    <h6 class="mb-0 fw-bold">
+                                        <i class="fas fa-dollar-sign me-2"></i>
+                                        Pricing Information
+                                    </h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="is_free" id="isFree" value="1" 
+                                                   {{ $course->is_free ? 'checked' : '' }}>
+                                            <label class="form-check-label" for="isFree">
+                                                This course is free
+                                            </label>
+                                        </div>
+                                    </div>
+                                    
+                                    <div id="priceFields" class="{{ $course->is_free ? 'd-none' : '' }}">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Price</label>
+                                                    <input type="number" name="price" class="form-control" 
+                                                           step="0.01" min="0" value="{{ $course->price }}">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Currency</label>
+                                                    <select name="currency" class="form-select">
+                                                        <option value="USD" {{ $course->currency == 'USD' ? 'selected' : '' }}>USD</option>
+                                                        <option value="SAR" {{ $course->currency == 'SAR' ? 'selected' : '' }}>SAR</option>
+                                                        <option value="AED" {{ $course->currency == 'AED' ? 'selected' : '' }}>AED</option>
+                                                        <option value="EUR" {{ $course->currency == 'EUR' ? 'selected' : '' }}>EUR</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Discount Percentage</label>
+                                                    <div class="input-group">
+                                                        <input type="number" name="discount_percentage" class="form-control" 
+                                                               step="0.01" min="0" max="100" value="{{ $course->discount_percentage }}">
+                                                        <span class="input-group-text">%</span>
+                                                    </div>
+                                                    <small class="text-muted">Enter 0 for no discount</small>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Final Price</label>
+                                                    <div class="form-control-plaintext" id="finalPrice">
+                                                        {{ $course->formatted_price }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer bg-white border-top">
+                    <button type="button" class="btn btn-secondary btn-lg px-4" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-2"></i>Cancel
+                    </button>
+                    <button type="submit" class="btn btn-primary btn-lg px-4">
+                        <i class="fas fa-save me-2"></i>Save Changes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Instructor Modal -->
+    <div class="modal fade" id="addInstructorModal" tabindex="-1" aria-labelledby="addInstructorModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-lg">
+            <form action="{{ route('admin.course.instructors.store') }}" method="POST" class="modal-content border-0 shadow-lg">
+                @csrf
+                <input type="hidden" name="course_id" value="{{ $course->id }}">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold" id="addInstructorModalLabel">
+                        <i class="fas fa-user-plus me-2"></i>Add Instructor to Course
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">Select Instructor</label>
+                        <select name="instructor_id" class="form-select form-select-lg" required>
+                            <option value="">Choose an instructor...</option>
+                            @foreach($teachers ?? [] as $teacher)
+                                <option value="{{ $teacher->id }}">{{ $teacher->name }} ({{ $teacher->email }})</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">Role</label>
+                        <select name="role" class="form-select form-select-lg" required>
+                            <option value="primary">Primary Instructor</option>
+                            <option value="assistant">Assistant Instructor</option>
+                            <option value="guest">Guest Lecturer</option>
+                        </select>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">Notes</label>
+                        <textarea name="notes" class="form-control" rows="3" placeholder="Any additional notes..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer bg-white border-top">
+                    <button type="button" class="btn btn-secondary btn-lg px-4" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-2"></i>Cancel
+                    </button>
+                    <button type="submit" class="btn btn-primary btn-lg px-4">
+                        <i class="fas fa-plus me-2"></i>Add Instructor
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Student Modal -->
+    <div class="modal fade" id="addStudentModal" tabindex="-1" aria-labelledby="addStudentModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-lg">
+            <form action="{{ route('admin.course.enrollments.store') }}" method="POST" class="modal-content border-0 shadow-lg">
+                @csrf
+                <input type="hidden" name="course_id" value="{{ $course->id }}">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold" id="addStudentModalLabel">
+                        <i class="fas fa-user-graduate me-2"></i>Enroll Student in Course
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">Select Student</label>
+                        <select name="student_id" class="form-select form-select-lg" required>
+                            <option value="">Choose a student...</option>
+                            @foreach($students ?? [] as $student)
+                                <option value="{{ $student->id }}">{{ $student->name }} ({{ $student->email }})</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">Enrollment Date</label>
+                        <input type="date" name="enrollment_date" class="form-control form-control-lg" 
+                               value="{{ date('Y-m-d') }}" required>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">Status</label>
+                        <select name="status" class="form-select form-select-lg" required>
+                            <option value="active">Active</option>
+                            <option value="pending">Pending</option>
+                            <option value="completed">Completed</option>
+                            <option value="dropped">Dropped</option>
+                        </select>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">Notes</label>
+                        <textarea name="notes" class="form-control" rows="3" placeholder="Any additional notes..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer bg-white border-top">
+                    <button type="button" class="btn btn-secondary btn-lg px-4" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-2"></i>Cancel
+                    </button>
+                    <button type="submit" class="btn btn-primary btn-lg px-4">
+                        <i class="fas fa-plus me-2"></i>Enroll Student
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Material Modal -->
+    <div class="modal fade" id="addMaterialModal" tabindex="-1" aria-labelledby="addMaterialModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-lg">
+            <form action="{{ route('admin.course.materials.store') }}" method="POST" enctype="multipart/form-data" class="modal-content border-0 shadow-lg">
+                @csrf
+                <input type="hidden" name="course_id" value="{{ $course->id }}">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold" id="addMaterialModalLabel">
+                        <i class="fas fa-file-upload me-2"></i>Add Course Material
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">Material Title</label>
+                        <input type="text" name="title" class="form-control form-control-lg" 
+                               placeholder="Enter material title..." required>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">Description</label>
+                        <textarea name="description" class="form-control" rows="3" placeholder="Enter material description..."></textarea>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">Type</label>
+                        <select name="type" class="form-select form-select-lg" required>
+                            <option value="">Select type...</option>
+                            <option value="pdf">PDF Document</option>
+                            <option value="video">Video</option>
+                            <option value="document">Word Document</option>
+                            <option value="presentation">Presentation</option>
+                            <option value="link">External Link</option>
+                        </select>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">File or URL</label>
+                        <input type="file" name="file" class="form-control form-control-lg" 
+                               accept=".pdf,.doc,.docx,.ppt,.pptx,.mp4,.avi,.mov">
+                        <small class="text-muted">Or enter URL for external links</small>
+                        <input type="url" name="url" class="form-control mt-2" placeholder="https://example.com">
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">Status</label>
+                        <select name="status" class="form-select form-select-lg" required>
+                            <option value="active">Active</option>
+                            <option value="draft">Draft</option>
+                            <option value="archived">Archived</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer bg-white border-top">
+                    <button type="button" class="btn btn-secondary btn-lg px-4" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-2"></i>Cancel
+                    </button>
+                    <button type="submit" class="btn btn-primary btn-lg px-4">
+                        <i class="fas fa-plus me-2"></i>Add Material
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Exam Modal -->
+    <div class="modal fade" id="addExamModal" tabindex="-1" aria-labelledby="addExamModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-lg">
+            <form action="{{ route('admin.course.exams.store') }}" method="POST" class="modal-content border-0 shadow-lg">
+                @csrf
+                <input type="hidden" name="course_id" value="{{ $course->id }}">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold" id="addExamModalLabel">
+                        <i class="fas fa-clipboard-list me-2"></i>Add Course Exam
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">Exam Title</label>
+                        <input type="text" name="title" class="form-control form-control-lg" 
+                               placeholder="Enter exam title..." required>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">Description</label>
+                        <textarea name="description" class="form-control" rows="3" placeholder="Enter exam description..."></textarea>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-4">
+                                <label class="form-label fw-bold">Exam Date</label>
+                                <input type="date" name="date" class="form-control form-control-lg" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-4">
+                                <label class="form-label fw-bold">Duration (minutes)</label>
+                                <input type="number" name="duration" class="form-control form-control-lg" 
+                                       placeholder="120" min="1" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-4">
+                                <label class="form-label fw-bold">Total Marks</label>
+                                <input type="number" name="total_marks" class="form-control form-control-lg" 
+                                       placeholder="100" min="1" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-4">
+                                <label class="form-label fw-bold">Passing Marks</label>
+                                <input type="number" name="passing_marks" class="form-control form-control-lg" 
+                                       placeholder="50" min="1" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">Status</label>
+                        <select name="status" class="form-select form-select-lg" required>
+                            <option value="scheduled">Scheduled</option>
+                            <option value="active">Active</option>
+                            <option value="completed">Completed</option>
+                            <option value="cancelled">Cancelled</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer bg-white border-top">
+                    <button type="button" class="btn btn-secondary btn-lg px-4" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-2"></i>Cancel
+                    </button>
+                    <button type="submit" class="btn btn-primary btn-lg px-4">
+                        <i class="fas fa-plus me-2"></i>Add Exam
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Schedule Modal -->
+    <div class="modal fade" id="addScheduleModal" tabindex="-1" aria-labelledby="addScheduleModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-lg">
+            <form action="{{ route('admin.course.schedules.store') }}" method="POST" class="modal-content border-0 shadow-lg">
+                @csrf
+                <input type="hidden" name="course_id" value="{{ $course->id }}">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold" id="addScheduleModalLabel">
+                        <i class="fas fa-calendar-plus me-2"></i>Add Course Schedule
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">Schedule Title</label>
+                        <input type="text" name="title" class="form-control form-control-lg" 
+                               placeholder="Enter schedule title..." required>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">Description</label>
+                        <textarea name="description" class="form-control" rows="3" placeholder="Enter schedule description..."></textarea>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-4">
+                                <label class="form-label fw-bold">Day of Week</label>
+                                <select name="day" class="form-select form-select-lg" required>
+                                    <option value="">Select day...</option>
+                                    <option value="monday">Monday</option>
+                                    <option value="tuesday">Tuesday</option>
+                                    <option value="wednesday">Wednesday</option>
+                                    <option value="thursday">Thursday</option>
+                                    <option value="friday">Friday</option>
+                                    <option value="saturday">Saturday</option>
+                                    <option value="sunday">Sunday</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-4">
+                                <label class="form-label fw-bold">Time</label>
+                                <input type="time" name="time" class="form-control form-control-lg" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-4">
+                                <label class="form-label fw-bold">Duration (minutes)</label>
+                                <input type="number" name="duration" class="form-control form-control-lg" 
+                                       placeholder="90" min="1" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-4">
+                                <label class="form-label fw-bold">Room/Location</label>
+                                <input type="text" name="location" class="form-control form-control-lg" 
+                                       placeholder="Room 101 or Online">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">Status</label>
+                        <select name="status" class="form-select form-select-lg" required>
+                            <option value="active">Active</option>
+                            <option value="cancelled">Cancelled</option>
+                            <option value="completed">Completed</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer bg-white border-top">
+                    <button type="button" class="btn btn-secondary btn-lg px-4" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-2"></i>Cancel
+                    </button>
+                    <button type="submit" class="btn btn-primary btn-lg px-4">
+                        <i class="fas fa-plus me-2"></i>Add Schedule
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- Delete Confirmation Modal -->
     <div class="modal fade" id="deleteCourseModal" tabindex="-1" aria-labelledby="deleteCourseModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
@@ -633,6 +1221,77 @@
 
 @push('scripts')
     <script>
+        // Price calculation for edit modal
+        function setupPriceCalculation() {
+            const isFreeCheckbox = document.getElementById('isFree');
+            const priceFields = document.getElementById('priceFields');
+            const priceInput = document.querySelector('#editCourseModal input[name="price"]');
+            const discountInput = document.querySelector('#editCourseModal input[name="discount_percentage"]');
+            const currencySelect = document.querySelector('#editCourseModal select[name="currency"]');
+            const finalPriceElement = document.getElementById('finalPrice');
+
+            if (isFreeCheckbox) {
+                isFreeCheckbox.addEventListener('change', function() {
+                    if (this.checked) {
+                        priceFields.classList.add('d-none');
+                        if (priceInput) priceInput.value = '0';
+                        if (discountInput) discountInput.value = '0';
+                        updateFinalPrice();
+                    } else {
+                        priceFields.classList.remove('d-none');
+                    }
+                });
+            }
+
+            function updateFinalPrice() {
+                const price = parseFloat(priceInput?.value) || 0;
+                const discount = parseFloat(discountInput?.value) || 0;
+                const currency = currencySelect?.value || 'USD';
+                const isFree = isFreeCheckbox?.checked || false;
+                
+                let finalPrice = 0;
+                
+                if (!isFree && price > 0) {
+                    if (discount > 0) {
+                        const discountAmount = (price * discount) / 100;
+                        finalPrice = price - discountAmount;
+                    } else {
+                        finalPrice = price;
+                    }
+                }
+                
+                if (finalPriceElement) {
+                    if (isFree || finalPrice === 0) {
+                        finalPriceElement.textContent = 'Free';
+                    } else {
+                        finalPriceElement.textContent = `${currency} ${finalPrice.toFixed(2)}`;
+                    }
+                }
+            }
+
+            // Add event listeners for price calculation
+            if (priceInput) {
+                priceInput.addEventListener('input', updateFinalPrice);
+            }
+            
+            if (discountInput) {
+                discountInput.addEventListener('input', updateFinalPrice);
+            }
+            
+            if (currencySelect) {
+                currencySelect.addEventListener('change', updateFinalPrice);
+            }
+
+            // Initialize final price on modal show
+            const modal = document.getElementById('editCourseModal');
+            if (modal) {
+                modal.addEventListener('shown.bs.modal', function() {
+                    updateFinalPrice();
+                });
+            }
+        }
+
+        // Course management functions
         function toggleCourseStatus() {
             if (confirm('Are you sure you want to toggle the course status?')) {
                 window.location.href = "{{ route('admin.educational-courses.toggle-status', $course->id) }}";
@@ -664,5 +1323,120 @@
             const modal = new bootstrap.Modal(document.getElementById('deleteCourseModal'));
             modal.show();
         }
+
+        // Form validation and submission handling
+        function setupFormValidation() {
+            const forms = document.querySelectorAll('form');
+            
+            forms.forEach(form => {
+                form.addEventListener('submit', function(e) {
+                    // Remove any previous error states
+                    form.querySelectorAll('.is-invalid').forEach(field => {
+                        field.classList.remove('is-invalid');
+                    });
+                    
+                    // Check required fields
+                    const requiredFields = form.querySelectorAll('[required]');
+                    let hasErrors = false;
+                    
+                    requiredFields.forEach(field => {
+                        if (!field.value.trim()) {
+                            hasErrors = true;
+                            field.classList.add('is-invalid');
+                            
+                            // Add error message
+                            let errorDiv = field.parentNode.querySelector('.invalid-feedback');
+                            if (!errorDiv) {
+                                errorDiv = document.createElement('div');
+                                errorDiv.className = 'invalid-feedback';
+                                field.parentNode.appendChild(errorDiv);
+                            }
+                            errorDiv.textContent = 'This field is required.';
+                        } else {
+                            field.classList.remove('is-invalid');
+                            const errorDiv = field.parentNode.querySelector('.invalid-feedback');
+                            if (errorDiv) {
+                                errorDiv.remove();
+                            }
+                        }
+                    });
+                    
+                    if (hasErrors) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        
+                        // Show error message
+                        const firstError = form.querySelector('.is-invalid');
+                        if (firstError) {
+                            firstError.focus();
+                        }
+                        
+                        return false;
+                    }
+                    
+                    // If no errors, show loading state
+                    const submitBtn = form.querySelector('button[type="submit"]');
+                    if (submitBtn) {
+                        const originalText = submitBtn.innerHTML;
+                        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Processing...';
+                        submitBtn.disabled = true;
+                        
+                        // Re-enable button after 10 seconds if no response
+                        setTimeout(() => {
+                            submitBtn.innerHTML = originalText;
+                            submitBtn.disabled = false;
+                        }, 10000);
+                    }
+                });
+            });
+        }
+
+        // Modal event handling
+        function setupModalEvents() {
+            const modals = document.querySelectorAll('.modal');
+            
+            modals.forEach(modal => {
+                // Prevent modal from closing when clicking inside
+                modal.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                });
+                
+                // Prevent modal from closing when clicking on backdrop
+                modal.addEventListener('click', function(e) {
+                    if (e.target === modal) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        return false;
+                    }
+                });
+                
+                // Prevent ESC key from closing modal
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape' && modal.classList.contains('show')) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        return false;
+                    }
+                });
+            });
+        }
+
+        // Initialize everything when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function () {
+            setupPriceCalculation();
+            setupFormValidation();
+            setupModalEvents();
+            
+            // Show success/error messages
+            @if(session('success'))
+                // You can add a toast notification here
+                console.log('Success: {{ session('success') }}');
+            @endif
+            
+            @if(session('error'))
+                // You can add a toast notification here
+                console.log('Error: {{ session('error') }}');
+            @endif
+        });
     </script>
 @endpush
