@@ -48,7 +48,6 @@ class TeacherController extends Controller
                 'mobile'       => 'required|string|unique:users,mobile|max:15',
                 'email'        => 'nullable|email|unique:users,email|max:150',
                 'address'      => 'nullable|string|max:500',
-                'specialization' => 'nullable|string|max:200',
                 'notes'        => 'nullable|string|max:500',
                 'is_active'    => 'required|boolean',
             ]);
@@ -67,7 +66,6 @@ class TeacherController extends Controller
             $user->mobile = $validated['mobile'];
             $user->email = $validated['email'] ?? null;
             $user->address = $validated['address'] ?? null;
-            $user->specialization = $validated['specialization'] ?? null;
             $user->notes = $validated['notes'] ?? null;
             $user->is_active = $validated['is_active'];
             $user->role = 'teacher';
@@ -79,7 +77,7 @@ class TeacherController extends Controller
 
             return redirect()->back()->with('success', 'Teacher created successfully with password: ' . $plainPassword);
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Failed to create teacher. Please try again.');
+            return redirect()->back()->with('error', 'Failed to create teacher: ' . $e->getMessage());
         }
     }
 
@@ -105,7 +103,6 @@ class TeacherController extends Controller
                 'mobile'       => 'required|string|max:15|unique:users,mobile,' . $id,
                 'email'        => 'nullable|email|max:150|unique:users,email,' . $id,
                 'address'      => 'nullable|string|max:500',
-                'specialization' => 'nullable|string|max:200',
                 'notes'        => 'nullable|string|max:500',
                 'is_active'    => 'required|boolean',
             ]);
@@ -114,7 +111,7 @@ class TeacherController extends Controller
             
             return redirect()->back()->with('success', 'Teacher updated successfully');
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Failed to update teacher. Please try again.');
+            return redirect()->back()->with('error', 'Failed to update teacher: ' . $e->getMessage());
         }
     }
 
@@ -144,7 +141,7 @@ class TeacherController extends Controller
                 ], 500);
             }
             
-            return redirect()->back()->with('error', 'Failed to delete teacher. Please try again.');
+            return redirect()->back()->with('error', 'Failed to delete teacher: ' . $e->getMessage());
         }
     }
 } 

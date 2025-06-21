@@ -95,33 +95,14 @@
                     <input type="email" name="email" class="form-control" value="{{ old('email') }}" maxlength="255">
                   </div>
 
-                  <!-- Specialization -->
-                  <div class="col-md-6 mb-3">
-                    <label class="form-label">Specialization</label>
-                    <select name="specialization" class="form-select">
-                      <option value="">Select Specialization</option>
-                      <option value="Mathematics" {{ old('specialization') == 'Mathematics' ? 'selected' : '' }}>Mathematics</option>
-                      <option value="Science" {{ old('specialization') == 'Science' ? 'selected' : '' }}>Science</option>
-                      <option value="English" {{ old('specialization') == 'English' ? 'selected' : '' }}>English</option>
-                      <option value="Arabic" {{ old('specialization') == 'Arabic' ? 'selected' : '' }}>Arabic</option>
-                      <option value="Computer Science" {{ old('specialization') == 'Computer Science' ? 'selected' : '' }}>Computer Science</option>
-                      <option value="Physics" {{ old('specialization') == 'Physics' ? 'selected' : '' }}>Physics</option>
-                      <option value="Chemistry" {{ old('specialization') == 'Chemistry' ? 'selected' : '' }}>Chemistry</option>
-                      <option value="Biology" {{ old('specialization') == 'Biology' ? 'selected' : '' }}>Biology</option>
-                      <option value="History" {{ old('specialization') == 'History' ? 'selected' : '' }}>History</option>
-                      <option value="Geography" {{ old('specialization') == 'Geography' ? 'selected' : '' }}>Geography</option>
-                      <option value="Other" {{ old('specialization') == 'Other' ? 'selected' : '' }}>Other</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div class="row">
                   <!-- Address -->
                   <div class="col-md-6 mb-3">
                     <label class="form-label">Address</label>
                     <input type="text" name="address" class="form-control" value="{{ old('address') }}" maxlength="255">
                   </div>
+                </div>
 
+                <div class="row">
                   <!-- Status -->
                   <div class="col-md-6 mb-3">
                     <label class="form-label">Status <span class="text-danger">*</span></label>

@@ -345,27 +345,23 @@
                                                     <p class="text-xs font-weight-bold mb-0">
                                                         {{ $teacher->created_at->format('Y-m-d') }}</p>
                                                 </td>
-                                                <td class="align-middle">
-                                                    <div class="d-flex align-items-center gap-2">
-                                                        <a href="{{ route('admin.accounts.teachers.edit', $teacher->id) }}"
-                                                            class="btn btn-link text-info p-2">
-                                                            <i class="fas fa-edit"></i>
-                                                        </a>
-                                                        <a href="{{ route('admin.accounts.teachers.show', $teacher->id) }}"
-                                                            class="btn btn-link text-primary p-2">
-                                                            <i class="fas fa-eye"></i>
-                                                        </a>
-                                                        <form action="{{ route('admin.accounts.teachers.destroy', $teacher->id) }}"
-                                                            method="POST" onsubmit="return false;" class="delete-form">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button type="button" class="btn btn-link text-danger p-2 delete-btn"
-                                                                    data-teacher-id="{{ $teacher->id }}"
-                                                                    data-teacher-name="{{ $teacher->name }}">
-                                                                <i class="fas fa-trash"></i>
-                                                            </button>
-                                                        </form>
-                                                    </div>
+                                                <td class="align-middle text-center">
+                                                    <a href="{{ route('admin.accounts.teachers.show', $teacher->id) }}" class="btn btn-sm btn-info px-2 py-1 mb-0" title="View Details">
+                                                        <i class="far fa-eye"></i>
+                                                    </a>
+                                                    <a href="{{ route('admin.accounts.teachers.edit', $teacher->id) }}" class="btn btn-sm btn-warning px-2 py-1 mb-0" title="Edit Teacher">
+                                                        <i class="fas fa-edit"></i>
+                                                    </a>
+                                                    <button class="btn btn-sm btn-success px-2 py-1 mb-0" title="Print Credentials" onclick="printCredentials('{{ $teacher->login_id }}', '{{ $teacher->name }}', '{{ $teacher->plain_password }}')">
+                                                        <i class="fas fa-print"></i>
+                                                    </button>
+                                                    <button type="button" class="btn btn-sm btn-danger px-2 py-1 mb-0" title="Delete Teacher"
+                                                            data-bs-toggle="modal" 
+                                                            data-bs-target="#deleteConfirmModal"
+                                                            data-teacher-id="{{ $teacher->id }}"
+                                                            data-teacher-name="{{ $teacher->name }}">
+                                                        <i class="far fa-trash-alt"></i>
+                                                    </button>
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -532,146 +528,97 @@
             dateFilter.addEventListener('change', filterTeachers);
         });
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
     <script>
-        // Delete confirmation modal functionality
-        document.addEventListener('DOMContentLoaded', function() {
-            const deleteButtons = document.querySelectorAll('.delete-btn');
-            const deleteModal = document.getElementById('deleteConfirmModal');
-            const deleteTeacherName = document.getElementById('deleteTeacherName');
-            const deleteForm = document.getElementById('deleteForm');
-            const deleteConfirmation = document.getElementById('deleteConfirmation');
-            const deleteSubmitBtn = deleteForm.querySelector('button[type="submit"]');
+    function printCredentials(loginId, name, password) {
+        const printWindow = window.open('', 'PRINT', 'height=400,width=600');
+        
+        printWindow.document.write('<html><head><title>Print Credentials</title>');
+        printWindow.document.write('<style>');
+        printWindow.document.write(`
+            @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap');
+            body { 
+                font-family: 'Tajawal', sans-serif; 
+                text-align: center; 
+                margin: 20px;
+                direction: rtl;
+            }
+            .credential-card {
+                border: 2px solid #007bff;
+                border-radius: 15px;
+                padding: 25px;
+                width: 350px;
+                margin: auto;
+                background-color: #f8f9fa;
+                box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            }
+            .credential-card h3 {
+                color: #0056b3;
+                border-bottom: 2px solid #0056b3;
+                padding-bottom: 10px;
+                margin-bottom: 20px;
+            }
+            .credential-card p {
+                font-size: 16px;
+                margin: 10px 0;
+                text-align: right;
+            }
+            .credential-card span {
+                font-weight: 700;
+                background-color: #e9ecef;
+                padding: 3px 8px;
+                border-radius: 5px;
+                font-family: monospace;
+            }
+        `);
+        printWindow.document.write('</style></head><body>');
+        
+        printWindow.document.write('<div class="credential-card">');
+        printWindow.document.write('<h3>بيانات الدخول</h3>');
+        printWindow.document.write('<p>الاسم: <span>' + name + '</span></p>');
+        printWindow.document.write('<p>معرف الدخول (ID): <span>' + loginId + '</span></p>');
+        printWindow.document.write('<p>كلمة المرور: <span>' + password + '</span></p>');
+        printWindow.document.write('</div>');
+        
+        printWindow.document.write('</body></html>');
+        printWindow.document.close();
+        printWindow.focus();
+        
+        setTimeout(() => {
+            printWindow.print();
+            printWindow.close();
+        }, 250);
+    }
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        const deleteConfirmModal = document.getElementById('deleteConfirmModal');
+        deleteConfirmModal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+            const teacherId = button.getAttribute('data-teacher-id');
+            const teacherName = button.getAttribute('data-teacher-name');
 
-            deleteButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    const teacherName = this.getAttribute('data-teacher-name');
-                    const teacherId = this.getAttribute('data-teacher-id');
-                    const form = this.closest('.delete-form');
-                    
-                    // Update modal content
-                    deleteTeacherName.textContent = teacherName;
-                    
-                    // Update form action
-                    deleteForm.action = form.action;
-                    
-                    // Reset confirmation input
-                    deleteConfirmation.value = '';
-                    deleteSubmitBtn.disabled = true;
-                    
-                    // Show modal with animation
-                    const modal = new bootstrap.Modal(deleteModal, {
-                        backdrop: 'static',
-                        keyboard: false
-                    });
-                    modal.show();
-                });
-            });
-
-            // Handle confirmation input
-            deleteConfirmation.addEventListener('input', function() {
-                const isConfirmed = this.value.toUpperCase() === 'DELETE';
-                deleteSubmitBtn.disabled = !isConfirmed;
-                
-                // Update input styling
-                this.classList.remove('valid', 'is-invalid');
-                
-                if (this.value.length > 0) {
-                    if (isConfirmed) {
-                        this.classList.add('valid');
-                        deleteSubmitBtn.classList.remove('btn-secondary');
-                        deleteSubmitBtn.classList.add('btn-danger');
-                    } else {
-                        this.classList.add('is-invalid');
-                        deleteSubmitBtn.classList.remove('btn-danger');
-                        deleteSubmitBtn.classList.add('btn-secondary');
-                    }
-                } else {
-                    deleteSubmitBtn.classList.remove('btn-danger');
-                    deleteSubmitBtn.classList.add('btn-secondary');
-                }
-            });
-
-            // Handle form submission
-            deleteForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                if (deleteConfirmation.value.toUpperCase() !== 'DELETE') {
-                    return;
-                }
-                
-                // Show loading state
-                const submitBtn = this.querySelector('button[type="submit"]');
-                const originalText = submitBtn.innerHTML;
-                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Deleting...';
-                submitBtn.disabled = true;
-
-                // Submit the form
-                fetch(this.action, {
-                    method: 'POST',
-                    body: new FormData(this),
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest'
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        // Show success message
-                        submitBtn.innerHTML = '<i class="fas fa-check me-2"></i>Deleted Successfully!';
-                        submitBtn.classList.remove('btn-danger');
-                        submitBtn.classList.add('btn-success');
-                        
-                        // Close modal after delay
-                        setTimeout(() => {
-                            const modal = bootstrap.Modal.getInstance(deleteModal);
-                            modal.hide();
-                            
-                            // Reload page after modal is hidden
-                            setTimeout(() => {
-                                location.reload();
-                            }, 300);
-                        }, 1500);
-                    } else {
-                        throw new Error(data.message || 'Failed to delete teacher');
-                    }
-                })
-                .catch(error => {
-                    // Reset button state
-                    submitBtn.innerHTML = originalText;
-                    submitBtn.disabled = false;
-                    
-                    // Show error message in modal
-                    const errorDiv = document.createElement('div');
-                    errorDiv.className = 'alert alert-danger mt-3';
-                    errorDiv.innerHTML = '<i class="fas fa-exclamation-circle me-2"></i>' + error.message;
-                    
-                    const modalBody = deleteModal.querySelector('.modal-body');
-                    modalBody.appendChild(errorDiv);
-                    
-                    // Remove error message after 5 seconds
-                    setTimeout(() => {
-                        errorDiv.remove();
-                    }, 5000);
-                });
-            });
-
-            // Reset modal when hidden
-            deleteModal.addEventListener('hidden.bs.modal', function() {
-                const submitBtn = deleteForm.querySelector('button[type="submit"]');
-                submitBtn.innerHTML = '<i class="fas fa-trash me-2"></i>Delete Teacher';
-                submitBtn.disabled = true;
-                submitBtn.classList.remove('btn-success', 'btn-danger');
-                submitBtn.classList.add('btn-secondary');
-                
-                // Reset confirmation input
-                deleteConfirmation.value = '';
-                deleteConfirmation.classList.remove('valid', 'is-invalid');
-                
-                // Remove any error messages
-                const errorMessages = deleteModal.querySelectorAll('.alert-danger');
-                errorMessages.forEach(msg => msg.remove());
-            });
+            const modalTeacherName = deleteConfirmModal.querySelector('#deleteTeacherName');
+            const deleteForm = deleteConfirmModal.querySelector('#deleteForm');
+            
+            modalTeacherName.textContent = teacherName;
+            let action = "{{ route('admin.accounts.teachers.destroy', ':id') }}";
+            action = action.replace(':id', teacherId);
+            deleteForm.setAttribute('action', action);
         });
+
+        const deleteConfirmationInput = document.getElementById('deleteConfirmation');
+        const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+
+        deleteConfirmationInput.addEventListener('input', function() {
+            if (this.value.trim().toUpperCase() === 'DELETE') {
+                confirmDeleteBtn.disabled = false;
+            } else {
+                confirmDeleteBtn.disabled = true;
+            }
+        });
+    });
     </script>
     <!-- Github buttons -->
     <script async defer src="https://buttons.github.io/buttons.js"></script>

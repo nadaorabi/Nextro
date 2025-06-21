@@ -88,7 +88,7 @@ class StudentController extends Controller
 
             return redirect()->back()->with('success', 'Student created successfully with password: ' . $plainPassword);
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Failed to create student. Please try again.');
+            return redirect()->back()->with('error', 'Failed to create student: ' . $e->getMessage());
         }
     }
 
@@ -127,7 +127,7 @@ class StudentController extends Controller
             
             return redirect()->back()->with('success', 'Student updated successfully');
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Failed to update student. Please try again.');
+            return redirect()->back()->with('error', 'Failed to update student: ' . $e->getMessage());
         }
     }
 
@@ -157,7 +157,7 @@ class StudentController extends Controller
                 ], 500);
             }
             
-            return redirect()->back()->with('error', 'Failed to delete student. Please try again.');
+            return redirect()->back()->with('error', 'Failed to delete student: ' . $e->getMessage());
         }
     }
 }
