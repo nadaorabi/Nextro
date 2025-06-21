@@ -346,7 +346,7 @@
         </ul>
       </li>
 
-      <!-- إدارة المواد التعليمية -->
+      <!-- Educational Materials Management-->
       <li class="nav-item">
         <a class="nav-link {{ request()->routeIs('admin.educational-categories.*') || request()->routeIs('admin.educational-materials.*') || request()->routeIs('admin.packages.*') ? 'active' : '' }}"
           href="#" id="materialsDropdown" data-bs-toggle="collapse" data-bs-target="#materialsSubmenu"
@@ -355,20 +355,20 @@
             class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
             <i class="fas fa-book text-dark text-sm opacity-10"></i>
           </div>
-          <span class="nav-link-text ms-1">إدارة المواد التعليمية</span>
+          <span class="nav-link-text ms-1">Educational Materials Management</span>
         </a>
 
         <ul
           class="nav flex-column ms-4 collapse {{ request()->routeIs('admin.educational-categories.*') || request()->routeIs('admin.educational-materials.*') || request()->routeIs('admin.packages.*') ? 'show' : '' }}"
           id="materialsSubmenu">
 
-          {{-- إدارة الفئات --}}
+          {{-- Category Management--}}
           <li class="nav-item">
             <a class="nav-link {{ request()->routeIs('admin.educational-categories.*') ? 'active' : '' }}"
               data-bs-toggle="collapse" href="#categoriesSubmenu"
               aria-expanded="{{ request()->routeIs('admin.educational-categories.*') ? 'true' : 'false' }}">
               <i class="fas fa-folder me-2 text-dark text-sm opacity-10"></i>
-              إدارة الفئات
+              Category Management
             </a>
             <ul
               class="nav flex-column ms-4 collapse {{ request()->routeIs('admin.educational-categories.*') ? 'show' : '' }}"
@@ -376,25 +376,25 @@
               <li class="nav-item">
                 <a class="nav-link {{ request()->routeIs('admin.educational-categories.create') ? 'active' : '' }}"
                   href="{{ route('admin.educational-categories.create') }}">
-                  <i class="fas fa-plus me-2 text-dark text-sm opacity-10"></i>إنشاء فئة
+                  <i class="fas fa-plus me-2 text-dark text-sm opacity-10"></i>Create a category
                 </a>
               </li>
               <li class="nav-item">
                 <a class="nav-link {{ request()->routeIs('admin.educational-categories.index') ? 'active' : '' }}"
                   href="{{ route('admin.educational-categories.index') }}">
-                  <i class="fas fa-list me-2 text-dark text-sm opacity-10"></i>استعراض الفئات
+                  <i class="fas fa-list me-2 text-dark text-sm opacity-10"></i>Browse categories
                 </a>
               </li>
             </ul>
           </li>
 
-          {{-- إدارة المواد --}}
+          {{-- Courses Management --}}
           <li class="nav-item">
             <a class="nav-link {{ request()->routeIs('admin.educational-materials.*') ? 'active' : '' }}"
               data-bs-toggle="collapse" href="#materialsInnerSubmenu"
               aria-expanded="{{ request()->routeIs('admin.educational-materials.*') ? 'true' : 'false' }}">
               <i class="fas fa-file-alt me-2 text-dark text-sm opacity-10"></i>
-              إدارة المواد
+              Courses management
             </a>
             <ul
               class="nav flex-column ms-4 collapse {{ request()->routeIs('admin.educational-materials.*') ? 'show' : '' }}"
@@ -402,37 +402,37 @@
               <li class="nav-item">
                 <a class="nav-link {{ request()->routeIs('admin.educational-materials.create') ? 'active' : '' }}"
                   href="{{ route('admin.educational-courses.create') }}">
-                  <i class="fas fa-plus me-2 text-dark text-sm opacity-10"></i>إنشاء مادة
+                  <i class="fas fa-plus me-2 text-dark text-sm opacity-10"></i>Create an course
                 </a>
               </li>
               <li class="nav-item">
                 <a class="nav-link {{ request()->routeIs('admin.educational-materials.list') ? 'active' : '' }}"
                   href="{{ route('admin.educational-courses.index') }}">
-                  <i class="fas fa-list me-2 text-dark text-sm opacity-10"></i>استعراض المواد
+                  <i class="fas fa-list me-2 text-dark text-sm opacity-10"></i>Browse courses
                 </a>
               </li>
             </ul>
           </li>
 
-          {{-- إدارة الحزمات --}}
+          {{-- Package management--}}
           <li class="nav-item">
             <a class="nav-link {{ request()->routeIs('admin.packages.*') ? 'active' : '' }}" data-bs-toggle="collapse"
               href="#packagesSubmenu" aria-expanded="{{ request()->routeIs('admin.packages.*') ? 'true' : 'false' }}">
               <i class="fas fa-box me-2 text-dark text-sm opacity-10"></i>
-              إدارة الحِزَم
+              Package management
             </a>
             <ul class="nav flex-column ms-4 collapse {{ request()->routeIs('admin.packages.*') ? 'show' : '' }}"
               id="packagesSubmenu">
               <li class="nav-item">
                 <a class="nav-link {{ request()->routeIs('admin.packages.create') ? 'active' : '' }}"
                   href="{{ route('admin.educational-packages.create') }}">
-                  <i class="fas fa-plus me-2 text-dark text-sm opacity-10"></i>إنشاء حزمة
+                  <i class="fas fa-plus me-2 text-dark text-sm opacity-10"></i>Create a package
                 </a>
               </li>
               <li class="nav-item">
                 <a class="nav-link {{ request()->routeIs('admin.packages.index') ? 'active' : '' }}"
                   href="{{ route('admin.educational-packages.index') }}">
-                  <i class="fas fa-list me-2 text-dark text-sm opacity-10"></i>استعراض الحِزَم
+                  <i class="fas fa-list me-2 text-dark text-sm opacity-10"></i>Browse packages
                 </a>
               </li>
             </ul>
