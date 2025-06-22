@@ -17,6 +17,8 @@ return new class extends Migration
             $table->foreignId('course_id')->constrained()->onDelete('cascade');
             $table->foreignId('package_id')->nullable()->constrained()->onDelete('set null');
             $table->date('enrollment_date');
+            $table->string('status')->default('active');
+            $table->string('notes')->nullable();
             $table->timestamps();
         });
     }

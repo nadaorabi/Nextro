@@ -32,7 +32,17 @@ class CategoryController extends Controller
     {
         $category->load(['courses', 'packages']);
 
-        return view('admin.educational-categories.show', compact('category'));
+        // جلب الكورسات غير المرتبطة بهذه الفئة
+        $otherCourses = \App\Models\Course::where(function($q) use ($category) {
+            $q->whereNull('category_id')->orWhere('category_id', '!=', $category->id);
+        })->get();
+
+        // جلب الباقات غير المرتبطة بهذه الفئة
+        $otherPackages = \App\Models\Package::where(function($q) use ($category) {
+            $q->whereNull('category_id')->orWhere('category_id', '!=', $category->id);
+        })->get();
+
+        return view('admin.educational-categories.show', compact('category', 'otherCourses', 'otherPackages'));
     }
 
 
@@ -61,27 +71,30 @@ class CategoryController extends Controller
 
     public function update(Request $request, Category $category)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'status' => 'required|in:active,inactive',
-            'image' => 'nullable|image|max:2048',
-        ]);
+        try {
+            $request->validate([
+                'name' => 'required|string|max:255',
+                'description' => 'nullable|string',
+                'status' => 'required|in:active,inactive',
+                'image' => 'nullable|image|max:2048',
+            ]);
 
-        $data = $request->only(['name', 'description', 'status']);
+            $data = $request->only(['name', 'description', 'status']);
 
-        if ($request->hasFile('image')) {
-            if ($category->image && Storage::disk('public')->exists($category->image)) {
-                Storage::disk('public')->delete($category->image);
+            if ($request->hasFile('image')) {
+                if ($category->image && Storage::disk('public')->exists($category->image)) {
+                    Storage::disk('public')->delete($category->image);
+                }
+                $data['image'] = $request->file('image')->store('categories', 'public');
             }
 
+            $category->update($data);
 
-            $data['image'] = $request->file('image')->store('categories', 'public');
+            return redirect()->route('admin.educational-categories.index')->with('success', 'Category updated successfully.');
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return redirect()->back()->withErrors($e->errors())->withInput()->with('error_category_id', $category->id);
         }
-
-        $category->update($data);
-
-        return redirect()->back()->with('success', 'Category updated successfully.');
     }
 
     public function destroy(Category $category)
@@ -94,5 +107,23 @@ class CategoryController extends Controller
         $category->delete();
 
         return redirect()->back()->with('success', 'Category deleted successfully.');
+    }
+
+    public function addCourse(Request $request, Category $category)
+    {
+        $request->validate(['course_id' => 'required|exists:courses,id']);
+        $course = \App\Models\Course::findOrFail($request->course_id);
+        $course->category_id = $category->id;
+        $course->save();
+        return redirect()->route('admin.educational-categories.show', $category)->with('success', 'Course added to category.');
+    }
+
+    public function addPackage(Request $request, Category $category)
+    {
+        $request->validate(['package_id' => 'required|exists:packages,id']);
+        $package = \App\Models\Package::findOrFail($request->package_id);
+        $package->category_id = $category->id;
+        $package->save();
+        return redirect()->route('admin.educational-categories.show', $category)->with('success', 'Package added to category.');
     }
 }

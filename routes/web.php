@@ -102,6 +102,8 @@ Route::prefix('admin')->middleware('isAdmin')->name('admin.')->group(function ()
         Route::put('/{category}', [CategoryController::class, 'update'])->name('update');
         Route::delete('/{category}', [CategoryController::class, 'destroy'])->name('destroy');
         Route::get('show/{category}', [CategoryController::class, 'show'])->name('show');
+        Route::post('/{category}/add-course', [\App\Http\Controllers\Admin\Educational\CategoryController::class, 'addCourse'])->name('add-course');
+        Route::post('/{category}/add-package', [\App\Http\Controllers\Admin\Educational\CategoryController::class, 'addPackage'])->name('add-package');
     });
 
     // Educational Courses Management
@@ -156,6 +158,7 @@ Route::prefix('admin')->middleware('isAdmin')->name('admin.')->group(function ()
         Route::post('/{package}/duplicate', [PackageController::class, 'duplicate'])->name('duplicate');
         Route::post('/bulk-action', [PackageController::class, 'bulkAction'])->name('bulk-action');
         Route::get('/export', [PackageController::class, 'export'])->name('export');
+        Route::post('/{package}/add-courses', [\App\Http\Controllers\Admin\Educational\PackageController::class, 'addCourses'])->name('add-courses');
     });
 
     Route::get('educational-materials/create', [AdminController::class, 'materialsCreate'])->name('educational-materials.create');

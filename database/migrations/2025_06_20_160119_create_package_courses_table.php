@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('package_id')->constrained()->onDelete('cascade');
             $table->foreignId('course_id')->constrained()->onDelete('cascade');
+            $table->decimal('discount_percentage', 5, 2)->default(0);
             $table->timestamps();
         });
     }

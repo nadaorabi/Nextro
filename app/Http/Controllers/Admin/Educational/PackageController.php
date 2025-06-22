@@ -64,7 +64,8 @@ class PackageController extends Controller
     public function show(Package $package)
     {
         $package->load(['courses.category', 'students', 'category']);
-        return view('admin.educational-packages.show', compact('package'));
+        $allCourses = \App\Models\Course::where('status', 'active')->get();
+        return view('admin.educational-packages.show', compact('package', 'allCourses'));
     }
 
     // صفحة تعديل الباقة
@@ -227,5 +228,31 @@ class PackageController extends Controller
         };
 
         return response()->stream($callback, 200, $headers);
+    }
+
+    // إضافة كورسات للباقة مع خصم
+    public function addCourses(Request $request, Package $package)
+    {
+        $data = $request->input('courses', []);
+        $syncData = [];
+        $totalToAdd = 0;
+        foreach ($data as $courseId => $info) {
+            if (isset($info['selected'])) {
+                $discount = isset($info['discount']) ? floatval($info['discount']) : 0;
+                $syncData[$courseId] = ['discount_percentage' => $discount];
+                $course = \App\Models\Course::find($courseId);
+                if ($course) {
+                    $finalPrice = $course->price - ($course->price * $discount / 100);
+                    $totalToAdd += $finalPrice;
+                }
+            }
+        }
+        if ($syncData) {
+            $package->courses()->attach($syncData);
+            // زيادة سعر الباقة
+            $package->price += $totalToAdd;
+            $package->save();
+        }
+        return redirect()->route('admin.educational-packages.show', $package)->with('success', 'Courses added successfully!');
     }
 }

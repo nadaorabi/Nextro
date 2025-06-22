@@ -212,6 +212,9 @@
                         <div class="d-flex justify-content-between align-items-center mb-4">
                             <h5 class="card-title mb-0">Included Courses</h5>
                             <span class="badge bg-primary">{{ $package->courses->count() }} courses</span>
+                            <button class="btn btn-success btn-sm ms-2" data-bs-toggle="modal" data-bs-target="#addCoursesModal">
+                                <i class="fas fa-plus"></i> Add Courses
+                            </button>
                         </div>
 
                         @if($package->courses->count() > 0)
@@ -320,6 +323,55 @@
             </div>
         </div>
     </div>
+
+    <!-- Add Courses Modal -->
+    <div class="modal fade" id="addCoursesModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <form method="POST" action="{{ route('admin.educational-packages.add-courses', $package) }}">
+                    @csrf
+                    <div class="modal-header">
+                        <h5 class="modal-title">Add Courses to Package</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="text" class="form-control mb-3" id="searchCourseInput" placeholder="Search courses...">
+                        <div style="max-height: 350px; overflow-y: auto;">
+                            <table class="table table-bordered align-middle">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>Course</th>
+                                        <th>Discount (%)</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="coursesListBody">
+                                    @foreach($allCourses as $course)
+                                        @if(!$package->courses->contains($course->id))
+                                        <tr>
+                                            <td>
+                                                <input type="checkbox" name="courses[{{ $course->id }}][selected]" value="1" class="course-checkbox">
+                                            </td>
+                                            <td>{{ $course->title }}</td>
+                                            <td>
+                                                <input type="number" name="courses[{{ $course->id }}][discount]" class="form-control form-control-sm discount-input" min="0" max="100" step="0.01" disabled>
+                                            </td>
+                                        </tr>
+                                        @endif
+                                    @endforeach
+                                </tbody>
+                            </table>
+                            <div id="noResultsMsg" class="text-center text-muted d-none">No results found.</div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Add Selected Courses</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @push('scripts')
@@ -330,5 +382,31 @@
             form.action = `/admin/educational-packages/${packageId}`;
             modal.show();
         }
+
+        // بحث ديناميكي
+        document.getElementById('searchCourseInput').addEventListener('input', function() {
+            let val = this.value.toLowerCase();
+            let rows = document.querySelectorAll('#coursesListBody tr');
+            let found = false;
+            rows.forEach(row => {
+                let text = row.children[1].innerText.toLowerCase();
+                if(text.includes(val)) {
+                    row.style.display = '';
+                    found = true;
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+            document.getElementById('noResultsMsg').classList.toggle('d-none', found);
+        });
+
+        // تفعيل حقل الخصم عند اختيار الكورس
+        document.querySelectorAll('.course-checkbox').forEach(cb => {
+            cb.addEventListener('change', function() {
+                let discountInput = this.closest('tr').querySelector('.discount-input');
+                discountInput.disabled = !this.checked;
+                if(!this.checked) discountInput.value = '';
+            });
+        });
     </script>
 @endpush

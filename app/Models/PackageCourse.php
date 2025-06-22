@@ -9,7 +9,7 @@ class PackageCourse extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['package_id', 'course_id'];
+    protected $fillable = ['package_id', 'course_id', 'discount_percentage'];
 
     public function package() 
     { 

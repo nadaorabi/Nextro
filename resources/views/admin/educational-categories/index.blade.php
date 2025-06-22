@@ -145,6 +145,7 @@
             background-color: rgba(102, 126, 234, 0.05) !important;
         }
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 @endpush
 
 @section('content')
@@ -385,92 +386,6 @@
                                     </div>
                                 </td>
                             </tr>
-
-                            <!-- Modal Edit Category -->
-                            <div class="modal fade" id="editCategoryModal-{{ $category->id }}" tabindex="-1"
-                                aria-labelledby="editCategoryModalLabel-{{ $category->id }}" aria-hidden="true">
-                                <div class="modal-dialog modal-lg">
-                                    <form action="{{ route('admin.educational-categories.update', $category->id) }}" method="POST"
-                                        enctype="multipart/form-data" class="modal-content border-0 shadow-lg">
-                                        @csrf
-                                        @method('PUT')
-                                        <div class="modal-header bg-white text-dark border-bottom">
-                                            <h5 class="modal-title fw-bold" id="editCategoryModalLabel-{{ $category->id }}">
-                                                <i class="fas fa-edit me-2 text-primary"></i>Edit Category
-                                            </h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body p-4 bg-white">
-                                            <div class="row">
-                                                <div class="col-md-8">
-                                                    <div class="mb-4">
-                                                        <label class="form-label fw-bold text-primary">
-                                                            <i class="fas fa-tag me-2"></i>Category Name
-                                                        </label>
-                                                        <input type="text" name="name" value="{{ $category->name }}" 
-                                                            class="form-control form-control-lg border-2 border-light" 
-                                                            placeholder="Enter category name..." required>
-                                                    </div>
-                                                    <div class="mb-4">
-                                                        <label class="form-label fw-bold text-primary">
-                                                            <i class="fas fa-align-left me-2"></i>Description
-                                                        </label>
-                                                        <textarea name="description" class="form-control border-2 border-light"
-                                                            rows="4" placeholder="Enter category description...">{{ $category->description }}</textarea>
-                                                    </div>
-                                                    <div class="mb-4">
-                                                        <label class="form-label fw-bold text-primary">
-                                                            <i class="fas fa-toggle-on me-2"></i>Status
-                                                        </label>
-                                                        <select name="status" class="form-select form-select-lg border-2 border-light">
-                                                            <option value="active" {{ $category->status === 'active' ? 'selected' : '' }}>
-                                                                <i class="fas fa-check-circle"></i> Active
-                                                            </option>
-                                                            <option value="inactive" {{ $category->status === 'inactive' ? 'selected' : '' }}>
-                                                                <i class="fas fa-times-circle"></i> Inactive
-                                                            </option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <div class="mb-4">
-                                                        <label class="form-label fw-bold text-primary">
-                                                            <i class="fas fa-image me-2"></i>Category Image
-                                                        </label>
-                                                        <div class="border-2 border-dashed border-light rounded-3 p-3 text-center bg-light">
-                                                            <input type="file" name="image" class="form-control" accept="image/*">
-                                                            <small class="text-muted d-block mt-2">Upload new image (optional)</small>
-                                                        </div>
-                                                        @if ($category->image)
-                                                            <div class="mt-3 text-center">
-                                                                <label class="form-label fw-bold text-success">Current Image:</label>
-                                                                <div class="position-relative d-inline-block">
-                                                                    <img src="{{ asset('storage/' . $category->image) }}" 
-                                                                        class="img-thumbnail rounded-3 shadow-sm" 
-                                                                        width="150" alt="Current category image">
-                                                                    <div class="position-absolute top-0 end-0">
-                                                                        <span class="badge bg-success rounded-pill">
-                                                                            <i class="fas fa-check"></i> Current
-                                                                        </span>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        @endif
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="modal-footer bg-white border-top">
-                                            <button type="button" class="btn btn-secondary btn-lg px-4" data-bs-dismiss="modal">
-                                                <i class="fas fa-times me-2"></i>Cancel
-                                            </button>
-                                            <button type="submit" class="btn btn-primary btn-lg px-4">
-                                                <i class="fas fa-save me-2"></i>Save Changes
-                                            </button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
                         @endforeach
                     </tbody>
                 </table>
@@ -531,6 +446,107 @@
             </div>
         </div>
     </div>
+
+    @foreach ($categories as $category)
+        <!-- Modal Edit Category خارج الجدول -->
+        <div class="modal fade" id="editCategoryModal-{{ $category->id }}" tabindex="-1"
+            aria-labelledby="editCategoryModalLabel-{{ $category->id }}" aria-hidden="true"
+            data-bs-backdrop="static">
+            <div class="modal-dialog modal-lg">
+                <form action="{{ route('admin.educational-categories.update', $category->id) }}" method="POST"
+                    enctype="multipart/form-data" class="modal-content border-0 shadow-lg">
+                    @csrf
+                    @method('PUT')
+                    <div class="modal-header bg-white text-dark border-bottom">
+                        <h5 class="modal-title fw-bold" id="editCategoryModalLabel-{{ $category->id }}">
+                            <i class="fas fa-edit me-2 text-primary"></i>Edit Category
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body p-4 bg-white">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="mb-4">
+                                    <label class="form-label fw-bold text-primary">
+                                        <i class="fas fa-tag me-2"></i>Category Name
+                                    </label>
+                                    <input type="text" name="name" value="{{ old('name', $category->name) }}"
+                                        class="form-control form-control-lg border-2 border-light @error('name') is-invalid @enderror"
+                                        placeholder="Enter category name..." required>
+                                    @error('name')
+                                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                                <div class="mb-4">
+                                    <label class="form-label fw-bold text-primary">
+                                        <i class="fas fa-align-left me-2"></i>Description
+                                    </label>
+                                    <textarea name="description" class="form-control border-2 border-light @error('description') is-invalid @enderror"
+                                        rows="4" placeholder="Enter category description...">{{ old('description', $category->description) }}</textarea>
+                                    @error('description')
+                                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                                <div class="mb-4">
+                                    <label class="form-label fw-bold text-primary">
+                                        <i class="fas fa-toggle-on me-2"></i>Status
+                                    </label>
+                                    <select name="status" class="form-select form-select-lg border-2 border-light @error('status') is-invalid @enderror">
+                                        <option value="active" {{ old('status', $category->status) === 'active' ? 'selected' : '' }}>
+                                            Active
+                                        </option>
+                                        <option value="inactive" {{ old('status', $category->status) === 'inactive' ? 'selected' : '' }}>
+                                            Inactive
+                                        </option>
+                                    </select>
+                                    @error('status')
+                                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-4">
+                                    <label class="form-label fw-bold text-primary">
+                                        <i class="fas fa-image me-2"></i>Category Image
+                                    </label>
+                                    <div class="border-2 border-dashed border-light rounded-3 p-3 text-center bg-light">
+                                        <input type="file" name="image" class="form-control @error('image') is-invalid @enderror" accept="image/*">
+                                        <small class="text-muted d-block mt-2">Upload new image (optional)</small>
+                                    </div>
+                                    @error('image')
+                                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                                    @enderror
+                                    @if ($category->image)
+                                        <div class="mt-3 text-center">
+                                            <label class="form-label fw-bold text-success">Current Image:</label>
+                                            <div class="position-relative d-inline-block">
+                                                <img src="{{ asset('storage/' . $category->image) }}"
+                                                    class="img-thumbnail rounded-3 shadow-sm"
+                                                    width="150" alt="Current category image">
+                                                <div class="position-absolute top-0 end-0">
+                                                    <span class="badge bg-success rounded-pill">
+                                                        <i class="fas fa-check"></i> Current
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer bg-white border-top">
+                        <button type="button" class="btn btn-secondary btn-lg px-4" data-bs-dismiss="modal">
+                            <i class="fas fa-times me-2"></i>Cancel
+                        </button>
+                        <button type="submit" class="btn btn-primary btn-lg px-4">
+                            <i class="fas fa-save me-2"></i>Save Changes
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    @endforeach
 @endsection
 
 @push('scripts')
@@ -556,7 +572,9 @@
                 tableRows.forEach(row => {
                     const name = row.querySelector('h6').textContent.toLowerCase();
                     const description = row.querySelector('p.text-secondary').textContent.toLowerCase();
-                    const status = row.cells[3].textContent.trim();
+                    const statusCell = row.cells[3];
+                    if (!statusCell) return;
+                    const status = statusCell.textContent.trim();
 
                     const matchesSearch = name.includes(searchText) || description.includes(searchText);
                     const matchesStatus = selectedStatus === '' || status === selectedStatus;

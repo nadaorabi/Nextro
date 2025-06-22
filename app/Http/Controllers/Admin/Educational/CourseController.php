@@ -155,7 +155,10 @@ class CourseController extends Controller
             // Get data for modals
             $categories = Category::where('status', 'active')->get();
             $teachers = User::where('role', 'teacher')->where('is_active', true)->get();
-            $students = User::where('role', 'student')->where('is_active', true)->get();
+            $enrolledIds = $course->enrollments->pluck('student_id')->toArray();
+            $students = User::where('role', 'student')->where('is_active', true)
+                ->whereNotIn('id', $enrolledIds)
+                ->get();
 
             return view('admin.educational-courses.show', compact('course', 'categories', 'teachers', 'students'));
         } catch (\Exception $e) {

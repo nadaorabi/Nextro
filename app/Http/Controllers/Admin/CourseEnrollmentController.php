@@ -16,7 +16,8 @@ class CourseEnrollmentController extends Controller
         try {
             $validator = Validator::make($request->all(), [
                 'course_id' => 'required|exists:courses,id',
-                'student_id' => 'required|exists:users,id',
+                'student_ids' => 'required|array|min:1',
+                'student_ids.*' => 'exists:users,id',
                 'enrollment_date' => 'required|date',
                 'status' => 'required|in:active,pending,completed,dropped',
                 'notes' => 'nullable|string|max:500',
@@ -28,30 +29,57 @@ class CourseEnrollmentController extends Controller
                     ->withInput();
             }
 
-            // Check if student is already enrolled in this course
-            $existingEnrollment = Enrollment::where('course_id', $request->course_id)
-                ->where('student_id', $request->student_id)
-                ->first();
+            $added = 0;
+            $skipped = 0;
+            foreach ($request->student_ids as $student_id) {
+                // Check if student is already enrolled in this course
+                $existingEnrollment = \App\Models\Enrollment::where('course_id', $request->course_id)
+                    ->where('student_id', $student_id)
+                    ->first();
+                if ($existingEnrollment) {
+                    $skipped++;
+                    continue;
+                }
+                $enrollment = \App\Models\Enrollment::create([
+                    'course_id' => $request->course_id,
+                    'student_id' => $student_id,
+                    'enrollment_date' => $request->enrollment_date,
+                    'status' => $request->status,
+                    'notes' => $request->notes,
+                ]);
 
-            if ($existingEnrollment) {
-                return redirect()->back()
-                    ->with('error', 'This student is already enrolled in this course.');
+                // حساب الخصم وتسجيل معاملة مالية
+                $discount = 0;
+                if ($request->has('discounts') && isset($request->discounts[$student_id])) {
+                    $discount = floatval($request->discounts[$student_id]);
+                }
+                $course = \App\Models\Course::find($request->course_id);
+                $coursePrice = $course->is_free ? 0 : floatval($course->price);
+                $finalPrice = $coursePrice;
+                if ($discount > 0 && $discount <= 100) {
+                    $finalPrice = $coursePrice - ($coursePrice * $discount / 100);
+                }
+                if ($finalPrice > 0) {
+                    \App\Models\Payment::create([
+                        'user_id' => $student_id,
+                        'amount' => $finalPrice,
+                        'type' => 'student_fee',
+                        'notes' => 'Course: ' . $course->title . ' | Discount: ' . $discount . '%',
+                        'payment_date' => now(),
+                    ]);
+                }
+                $added++;
             }
 
-            Enrollment::create([
-                'course_id' => $request->course_id,
-                'student_id' => $request->student_id,
-                'enrollment_date' => $request->enrollment_date,
-                'status' => $request->status,
-                'notes' => $request->notes,
-            ]);
+            $msg = '';
+            if ($added > 0) $msg .= "$added student(s) enrolled successfully. ";
+            if ($skipped > 0) $msg .= "$skipped student(s) were already enrolled.";
 
-            return redirect()->back()
-                ->with('success', 'Student enrolled in course successfully!');
+            return redirect()->back()->with('success', trim($msg));
 
         } catch (\Exception $e) {
             return redirect()->back()
-                ->with('error', 'Error enrolling student: ' . $e->getMessage());
+                ->with('error', 'Error enrolling students: ' . $e->getMessage());
         }
     }
 
