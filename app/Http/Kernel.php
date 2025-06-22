@@ -66,6 +66,7 @@ class Kernel extends HttpKernel
         'isTeacher' => \App\Http\Middleware\IsTeacher::class,
         'isUser' => \App\Http\Middleware\IsUser::class,
         'isAdmin' => \App\Http\Middleware\IsAdmin::class,
+        'password.changed' => \App\Http\Middleware\EnsurePasswordIsChanged::class,
     ];
 
     /**

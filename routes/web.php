@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\Accounts\TeacherController as AdminTeacherControl
 use App\Http\Controllers\Admin\Accounts\AdminController as AdminAccountsController;
 use App\Http\Controllers\Admin\Educational\CourseController;
 use App\Http\Controllers\Admin\Educational\PackageController;
+use App\Http\Controllers\Teacher\PasswordController;
 
 use App\Models\Category;
 use App\Models\Course;
@@ -180,8 +181,12 @@ Route::prefix('admin')->middleware('isAdmin')->name('admin.')->group(function ()
     Route::get('finance/payments', [AdminController::class, 'financePayments'])->name('finance.payments');
 });
 
+// Password Change Route (outside the group to avoid middleware loop issue)
+Route::get('teacher/password/change', [PasswordController::class, 'create'])->middleware('auth')->name('teacher.password.change');
+Route::post('teacher/password/update', [PasswordController::class, 'store'])->middleware('auth')->name('teacher.password.update');
+
 // راوتات المدرس
-Route::prefix('teacher')->middleware('isTeacher')->name('teacher.')->group(function () {
+Route::prefix('teacher')->middleware(['isTeacher', 'password.changed'])->name('teacher.')->group(function () {
     Route::get('dashboard', [TeacherController::class, 'dashboard'])->name('dashboard');
     Route::get('billing', [TeacherController::class, 'billing'])->name('billing');
     Route::get('tables', [TeacherController::class, 'tables'])->name('tables');
