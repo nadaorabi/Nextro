@@ -230,30 +230,39 @@ class CompleteDatabaseSeeder extends Seeder
     private function seedPackages()
     {
         $packages = [
-            ['name' => 'الباقة الأساسية', 'description' => 'باقة مناسبة للمبتدئين', 'price' => 500, 'currency' => 'SAR'],
-            ['name' => 'الباقة المتقدمة', 'description' => 'باقة شاملة للمتقدمين', 'price' => 800, 'currency' => 'SAR'],
-            ['name' => 'الباقة الاحترافية', 'description' => 'باقة احترافية للمحترفين', 'price' => 1200, 'currency' => 'SAR'],
-            ['name' => 'باقة البرمجة', 'description' => 'دورات متخصصة في البرمجة', 'price' => 600, 'currency' => 'SAR'],
-            ['name' => 'باقة التصميم', 'description' => 'دورات متخصصة في التصميم', 'price' => 550, 'currency' => 'SAR'],
-            ['name' => 'باقة التسويق', 'description' => 'دورات متخصصة في التسويق', 'price' => 450, 'currency' => 'SAR'],
-            ['name' => 'باقة اللغات', 'description' => 'دورات متخصصة في اللغات', 'price' => 400, 'currency' => 'SAR'],
-            ['name' => 'باقة الأعمال', 'description' => 'دورات متخصصة في الأعمال', 'price' => 700, 'currency' => 'SAR'],
-            ['name' => 'باقة التكنولوجيا', 'description' => 'دورات متخصصة في التكنولوجيا', 'price' => 900, 'currency' => 'SAR'],
-            ['name' => 'الباقة الشاملة', 'description' => 'جميع الدورات بأسعار مخفضة', 'price' => 1500, 'currency' => 'SAR'],
-        ];
-        
-        $categories = Category::all();
-        
-        foreach ($packages as $index => $package) {
-            Package::create([
-                'name' => $package['name'],
-                'description' => $package['description'],
-                'price' => $package['price'],
-                'currency' => $package['currency'],
-                'category_id' => $categories[$index % $categories->count()]->id,
+            [
+                'name' => 'باقة البرمجة الشاملة',
+                'description' => 'تشمل جميع دورات البرمجة الأساسية والمتقدمة.',
+                'category_id' => 1,
+                'price' => 0,
+                'currency' => 'USD',
+                'discount_percentage' => 10,
                 'status' => 'active',
-                'image' => null
-            ]);
+                'image' => null,
+                'courses' => [1, 2, 3], // مثال: أرقام الكورسات المرتبطة
+            ],
+            // ... باقات أخرى ...
+        ];
+        foreach ($packages as $data) {
+            $courses = $data['courses'] ?? [];
+            unset($data['courses']);
+            $package = \App\Models\Package::create($data);
+            if ($courses) {
+                $syncData = [];
+                $originalPrice = 0;
+                foreach ($courses as $courseId) {
+                    $course = \App\Models\Course::find($courseId);
+                    $discount = 0; // أو اجلبه من منطقك
+                    $final = $course ? $course->price - ($course->price * $discount / 100) : 0;
+                    $syncData[$courseId] = ['discount_percentage' => $discount];
+                    $originalPrice += $final;
+                }
+                $package->courses()->attach($syncData);
+                $package->original_price = $originalPrice;
+                // خصم عام
+                $package->discounted_price = $originalPrice - ($originalPrice * ($data['discount_percentage'] ?? 0) / 100);
+                $package->save();
+            }
         }
     }
     

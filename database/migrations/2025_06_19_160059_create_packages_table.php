@@ -21,6 +21,8 @@ return new class extends Migration
             $table->string('currency')->default('USD');
             $table->decimal('discount_percentage', 5, 2)->default(0);
             $table->string('status')->default('active');
+            $table->decimal('original_price', 10, 2)->default(0);
+            $table->decimal('discounted_price', 10, 2)->nullable();
             $table->timestamps();
         });
     }
