@@ -28,11 +28,11 @@
         <form action="{{ route('login.post') }}" method="POST" class="p-4 border rounded shadow-sm bg-white">
           @csrf
           <div class="row">
-            {{-- البريد الإلكتروني --}}
+            {{-- رقم تسجيل الدخول --}}
             <div class="col-12 mb-3">
-              <label for="email" class="form-label">البريد الإلكتروني</label>
-              <input type="email" id="email" name="email" class="form-control" placeholder="Email" required>
-              @error('email')
+              <label for="login_id" class="form-label">رقم تسجيل الدخول</label>
+              <input type="text" id="login_id" name="login_id" class="form-control" placeholder="أدخل رقم تسجيل الدخول" required>
+              @error('login_id')
                 <div class="text-danger mt-1">{{ $message }}</div>
               @enderror
             </div>

@@ -23,29 +23,33 @@ class TeacherController extends Controller
     public function login(Request $request)
     {
         $credentials = $request->validate([
-            'email' => ['required', 'email'],
+            'login_id' => ['required', 'string'],
             'password' => ['required'],
         ]);
 
-        if (Auth::attempt($credentials)) {
-            $user = Auth::user();
+        // البحث عن المستخدم باستخدام login_id
+        $user = User::where('login_id', $credentials['login_id'])->first();
+
+        if ($user && Hash::check($credentials['password'], $user->password)) {
             if ($user->role == 'teacher') {
+                Auth::login($user);
                 $request->session()->regenerate();
                 session()->flash('welcome', 'أهلاً وسهلاً بك مدرس');
                 return redirect()->intended(route('teacher.dashboard'));
             } elseif ($user->role == 'admin') {
+                Auth::login($user);
                 $request->session()->regenerate();
                 session()->flash('welcome', 'أهلاً وسهلاً بك مسؤول النظام');
                 return redirect()->route('admin.dashboard');
             }
             Auth::logout();
             return back()->withErrors([
-                'email' => 'هذا الحساب غير مصرح له بالدخول من هنا.'
+                'login_id' => 'هذا الحساب غير مصرح له بالدخول من هنا.'
             ]);
         }
 
         return back()->withErrors([
-            'email' => 'بيانات الاعتماد غير صحيحة.',
+            'login_id' => 'بيانات الاعتماد غير صحيحة.',
         ]);
     }
 

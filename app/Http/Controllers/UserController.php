@@ -49,25 +49,27 @@ class UserController extends Controller
     public function login(Request $request)
     {
         $credentials = $request->validate([
-            'email' => 'required|email',
+            'login_id' => 'required|string',
             'password' => 'required',
         ]);
 
-        if (Auth::attempt($credentials)) {
-            $user = Auth::user();
+        // البحث عن المستخدم باستخدام login_id
+        $user = User::where('login_id', $credentials['login_id'])->first();
+
+        if ($user && Hash::check($credentials['password'], $user->password)) {
             if ($user->role == 'user' || $user->role == 'student') {
+                Auth::login($user);
                 $request->session()->regenerate(); 
                 return redirect()->route('home_page')->with('success', 'تم تسجيل الدخول بنجاح!');
             } else {
-                Auth::logout();
                 return back()->withErrors([
-                    'email' => 'This account belongs to a staff member (teacher or admin). Please use the staff login page to access your account.'
+                    'login_id' => 'This account belongs to a staff member (teacher or admin). Please use the staff login page to access your account.'
                 ]);
             }
         }
 
         // العودة مع رسالة خطأ في حال كانت بيانات الاعتماد غير صحيحة
-        return back()->withErrors(['email' => 'بيانات الاعتماد غير صحيحة.']);
+        return back()->withErrors(['login_id' => 'بيانات الاعتماد غير صحيحة.']);
     }
 
     public function logout(Request $request)
