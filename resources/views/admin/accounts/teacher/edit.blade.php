@@ -102,7 +102,18 @@
                   </div>
                 </div>
 
+                <!-- Password & Status -->
                 <div class="row">
+                  <!-- Password -->
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label">Password <span class="text-muted" style="font-size:0.95em;">(Leave blank to keep current)</span></label>
+                    <div class="position-relative">
+                      <input id="edit-teacher-password" type="password" name="password" class="form-control font-weight-bold ps-4 pe-5" value="{{ old('password', $teacher->plain_password) }}" autocomplete="new-password" style="background:#f8fafc; border-radius:12px; border:1.5px solid #d1e7ff; box-shadow:0 2px 8px rgba(44,62,80,0.07); font-size:1.15rem; letter-spacing:2px;">
+                      <span class="position-absolute top-50 end-0 translate-middle-y me-3" style="cursor:pointer;" id="toggleEditPassword">
+                        <i class="fas fa-eye text-secondary"></i>
+                      </span>
+                    </div>
+                  </div>
                   <!-- Status -->
                   <div class="col-md-6 mb-3">
                     <label class="form-label">Status <span class="text-danger">*</span></label>
@@ -161,6 +172,29 @@
   <script src="{{ asset('js/plugins/perfect-scrollbar.min.js') }}"></script>
   <script src="{{ asset('js/plugins/smooth-scrollbar.min.js') }}"></script>
   <script src="{{ asset('js/argon-dashboard.min.js?v=2.1.0') }}"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const toggleEditBtn = document.getElementById('toggleEditPassword');
+      const pwdEditInput = document.getElementById('edit-teacher-password');
+      if(toggleEditBtn && pwdEditInput) {
+        // Set icon based on initial input type
+        if (pwdEditInput.type === 'password') {
+          toggleEditBtn.innerHTML = '<i class="fas fa-eye-slash text-secondary"></i>';
+        } else {
+          toggleEditBtn.innerHTML = '<i class="fas fa-eye text-secondary"></i>';
+        }
+        toggleEditBtn.addEventListener('click', function() {
+          if (pwdEditInput.type === 'password') {
+            pwdEditInput.type = 'text';
+            this.innerHTML = '<i class="fas fa-eye text-secondary"></i>';
+          } else {
+            pwdEditInput.type = 'password';
+            this.innerHTML = '<i class="fas fa-eye-slash text-secondary"></i>';
+          }
+        });
+      }
+    });
+  </script>
 </body>
 
 </html>
