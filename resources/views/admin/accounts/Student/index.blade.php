@@ -305,13 +305,13 @@
                                 </div>
                                 <div class="col-md-3">
                                     <div class="form-group">
-                                        <label class="form-label">Level</label>
+                                        <label class="form-label">Category</label>
                                         <select id="level-filter" class="form-select">
-                                            <option value="">All Levels</option>
-                                            <option>Level 1</option>
-                                            <option>Level 2</option>
-                                            <option>Level 3</option>
-                                            <option>Level 4</option>
+                                            <option value="">All Categories</option>
+                                            <option>Category 1</option>
+                                            <option>Category 2</option>
+                                            <option>Category 3</option>
+                                            <option>Category 4</option>
                                         </select>
                                     </div>
                                 </div>
@@ -370,7 +370,7 @@
                                                         <div class="d-flex flex-column justify-content-center">
                                                             <h6 class="mb-0 text-sm">{{ $student->name }}</h6>
                                                             <p class="text-xs text-secondary mb-0">
-                                                                {{ $student->email ?? '-' }}</p>
+                                                                {{ $student->mobile ?? '-' }}</p>
                                                         </div>
                                                     </div>
                                                 </td>
@@ -412,7 +412,7 @@
                                                             <i class="fas fa-eye"></i>
                                                         </a>
                                                         <button class="btn btn-link text-dark p-2"
-                                                            onclick="printCredentials('{{ $student->login_id }}', '{{ $student->plain_password }}')"
+                                                            onclick="printCredentials('{{ $student->login_id }}', '{{ $student->plain_password }}', '{{ $student->name }}')"
                                                             title="Print Credentials">
                                                             <i class="fas fa-key"></i>
                                                         </button>
@@ -649,7 +649,7 @@
         document.addEventListener('DOMContentLoaded', function () {
             const searchInput = document.getElementById('search-input');
             const statusFilter = document.getElementById('status-filter');
-            const levelFilter = document.getElementById('level-filter');
+            const categoryFilter = document.getElementById('level-filter');
             const dateFilter = document.getElementById('date-filter');
             const studentsTable = document.getElementById('students-table');
             const tableRows = studentsTable.querySelectorAll('tbody tr');
@@ -657,21 +657,21 @@
             function filterStudents() {
                 const searchText = searchInput.value.toLowerCase();
                 const statusValue = statusFilter.value;
-                const levelValue = levelFilter.value;
+                const categoryValue = categoryFilter.value;
                 const dateValue = dateFilter.value;
 
                 tableRows.forEach(row => {
                     const name = row.cells[0].querySelector('h6').textContent.toLowerCase();
                     const email = row.cells[0].querySelector('p').textContent.toLowerCase();
                     const studentId = row.cells[1].textContent.toLowerCase().trim();
-                    const level = row.cells[2].textContent.trim();
+                    const category = row.cells[2].textContent.trim();
                     const status = row.cells[3].textContent.trim();
                     const registrationDateText = row.cells[4].textContent.trim();
                     const registrationDate = registrationDateText ? new Date(registrationDateText) : null;
 
                     const searchMatch = name.includes(searchText) || email.includes(searchText) || studentId.includes(searchText);
                     const statusMatch = statusValue === '' || status === statusValue;
-                    const levelMatch = levelValue === '' || level === levelValue;
+                    const categoryMatch = categoryValue === '' || category === categoryValue;
 
                     let dateMatch = true;
                     if (dateValue && registrationDate) {
@@ -693,7 +693,7 @@
                     }
 
 
-                    if (searchMatch && statusMatch && levelMatch && dateMatch) {
+                    if (searchMatch && statusMatch && categoryMatch && dateMatch) {
                         row.style.display = '';
                     } else {
                         row.style.display = 'none';
@@ -703,7 +703,7 @@
 
             searchInput.addEventListener('keyup', filterStudents);
             statusFilter.addEventListener('change', filterStudents);
-            levelFilter.addEventListener('change', filterStudents);
+            categoryFilter.addEventListener('change', filterStudents);
             dateFilter.addEventListener('change', filterStudents);
         });
     </script>
@@ -772,38 +772,49 @@
             window.print();
         }
 
-        function printCredentials(studentId, studentPassword) {
+        function printCredentials(studentId, studentPassword, studentName) {
             if (!studentPassword || studentPassword.trim() === '') {
                 alert('Initial password is not available for this student.');
                 return;
             }
 
-            const printWindow = window.open('', 'PRINT', 'height=400,width=600');
+            const printWindow = window.open('', 'PRINT', 'height=500,width=700');
 
             printWindow.document.write('<html><head><title>Student Credentials</title>');
             printWindow.document.write('<style>');
             printWindow.document.write(`
-                body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-                .card { border: 1px solid #ccc; border-radius: 10px; padding: 25px; width: 320px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); text-align: center; }
-                .card h3 { margin-top: 0; color: #333; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 20px; }
-                .card p { font-size: 16px; margin: 15px 0; text-align: left; }
-                .card strong { display: inline-block; width: 90px; color: #555; }
+                body { background: linear-gradient(120deg, #4f8cff 0%, #6dd5ed 100%); margin:0; height:100vh; display:flex; align-items:center; justify-content:center; }
+                .cred-card { background: rgba(255,255,255,0.85); border-radius: 22px; box-shadow: 0 8px 32px rgba(44,62,80,0.18); border: 2px solid #4f8cff; padding: 40px 32px 32px 32px; width: 420px; max-width:95vw; margin:auto; font-family: 'Segoe UI', Arial, sans-serif; animation: fadeInCard 0.8s cubic-bezier(.4,2,.6,1) both; }
+                .cred-card h2 { color: #4f8cff; margin-bottom: 18px; font-size: 2.1rem; letter-spacing: 1px; text-align:center; }
+                .cred-card .cred-label { color: #6c757d; font-size: 1.1rem; margin-bottom: 2px; display:block; }
+                .cred-card .cred-value { color: #222; font-size: 1.35rem; font-weight: bold; margin-bottom: 18px; letter-spacing: 0.5px; }
+                .cred-card .cred-pass { color: #fff; background: linear-gradient(90deg, #4f8cff 0%, #6dd5ed 100%); border-radius: 10px; font-size: 1.5rem; font-weight: bold; padding: 10px 0; margin-bottom: 10px; text-align:center; letter-spacing: 1px; box-shadow: 0 2px 8px rgba(44,62,80,0.10); }
+                .cred-card .cred-id { color: #4f8cff; font-size: 1.1rem; font-weight: 500; margin-bottom: 8px; text-align:center; }
+                .cred-card .cred-footer { color: #6c757d; font-size: 0.95rem; text-align:center; margin-top: 18px; }
+                .cred-card .print-btn { display: block; width: 100%; margin: 18px auto 0 auto; background: linear-gradient(90deg, #4f8cff 0%, #6dd5ed 100%); color: #fff; border: none; border-radius: 8px; font-size: 1.15rem; font-weight: bold; padding: 10px 0; cursor: pointer; transition: background 0.2s; box-shadow: 0 2px 8px rgba(44,62,80,0.10); }
+                .cred-card .print-btn:hover { background: linear-gradient(90deg, #6dd5ed 0%, #4f8cff 100%); }
+                @keyframes fadeInCard { 0% { opacity:0; transform: translateY(40px) scale(0.95);} 100% { opacity:1; transform: translateY(0) scale(1);} }
+                @media print {
+                  html, body { background: #fff !important; height:100%; margin:0; padding:0; }
+                  body { display: flex; align-items: flex-start; justify-content: center; min-height: 100vh; }
+                  .cred-card { box-shadow:none !important; border:2px solid #4f8cff !important; width: 95vw !important; max-width: 420px !important; margin: 0 auto !important; position: relative; top: 2vh; }
+                  .print-btn { display: none !important; }
+                }
             `);
             printWindow.document.write('</style></head><body>');
-            printWindow.document.write('<div class="card">');
-            printWindow.document.write('<h3>Login Details</h3>');
-            printWindow.document.write(`<p><strong>ID:</strong> ${studentId}</p>`);
-            printWindow.document.write(`<p><strong>Password:</strong> ${studentPassword}</p>`);
+            printWindow.document.write('<div class="cred-card">');
+            printWindow.document.write('<div style="position:absolute; left:32px; top:24px; font-size:2.2rem; font-weight:900; color:#4f8cff; letter-spacing:2px; font-family:inherit;">Nextro</div>');
+            printWindow.document.write('<h2 style="font-size:1.25rem; margin-top:48px; margin-bottom:18px; color:#4f8cff; text-align:center; font-weight:700; letter-spacing:1px;">Student Credentials</h2>');
+            printWindow.document.write(`<div class="cred-label">Student Name</div><div class="cred-value">${studentName}</div>`);
+            printWindow.document.write(`<div class="cred-label">Student ID</div><div class="cred-id">${studentId}</div>`);
+            printWindow.document.write(`<div class="cred-label">Password</div><div class="cred-pass">${studentPassword}</div>`);
+            printWindow.document.write('<div class="cred-footer">Keep this information confidential</div>');
+            printWindow.document.write('<button class="print-btn" onclick="window.print()">Print</button>');
             printWindow.document.write('</div>');
             printWindow.document.write('</body></html>');
 
             printWindow.document.close();
             printWindow.focus();
-            
-            setTimeout(function() {
-                printWindow.print();
-                printWindow.close();
-            }, 250);
         }
 
         // Delete confirmation modal functionality

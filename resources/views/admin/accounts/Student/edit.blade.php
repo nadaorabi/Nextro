@@ -145,6 +145,18 @@
                   </select>
                 </div>
 
+                <!-- Password Edit -->
+                <div class="mb-3">
+                  <label class="form-label">Password <span class="text-danger">*</span></label>
+                  <div class="position-relative">
+                    <input id="edit-student-password" type="password" name="plain_password" class="form-control ps-4 pe-5" value="{{ old('plain_password', $student->plain_password) }}" autocomplete="new-password" maxlength="255" style="background:#f8fafc; border-radius:12px; border:1.5px solid #d1e7ff; box-shadow:0 2px 8px rgba(44,62,80,0.07); font-size:1.15rem; letter-spacing:2px;">
+                    <span class="position-absolute top-50 end-0 translate-middle-y me-3" style="cursor:pointer;" id="toggleEditPassword">
+                      <i class="fas fa-eye text-secondary"></i>
+                    </span>
+                  </div>
+                  <small class="form-text text-muted">Leave blank to keep the current password.</small>
+                </div>
+
                 <!-- Read-only Information -->
                 <div class="card bg-light mb-3">
                   <div class="card-body">
@@ -186,6 +198,24 @@
   <script src="{{ asset('js/plugins/perfect-scrollbar.min.js') }}"></script>
   <script src="{{ asset('js/plugins/smooth-scrollbar.min.js') }}"></script>
   <script src="{{ asset('js/argon-dashboard.min.js?v=2.1.0') }}"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Password show/hide for edit
+      const toggleEditBtn = document.getElementById('toggleEditPassword');
+      const editPwdInput = document.getElementById('edit-student-password');
+      if(toggleEditBtn && editPwdInput) {
+        toggleEditBtn.addEventListener('click', function() {
+          if (editPwdInput.type === 'password') {
+            editPwdInput.type = 'text';
+            this.innerHTML = '<i class="fas fa-eye-slash text-secondary"></i>';
+          } else {
+            editPwdInput.type = 'password';
+            this.innerHTML = '<i class="fas fa-eye text-secondary"></i>';
+          }
+        });
+      }
+    });
+  </script>
 </body>
 
 </html> 
