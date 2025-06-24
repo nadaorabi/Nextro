@@ -161,6 +161,26 @@
             font-size: 1.1rem;
             box-shadow: 0 2px 10px rgba(40, 167, 69, 0.3);
         }
+        .price-container {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        .original-price {
+            color: #6c757d;
+            text-decoration: line-through;
+            font-size: 0.9rem;
+            margin-top: 2px;
+        }
+        .discount-badge {
+            background: linear-gradient(135deg, #dc3545 0%, #fd7e14 100%);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-top: 4px;
+        }
         .category-badge {
             background: linear-gradient(135deg, #17a2b8 0%, #20c997 100%);
             color: white;
@@ -369,6 +389,9 @@
                                         <i class="fas fa-download me-2"></i>
                                         Export
                                     </button>
+                                    <button class="btn btn-outline-info" id="cleanupBtn" title="Cleanup discount percentages">
+                                        <i class="fas fa-broom"></i>
+                                    </button>
                                     <button class="btn btn-outline-danger" id="clearFiltersBtn">
                                         <i class="fas fa-times"></i>
                                     </button>
@@ -465,8 +488,24 @@
                                     
                                     <!-- Price and Date -->
                                     <div class="d-flex justify-content-between align-items-center mb-3">
-                                        <div class="price-tag">
-                                            {{ $package->price ?? '0' }} {{ $package->currency ?? 'USD' }}
+                                        <div class="price-container">
+                                            @if($package->discounted_price && $package->discounted_price < $package->original_price)
+                                                <div class="price-tag">
+                                                    {{ number_format($package->discounted_price, 2) }} {{ $package->currency ?? 'USD' }}
+                                                </div>
+                                                <small class="original-price">
+                                                    {{ number_format($package->original_price, 2) }} {{ $package->currency ?? 'USD' }}
+                                                </small>
+                                                @if($package->discount_percentage > 0)
+                                                    <span class="discount-badge">
+                                                        {{ $package->discount_percentage }}% off
+                                                    </span>
+                                                @endif
+                                            @else
+                                                <div class="price-tag">
+                                                    {{ number_format($package->original_price ?? 0, 2) }} {{ $package->currency ?? 'USD' }}
+                                                </div>
+                                            @endif
                                         </div>
                                         <small class="text-muted">
                                             {{ $package->created_at ? $package->created_at->format('M d, Y') : 'Unknown' }}
@@ -840,6 +879,39 @@
                     this.disabled = false;
                 }, 2000);
             }, 500);
+        });
+
+        // Cleanup discount percentages functionality
+        document.getElementById('cleanupBtn').addEventListener('click', function() {
+            if (confirm('This will update discount percentages for all packages. Continue?')) {
+                this.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                this.disabled = true;
+                
+                fetch('{{ route("admin.educational-packages.cleanup-discount-percentages") }}', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                        'Content-Type': 'application/json',
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert(data.message);
+                        location.reload(); // Reload page to show updated data
+                    } else {
+                        alert('Error: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while cleaning up discount percentages.');
+                })
+                .finally(() => {
+                    this.innerHTML = '<i class="fas fa-broom"></i>';
+                    this.disabled = false;
+                });
+            }
         });
 
         // Add CSS animation

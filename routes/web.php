@@ -159,6 +159,9 @@ Route::prefix('admin')->middleware('isAdmin')->name('admin.')->group(function ()
         Route::post('/bulk-action', [PackageController::class, 'bulkAction'])->name('bulk-action');
         Route::get('/export', [PackageController::class, 'export'])->name('export');
         Route::post('/{package}/add-courses', [\App\Http\Controllers\Admin\Educational\PackageController::class, 'addCourses'])->name('add-courses');
+        Route::get('/{package}/course-price-after-remove/{course}', [\App\Http\Controllers\Admin\Educational\PackageController::class, 'getPriceAfterRemove'])->name('admin.educational-packages.course-price-after-remove');
+        Route::delete('/{package}/remove-course/{course}', [\App\Http\Controllers\Admin\Educational\PackageController::class, 'removeCourse'])->name('admin.educational-packages.remove-course');
+        Route::post('/cleanup-discount-percentages', [\App\Http\Controllers\Admin\Educational\PackageController::class, 'cleanupDiscountPercentages'])->name('cleanup-discount-percentages');
     });
 
     Route::get('educational-materials/create', [AdminController::class, 'materialsCreate'])->name('educational-materials.create');

@@ -19,7 +19,9 @@ class Package extends Model
         'discount_percentage', 
         'is_active',
         'status',
-        'image'
+        'image',
+        'original_price',
+        'discounted_price',
     ];
 
     public function category() 
