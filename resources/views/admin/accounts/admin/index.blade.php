@@ -21,6 +21,25 @@
     .table-action-buttons {
       white-space: nowrap;
     }
+    .action-icon-btn {
+      border: none;
+      border-radius: 12px;
+      width: 38px;
+      height: 38px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.15rem;
+      color: #fff !important;
+      box-shadow: 0 2px 8px rgba(44,62,80,0.10);
+      transition: background 0.18s;
+      padding: 0;
+    }
+    .action-icon-view { background: #17c1e8; }
+    .action-icon-edit { background: #ff8c4b; }
+    .action-icon-print { background: #5e72e4; }
+    .action-icon-delete { background: #ea0606; }
+    .action-icon-btn:hover, .action-icon-btn:focus { filter: brightness(0.93); }
   </style>
 </head>
 
@@ -159,16 +178,16 @@
                     <span class="text-secondary text-xs font-weight-bold">{{ $admin->created_at->format('d/m/Y') }}</span>
                   </td>
                   <td class="align-middle text-center table-action-buttons">
-                    <a href="{{ route('admin.accounts.admins.show', $admin->id) }}" class="btn btn-sm btn-info px-2 py-1 mb-0" title="View Details">
+                    <a href="{{ route('admin.accounts.admins.show', $admin->id) }}" class="action-icon-btn action-icon-view me-1" title="View Details">
                       <i class="fas fa-eye"></i>
                     </a>
-                    <a href="{{ route('admin.accounts.admins.edit', $admin->id) }}" class="btn btn-sm btn-warning px-2 py-1 mb-0" title="Edit Admin">
+                    <a href="{{ route('admin.accounts.admins.edit', $admin->id) }}" class="action-icon-btn action-icon-edit me-1" title="Edit Admin">
                       <i class="fas fa-edit"></i>
                     </a>
-                    <a href="{{ route('admin.accounts.admins.print-credentials', $admin->id) }}" target="_blank" class="btn btn-sm btn-primary px-2 py-1 mb-0" title="Print Credentials">
+                    <a href="{{ route('admin.accounts.admins.print-credentials', $admin->id) }}" target="_blank" class="action-icon-btn action-icon-print me-1" title="Print Credentials">
                         <i class="fas fa-print"></i>
                     </a>
-                    <button type="button" class="btn btn-sm btn-danger px-2 py-1 mb-0" data-bs-toggle="modal" data-bs-target="#deleteModal" data-id="{{ $admin->id }}" title="Delete Admin">
+                    <button type="button" class="action-icon-btn action-icon-delete" data-bs-toggle="modal" data-bs-target="#deleteModal" data-id="{{ $admin->id }}" title="Delete Admin">
                         <i class="fas fa-trash"></i>
                     </button>
                   </td>

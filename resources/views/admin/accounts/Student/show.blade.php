@@ -185,6 +185,38 @@
                       </div>
                     </div>
                   </div>
+     <!-- Account Information Card -->
+     <div class="card shadow-sm mb-4">
+            <div class="card-header">
+              <h6 class="mb-0">Account Information</h6>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-3">
+                  <label class="form-label text-muted">Registration Date</label>
+                  <p class="font-weight-bold">{{ $student->created_at->format('F d, Y') }}</p>
+                </div>
+                <div class="col-md-3">
+                  <label class="form-label text-muted">Last Updated</label>
+                  <p class="font-weight-bold">{{ $student->updated_at->format('F d, Y') }}</p>
+                </div>
+                <div class="col-md-3">
+                  <label class="form-label text-muted">Login ID</label>
+                  <p class="font-weight-bold text-primary">{{ $student->login_id }}</p>
+                </div>
+                <div class="col-md-3">
+                  <label class="form-label text-muted">Password</label>
+                  <div class="position-relative">
+                    <input id="student-password" type="password" class="form-control font-weight-bold ps-4 pe-5" value="{{ $student->plain_password ?? '' }}" readonly style="background:#f8fafc; border-radius:12px; border:1.5px solid #d1e7ff; box-shadow:0 2px 8px rgba(44,62,80,0.07); font-size:1.15rem; letter-spacing:2px;">
+                    <span class="position-absolute top-50 end-0 translate-middle-y me-3" style="cursor:pointer;" id="togglePassword">
+                      <i class="fas fa-eye text-secondary"></i>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
 
           <!-- تحسين ستايل البادجات والجداول والتحريك في الموبايل -->
           <style>
@@ -280,10 +312,10 @@
           </style>
 
           <!-- Notes Section -->
-          <div class="custom-card">
-            <div class="custom-card-header">
+          <div class="custom-card mb-4">
+            <div class="custom-card-header d-flex justify-content-between align-items-center">
               <span>Notes</span>
-              <button type="button" class="btn btn-primary btn-sm px-3 py-1" data-bs-toggle="modal" data-bs-target="#addNoteModal" style="font-size:1rem; border-radius:20px;">
+              <button type="button" class="btn btn-main d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#addNoteModal">
                 <i class="fas fa-plus"></i> Add
               </button>
             </div>
@@ -358,49 +390,58 @@
           </div>
 
           <!-- Student Enrollments Section -->
-          <div class="custom-card">
-            <div class="custom-card-header">Student Enrollments</div>
+          <div class="custom-card mb-4">
+            <div class="custom-card-header d-flex justify-content-between align-items-center">
+              <span>Student Enrollments</span>
+              <button type="button" class="btn btn-main d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#addCourseModal">
+                <i class="fas fa-plus"></i> إضافة كورس/مسار
+              </button>
+            </div>
             <div class="custom-card-body p-0">
               <div class="custom-table-responsive">
                 <table class="custom-table">
                   <thead>
                     <tr>
-                      <th>Category</th>
-                      <th>Course</th>
-                      <th>Track/Package</th>
-                      <th>Teacher</th>
-                      <th>Enrollment Date</th>
-                      <th>Price</th>
-                      <th>Paid</th>
+                      <th>اسم المادة</th>
+                      <th>مسارها</th>
+                      <th>أستاذها</th>
+                      <th>تاريخ التسجيل</th>
+                      <th>الحضور والغياب</th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr>
-                      <td>تاسع</td>
                       <td>عربي</td>
                       <td>تاسع صيفي 2025</td>
                       <td>أ. محمد</td>
                       <td>2024-06-20</td>
-                      <td>1500 SYP</td>
-                      <td><span class="badge-custom badge-paid">مدفوع</span></td>
+                      <td>
+                        <button class="btn btn-attendance" data-bs-toggle="modal" data-bs-target="#attendanceModal" data-course="عربي" data-teacher="أ. محمد" data-track="تاسع صيفي 2025">
+                          <i class="fas fa-calendar-check"></i> عرض الحضور
+                        </button>
+                      </td>
                     </tr>
                     <tr>
-                      <td>تاسع</td>
                       <td>رياضيات</td>
                       <td>تاسع صيفي 2025</td>
                       <td>أ. أحمد</td>
                       <td>2024-06-20</td>
-                      <td>0 SYP</td>
-                      <td><span class="badge-custom badge-paid">مدفوع</span></td>
+                      <td>
+                        <button class="btn btn-attendance" data-bs-toggle="modal" data-bs-target="#attendanceModal" data-course="رياضيات" data-teacher="أ. أحمد" data-track="تاسع صيفي 2025">
+                          <i class="fas fa-calendar-check"></i> عرض الحضور
+                        </button>
+                      </td>
                     </tr>
                     <tr>
-                      <td>حادي عشر</td>
                       <td>فيزياء</td>
                       <td>حادي عشر شتوي 2024</td>
                       <td>أ. سامر</td>
                       <td>2024-05-10</td>
-                      <td>2000 SYP</td>
-                      <td><span class="badge-custom badge-unpaid">غير مدفوع</span></td>
+                      <td>
+                        <button class="btn btn-attendance" data-bs-toggle="modal" data-bs-target="#attendanceModal" data-course="فيزياء" data-teacher="أ. سامر" data-track="حادي عشر شتوي 2024">
+                          <i class="fas fa-calendar-check"></i> عرض الحضور
+                        </button>
+                      </td>
                     </tr>
                   </tbody>
                 </table>
@@ -408,91 +449,170 @@
             </div>
           </div>
 
-          <!-- Student Financial Status Section -->
-          <div class="custom-card">
-            <div class="custom-card-header"><i class="fas fa-wallet me-2"></i>Student Financial Status</div>
-            <div class="custom-card-body">
-              <ul class="list-unstyled mb-0" style="font-size:1.08rem;">
-                <li class="mb-3 d-flex align-items-center">
-                  <i class="fas fa-coins text-success me-2"></i>
-                  <span class="fw-bold me-2">Total Payments:</span>
-                  <span class="text-success">1500 SYP</span>
-                </li>
-                <li class="mb-3 d-flex align-items-center">
-                  <i class="fas fa-money-bill-wave text-danger me-2"></i>
-                  <span class="fw-bold me-2">Remaining:</span>
-                  <span class="text-danger">2000 SYP</span>
-                </li>
-                <li class="mb-3 d-flex align-items-center">
-                  <i class="fas fa-calendar-alt text-primary me-2"></i>
-                  <span class="fw-bold me-2">Last Payment:</span>
-                  <span class="text-dark">2024-06-20</span>
-                </li>
-                <li class="d-flex align-items-center">
-                  <i class="fas fa-exclamation-circle text-warning me-2"></i>
-                  <span class="fw-bold me-2">Payment Status:</span>
-                  <span class="badge-custom badge-unpaid" style="font-size:0.97em;">Incomplete</span>
-                </li>
-              </ul>
+          <!-- Modal للحضور والغياب -->
+          <div class="modal fade" id="attendanceModal" tabindex="-1" aria-labelledby="attendanceModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="attendanceModalLabel">سجل الحضور والغياب</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <div class="row mb-3">
+                    <div class="col-md-4">
+                      <strong>المادة:</strong> <span id="modalCourse"></span>
+                    </div>
+                    <div class="col-md-4">
+                      <strong>الأستاذ:</strong> <span id="modalTeacher"></span>
+                    </div>
+                    <div class="col-md-4">
+                      <strong>المسار:</strong> <span id="modalTrack"></span>
+                    </div>
+                  </div>
+                  
+                  <div class="table-responsive">
+                    <table class="table table-striped">
+                      <thead>
+                        <tr>
+                          <th>التاريخ</th>
+                          <th>اليوم</th>
+                          <th>الوقت</th>
+                          <th>الحالة</th>
+                          <th>ملاحظات</th>
+                        </tr>
+                      </thead>
+                      <tbody id="attendanceTableBody">
+                        <!-- سيتم ملؤها بالجافا سكريبت -->
+                      </tbody>
+                    </table>
+                  </div>
+                  
+                  <div class="row mt-3">
+                    <div class="col-md-6">
+                      <div class="card bg-light">
+                        <div class="card-body">
+                          <h6 class="card-title">إحصائيات الحضور</h6>
+                          <div class="row">
+                            <div class="col-6">
+                              <div class="text-center">
+                                <div class="h4 text-success" id="presentCount">0</div>
+                                <small class="text-muted">حضور</small>
+                              </div>
+                            </div>
+                            <div class="col-6">
+                              <div class="text-center">
+                                <div class="h4 text-danger" id="absentCount">0</div>
+                                <small class="text-muted">غياب</small>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="card bg-light">
+                        <div class="card-body">
+                          <h6 class="card-title">نسبة الحضور</h6>
+                          <div class="text-center">
+                            <div class="h4 text-primary" id="attendancePercentage">0%</div>
+                            <div class="progress mt-2">
+                              <div class="progress-bar bg-success" id="attendanceProgress" role="progressbar" style="width: 0%"></div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
+                  <button type="button" class="btn btn-primary" onclick="printAttendanceReport()">
+                    <i class="fas fa-print"></i> طباعة التقرير
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
 
-          <!-- Academic Status Section -->
-          <div class="custom-card">
-            <div class="custom-card-header">Academic Status</div>
-            <div class="custom-card-body p-0">
-              <div class="custom-table-responsive">
-                <table class="custom-table">
-                  <thead>
-                    <tr>
-                      <th>Subject</th>
-                      <th>Date</th>
-                      <th>Time</th>
-                      <th>Status</th>
-                      <th>Course/Track Details</th>
-                      <th>Absences Count</th>
-                      <th>Notes</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>عربي</td>
-                      <td>2024-06-20</td>
-                      <td>09:00 - 10:30</td>
-                      <td><span class="badge-custom badge-paid">حاضر</span></td>
-                      <td>تاسع صيفي 2025</td>
-                      <td>1</td>
-                      <td></td>
-                    </tr>
-                    <tr>
-                      <td>رياضيات</td>
-                      <td>2024-06-19</td>
-                      <td>10:45 - 12:15</td>
-                      <td><span class="badge-custom badge-unpaid">غائب</span></td>
-                      <td><span class="badge bg-danger" style="font-size:0.97em;">لم يحضر: تاسع صيفي 2025</span></td>
-                      <td>2</td>
-                      <td>Medical excuse</td>
-                    </tr>
-                    <tr>
-                      <td>فيزياء</td>
-                      <td>2024-06-18</td>
-                      <td>12:30 - 14:00</td>
-                      <td><span class="badge-custom badge-paid">حاضر</span></td>
-                      <td>حادي عشر شتوي 2024</td>
-                      <td>0</td>
-                      <td></td>
-                    </tr>
-                  </tbody>
-                </table>
+          <!-- مودال إضافة كورس أو بكيج مع تفاصيل -->
+          <div class="modal fade" id="addCourseModal" tabindex="-1" aria-labelledby="addCourseModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="addCourseModalLabel">إضافة كورس أو مسار</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="إغلاق"></button>
+                </div>
+                <div class="modal-body">
+                  <form onsubmit="event.preventDefault(); confirmAddCourse();">
+                    <!-- نوع التسجيل -->
+                    <div class="mb-3">
+                      <label class="form-label">نوع التسجيل</label>
+                      <select class="form-select" id="enrollType" onchange="toggleEnrollTypeDetails()">
+                        <option value="course">كورس</option>
+                        <option value="package">بكيج</option>
+                      </select>
+                    </div>
+                    <!-- اختيار الكورس -->
+                    <div class="mb-3" id="courseBox">
+                      <label class="form-label">اختر الكورس</label>
+                      <select class="form-select" id="courseSelect" onchange="showCourseDetails()">
+                        <option value="">-- اختر --</option>
+                        <option value="1">عربي</option>
+                        <option value="2">رياضيات</option>
+                        <option value="3">فيزياء</option>
+                      </select>
+                      <div id="courseDetails" class="mt-2" style="display:none;">
+                        <div class="border rounded p-2 bg-light">
+                          <div><b>الأستاذ:</b> <span id="courseTeacher"></span></div>
+                          <div><b>السعر:</b> <span id="coursePrice"></span></div>
+                          <div><b>الوصف:</b> <span id="courseDesc"></span></div>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- اختيار البكيج -->
+                    <div class="mb-3 d-none" id="packageBox">
+                      <label class="form-label">اختر البكيج</label>
+                      <select class="form-select" id="packageSelect" onchange="showPackageDetails()">
+                        <option value="">-- اختر --</option>
+                        <option value="1">بكيج التاسع</option>
+                        <option value="2">بكيج الحادي عشر</option>
+                      </select>
+                      <div id="packageDetails" class="mt-2" style="display:none;">
+                        <div class="border rounded p-2 bg-light">
+                          <div><b>عدد الكورسات:</b> <span id="packageCourses"></span></div>
+                          <div><b>السعر:</b> <span id="packagePrice"></span></div>
+                          <div><b>الوصف:</b> <span id="packageDesc"></span></div>
+                        </div>
+                      </div>
+                    </div>
+                    <button type="submit" class="btn btn-success w-100 mt-3">تأكيد الإضافة</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- مودال تأكيد الإضافة -->
+          <div class="modal fade" id="confirmAddModal" tabindex="-1" aria-labelledby="confirmAddModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="confirmAddModalLabel">تمت الإضافة بنجاح</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="إغلاق"></button>
+                </div>
+                <div class="modal-body text-center">
+                  <i class="fas fa-check-circle fa-3x text-success mb-3"></i>
+                  <div>تمت إضافة الكورس/المسار للطالب بنجاح (وهمي - فرونت فقط)</div>
+                </div>
               </div>
             </div>
           </div>
 
           <!-- Class Schedule Section -->
-          <div class="custom-card">
-            <div class="custom-card-header">
+          <div class="custom-card mb-4">
+            <div class="custom-card-header d-flex justify-content-between align-items-center">
               <span>Class Schedule</span>
-              <button onclick="printScheduleTable()" class="btn btn-outline-primary btn-sm px-3 py-1" style="font-size:1rem; border-radius:20px;">
+              <button onclick="printScheduleTable()" class="btn btn-main d-flex align-items-center gap-2">
                 <i class="fas fa-print"></i> Print
               </button>
             </div>
@@ -501,26 +621,48 @@
                 <table class="custom-table" id="schedule-table-print">
                   <thead>
                     <tr>
-                      <th>Subject</th>
-                      <th>Time</th>
-                      <th>Room</th>
+                      <th>اليوم \ الوقت</th>
+                      <th>09:00 - 10:30</th>
+                      <th>10:45 - 12:15</th>
+                      <th>12:30 - 14:00</th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr>
-                      <td>عربي</td>
-                      <td>09:00 - 10:30</td>
-                      <td>قاعة 1</td>
+                      <td>السبت</td>
+                      <td>عربي<br><span style="font-size:0.93em; color:#28a745;">قاعة 1</span></td>
+                      <td>رياضيات<br><span style="font-size:0.93em; color:#28a745;">قاعة 2</span></td>
+                      <td>فيزياء<br><span style="font-size:0.93em; color:#28a745;">قاعة 3</span></td>
                     </tr>
                     <tr>
-                      <td>رياضيات</td>
-                      <td>10:45 - 12:15</td>
-                      <td>قاعة 2</td>
+                      <td>الأحد</td>
+                      <td>رياضيات<br><span style="font-size:0.93em; color:#28a745;">قاعة 2</span></td>
+                      <td>عربي<br><span style="font-size:0.93em; color:#28a745;">قاعة 1</span></td>
+                      <td>فيزياء<br><span style="font-size:0.93em; color:#28a745;">قاعة 3</span></td>
                     </tr>
                     <tr>
-                      <td>فيزياء</td>
-                      <td>12:30 - 14:00</td>
-                      <td>قاعة 3</td>
+                      <td>الاثنين</td>
+                      <td>عربي<br><span style="font-size:0.93em; color:#28a745;">قاعة 1</span></td>
+                      <td>رياضيات<br><span style="font-size:0.93em; color:#28a745;">قاعة 2</span></td>
+                      <td>فيزياء<br><span style="font-size:0.93em; color:#28a745;">قاعة 3</span></td>
+                    </tr>
+                    <tr>
+                      <td>الثلاثاء</td>
+                      <td>فيزياء<br><span style="font-size:0.93em; color:#28a745;">قاعة 3</span></td>
+                      <td>عربي<br><span style="font-size:0.93em; color:#28a745;">قاعة 1</span></td>
+                      <td>رياضيات<br><span style="font-size:0.93em; color:#28a745;">قاعة 2</span></td>
+                    </tr>
+                    <tr>
+                      <td>الأربعاء</td>
+                      <td>رياضيات<br><span style="font-size:0.93em; color:#28a745;">قاعة 2</span></td>
+                      <td>فيزياء<br><span style="font-size:0.93em; color:#28a745;">قاعة 3</span></td>
+                      <td>عربي<br><span style="font-size:0.93em; color:#28a745;">قاعة 1</span></td>
+                    </tr>
+                    <tr>
+                      <td>الخميس</td>
+                      <td>عربي<br><span style="font-size:0.93em; color:#28a745;">قاعة 1</span></td>
+                      <td>رياضيات<br><span style="font-size:0.93em; color:#28a745;">قاعة 2</span></td>
+                      <td>فيزياء<br><span style="font-size:0.93em; color:#28a745;">قاعة 3</span></td>
                     </tr>
                   </tbody>
                 </table>
@@ -528,34 +670,184 @@
             </div>
           </div>
 
-          <!-- Account Information Card -->
-          <div class="card shadow-sm mb-4">
-            <div class="card-header">
-              <h6 class="mb-0">Account Information</h6>
+          <!-- Three Simple Boxes Section -->
+          <div class="row mb-4 stats-boxes-row">
+            <div class="col-12 col-md-4 mb-3 mb-md-0">
+              <div class="stats-box text-center">
+                <div class="stats-icon mb-1">
+                  <i class="fas fa-graduation-cap"></i>
+                </div>
+                <div class="stats-title">Total Courses</div>
+                <div class="stats-value text-primary">3</div>
+                <div class="stats-desc">Enrolled Courses</div>
+              </div>
             </div>
-            <div class="card-body">
-              <div class="row">
-                <div class="col-md-3">
-                  <label class="form-label text-muted">Registration Date</label>
-                  <p class="font-weight-bold">{{ $student->created_at->format('F d, Y') }}</p>
+            <div class="col-12 col-md-4 mb-3 mb-md-0">
+              <div class="stats-box text-center">
+                <div class="stats-icon mb-1">
+                  <i class="fas fa-calendar-check"></i>
                 </div>
-                <div class="col-md-3">
-                  <label class="form-label text-muted">Last Updated</label>
-                  <p class="font-weight-bold">{{ $student->updated_at->format('F d, Y') }}</p>
+                <div class="stats-title">Attendance Rate</div>
+                <div class="stats-value text-success">85%</div>
+                <div class="stats-desc">This Month</div>
+              </div>
+            </div>
+            <div class="col-12 col-md-4">
+              <div class="stats-box text-center">
+                <div class="stats-icon mb-1">
+                  <i class="fas fa-dollar-sign"></i>
                 </div>
-                <div class="col-md-3">
-                  <label class="form-label text-muted">Login ID</label>
-                  <p class="font-weight-bold text-primary">{{ $student->login_id }}</p>
+                <div class="stats-title">Total Paid</div>
+                <div class="stats-value text-warning">$3,000</div>
+                <div class="stats-desc">All Time</div>
+              </div>
+            </div>
+          </div>
+
+          <style>
+            .stats-boxes-row {
+              margin-left: -6px;
+              margin-right: -6px;
+            }
+            .stats-box {
+              background: #fff;
+              border-radius: 18px;
+              box-shadow: 0 2px 10px rgba(44,62,80,0.08);
+              padding: 18px 0 12px 0;
+              min-height: 120px;
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              justify-content: center;
+              transition: box-shadow 0.2s;
+            }
+            .stats-box:hover {
+              box-shadow: 0 4px 18px rgba(44,62,80,0.13);
+            }
+            .stats-icon {
+              font-size: 1.5rem;
+              width: 38px;
+              height: 38px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              border-radius: 50%;
+              background: #f3f6fa;
+              margin-bottom: 4px;
+            }
+            .stats-title {
+              font-size: 1.02rem;
+              font-weight: 600;
+              color: #344767;
+              margin-bottom: 2px;
+            }
+            .stats-value {
+              font-size: 1.25rem;
+              font-weight: 700;
+              margin-bottom: 2px;
+            }
+            .stats-desc {
+              font-size: 0.93rem;
+              color: #7b8ca6;
+            }
+            @media (max-width: 767.98px) {
+              .stats-boxes-row > div {
+                padding-left: 0;
+                padding-right: 0;
+              }
+              .stats-box {
+                min-height: 90px;
+                margin-bottom: 10px;
+                padding: 12px 0 8px 0;
+              }
+              .stats-icon {
+                font-size: 1.15rem;
+                width: 30px;
+                height: 30px;
+              }
+              .stats-title {
+                font-size: 0.98rem;
+              }
+              .stats-value {
+                font-size: 1.08rem;
+              }
+              .stats-desc {
+                font-size: 0.88rem;
+              }
+            }
+          </style>
+
+          <!-- Transaction History Section -->
+          <div class="custom-card mb-4" style="background:#fff; border-radius:20px; box-shadow:0 2px 12px rgba(44,62,80,0.07);">
+            <div class="custom-card-header d-flex justify-content-between align-items-center" style="background:#fff; color:#344767; font-size:1.25rem; font-weight:700; border-bottom:none;">
+              <span>Transaction History</span>
+              <div class="d-flex align-items-center gap-2 flex-wrap filter-bar">
+                <!-- Dropdown for years -->
+                <div class="dropdown">
+                  <button class="filter-btn dropdown-toggle" type="button" id="yearDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    <span id="selectedYear">All Year</span> <i class="fas fa-chevron-down ms-1"></i>
+                  </button>
+                  <ul class="dropdown-menu" aria-labelledby="yearDropdown">
+                    <li><a class="dropdown-item year-option" href="#" data-year="all">All Year</a></li>
+                    <li><a class="dropdown-item year-option" href="#" data-year="2024">2024</a></li>
+                    <li><a class="dropdown-item year-option" href="#" data-year="2023">2023</a></li>
+                    <li><a class="dropdown-item year-option" href="#" data-year="2022">2022</a></li>
+                  </ul>
                 </div>
-                <div class="col-md-3">
-                  <label class="form-label text-muted">Password</label>
-                  <div class="position-relative">
-                    <input id="student-password" type="password" class="form-control font-weight-bold ps-4 pe-5" value="{{ $student->plain_password ?? '' }}" readonly style="background:#f8fafc; border-radius:12px; border:1.5px solid #d1e7ff; box-shadow:0 2px 8px rgba(44,62,80,0.07); font-size:1.15rem; letter-spacing:2px;">
-                    <span class="position-absolute top-50 end-0 translate-middle-y me-3" style="cursor:pointer;" id="togglePassword">
-                      <i class="fas fa-eye text-secondary"></i>
-                    </span>
-                  </div>
-                </div>
+                <!-- Month picker -->
+                <input type="month" class="filter-input" id="monthPicker" placeholder="شهر/سنة yyyy">
+              </div>
+            </div>
+            <div class="custom-card-body p-0" style="background:#fff; border-radius:0 0 20px 20px;">
+              <div class="table-responsive" style="border-radius:16px;">
+                <table class="table mb-0" style="background:#fff; border-radius:16px; overflow:hidden;">
+                  <thead style="background:#fff;">
+                    <tr style="color:#7b8ca6; font-size:1.01rem; font-weight:700; border:none;">
+                      <th style="border:none; font-weight:700;">DATE</th>
+                      <th style="border:none; font-weight:700;">DESCRIPTION</th>
+                      <th style="border:none; font-weight:700;">TYPE</th>
+                      <th style="border:none; font-weight:700;">AMOUNT</th>
+                      <th style="border:none; font-weight:700;">STATUS</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr style="background:#fff;">
+                      <td style="font-weight:700; color:#344767; border:none;">23/04/2024</td>
+                      <td style="border:none;">Student Registration - Ahmed Mohamed</td>
+                      <td style="border:none;"><span style="background:#10b981; color:#fff; border-radius:8px; font-weight:600; padding:4px 18px; font-size:1em;">INCOME</span></td>
+                      <td style="border:none; font-weight:600; color:#10b981;">+$1,000</td>
+                      <td style="border:none;"><span style="background:#14b8a6; color:#fff; border-radius:8px; font-weight:600; padding:4px 18px; font-size:1em;">COMPLETED</span></td>
+                    </tr>
+                    <tr style="background:#fff;">
+                      <td style="font-weight:700; color:#344767; border:none;">22/04/2024</td>
+                      <td style="border:none;">Withdrawal to Bank Account</td>
+                      <td style="border:none;"><span style="background:#ef4444; color:#fff; border-radius:8px; font-weight:600; padding:4px 18px; font-size:1em;">EXPENSE</span></td>
+                      <td style="border:none; font-weight:600; color:#ef4444;">-$500</td>
+                      <td style="border:none;"><span style="background:#14b8a6; color:#fff; border-radius:8px; font-weight:600; padding:4px 18px; font-size:1em;">COMPLETED</span></td>
+                    </tr>
+                    <tr style="background:#fff;">
+                      <td style="font-weight:700; color:#344767; border:none;">21/04/2024</td>
+                      <td style="border:none;">Student Registration - Sara Ahmed</td>
+                      <td style="border:none;"><span style="background:#10b981; color:#fff; border-radius:8px; font-weight:600; padding:4px 18px; font-size:1em;">INCOME</span></td>
+                      <td style="border:none; font-weight:600; color:#10b981;">+$1,000</td>
+                      <td style="border:none;"><span style="background:#14b8a6; color:#fff; border-radius:8px; font-weight:600; padding:4px 18px; font-size:1em;">COMPLETED</span></td>
+                    </tr>
+                    <tr style="background:#fff;">
+                      <td style="font-weight:700; color:#344767; border:none;">20/04/2024</td>
+                      <td style="border:none;">Student Registration - Mohamed Ali</td>
+                      <td style="border:none;"><span style="background:#10b981; color:#fff; border-radius:8px; font-weight:600; padding:4px 18px; font-size:1em;">INCOME</span></td>
+                      <td style="border:none; font-weight:600; color:#10b981;">+$1,000</td>
+                      <td style="border:none;"><span style="background:#14b8a6; color:#fff; border-radius:8px; font-weight:600; padding:4px 18px; font-size:1em;">COMPLETED</span></td>
+                    </tr>
+                    <tr style="background:#fff;">
+                      <td style="font-weight:700; color:#344767; border:none;">19/04/2024</td>
+                      <td style="border:none;">Student Registration - Fatima Hassan</td>
+                      <td style="border:none;"><span style="background:#10b981; color:#fff; border-radius:8px; font-weight:600; padding:4px 18px; font-size:1em;">INCOME</span></td>
+                      <td style="border:none; font-weight:600; color:#10b981;">+$1,000</td>
+                      <td style="border:none;"><span style="background:#14b8a6; color:#fff; border-radius:8px; font-weight:600; padding:4px 18px; font-size:1em;">COMPLETED</span></td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>
@@ -619,7 +911,125 @@
           }
         });
       }
+
+      // Attendance Modal Functionality
+      const attendanceModal = document.getElementById('attendanceModal');
+      if (attendanceModal) {
+        attendanceModal.addEventListener('show.bs.modal', function (event) {
+          const button = event.relatedTarget;
+          const course = button.getAttribute('data-course');
+          const teacher = button.getAttribute('data-teacher');
+          const track = button.getAttribute('data-track');
+          
+          // Set modal header information
+          document.getElementById('modalCourse').textContent = course;
+          document.getElementById('modalTeacher').textContent = teacher;
+          document.getElementById('modalTrack').textContent = track;
+          
+          // Generate sample attendance data
+          generateAttendanceData(course);
+        });
+      }
     });
+
+    // Sample attendance data generator
+    function generateAttendanceData(course) {
+      const attendanceData = {
+        'عربي': [
+          { date: '2024-06-20', day: 'الخميس', time: '09:00 - 10:30', status: 'حاضر', notes: '' },
+          { date: '2024-06-19', day: 'الأربعاء', time: '09:00 - 10:30', status: 'غائب', notes: 'عذر طبي' },
+          { date: '2024-06-18', day: 'الثلاثاء', time: '09:00 - 10:30', status: 'حاضر', notes: '' },
+          { date: '2024-06-17', day: 'الاثنين', time: '09:00 - 10:30', status: 'حاضر', notes: '' },
+          { date: '2024-06-16', day: 'الأحد', time: '09:00 - 10:30', status: 'غائب', notes: 'سفر' },
+          { date: '2024-06-15', day: 'السبت', time: '09:00 - 10:30', status: 'حاضر', notes: '' }
+        ],
+        'رياضيات': [
+          { date: '2024-06-20', day: 'الخميس', time: '10:45 - 12:15', status: 'حاضر', notes: '' },
+          { date: '2024-06-19', day: 'الأربعاء', time: '10:45 - 12:15', status: 'حاضر', notes: '' },
+          { date: '2024-06-18', day: 'الثلاثاء', time: '10:45 - 12:15', status: 'غائب', notes: 'مرض' },
+          { date: '2024-06-17', day: 'الاثنين', time: '10:45 - 12:15', status: 'حاضر', notes: '' },
+          { date: '2024-06-16', day: 'الأحد', time: '10:45 - 12:15', status: 'حاضر', notes: '' },
+          { date: '2024-06-15', day: 'السبت', time: '10:45 - 12:15', status: 'حاضر', notes: '' }
+        ],
+        'فيزياء': [
+          { date: '2024-06-20', day: 'الخميس', time: '12:30 - 14:00', status: 'حاضر', notes: '' },
+          { date: '2024-06-19', day: 'الأربعاء', time: '12:30 - 14:00', status: 'حاضر', notes: '' },
+          { date: '2024-06-18', day: 'الثلاثاء', time: '12:30 - 14:00', status: 'حاضر', notes: '' },
+          { date: '2024-06-17', day: 'الاثنين', time: '12:30 - 14:00', status: 'غائب', notes: 'موعد طبي' },
+          { date: '2024-06-16', day: 'الأحد', time: '12:30 - 14:00', status: 'حاضر', notes: '' },
+          { date: '2024-06-15', day: 'السبت', time: '12:30 - 14:00', status: 'حاضر', notes: '' }
+        ]
+      };
+
+      const data = attendanceData[course] || [];
+      const tableBody = document.getElementById('attendanceTableBody');
+      tableBody.innerHTML = '';
+
+      let presentCount = 0;
+      let absentCount = 0;
+
+      data.forEach(record => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${record.date}</td>
+          <td>${record.day}</td>
+          <td>${record.time}</td>
+          <td>
+            <span class="badge ${record.status === 'حاضر' ? 'bg-success' : 'bg-danger'}">
+              ${record.status}
+            </span>
+          </td>
+          <td>${record.notes || '-'}</td>
+        `;
+        tableBody.appendChild(row);
+
+        if (record.status === 'حاضر') {
+          presentCount++;
+        } else {
+          absentCount++;
+        }
+      });
+
+      // Update statistics
+      document.getElementById('presentCount').textContent = presentCount;
+      document.getElementById('absentCount').textContent = absentCount;
+      
+      const total = presentCount + absentCount;
+      const percentage = total > 0 ? Math.round((presentCount / total) * 100) : 0;
+      document.getElementById('attendancePercentage').textContent = percentage + '%';
+      document.getElementById('attendanceProgress').style.width = percentage + '%';
+    }
+
+    // Print attendance report
+    function printAttendanceReport() {
+      const course = document.getElementById('modalCourse').textContent;
+      const teacher = document.getElementById('modalTeacher').textContent;
+      const track = document.getElementById('modalTrack').textContent;
+      const presentCount = document.getElementById('presentCount').textContent;
+      const absentCount = document.getElementById('absentCount').textContent;
+      const percentage = document.getElementById('attendancePercentage').textContent;
+
+      const win = window.open('', '', 'height=700,width=900');
+      win.document.write('<html><head><title>تقرير الحضور والغياب</title>');
+      win.document.write('<style>body{font-family:Tahoma,Arial,sans-serif; direction:rtl;} table{width:100%;border-collapse:collapse;} th,td{border:1px solid #ddd;padding:8px;text-align:center;} th{background:#f2f2f2;} .header{text-align:center;margin-bottom:20px;} .stats{display:flex;justify-content:space-around;margin:20px 0;}</style>');
+      win.document.write('</head><body>');
+      win.document.write('<div class="header">');
+      win.document.write('<h2>تقرير الحضور والغياب</h2>');
+      win.document.write(`<p><strong>الطالب:</strong> {{ $student->name }} | <strong>المادة:</strong> ${course} | <strong>الأستاذ:</strong> ${teacher} | <strong>المسار:</strong> ${track}</p>`);
+      win.document.write('</div>');
+      
+      win.document.write('<div class="stats">');
+      win.document.write(`<div><strong>عدد الحضور:</strong> ${presentCount}</div>`);
+      win.document.write(`<div><strong>عدد الغياب:</strong> ${absentCount}</div>`);
+      win.document.write(`<div><strong>نسبة الحضور:</strong> ${percentage}</div>`);
+      win.document.write('</div>');
+      
+      win.document.write(document.querySelector('#attendanceModal .table-responsive table').outerHTML);
+      win.document.write('</body></html>');
+      win.document.close();
+      win.focus();
+      setTimeout(function(){ win.print(); win.close(); }, 400);
+    }
   </script>
 
   <style>
@@ -630,6 +1040,71 @@
     }
     .table-responsive table {
       min-width: 600px;
+    }
+    
+    /* Attendance button styling */
+    .btn-attendance {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border: none;
+      color: white;
+      font-weight: 500;
+      border-radius: 20px;
+      padding: 6px 16px;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+    }
+    
+    .btn-attendance:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+      color: white;
+    }
+    
+    .btn-attendance i {
+      margin-right: 4px;
+    }
+    
+    /* Modal styling improvements */
+    .modal-lg .modal-content {
+      border-radius: 16px;
+      border: none;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+    
+    .modal-header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+     
+    }
+    
+    .modal-header .btn-close {
+      filter: invert(1);
+    }
+    
+    /* Attendance table styling */
+    #attendanceModal .table th {
+      background: #f8f9fa;
+      color: #495057;
+      font-weight: 600;
+      border-bottom: 2px solid #dee2e6;
+    }
+    
+    #attendanceModal .table td {
+      vertical-align: middle;
+    }
+    
+    /* Statistics cards styling */
+    #attendanceModal .card {
+      border-radius: 12px;
+      border: none;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    #attendanceModal .card-title {
+      color: #495057;
+      font-weight: 600;
+      margin-bottom: 15px;
     }
   </style>
 
@@ -669,6 +1144,129 @@
       });
     });
   </script>
+
+  <script>
+    const courses = {
+      1: { teacher: 'أ. محمد', price: '1500 SYP', desc: 'دورة عربي مكثفة' },
+      2: { teacher: 'أ. أحمد', price: '1200 SYP', desc: 'دورة رياضيات تأسيسية' },
+      3: { teacher: 'أ. سامر', price: '2000 SYP', desc: 'دورة فيزياء متقدمة' }
+    };
+    const packages = {
+      1: { courses: 'عربي، رياضيات، فيزياء', price: '4000 SYP', desc: 'بكيج التاسع لجميع المواد' },
+      2: { courses: 'فيزياء، كيمياء', price: '3000 SYP', desc: 'بكيج الحادي عشر العلمي' }
+    };
+
+    function toggleEnrollTypeDetails() {
+      var type = document.getElementById('enrollType').value;
+      document.getElementById('courseBox').classList.toggle('d-none', type !== 'course');
+      document.getElementById('packageBox').classList.toggle('d-none', type !== 'package');
+    }
+
+    function showCourseDetails() {
+      var val = document.getElementById('courseSelect').value;
+      var details = document.getElementById('courseDetails');
+      if (courses[val]) {
+        document.getElementById('courseTeacher').textContent = courses[val].teacher;
+        document.getElementById('coursePrice').textContent = courses[val].price;
+        document.getElementById('courseDesc').textContent = courses[val].desc;
+        details.style.display = '';
+      } else {
+        details.style.display = 'none';
+      }
+    }
+
+    function showPackageDetails() {
+      var val = document.getElementById('packageSelect').value;
+      var details = document.getElementById('packageDetails');
+      if (packages[val]) {
+        document.getElementById('packageCourses').textContent = packages[val].courses;
+        document.getElementById('packagePrice').textContent = packages[val].price;
+        document.getElementById('packageDesc').textContent = packages[val].desc;
+        details.style.display = '';
+      } else {
+        details.style.display = 'none';
+      }
+    }
+
+    function confirmAddCourse() {
+      // فقط عرض رسالة تأكيد وهمية
+      var modal = new bootstrap.Modal(document.getElementById('confirmAddModal'));
+      modal.show();
+    }
+  </script>
+
+  <style>
+    .filter-bar {
+      gap: 10px !important;
+    }
+    .filter-btn {
+      background: #e3eaf1;
+      color: #344767;
+      border: none;
+      border-radius: 14px;
+      font-size: 1.05rem;
+      font-weight: 700;
+      height: 42px;
+      padding: 0 26px 0 16px;
+      display: flex;
+      align-items: center;
+      transition: background 0.2s, color 0.2s;
+      box-shadow: none;
+    }
+    .filter-btn:focus, .filter-btn:hover {
+      background: #cfd8dc;
+      color: #2266aa;
+    }
+    .filter-btn i {
+      font-size: 1.1em;
+      margin-left: 8px;
+      color: inherit;
+      vertical-align: middle;
+    }
+    .filter-input {
+      background: #fff;
+      border: 1.5px solid #cfd8dc;
+      border-radius: 14px;
+      font-size: 1.05rem;
+      color: #344767;
+      height: 42px;
+      padding: 0 16px;
+      min-width: 140px;
+      max-width: 170px;
+      font-weight: 500;
+      transition: border 0.2s, box-shadow 0.2s;
+      outline: none;
+      box-shadow: none;
+    }
+    .filter-input::placeholder {
+      color: #b0b8c1;
+      font-size: 1.01em;
+      font-weight: 400;
+      letter-spacing: 0.5px;
+    }
+    @media (max-width: 767.98px) {
+      .filter-btn, .filter-input {
+        height: 38px;
+        font-size: 0.98rem;
+        border-radius: 10px;
+        padding: 0 10px;
+      }
+      .filter-bar {
+        gap: 6px !important;
+      }
+    }
+  </style>
+
+  <script>
+    // Dropdown year selection
+    document.addEventListener('DOMContentLoaded', function() {
+      document.querySelectorAll('.year-option').forEach(function(item) {
+        item.addEventListener('click', function(e) {
+          e.preventDefault();
+          var year = this.getAttribute('data-year');
+          document.getElementById('selectedYear').textContent = (year === 'all') ? 'All Year' : year;
+        });
+      });
 </body>
 
 </html>
