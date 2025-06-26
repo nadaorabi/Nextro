@@ -133,6 +133,43 @@
                 display: none;
             }
         }
+
+        .stat-card {
+            min-height: 170px;
+            height: 170px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border-radius: 18px;
+            box-shadow: 0 2px 12px rgba(44,62,80,0.09);
+            padding: 24px 18px 18px 18px;
+            background: #fff;
+            transition: box-shadow 0.2s;
+        }
+        .stat-card .icon {
+            margin-bottom: 8px;
+        }
+        .stat-card .numbers h5,
+        .stat-card .numbers .fs-2 {
+            font-size: 2.1rem !important;
+            font-weight: bold;
+        }
+        .stat-card .numbers p,
+        .stat-card .fw-bold,
+        .stat-card .text-info {
+            font-size: 1rem;
+        }
+        .stat-card .text-sm {
+            font-size: 0.98rem;
+        }
+        @media (max-width: 991px) {
+            .stat-card {
+                min-height: 140px;
+                height: auto;
+                padding: 18px 10px;
+            }
+        }
     </style>
 </head>
 
@@ -183,7 +220,7 @@
                     <!-- Statistics Cards -->
                     <div class="row mb-4">
                         <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
-                            <div class="card">
+                            <div class="card stat-card">
                                 <div class="card-body p-3">
                                     <div class="row">
                                         <div class="col-8">
@@ -210,7 +247,7 @@
                         </div>
 
                         <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
-                            <div class="card">
+                            <div class="card stat-card">
                                 <div class="card-body p-3">
                                     <div class="row">
                                         <div class="col-8">
@@ -236,7 +273,7 @@
                         </div>
 
                         <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
-                            <div class="card">
+                            <div class="card stat-card">
                                 <div class="card-body p-3">
                                     <div class="row">
                                         <div class="col-8">
@@ -262,7 +299,7 @@
                         </div>
 
                         <div class="col-xl-3 col-sm-6">
-                            <div class="card">
+                            <div class="card stat-card">
                                 <div class="card-body p-3">
                                     <div class="row">
                                         <div class="col-8">
@@ -480,15 +517,11 @@
                             <hr class="my-3">
                             <div class="text-center">
                                 <div class="row">
-                                    <div class="col-4">
+                                    <div class="col-6 text-center">
                                         <strong class="d-block text-xs text-muted">ID</strong>
                                         <span id="modal-student-id" class="font-weight-bold"></span>
                                     </div>
-                                    <div class="col-4">
-                                        <strong class="d-block text-xs text-muted">Level</strong>
-                                        <span id="modal-student-level" class="font-weight-bold"></span>
-                                    </div>
-                                    <div class="col-4">
+                                    <div class="col-6 text-center">
                                         <strong class="d-block text-xs text-muted">Registered</strong>
                                         <span id="modal-student-reg-date" class="font-weight-bold"></span>
                                     </div>
@@ -710,7 +743,7 @@
     <script>
         var qrcode = null; // Declare qrcode variable in a broader scope
 
-        document.addEventListener('DOMContentLoaded', function () {
+      document.addEventListener('DOMContentLoaded', function () {
             // Initialize QR Code generator
             qrcode = new QRCode(document.getElementById("qrcode"), {
                 width: 128,
@@ -729,7 +762,6 @@
                 const button = event.relatedTarget;
                 const name = button.getAttribute('data-name');
                 const id = button.getAttribute('data-id');
-                const level = button.getAttribute('data-level');
                 const email = button.getAttribute('data-email');
                 const avatar = button.getAttribute('data-avatar');
                 const regDate = button.getAttribute('data-registration-date');
@@ -737,7 +769,6 @@
                 const modalTitle = studentCardModal.querySelector('.modal-title');
                 const studentName = studentCardModal.querySelector('#modal-student-name');
                 const studentId = studentCardModal.querySelector('#modal-student-id');
-                const studentLevel = studentCardModal.querySelector('#modal-student-level');
                 const studentEmail = studentCardModal.querySelector('#modal-student-email');
                 const studentAvatar = studentCardModal.querySelector('#modal-student-avatar');
                 const studentRegDate = studentCardModal.querySelector('#modal-student-reg-date');
@@ -745,7 +776,6 @@
                 modalTitle.textContent = 'Student ID Card: ' + name;
                 studentName.textContent = name;
                 studentId.textContent = id;
-                studentLevel.textContent = level || 'N/A';
                 studentEmail.textContent = email;
                 studentAvatar.src = avatar;
                 studentRegDate.textContent = regDate;
@@ -815,7 +845,7 @@
 
             printWindow.document.close();
             printWindow.focus();
-        }
+        }  
 
         // Delete confirmation modal functionality
         document.addEventListener('DOMContentLoaded', function() {

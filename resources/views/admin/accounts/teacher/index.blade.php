@@ -12,6 +12,7 @@
     <link href="https://demos.creative-tim.com/argon-dashboard-pro/assets/css/nucleo-svg.css" rel="stylesheet" />
     <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
     <link id="pagestyle" href="{{ asset('css/argon-dashboard.css?v=2.1.0') }}" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
     <style>
         .custom-icon-style {
             display: inline-block;
@@ -95,6 +96,91 @@
         .delete-modal.show .modal-dialog {
             transform: scale(1);
         }
+
+        /* Student Card Modal Styles */
+        .student-card-modal .modal-content {
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.25);
+        }
+
+        .student-card-modal .modal-header {
+            background: linear-gradient(135deg, #4f8cff 0%, #6dd5ed 100%);
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .student-card-modal .modal-body {
+            padding: 2rem;
+            background: #f8fafc;
+        }
+
+        .student-card-modal .card-preview {
+            background: linear-gradient(135deg, #4f8cff 0%, #6dd5ed 100%);
+            border-radius: 15px;
+            padding: 2rem;
+            color: white;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .student-card-modal .qr-code-container {
+            display: flex;
+            justify-content: center;
+            margin: 1rem 0;
+        }
+
+        .student-card-modal .print-btn {
+            background: linear-gradient(135deg, #4f8cff 0%, #6dd5ed 100%);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            padding: 0.75rem 2rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .student-card-modal .print-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(79, 140, 255, 0.4);
+        }
+
+        .stat-card {
+            min-height: 170px;
+            height: 170px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border-radius: 18px;
+            box-shadow: 0 2px 12px rgba(44,62,80,0.09);
+            padding: 24px 18px 18px 18px;
+            background: #fff;
+            transition: box-shadow 0.2s;
+        }
+        .stat-card .icon {
+            margin-bottom: 8px;
+        }
+        .stat-card h5,
+        .stat-card .fs-2 {
+            font-size: 2.1rem !important;
+            font-weight: bold;
+        }
+        .stat-card p,
+        .stat-card .fw-bold,
+        .stat-card .text-info {
+            font-size: 1rem;
+        }
+        .stat-card .text-sm {
+            font-size: 0.98rem;
+        }
+        @media (max-width: 991px) {
+            .stat-card {
+                min-height: 140px;
+                height: auto;
+                padding: 18px 10px;
+            }
+        }
     </style>
 </head>
 
@@ -145,7 +231,7 @@
                     <!-- Statistics Cards -->
                     <div class="row mb-4">
                         <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
-                            <div class="card">
+                            <div class="card stat-card">
                                 <div class="card-body p-3">
                                     <div class="row">
                                         <div class="col-8">
@@ -169,7 +255,7 @@
                         </div>
 
                         <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
-                            <div class="card">
+                            <div class="card stat-card">
                                 <div class="card-body p-3">
                                     <div class="row">
                                         <div class="col-8">
@@ -193,7 +279,7 @@
                         </div>
 
                         <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
-                            <div class="card">
+                            <div class="card stat-card">
                                 <div class="card-body p-3">
                                     <div class="row">
                                         <div class="col-8">
@@ -217,7 +303,7 @@
                         </div>
 
                         <div class="col-xl-3 col-sm-6">
-                            <div class="card">
+                            <div class="card stat-card">
                                 <div class="card-body p-3">
                                     <div class="row">
                                         <div class="col-8">
@@ -361,6 +447,7 @@
                                                             title="Print Credentials">
                                                             <i class="fas fa-key"></i>
                                                     </button>
+                                                        
                                                         <form action="{{ route('admin.accounts.teachers.destroy', $teacher->id) }}"
                                                             method="POST" onsubmit="return false;" class="delete-form">
                                                             @csrf
@@ -462,6 +549,44 @@
         </div>
     </div>
 
+    <!-- Student Card Modal -->
+    <div class="modal fade student-card-modal" id="studentCardModal" tabindex="-1" aria-labelledby="studentCardModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="studentCardModalLabel">Teacher ID Card</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="card-preview">
+                        <div class="row align-items-center">
+                            <div class="col-md-3 text-center">
+                                <img id="modal-student-avatar" src="" alt="Avatar" class="rounded-circle" style="width: 80px; height: 80px; object-fit: cover;">
+                            </div>
+                            <div class="col-md-6">
+                                <h4 id="modal-student-name" class="mb-2"></h4>
+                                <p class="mb-1"><strong>ID:</strong> <span id="modal-student-id"></span></p>
+                                <p class="mb-1"><strong>Level:</strong> <span id="modal-student-level"></span></p>
+                                <p class="mb-1"><strong>Email:</strong> <span id="modal-student-email"></span></p>
+                                <p class="mb-0"><strong>Registration Date:</strong> <span id="modal-student-reg-date"></span></p>
+                            </div>
+                            <div class="col-md-3 text-center">
+                                <div class="qr-code-container">
+                                    <div id="qrcode"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <button type="button" class="btn print-btn" onclick="printStudentCard()">
+                            <i class="fas fa-print me-2"></i>Print ID Card
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!--   Core JS Files   -->
     <script src="{{ asset('js/core/popper.min.js') }}"></script>
     <script src="{{ asset('js/core/bootstrap.min.js') }}"></script>
@@ -479,6 +604,62 @@
     </script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+            // Initialize QR Code generator
+            qrcode = new QRCode(document.getElementById("qrcode"), {
+                width: 128,
+                height: 128
+            });
+
+            // Handle image loading errors
+            document.querySelectorAll('img[src*="avatar"]').forEach(function(img) {
+                img.addEventListener('error', function() {
+                    this.src = '{{ asset("images/default-avatar.png") }}';
+                });
+            });
+
+            const studentCardModal = document.getElementById('studentCardModal');
+            studentCardModal.addEventListener('show.bs.modal', function (event) {
+                const button = event.relatedTarget;
+                const name = button.getAttribute('data-name');
+                const id = button.getAttribute('data-id');
+                const level = button.getAttribute('data-level');
+                const email = button.getAttribute('data-email');
+                const avatar = button.getAttribute('data-avatar');
+                const regDate = button.getAttribute('data-registration-date');
+
+                const modalTitle = studentCardModal.querySelector('.modal-title');
+                const studentName = studentCardModal.querySelector('#modal-student-name');
+                const studentId = studentCardModal.querySelector('#modal-student-id');
+                const studentLevel = studentCardModal.querySelector('#modal-student-level');
+                const studentEmail = studentCardModal.querySelector('#modal-student-email');
+                const studentAvatar = studentCardModal.querySelector('#modal-student-avatar');
+                const studentRegDate = studentCardModal.querySelector('#modal-student-reg-date');
+
+                modalTitle.textContent = 'Teacher ID Card: ' + name;
+                studentName.textContent = name;
+                studentId.textContent = id;
+                studentLevel.textContent = level || 'N/A';
+                studentEmail.textContent = email;
+                studentAvatar.src = avatar;
+                studentRegDate.textContent = regDate;
+
+                // Handle modal image error
+                studentAvatar.onerror = function() {
+                    this.src = '{{ asset("images/default-avatar.png") }}';
+                };
+
+                // Clear previous QR code and generate new one with only teacher ID
+                document.getElementById('qrcode').innerHTML = '';
+                new QRCode(document.getElementById('qrcode'), {
+                    text: id, // Only teacher ID
+                    width: 128,
+                    height: 128,
+                    colorDark: "#000000",
+                    colorLight: "#ffffff",
+                    correctLevel: QRCode.CorrectLevel.H
+                });
+            });
+
             const searchInput = document.getElementById('search-input');
             const statusFilter = document.getElementById('status-filter');
             const specializationFilter = document.getElementById('specialization-filter');
@@ -537,94 +718,58 @@
             specializationFilter.addEventListener('change', filterTeachers);
             dateFilter.addEventListener('change', filterTeachers);
         });
-    </script>
-    <script>
-    function printCredentials(loginId, name, password) {
-            const printWindow = window.open('', 'PRINT', 'height=600,width=500');
+
+        function printStudentCard() {
+            window.print();
+        }
+
+        function printCredentials(loginId, name, password) {
+            if (!password || password.trim() === '') {
+                alert('Initial password is not available for this teacher.');
+                return;
+            }
+
+            const printWindow = window.open('', 'PRINT', 'height=500,width=700');
+
             printWindow.document.write('<html><head><title>Teacher Credentials</title>');
-        printWindow.document.write('<style>');
-        printWindow.document.write(`
-            @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap');
-            body { 
-                    font-family: 'Tajawal', Arial, sans-serif; 
-                    background: #f6fafd; 
-                    margin: 0; 
-                    padding: 0; 
-                }
-                .cred-card {
-                    background: #fff;
-                    border: 2.5px solid #4f8cff;
-                    border-radius: 18px;
-                    box-shadow: 0 4px 24px rgba(44,62,80,0.10);
-                    width: 350px;
-                    margin: 60px auto 0 auto;
-                    padding: 32px 28px 22px 28px;
-                text-align: center; 
-                }
-                .cred-card h2 {
-                    color: #2563eb;
-                    font-size: 1.5rem;
-                    margin-bottom: 18px;
-                    font-weight: 700;
-                    letter-spacing: 1px;
-            }
-                .cred-label {
-                    color: #4f8cff;
-                    font-size: 1.08rem;
-                    margin-bottom: 2px;
-                    display: block;
-                    text-align: left;
-                    font-weight: 600;
-                }
-                .cred-value {
-                    color: #222;
-                    font-size: 1.18rem;
-                    font-weight: bold;
-                    margin-bottom: 12px;
-                    letter-spacing: 0.5px;
-                    text-align: left;
-            }
-                .cred-pass {
-                    color: #2563eb;
-                    background: #f3f7ff;
-                    border: 1.5px solid #4f8cff;
-                    border-radius: 8px;
-                    font-size: 1.35rem;
-                    font-weight: bold;
-                    padding: 10px 0;
-                    margin-bottom: 10px;
-                    letter-spacing: 2px;
-                    text-align: center;
-            }
-                .cred-footer {
-                    color: #6c757d;
-                    font-size: 0.97rem;
-                    margin-top: 18px;
-                }
+            printWindow.document.write('<style>');
+            printWindow.document.write(`
+                body { background: linear-gradient(120deg, #4f8cff 0%, #6dd5ed 100%); margin:0; height:100vh; display:flex; align-items:center; justify-content:center; }
+                .cred-card { background: rgba(255,255,255,0.85); border-radius: 22px; box-shadow: 0 8px 32px rgba(44,62,80,0.18); border: 2px solid #4f8cff; padding: 40px 32px 32px 32px; width: 420px; max-width:95vw; margin:auto; font-family: 'Segoe UI', Arial, sans-serif; animation: fadeInCard 0.8s cubic-bezier(.4,2,.6,1) both; }
+                .cred-card h2 { color: #4f8cff; margin-bottom: 18px; font-size: 2.1rem; letter-spacing: 1px; text-align:center; }
+                .cred-card .cred-label { color: #6c757d; font-size: 1.1rem; margin-bottom: 2px; display:block; }
+                .cred-card .cred-value { color: #222; font-size: 1.35rem; font-weight: bold; margin-bottom: 18px; letter-spacing: 0.5px; }
+                .cred-card .cred-pass { color: #fff; background: linear-gradient(90deg, #4f8cff 0%, #6dd5ed 100%); border-radius: 10px; font-size: 1.5rem; font-weight: bold; padding: 10px 0; margin-bottom: 10px; text-align:center; letter-spacing: 1px; box-shadow: 0 2px 8px rgba(44,62,80,0.10); }
+                .cred-card .cred-id { color: #4f8cff; font-size: 1.1rem; font-weight: 500; margin-bottom: 8px; text-align:center; }
+                .cred-card .cred-footer { color: #6c757d; font-size: 0.95rem; text-align:center; margin-top: 18px; }
+                .cred-card .print-btn { display: block; width: 100%; margin: 18px auto 0 auto; background: linear-gradient(90deg, #4f8cff 0%, #6dd5ed 100%); color: #fff; border: none; border-radius: 8px; font-size: 1.15rem; font-weight: bold; padding: 10px 0; cursor: pointer; transition: background 0.2s; box-shadow: 0 2px 8px rgba(44,62,80,0.10); }
+                .cred-card .print-btn:hover { background: linear-gradient(90deg, #6dd5ed 0%, #4f8cff 100%); }
+                @keyframes fadeInCard { 0% { opacity:0; transform: translateY(40px) scale(0.95);} 100% { opacity:1; transform: translateY(0) scale(1);} }
                 @media print {
-                    body { background: #fff !important; }
-                    .cred-card { box-shadow: none !important; border:2.5px solid #4f8cff !important; }
-            }
-        `);
-        printWindow.document.write('</style></head><body>');
+                  html, body { background: #fff !important; height:100%; margin:0; padding:0; }
+                  body { display: flex; align-items: flex-start; justify-content: center; min-height: 100vh; }
+                  .cred-card { box-shadow:none !important; border:2px solid #4f8cff !important; width: 95vw !important; max-width: 420px !important; margin: 0 auto !important; position: relative; top: 2vh; }
+                  .print-btn { display: none !important; }
+                }
+            `);
+            printWindow.document.write('</style></head><body>');
             printWindow.document.write('<div class="cred-card">');
-            printWindow.document.write('<h2>Teacher Credentials</h2>');
-            printWindow.document.write('<div class="cred-label">Teacher Name</div><div class="cred-value">' + name + '</div>');
-            printWindow.document.write('<div class="cred-label">Teacher ID</div><div class="cred-value">' + loginId + '</div>');
-            printWindow.document.write('<div class="cred-label">Password</div><div class="cred-pass">' + password + '</div>');
+            printWindow.document.write('<div style="position:absolute; left:32px; top:24px; font-size:2.2rem; font-weight:900; color:#4f8cff; letter-spacing:2px; font-family:inherit;">Nextro</div>');
+            printWindow.document.write('<h2 style="font-size:1.25rem; margin-top:48px; margin-bottom:18px; color:#4f8cff; text-align:center; font-weight:700; letter-spacing:1px;">Teacher Credentials</h2>');
+            printWindow.document.write(`<div class="cred-label">Teacher Name</div><div class="cred-value">${name}</div>`);
+            printWindow.document.write(`<div class="cred-label">Teacher ID</div><div class="cred-id">${loginId}</div>`);
+            printWindow.document.write(`<div class="cred-label">Password</div><div class="cred-pass">${password}</div>`);
             printWindow.document.write('<div class="cred-footer">Keep this information confidential</div>');
-        printWindow.document.write('</div>');
-        printWindow.document.write('</body></html>');
-        printWindow.document.close();
-        printWindow.focus();
-        setTimeout(() => {
-            printWindow.print();
-            printWindow.close();
-            }, 300);
-    }
+            printWindow.document.write('<button class="print-btn" onclick="window.print()">Print</button>');
+            printWindow.document.write('</div>');
+            printWindow.document.write('</body></html>');
+
+            printWindow.document.close();
+            printWindow.focus();
+        }
     
         // Delete confirmation modal functionality
-    document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function() {
             const deleteButtons = document.querySelectorAll('.delete-btn');
             const deleteModal = document.getElementById('deleteConfirmModal');
             const deleteTeacherName = document.getElementById('deleteTeacherName');
@@ -721,7 +866,7 @@
                                 location.reload();
                             }, 300);
                         }, 1500);
-            } else {
+                    } else {
                         throw new Error(data.message || 'Failed to delete teacher');
                     }
                 })
@@ -760,8 +905,8 @@
                 // Remove any error messages
                 const errorMessages = deleteModal.querySelectorAll('.alert-danger');
                 errorMessages.forEach(msg => msg.remove());
+            });
         });
-    });
     </script>
     <!-- Github buttons -->
     <script async defer src="https://buttons.github.io/buttons.js"></script>

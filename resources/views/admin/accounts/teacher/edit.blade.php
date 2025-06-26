@@ -21,7 +21,7 @@
   <main class="main-content position-relative border-radius-lg ">
     <div class="container py-4">
       <div class="row justify-content-center">
-        <div class="col-12" style="max-width:800px;margin:auto;">
+        <div class="col-12" style="max-width:900px;margin:auto;">
           
           <!-- Header Card -->
           <div class="card shadow-sm mb-4">
@@ -75,60 +75,56 @@
                 @csrf
                 @method('PUT')
 
-                <div class="row">
-                  <!-- Full Name -->
-                  <div class="col-md-6 mb-3">
-                    <label class="form-label">Full Name <span class="text-danger">*</span></label>
-                    <input type="text" name="name" class="form-control" value="{{ old('name', $teacher->name) }}" required maxlength="255">
-                  </div>
-
-                  <!-- Mobile -->
-                  <div class="col-md-6 mb-3">
-                    <label class="form-label">Mobile Number <span class="text-danger">*</span></label>
-                    <input type="tel" name="mobile" class="form-control" value="{{ old('mobile', $teacher->mobile) }}" required pattern="[0-9]{9,15}" maxlength="15">
-                  </div>
+                <!-- Full Name -->
+                <div class="mb-3">
+                  <label class="form-label">Full Name <span class="text-danger">*</span></label>
+                  <input type="text" name="name" class="form-control" value="{{ old('name', $teacher->name) }}" required maxlength="255">
                 </div>
 
-                <div class="row">
-                  <!-- Email -->
-                  <div class="col-md-6 mb-3">
-                    <label class="form-label">Email Address</label>
-                    <input type="email" name="email" class="form-control" value="{{ old('email', $teacher->email) }}" maxlength="255">
-                  </div>
-                  <!-- Address -->
-                  <div class="col-md-6 mb-3">
-                    <label class="form-label">Address</label>
-                    <input type="text" name="address" class="form-control" value="{{ old('address', $teacher->address) }}" maxlength="255">
-                  </div>
+                <!-- Mobile -->
+                <div class="mb-3">
+                  <label class="form-label">Mobile Number <span class="text-danger">*</span></label>
+                  <input type="tel" name="mobile" class="form-control" value="{{ old('mobile', $teacher->mobile) }}" required pattern="[0-9]{9,15}" maxlength="15">
                 </div>
 
-                <!-- Password & Status -->
-                <div class="row">
-                  <!-- Password -->
-                  <div class="col-md-6 mb-3">
-                    <label class="form-label">Password <span class="text-muted" style="font-size:0.95em;">(Leave blank to keep current)</span></label>
-                    <div class="position-relative">
-                      <input id="edit-teacher-password" type="password" name="password" class="form-control font-weight-bold ps-4 pe-5" value="{{ old('password', $teacher->plain_password) }}" autocomplete="new-password" style="background:#f8fafc; border-radius:12px; border:1.5px solid #d1e7ff; box-shadow:0 2px 8px rgba(44,62,80,0.07); font-size:1.15rem; letter-spacing:2px;">
-                      <span class="position-absolute top-50 end-0 translate-middle-y me-3" style="cursor:pointer;" id="toggleEditPassword">
-                        <i class="fas fa-eye text-secondary"></i>
-                      </span>
-                    </div>
-                  </div>
-                  <!-- Status -->
-                  <div class="col-md-6 mb-3">
-                    <label class="form-label">Status <span class="text-danger">*</span></label>
-                    <select name="is_active" class="form-select" required>
-                      <option value="1" {{ old('is_active', $teacher->is_active) == 1 ? 'selected' : '' }}>Active</option>
-                      <option value="2" {{ old('is_active', $teacher->is_active) == 2 ? 'selected' : '' }}>Experienced</option>
-                      <option value="0" {{ old('is_active', $teacher->is_active) == 0 ? 'selected' : '' }}>Inactive</option>
-                    </select>
-                  </div>
+                <!-- Email -->
+                <div class="mb-3">
+                  <label class="form-label">Email Address</label>
+                  <input type="email" name="email" class="form-control" value="{{ old('email', $teacher->email) }}" maxlength="255">
+                </div>
+
+                <!-- Address -->
+                <div class="mb-3">
+                  <label class="form-label">Address</label>
+                  <input type="text" name="address" class="form-control" value="{{ old('address', $teacher->address) }}" maxlength="255">
+                </div>
+
+                <!-- Status -->
+                <div class="mb-3">
+                  <label class="form-label">Status <span class="text-danger">*</span></label>
+                  <select name="is_active" class="form-select" required>
+                    <option value="1" {{ old('is_active', $teacher->is_active) == 1 ? 'selected' : '' }}>Active</option>
+                    <option value="2" {{ old('is_active', $teacher->is_active) == 2 ? 'selected' : '' }}>Experienced</option>
+                    <option value="0" {{ old('is_active', $teacher->is_active) == 0 ? 'selected' : '' }}>Inactive</option>
+                  </select>
                 </div>
 
                 <!-- Notes -->
                 <div class="mb-3">
-                  <label class="form-label">Notes (Optional)</label>
-                  <textarea name="notes" class="form-control" rows="3" maxlength="500" placeholder="Any additional notes about the teacher...">{{ old('notes', $teacher->notes) }}</textarea>
+                  <label class="form-label">Notes</label>
+                  <textarea name="notes" class="form-control" rows="3" maxlength="1000">{{ old('notes', $teacher->notes) }}</textarea>
+                </div>
+
+                <!-- Password Edit -->
+                <div class="mb-3">
+                  <label class="form-label">Password <span class="text-danger">*</span></label>
+                  <div class="position-relative">
+                    <input id="edit-teacher-password" type="password" name="password" class="form-control ps-4 pe-5" value="{{ old('password', $teacher->plain_password) }}" autocomplete="new-password" maxlength="255" style="background:#f8fafc; border-radius:12px; border:1.5px solid #d1e7ff; box-shadow:0 2px 8px rgba(44,62,80,0.07); font-size:1.15rem; letter-spacing:2px;">
+                    <span class="position-absolute top-50 end-0 translate-middle-y me-3" style="cursor:pointer;" id="toggleEditPassword">
+                      <i class="fas fa-eye text-secondary"></i>
+                    </span>
+                  </div>
+                  <small class="form-text text-muted">Leave blank to keep the current password.</small>
                 </div>
 
                 <!-- Read-only Information -->

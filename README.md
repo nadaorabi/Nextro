@@ -1,66 +1,125 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Nextro - نظام إدارة التعليم الإلكتروني
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## نظرة عامة
+Nextro هو نظام متكامل لإدارة التعليم الإلكتروني مبني على إطار عمل Laravel، يوفر منصة شاملة لإدارة الدورات التعليمية والباقات والطلاب والمعلمين.
 
-## About Laravel
+## الميزات الرئيسية
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+### 👨‍💼 لوحة تحكم المدير
+- إدارة الحسابات (طلاب، معلمين، مدراء)
+- إدارة الفئات التعليمية
+- إدارة الدورات والمواد التعليمية
+- إدارة الباقات التعليمية
+- نظام الشكاوى والمراسلات
+- إدارة المدفوعات والماليات
+- نظام الحضور والغياب
+- إدارة المرافق والقاعات
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### 👨‍🏫 لوحة تحكم المعلم
+- عرض الدورات المسندة
+- إدارة المواد التعليمية
+- متابعة حضور الطلاب
+- إدارة الشكاوى
+- تحديث الملف الشخصي
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### 👨‍🎓 واجهة الطالب
+- تصفح الدورات والباقات
+- التسجيل في الدورات
+- الوصول للمواد التعليمية
+- متابعة التقدم الأكاديمي
+- التواصل مع المعلمين
 
-## Learning Laravel
+## التقنيات المستخدمة
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+- **Backend**: Laravel 10
+- **Frontend**: Bootstrap 5, Blade Templates
+- **Database**: MySQL
+- **Authentication**: Laravel Sanctum
+- **File Storage**: Laravel Storage
+- **Icons**: Font Awesome
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+## متطلبات النظام
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- PHP >= 8.1
+- Composer
+- MySQL >= 5.7
+- Node.js & NPM (للتطوير)
 
-## Laravel Sponsors
+## التثبيت والتشغيل
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+### 1. استنساخ المشروع
+```bash
+git clone [repository-url]
+cd Nextro
+```
 
-### Premium Partners
+### 2. تثبيت التبعيات
+```bash
+composer install
+npm install
+```
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+### 3. إعداد البيئة
+```bash
+cp .env.example .env
+php artisan key:generate
+```
 
-## Contributing
+### 4. إعداد قاعدة البيانات
+```bash
+php artisan migrate
+php artisan db:seed
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### 5. إنشاء رابط التخزين
+```bash
+php artisan storage:link
+```
 
-## Code of Conduct
+### 6. تشغيل المشروع
+```bash
+php artisan serve
+npm run dev
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## هيكل المشروع
 
-## Security Vulnerabilities
+```
+Nextro/
+├── app/
+│   ├── Http/Controllers/    # Controllers
+│   ├── Models/             # Eloquent Models
+│   └── Providers/          # Service Providers
+├── resources/views/        # Blade Templates
+├── routes/                 # Route Definitions
+├── database/              # Migrations & Seeders
+└── public/                # Public Assets
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## الملفات المهمة
 
-## License
+- `routes/web.php` - تعريف الراوتس
+- `config/filesystems.php` - إعداد نظام الملفات
+- `app/Models/` - نماذج قاعدة البيانات
+- `resources/views/admin/` - صفحات لوحة التحكم
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## المساهمة
+
+نرحب بمساهماتكم! يرجى اتباع الخطوات التالية:
+1. Fork المشروع
+2. إنشاء branch جديد للميزة
+3. Commit التغييرات
+4. Push إلى Branch
+5. إنشاء Pull Request
+
+## الدعم
+
+للاستفسارات والدعم التقني، يرجى التواصل مع فريق التطوير.
+
+## الترخيص
+
+هذا المشروع مرخص تحت رخصة MIT.
+
+---
+
+**Nextro** - منصة التعليم الإلكتروني المتكاملة 🚀

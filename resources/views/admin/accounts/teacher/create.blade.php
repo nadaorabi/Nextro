@@ -21,7 +21,7 @@
   <main class="main-content position-relative border-radius-lg ">
     <div class="container py-4">
       <div class="row justify-content-center">
-        <div class="col-12" style="max-width:800px;margin:auto;">
+        <div class="col-12" style="max-width:900px;margin:auto;">
           
           <!-- Header Card -->
           <div class="card shadow-sm mb-4">

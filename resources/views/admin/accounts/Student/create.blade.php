@@ -29,7 +29,7 @@
               <div class="d-flex justify-content-between align-items-center">
                 <div>
                   <h4 class="mb-0">Add New Student</h4>
-                  <p class="text-muted mb-0">Create a new student account</p>
+                  <p class="text-muted mb-0">Create a new student account with essential information</p>
                 </div>
                 <div>
                   <a href="{{ route('admin.accounts.students.list') }}" class="btn btn-secondary">
@@ -74,73 +74,83 @@
               <form action="{{ route('admin.accounts.students.store') }}" method="POST" class="text-start" autocomplete="off">
                 @csrf
 
-                <!-- Full Name -->
-                <div class="mb-3">
-                  <label class="form-label">Full Name <span class="text-danger">*</span></label>
-                  <input type="text" name="name" class="form-control" value="{{ old('name') }}" required maxlength="255">
+                <div class="row">
+                  <!-- Full Name -->
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label">Full Name <span class="text-danger">*</span></label>
+                    <input type="text" name="name" class="form-control" value="{{ old('name') }}" required maxlength="255">
+                  </div>
+
+                  <!-- Mobile -->
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label">Mobile Number <span class="text-danger">*</span></label>
+                    <input type="tel" name="mobile" class="form-control" value="{{ old('mobile') }}" required pattern="[0-9]{9,15}" maxlength="15">
+                  </div>
                 </div>
 
-                <!-- Father's Name -->
-                <div class="mb-3">
-                  <label class="form-label">Father's Name</label>
-                  <input type="text" name="father_name" class="form-control" value="{{ old('father_name') }}" maxlength="255">
+                <div class="row">
+                  <!-- Father's Name -->
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label">Father's Name</label>
+                    <input type="text" name="father_name" class="form-control" value="{{ old('father_name') }}" maxlength="255">
+                  </div>
+
+                  <!-- Mother's Name -->
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label">Mother's Name</label>
+                    <input type="text" name="mother_name" class="form-control" value="{{ old('mother_name') }}" maxlength="255">
+                  </div>
                 </div>
 
-                <!-- Mother's Name -->
-                <div class="mb-3">
-                  <label class="form-label">Mother's Name</label>
-                  <input type="text" name="mother_name" class="form-control" value="{{ old('mother_name') }}" maxlength="255">
+                <div class="row">
+                  <!-- Email -->
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label">Email Address</label>
+                    <input type="email" name="email" class="form-control" value="{{ old('email') }}" maxlength="255">
+                  </div>
+
+                  <!-- Address -->
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label">Address</label>
+                    <input type="text" name="address" class="form-control" value="{{ old('address') }}" maxlength="255">
+                  </div>
                 </div>
 
-                <!-- Mobile -->
-                <div class="mb-3">
-                  <label class="form-label">Mobile Number <span class="text-danger">*</span></label>
-                  <input type="tel" name="mobile" class="form-control" value="{{ old('mobile') }}" required pattern="[0-9]{9,15}" maxlength="15">
+                <div class="row">
+                  <!-- National ID -->
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label">National ID</label>
+                    <input type="text" name="national_id" class="form-control" value="{{ old('national_id') }}" maxlength="50">
+                  </div>
+
+                  <!-- Birth Date -->
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label">Birth Date</label>
+                    <input type="date" name="birth_date" class="form-control" value="{{ old('birth_date') }}" max="{{ now()->toDateString() }}">
+                  </div>
                 </div>
 
-                <!-- Alt Mobile -->
-                <div class="mb-3">
-                  <label class="form-label">Alternative Mobile</label>
-                  <input type="tel" name="alt_mobile" class="form-control" value="{{ old('alt_mobile') }}" pattern="[0-9]{9,15}" maxlength="15">
-                </div>
+                <div class="row">
+                  <!-- Alt Mobile -->
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label">Alternative Mobile</label>
+                    <input type="tel" name="alt_mobile" class="form-control" value="{{ old('alt_mobile') }}" pattern="[0-9]{9,15}" maxlength="15">
+                  </div>
 
-                <!-- Email -->
-                <div class="mb-3">
-                  <label class="form-label">Email</label>
-                  <input type="email" name="email" class="form-control" value="{{ old('email') }}" maxlength="255">
-                </div>
-
-                <!-- National ID -->
-                <div class="mb-3">
-                  <label class="form-label">National ID</label>
-                  <input type="text" name="national_id" class="form-control" value="{{ old('national_id') }}" maxlength="50">
-                </div>
-
-                <!-- Address -->
-                <div class="mb-3">
-                  <label class="form-label">Address</label>
-                  <input type="text" name="address" class="form-control" value="{{ old('address') }}" maxlength="255">
-                </div>
-
-                <!-- Birth Date -->
-                <div class="mb-3">
-                  <label class="form-label">Birth Date</label>
-                  <input type="date" name="birth_date" class="form-control" value="{{ old('birth_date') }}" max="{{ now()->toDateString() }}">
+                  <!-- Status -->
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label">Status <span class="text-danger">*</span></label>
+                    <select name="is_active" class="form-select" required>
+                      <option value="1" {{ old('is_active', '1') == '1' ? 'selected' : '' }}>Active</option>
+                      <option value="0" {{ old('is_active') == '0' ? 'selected' : '' }}>Inactive</option>
+                    </select>
+                  </div>
                 </div>
 
                 <!-- Notes -->
                 <div class="mb-3">
-                  <label class="form-label">Notes</label>
-                  <textarea name="notes" class="form-control" rows="3" maxlength="1000">{{ old('notes') }}</textarea>
-                </div>
-
-                <!-- Status -->
-                <div class="mb-3">
-                  <label class="form-label">Status <span class="text-danger">*</span></label>
-                  <select name="is_active" class="form-select" required>
-                    <option value="1" {{ old('is_active', '1') == '1' ? 'selected' : '' }}>Active</option>
-                    <option value="0" {{ old('is_active') == '0' ? 'selected' : '' }}>Inactive</option>
-                  </select>
+                  <label class="form-label">Notes (Optional)</label>
+                  <textarea name="notes" class="form-control" rows="3" maxlength="500" placeholder="Any additional notes about the student...">{{ old('notes') }}</textarea>
                 </div>
 
                 <!-- Information Note -->

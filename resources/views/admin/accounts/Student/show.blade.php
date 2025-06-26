@@ -12,6 +12,7 @@
   <link href="https://demos.creative-tim.com/argon-dashboard-pro/assets/css/nucleo-icons.css" rel="stylesheet" />
   <link href="https://demos.creative-tim.com/argon-dashboard-pro/assets/css/nucleo-svg.css" rel="stylesheet" />
   <link rel="stylesheet" href="{{ asset('css/argon-dashboard.css?v=2.1.0') }}">
+  <link rel="stylesheet" href="{{ asset('css/admin-show-pages.css') }}">
   <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
 </head>
 
@@ -174,17 +175,11 @@
                       @endif
                     </div>
                   </div>
-
-                  <!-- Additional Notes Title -->
-                  <div class="row mt-4">
-                    <div class="col-12">
-                    
                     </div>
                   </div>
                         </div>
                       </div>
-                    </div>
-                  </div>
+
      <!-- Account Information Card -->
      <div class="card shadow-sm mb-4">
             <div class="card-header">
@@ -207,7 +202,7 @@
                 <div class="col-md-3">
                   <label class="form-label text-muted">Password</label>
                   <div class="position-relative">
-                    <input id="student-password" type="password" class="form-control font-weight-bold ps-4 pe-5" value="{{ $student->plain_password ?? '' }}" readonly style="background:#f8fafc; border-radius:12px; border:1.5px solid #d1e7ff; box-shadow:0 2px 8px rgba(44,62,80,0.07); font-size:1.15rem; letter-spacing:2px;">
+                    <input id="student-password" type="password" class="form-control font-weight-bold ps-4 pe-5 password-field" value="{{ $student->plain_password ?? '' }}" readonly>
                     <span class="position-absolute top-50 end-0 translate-middle-y me-3" style="cursor:pointer;" id="togglePassword">
                       <i class="fas fa-eye text-secondary"></i>
                     </span>
@@ -216,100 +211,6 @@
               </div>
             </div>
           </div>
-
-
-          <!-- تحسين ستايل البادجات والجداول والتحريك في الموبايل -->
-          <style>
-            .custom-card {
-              border-radius: 16px;
-              box-shadow: 0 2px 12px rgba(44,62,80,0.09);
-              background: #fff;
-              margin-bottom: 24px;
-              overflow: hidden;
-            }
-            .custom-card-header {
-              background: linear-gradient(90deg,#eaf3fb 60%,#fafdff 100%);
-              padding: 12px 24px;
-              font-weight: bold;
-              font-size: 1.15rem;
-              color: #2266aa;
-              border-bottom: 1px solid #e3eaf1;
-              display: flex;
-              align-items: center;
-              justify-content: space-between;
-            }
-            .custom-card-body {
-              padding: 20px 24px;
-              background: linear-gradient(120deg,#fafdff 60%,#eaf6ff 100%);
-            }
-            .custom-table-responsive {
-              width: 100%;
-              overflow-x: auto;
-              -webkit-overflow-scrolling: touch;
-              margin-bottom: 1rem;
-            }
-            .custom-table {
-              width: 100%;
-              border-radius: 12px;
-              overflow: hidden;
-              background: #fafdff;
-              min-width: 600px;
-            }
-            .custom-table th {
-              background: linear-gradient(90deg,#eaf3fb 60%,#fafdff 100%);
-              color: #2266aa;
-              font-weight: bold;
-              font-size: 1.05rem;
-              border-bottom: 2px solid #e3eaf1;
-              text-align: center;
-            }
-            .custom-table td {
-              background: #fff;
-              vertical-align: middle;
-              font-size: 1.01rem;
-              border-bottom: 1px solid #f0f4f8;
-              text-align: center;
-            }
-            .custom-table tr:last-child td {
-              border-bottom: none;
-            }
-            .badge-custom {
-              border-radius: 999px;
-              padding: 4px 18px;
-              font-size: 1em;
-              font-weight: 500;
-              box-shadow: 0 1px 4px rgba(44,62,80,0.07);
-              display: inline-block;
-              min-width: 80px;
-              text-align: center;
-              letter-spacing: 0.5px;
-              border: none;
-            }
-            .badge-paid {
-              background: linear-gradient(90deg,#34d399 60%,#10b981 100%);
-              color: #fff;
-            }
-            .badge-unpaid {
-              background: linear-gradient(90deg,#f87171 60%,#ef4444 100%);
-              color: #fff;
-            }
-            .badge-user {
-              background: #60a5fa;
-              color: #fff;
-            }
-            .badge-admin {
-              background: #6ee7b7;
-              color: #166534;
-            }
-            @media (max-width: 768px) {
-              .custom-table-responsive {
-                margin-bottom: 1rem;
-              }
-              .custom-table {
-                min-width: 600px;
-              }
-            }
-          </style>
 
           <!-- Notes Section -->
           <div class="custom-card mb-4">
@@ -345,46 +246,6 @@
                     </tr>
                   </tbody>
                 </table>
-              </div>
-            </div>
-          </div>
-
-          <!-- Modal لإضافة ملاحظة -->
-          <div class="modal fade" id="addNoteModal" tabindex="-1" aria-labelledby="addNoteModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="addNoteModalLabel">Add Note</h5>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                  <form>
-                    <div class="mb-3">
-                      <label for="noteText" class="form-label">Note</label>
-                      <textarea class="form-control" id="noteText" rows="3"></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Save</button>
-                  </form>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Modal تأكيد حذف الملاحظة -->
-          <div class="modal fade" id="confirmDeleteNoteModal" tabindex="-1" aria-labelledby="confirmDeleteNoteModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="confirmDeleteNoteModalLabel">تأكيد الحذف</h5>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                  هل أنت متأكد أنك تريد حذف هذه الملاحظة؟ لا يمكن التراجع عن هذا الإجراء.
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
-                  <button type="button" class="btn btn-danger" id="confirmDeleteNoteBtn">حذف</button>
-                </div>
               </div>
             </div>
           </div>
@@ -445,165 +306,6 @@
                     </tr>
                   </tbody>
                 </table>
-              </div>
-            </div>
-          </div>
-
-          <!-- Modal للحضور والغياب -->
-          <div class="modal fade" id="attendanceModal" tabindex="-1" aria-labelledby="attendanceModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="attendanceModalLabel">سجل الحضور والغياب</h5>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                  <div class="row mb-3">
-                    <div class="col-md-4">
-                      <strong>المادة:</strong> <span id="modalCourse"></span>
-                    </div>
-                    <div class="col-md-4">
-                      <strong>الأستاذ:</strong> <span id="modalTeacher"></span>
-                    </div>
-                    <div class="col-md-4">
-                      <strong>المسار:</strong> <span id="modalTrack"></span>
-                    </div>
-                  </div>
-                  
-                  <div class="table-responsive">
-                    <table class="table table-striped">
-                      <thead>
-                        <tr>
-                          <th>التاريخ</th>
-                          <th>اليوم</th>
-                          <th>الوقت</th>
-                          <th>الحالة</th>
-                          <th>ملاحظات</th>
-                        </tr>
-                      </thead>
-                      <tbody id="attendanceTableBody">
-                        <!-- سيتم ملؤها بالجافا سكريبت -->
-                      </tbody>
-                    </table>
-                  </div>
-                  
-                  <div class="row mt-3">
-                    <div class="col-md-6">
-                      <div class="card bg-light">
-                        <div class="card-body">
-                          <h6 class="card-title">إحصائيات الحضور</h6>
-                          <div class="row">
-                            <div class="col-6">
-                              <div class="text-center">
-                                <div class="h4 text-success" id="presentCount">0</div>
-                                <small class="text-muted">حضور</small>
-                              </div>
-                            </div>
-                            <div class="col-6">
-                              <div class="text-center">
-                                <div class="h4 text-danger" id="absentCount">0</div>
-                                <small class="text-muted">غياب</small>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-6">
-                      <div class="card bg-light">
-                        <div class="card-body">
-                          <h6 class="card-title">نسبة الحضور</h6>
-                          <div class="text-center">
-                            <div class="h4 text-primary" id="attendancePercentage">0%</div>
-                            <div class="progress mt-2">
-                              <div class="progress-bar bg-success" id="attendanceProgress" role="progressbar" style="width: 0%"></div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
-                  <button type="button" class="btn btn-primary" onclick="printAttendanceReport()">
-                    <i class="fas fa-print"></i> طباعة التقرير
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- مودال إضافة كورس أو بكيج مع تفاصيل -->
-          <div class="modal fade" id="addCourseModal" tabindex="-1" aria-labelledby="addCourseModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="addCourseModalLabel">إضافة كورس أو مسار</h5>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="إغلاق"></button>
-                </div>
-                <div class="modal-body">
-                  <form onsubmit="event.preventDefault(); confirmAddCourse();">
-                    <!-- نوع التسجيل -->
-                    <div class="mb-3">
-                      <label class="form-label">نوع التسجيل</label>
-                      <select class="form-select" id="enrollType" onchange="toggleEnrollTypeDetails()">
-                        <option value="course">كورس</option>
-                        <option value="package">بكيج</option>
-                      </select>
-                    </div>
-                    <!-- اختيار الكورس -->
-                    <div class="mb-3" id="courseBox">
-                      <label class="form-label">اختر الكورس</label>
-                      <select class="form-select" id="courseSelect" onchange="showCourseDetails()">
-                        <option value="">-- اختر --</option>
-                        <option value="1">عربي</option>
-                        <option value="2">رياضيات</option>
-                        <option value="3">فيزياء</option>
-                      </select>
-                      <div id="courseDetails" class="mt-2" style="display:none;">
-                        <div class="border rounded p-2 bg-light">
-                          <div><b>الأستاذ:</b> <span id="courseTeacher"></span></div>
-                          <div><b>السعر:</b> <span id="coursePrice"></span></div>
-                          <div><b>الوصف:</b> <span id="courseDesc"></span></div>
-                        </div>
-                      </div>
-                    </div>
-                    <!-- اختيار البكيج -->
-                    <div class="mb-3 d-none" id="packageBox">
-                      <label class="form-label">اختر البكيج</label>
-                      <select class="form-select" id="packageSelect" onchange="showPackageDetails()">
-                        <option value="">-- اختر --</option>
-                        <option value="1">بكيج التاسع</option>
-                        <option value="2">بكيج الحادي عشر</option>
-                      </select>
-                      <div id="packageDetails" class="mt-2" style="display:none;">
-                        <div class="border rounded p-2 bg-light">
-                          <div><b>عدد الكورسات:</b> <span id="packageCourses"></span></div>
-                          <div><b>السعر:</b> <span id="packagePrice"></span></div>
-                          <div><b>الوصف:</b> <span id="packageDesc"></span></div>
-                        </div>
-                      </div>
-                    </div>
-                    <button type="submit" class="btn btn-success w-100 mt-3">تأكيد الإضافة</button>
-                  </form>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- مودال تأكيد الإضافة -->
-          <div class="modal fade" id="confirmAddModal" tabindex="-1" aria-labelledby="confirmAddModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="confirmAddModalLabel">تمت الإضافة بنجاح</h5>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="إغلاق"></button>
-                </div>
-                <div class="modal-body text-center">
-                  <i class="fas fa-check-circle fa-3x text-success mb-3"></i>
-                  <div>تمت إضافة الكورس/المسار للطالب بنجاح (وهمي - فرونت فقط)</div>
-                </div>
               </div>
             </div>
           </div>
@@ -704,82 +406,9 @@
             </div>
           </div>
 
-          <style>
-            .stats-boxes-row {
-              margin-left: -6px;
-              margin-right: -6px;
-            }
-            .stats-box {
-              background: #fff;
-              border-radius: 18px;
-              box-shadow: 0 2px 10px rgba(44,62,80,0.08);
-              padding: 18px 0 12px 0;
-              min-height: 120px;
-              display: flex;
-              flex-direction: column;
-              align-items: center;
-              justify-content: center;
-              transition: box-shadow 0.2s;
-            }
-            .stats-box:hover {
-              box-shadow: 0 4px 18px rgba(44,62,80,0.13);
-            }
-            .stats-icon {
-              font-size: 1.5rem;
-              width: 38px;
-              height: 38px;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              border-radius: 50%;
-              background: #f3f6fa;
-              margin-bottom: 4px;
-            }
-            .stats-title {
-              font-size: 1.02rem;
-              font-weight: 600;
-              color: #344767;
-              margin-bottom: 2px;
-            }
-            .stats-value {
-              font-size: 1.25rem;
-              font-weight: 700;
-              margin-bottom: 2px;
-            }
-            .stats-desc {
-              font-size: 0.93rem;
-              color: #7b8ca6;
-            }
-            @media (max-width: 767.98px) {
-              .stats-boxes-row > div {
-                padding-left: 0;
-                padding-right: 0;
-              }
-              .stats-box {
-                min-height: 90px;
-                margin-bottom: 10px;
-                padding: 12px 0 8px 0;
-              }
-              .stats-icon {
-                font-size: 1.15rem;
-                width: 30px;
-                height: 30px;
-              }
-              .stats-title {
-                font-size: 0.98rem;
-              }
-              .stats-value {
-                font-size: 1.08rem;
-              }
-              .stats-desc {
-                font-size: 0.88rem;
-              }
-            }
-          </style>
-
           <!-- Transaction History Section -->
-          <div class="custom-card mb-4" style="background:#fff; border-radius:20px; box-shadow:0 2px 12px rgba(44,62,80,0.07);">
-            <div class="custom-card-header d-flex justify-content-between align-items-center" style="background:#fff; color:#344767; font-size:1.25rem; font-weight:700; border-bottom:none;">
+          <div class="custom-card mb-4">
+            <div class="custom-card-header d-flex justify-content-between align-items-center">
               <span>Transaction History</span>
               <div class="d-flex align-items-center gap-2 flex-wrap filter-bar">
                 <!-- Dropdown for years -->
@@ -798,53 +427,53 @@
                 <input type="month" class="filter-input" id="monthPicker" placeholder="شهر/سنة yyyy">
               </div>
             </div>
-            <div class="custom-card-body p-0" style="background:#fff; border-radius:0 0 20px 20px;">
-              <div class="table-responsive" style="border-radius:16px;">
-                <table class="table mb-0" style="background:#fff; border-radius:16px; overflow:hidden;">
-                  <thead style="background:#fff;">
-                    <tr style="color:#7b8ca6; font-size:1.01rem; font-weight:700; border:none;">
-                      <th style="border:none; font-weight:700;">DATE</th>
-                      <th style="border:none; font-weight:700;">DESCRIPTION</th>
-                      <th style="border:none; font-weight:700;">TYPE</th>
-                      <th style="border:none; font-weight:700;">AMOUNT</th>
-                      <th style="border:none; font-weight:700;">STATUS</th>
+            <div class="custom-card-body p-0">
+              <div class="table-responsive">
+                <table class="table mb-0 transaction-table">
+                  <thead>
+                    <tr>
+                      <th>DATE</th>
+                      <th>DESCRIPTION</th>
+                      <th>TYPE</th>
+                      <th>AMOUNT</th>
+                      <th>STATUS</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <tr style="background:#fff;">
-                      <td style="font-weight:700; color:#344767; border:none;">23/04/2024</td>
-                      <td style="border:none;">Student Registration - Ahmed Mohamed</td>
-                      <td style="border:none;"><span style="background:#10b981; color:#fff; border-radius:8px; font-weight:600; padding:4px 18px; font-size:1em;">INCOME</span></td>
-                      <td style="border:none; font-weight:600; color:#10b981;">+$1,000</td>
-                      <td style="border:none;"><span style="background:#14b8a6; color:#fff; border-radius:8px; font-weight:600; padding:4px 18px; font-size:1em;">COMPLETED</span></td>
+                    <tr>
+                      <td>23/04/2024</td>
+                      <td>Student Registration - Ahmed Mohamed</td>
+                      <td><span style="background:#10b981; color:#fff; border-radius:8px; font-weight:600; padding:4px 18px; font-size:1em;">INCOME</span></td>
+                      <td style="font-weight:600; color:#10b981;">+$1,000</td>
+                      <td><span style="background:#14b8a6; color:#fff; border-radius:8px; font-weight:600; padding:4px 18px; font-size:1em;">COMPLETED</span></td>
                     </tr>
-                    <tr style="background:#fff;">
-                      <td style="font-weight:700; color:#344767; border:none;">22/04/2024</td>
-                      <td style="border:none;">Withdrawal to Bank Account</td>
-                      <td style="border:none;"><span style="background:#ef4444; color:#fff; border-radius:8px; font-weight:600; padding:4px 18px; font-size:1em;">EXPENSE</span></td>
-                      <td style="border:none; font-weight:600; color:#ef4444;">-$500</td>
-                      <td style="border:none;"><span style="background:#14b8a6; color:#fff; border-radius:8px; font-weight:600; padding:4px 18px; font-size:1em;">COMPLETED</span></td>
+                    <tr>
+                      <td>22/04/2024</td>
+                      <td>Withdrawal to Bank Account</td>
+                      <td><span style="background:#ef4444; color:#fff; border-radius:8px; font-weight:600; padding:4px 18px; font-size:1em;">EXPENSE</span></td>
+                      <td style="font-weight:600; color:#ef4444;">-$500</td>
+                      <td><span style="background:#14b8a6; color:#fff; border-radius:8px; font-weight:600; padding:4px 18px; font-size:1em;">COMPLETED</span></td>
                     </tr>
-                    <tr style="background:#fff;">
-                      <td style="font-weight:700; color:#344767; border:none;">21/04/2024</td>
-                      <td style="border:none;">Student Registration - Sara Ahmed</td>
-                      <td style="border:none;"><span style="background:#10b981; color:#fff; border-radius:8px; font-weight:600; padding:4px 18px; font-size:1em;">INCOME</span></td>
-                      <td style="border:none; font-weight:600; color:#10b981;">+$1,000</td>
-                      <td style="border:none;"><span style="background:#14b8a6; color:#fff; border-radius:8px; font-weight:600; padding:4px 18px; font-size:1em;">COMPLETED</span></td>
+                    <tr>
+                      <td>21/04/2024</td>
+                      <td>Student Registration - Sara Ahmed</td>
+                      <td><span style="background:#10b981; color:#fff; border-radius:8px; font-weight:600; padding:4px 18px; font-size:1em;">INCOME</span></td>
+                      <td style="font-weight:600; color:#10b981;">+$1,000</td>
+                      <td><span style="background:#14b8a6; color:#fff; border-radius:8px; font-weight:600; padding:4px 18px; font-size:1em;">COMPLETED</span></td>
                     </tr>
-                    <tr style="background:#fff;">
-                      <td style="font-weight:700; color:#344767; border:none;">20/04/2024</td>
-                      <td style="border:none;">Student Registration - Mohamed Ali</td>
-                      <td style="border:none;"><span style="background:#10b981; color:#fff; border-radius:8px; font-weight:600; padding:4px 18px; font-size:1em;">INCOME</span></td>
-                      <td style="border:none; font-weight:600; color:#10b981;">+$1,000</td>
-                      <td style="border:none;"><span style="background:#14b8a6; color:#fff; border-radius:8px; font-weight:600; padding:4px 18px; font-size:1em;">COMPLETED</span></td>
+                    <tr>
+                      <td>20/04/2024</td>
+                      <td>Student Registration - Mohamed Ali</td>
+                      <td><span style="background:#10b981; color:#fff; border-radius:8px; font-weight:600; padding:4px 18px; font-size:1em;">INCOME</span></td>
+                      <td style="font-weight:600; color:#10b981;">+$1,000</td>
+                      <td><span style="background:#14b8a6; color:#fff; border-radius:8px; font-weight:600; padding:4px 18px; font-size:1em;">COMPLETED</span></td>
                     </tr>
-                    <tr style="background:#fff;">
-                      <td style="font-weight:700; color:#344767; border:none;">19/04/2024</td>
-                      <td style="border:none;">Student Registration - Fatima Hassan</td>
-                      <td style="border:none;"><span style="background:#10b981; color:#fff; border-radius:8px; font-weight:600; padding:4px 18px; font-size:1em;">INCOME</span></td>
-                      <td style="border:none; font-weight:600; color:#10b981;">+$1,000</td>
-                      <td style="border:none;"><span style="background:#14b8a6; color:#fff; border-radius:8px; font-weight:600; padding:4px 18px; font-size:1em;">COMPLETED</span></td>
+                    <tr>
+                      <td>19/04/2024</td>
+                      <td>Student Registration - Fatima Hassan</td>
+                      <td><span style="background:#10b981; color:#fff; border-radius:8px; font-weight:600; padding:4px 18px; font-size:1em;">INCOME</span></td>
+                      <td style="font-weight:600; color:#10b981;">+$1,000</td>
+                      <td><span style="background:#14b8a6; color:#fff; border-radius:8px; font-weight:600; padding:4px 18px; font-size:1em;">COMPLETED</span></td>
                     </tr>
                   </tbody>
                 </table>
@@ -885,6 +514,200 @@
     </div>
   </main>
 
+  <!-- Modals -->
+  <!-- Modal لإضافة ملاحظة -->
+<div class="modal fade" id="addNoteModal" tabindex="-1" aria-labelledby="addNoteModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addNoteModalLabel">Add Note</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="mb-3">
+            <label for="noteText" class="form-label">Note</label>
+            <textarea class="form-control" id="noteText" rows="3"></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary">Save</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Modal تأكيد حذف الملاحظة -->
+<div class="modal fade" id="confirmDeleteNoteModal" tabindex="-1" aria-labelledby="confirmDeleteNoteModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="confirmDeleteNoteModalLabel">تأكيد الحذف</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        هل أنت متأكد أنك تريد حذف هذه الملاحظة؟ لا يمكن التراجع عن هذا الإجراء.
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+        <button type="button" class="btn btn-danger" id="confirmDeleteNoteBtn">حذف</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Modal للحضور والغياب -->
+<div class="modal fade" id="attendanceModal" tabindex="-1" aria-labelledby="attendanceModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="attendanceModalLabel">سجل الحضور والغياب</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row mb-3">
+          <div class="col-md-4">
+            <strong>المادة:</strong> <span id="modalCourse"></span>
+          </div>
+          <div class="col-md-4">
+            <strong>الأستاذ:</strong> <span id="modalTeacher"></span>
+          </div>
+          <div class="col-md-4">
+            <strong>المسار:</strong> <span id="modalTrack"></span>
+          </div>
+        </div>
+        <div class="table-responsive">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>التاريخ</th>
+                <th>اليوم</th>
+                <th>الوقت</th>
+                <th>الحالة</th>
+                <th>ملاحظات</th>
+              </tr>
+            </thead>
+            <tbody id="attendanceTableBody">
+              <!-- سيتم ملؤها بالجافا سكريبت -->
+            </tbody>
+          </table>
+        </div>
+        <div class="row mt-3">
+          <div class="col-md-6">
+            <div class="card bg-light">
+              <div class="card-body">
+                <h6 class="card-title">إحصائيات الحضور</h6>
+                <div class="row">
+                  <div class="col-6">
+                    <div class="text-center">
+                      <div class="h4 text-success" id="presentCount">0</div>
+                      <small class="text-muted">حضور</small>
+                    </div>
+                  </div>
+                  <div class="col-6">
+                    <div class="text-center">
+                      <div class="h4 text-danger" id="absentCount">0</div>
+                      <small class="text-muted">غياب</small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="card bg-light">
+              <div class="card-body">
+                <h6 class="card-title">نسبة الحضور</h6>
+                <div class="text-center">
+                  <div class="h4 text-primary" id="attendancePercentage">0%</div>
+                  <div class="progress mt-2">
+                    <div class="progress-bar bg-success" id="attendanceProgress" role="progressbar" style="width: 0%"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
+        <button type="button" class="btn btn-primary" onclick="printAttendanceReport()">
+          <i class="fas fa-print"></i> طباعة التقرير
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- مودال إضافة كورس أو بكيج مع تفاصيل -->
+<div class="modal fade" id="addCourseModal" tabindex="-1" aria-labelledby="addCourseModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addCourseModalLabel">إضافة كورس أو مسار</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="إغلاق"></button>
+      </div>
+      <div class="modal-body">
+        <form onsubmit="event.preventDefault(); confirmAddCourse();">
+          <!-- نوع التسجيل -->
+          <div class="mb-3">
+            <label class="form-label">نوع التسجيل</label>
+            <select class="form-select" id="enrollType" onchange="toggleEnrollTypeDetails()">
+              <option value="course">كورس</option>
+              <option value="package">بكيج</option>
+            </select>
+          </div>
+          <!-- اختيار الكورس -->
+          <div class="mb-3" id="courseBox">
+            <label class="form-label">اختر الكورس</label>
+            <select class="form-select" id="courseSelect" onchange="showCourseDetails()">
+              <option value="">-- اختر --</option>
+              <option value="1">عربي</option>
+              <option value="2">رياضيات</option>
+              <option value="3">فيزياء</option>
+            </select>
+            <div id="courseDetails" class="mt-2" style="display:none;">
+              <div class="border rounded p-2 bg-light">
+                <div><b>الأستاذ:</b> <span id="courseTeacher"></span></div>
+                <div><b>السعر:</b> <span id="coursePrice"></span></div>
+                <div><b>الوصف:</b> <span id="courseDesc"></span></div>
+              </div>
+            </div>
+          </div>
+          <!-- اختيار البكيج -->
+          <div class="mb-3 d-none" id="packageBox">
+            <label class="form-label">اختر البكيج</label>
+            <select class="form-select" id="packageSelect" onchange="showPackageDetails()">
+              <option value="">-- اختر --</option>
+              <option value="1">بكيج التاسع</option>
+              <option value="2">بكيج الحادي عشر</option>
+            </select>
+            <div id="packageDetails" class="mt-2" style="display:none;">
+              <div class="border rounded p-2 bg-light">
+                <div><b>عدد الكورسات:</b> <span id="packageCourses"></span></div>
+                <div><b>السعر:</b> <span id="packagePrice"></span></div>
+                <div><b>الوصف:</b> <span id="packageDesc"></span></div>
+              </div>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-success w-100 mt-3">تأكيد الإضافة</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- مودال تأكيد الإضافة -->
+<div class="modal fade" id="confirmAddModal" tabindex="-1" aria-labelledby="confirmAddModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="confirmAddModalLabel">تمت الإضافة بنجاح</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="إغلاق"></button>
+      </div>
+      <div class="modal-body text-center">
+        <i class="fas fa-check-circle fa-3x text-success mb-3"></i>
+        <div>تمت إضافة الكورس/المسار للطالب بنجاح (وهمي - فرونت فقط)</div>
+      </div>
+    </div>
+  </div>
+</div>
+
   <!-- Scripts -->
   <script src="{{ asset('js/core/popper.min.js') }}"></script>
   <script src="{{ asset('js/core/bootstrap.min.js') }}"></script>
@@ -896,6 +719,7 @@
     function confirmDelete(studentName) {
       return confirm(`Are you sure you want to delete the student "${studentName}"?\n\nThis action cannot be undone.`);
     }
+    
     // Password show/hide
     document.addEventListener('DOMContentLoaded', function() {
       const toggleBtn = document.getElementById('togglePassword');
@@ -1030,85 +854,8 @@
       win.focus();
       setTimeout(function(){ win.print(); win.close(); }, 400);
     }
-  </script>
 
-  <style>
-    .table-responsive {
-      overflow-x: auto !important;
-      -webkit-overflow-scrolling: touch;
-      border-radius: 0 !important;
-    }
-    .table-responsive table {
-      min-width: 600px;
-    }
-    
-    /* Attendance button styling */
-    .btn-attendance {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      border: none;
-      color: white;
-      font-weight: 500;
-      border-radius: 20px;
-      padding: 6px 16px;
-      font-size: 0.9rem;
-      transition: all 0.3s ease;
-      box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
-    }
-    
-    .btn-attendance:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
-      color: white;
-    }
-    
-    .btn-attendance i {
-      margin-right: 4px;
-    }
-    
-    /* Modal styling improvements */
-    .modal-lg .modal-content {
-      border-radius: 16px;
-      border: none;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-    }
-    
-    .modal-header {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-     
-    }
-    
-    .modal-header .btn-close {
-      filter: invert(1);
-    }
-    
-    /* Attendance table styling */
-    #attendanceModal .table th {
-      background: #f8f9fa;
-      color: #495057;
-      font-weight: 600;
-      border-bottom: 2px solid #dee2e6;
-    }
-    
-    #attendanceModal .table td {
-      vertical-align: middle;
-    }
-    
-    /* Statistics cards styling */
-    #attendanceModal .card {
-      border-radius: 12px;
-      border: none;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-    
-    #attendanceModal .card-title {
-      color: #495057;
-      font-weight: 600;
-      margin-bottom: 15px;
-    }
-  </style>
-
-  <script>
+    // Print schedule table
     function printScheduleTable() {
       var table = document.getElementById('schedule-table-print');
       var win = window.open('', '', 'height=700,width=900');
@@ -1122,9 +869,8 @@
       win.focus();
       setTimeout(function(){ win.print(); win.close(); }, 400);
     }
-  </script>
 
-  <script>
+    // Note deletion functionality
     let noteRowToDelete = null;
     document.addEventListener('DOMContentLoaded', function() {
       document.querySelectorAll('.btn-delete-note').forEach(function(btn) {
@@ -1143,9 +889,8 @@
         modal.hide();
       });
     });
-  </script>
 
-  <script>
+    // Course/package management
     const courses = {
       1: { teacher: 'أ. محمد', price: '1500 SYP', desc: 'دورة عربي مكثفة' },
       2: { teacher: 'أ. أحمد', price: '1200 SYP', desc: 'دورة رياضيات تأسيسية' },
@@ -1189,75 +934,10 @@
     }
 
     function confirmAddCourse() {
-      // فقط عرض رسالة تأكيد وهمية
       var modal = new bootstrap.Modal(document.getElementById('confirmAddModal'));
       modal.show();
     }
-  </script>
 
-  <style>
-    .filter-bar {
-      gap: 10px !important;
-    }
-    .filter-btn {
-      background: #e3eaf1;
-      color: #344767;
-      border: none;
-      border-radius: 14px;
-      font-size: 1.05rem;
-      font-weight: 700;
-      height: 42px;
-      padding: 0 26px 0 16px;
-      display: flex;
-      align-items: center;
-      transition: background 0.2s, color 0.2s;
-      box-shadow: none;
-    }
-    .filter-btn:focus, .filter-btn:hover {
-      background: #cfd8dc;
-      color: #2266aa;
-    }
-    .filter-btn i {
-      font-size: 1.1em;
-      margin-left: 8px;
-      color: inherit;
-      vertical-align: middle;
-    }
-    .filter-input {
-      background: #fff;
-      border: 1.5px solid #cfd8dc;
-      border-radius: 14px;
-      font-size: 1.05rem;
-      color: #344767;
-      height: 42px;
-      padding: 0 16px;
-      min-width: 140px;
-      max-width: 170px;
-      font-weight: 500;
-      transition: border 0.2s, box-shadow 0.2s;
-      outline: none;
-      box-shadow: none;
-    }
-    .filter-input::placeholder {
-      color: #b0b8c1;
-      font-size: 1.01em;
-      font-weight: 400;
-      letter-spacing: 0.5px;
-    }
-    @media (max-width: 767.98px) {
-      .filter-btn, .filter-input {
-        height: 38px;
-        font-size: 0.98rem;
-        border-radius: 10px;
-        padding: 0 10px;
-      }
-      .filter-bar {
-        gap: 6px !important;
-      }
-    }
-  </style>
-
-  <script>
     // Dropdown year selection
     document.addEventListener('DOMContentLoaded', function() {
       document.querySelectorAll('.year-option').forEach(function(item) {
@@ -1267,6 +947,9 @@
           document.getElementById('selectedYear').textContent = (year === 'all') ? 'All Year' : year;
         });
       });
+    });
+  </script>
+
 </body>
 
 </html>

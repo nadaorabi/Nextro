@@ -21,7 +21,7 @@
   <main class="main-content position-relative border-radius-lg ">
     <div class="container py-4">
       <div class="row justify-content-center">
-        <div class="col-12" style="max-width:800px;margin:auto;">
+        <div class="col-12" style="max-width:900px;margin:auto;">
           
           <!-- Header Card -->
           <div class="card shadow-sm mb-4">
@@ -91,8 +91,8 @@
                 <div class="row">
                   <!-- Email -->
                   <div class="col-md-6 mb-3">
-                    <label class="form-label">Email Address <span class="text-danger">*</span></label>
-                    <input type="email" name="email" class="form-control" value="{{ old('email') }}" required maxlength="255">
+                    <label class="form-label">Email Address</label>
+                    <input type="email" name="email" class="form-control" value="{{ old('email') }}" maxlength="255">
                   </div>
 
                   <!-- Address -->
