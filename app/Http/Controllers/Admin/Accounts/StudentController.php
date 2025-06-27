@@ -96,8 +96,19 @@ class StudentController extends Controller
 
     public function show($id)
     {
-        $student = User::with(['studentNotes.admin'])->where('role', 'student')->findOrFail($id);
-        return view('admin.accounts.Student.show', compact('student'));
+        $student = User::with(['studentNotes.admin'])->findOrFail($id);
+
+        // الكورسات المسجل بها الطالب
+        $enrollments = \App\Models\Enrollment::with(['course', 'course.category', 'course.courseInstructors.instructor'])
+            ->where('student_id', $id)
+            ->get();
+
+        // البكجات المسجل بها الطالب
+        $studentPackages = \App\Models\StudentPackage::with(['package', 'package.packageCourses.course'])
+            ->where('student_id', $id)
+            ->get();
+
+        return view('admin.accounts.Student.show', compact('student', 'enrollments', 'studentPackages'));
     }
 
     public function edit($id)
@@ -201,5 +212,44 @@ class StudentController extends Controller
         $note = StudentNote::findOrFail($noteId);
         $note->delete();
         return redirect()->back()->with('success', 'Note deleted successfully!');
+    }
+
+    public function selectCourse($id)
+    {
+        $student = User::findOrFail($id);
+        $courses = \App\Models\Course::with('category')->get();
+        $packages = \App\Models\Package::with(['category', 'packageCourses.course'])->get();
+        return view('admin.accounts.Student.select-course', compact('student', 'courses', 'packages'));
+    }
+
+    public function enrollCourse(Request $request, $id)
+    {
+        $request->validate([
+            'type' => 'required|in:course,package',
+            'item_id' => 'required|integer',
+            'discount' => 'nullable|numeric|min:0|max:100',
+        ]);
+
+        $student = User::findOrFail($id);
+
+        if ($request->type === 'course') {
+            \App\Models\Enrollment::create([
+                'student_id' => $student->id,
+                'course_id' => $request->item_id,
+                'enrollment_date' => now(),
+                // أضف هنا منطق الخصم إذا كان لديك عمود للخصم
+            ]);
+        } else {
+            \App\Models\StudentPackage::create([
+                'student_id' => $student->id,
+                'package_id' => $request->item_id,
+                'amount_paid' => 0, // احسب السعر بعد الخصم إذا أردت
+                'purchase_date' => now(),
+                // أضف هنا منطق الخصم إذا كان لديك عمود للخصم
+            ]);
+        }
+
+        return redirect()->route('admin.accounts.students.show', $student->id)
+            ->with('success', 'تم تسجيل الطالب بنجاح!');
     }
 }

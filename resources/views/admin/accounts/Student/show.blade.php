@@ -264,9 +264,9 @@
           <div class="custom-card mb-4">
             <div class="custom-card-header d-flex justify-content-between align-items-center">
               <span>Student Enrollments</span>
-              <button type="button" class="btn btn-main d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#addCourseModal">
+              <a href="{{ route('admin.accounts.students.courses.select', $student->id) }}" class="btn btn-main d-flex align-items-center gap-2">
                 <i class="fas fa-plus"></i> إضافة كورس/مسار
-              </button>
+              </a>
             </div>
             <div class="custom-card-body p-0">
               <div class="custom-table-responsive">
@@ -281,39 +281,55 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td>عربي</td>
-                      <td>تاسع صيفي 2025</td>
-                      <td>أ. محمد</td>
-                      <td>2024-06-20</td>
-                      <td>
-                        <button class="btn btn-attendance" data-bs-toggle="modal" data-bs-target="#attendanceModal" data-course="عربي" data-teacher="أ. محمد" data-track="تاسع صيفي 2025">
-                          <i class="fas fa-calendar-check"></i> عرض الحضور
-                        </button>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>رياضيات</td>
-                      <td>تاسع صيفي 2025</td>
-                      <td>أ. أحمد</td>
-                      <td>2024-06-20</td>
-                      <td>
-                        <button class="btn btn-attendance" data-bs-toggle="modal" data-bs-target="#attendanceModal" data-course="رياضيات" data-teacher="أ. أحمد" data-track="تاسع صيفي 2025">
-                          <i class="fas fa-calendar-check"></i> عرض الحضور
-                        </button>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>فيزياء</td>
-                      <td>حادي عشر شتوي 2024</td>
-                      <td>أ. سامر</td>
-                      <td>2024-05-10</td>
-                      <td>
-                        <button class="btn btn-attendance" data-bs-toggle="modal" data-bs-target="#attendanceModal" data-course="فيزياء" data-teacher="أ. سامر" data-track="حادي عشر شتوي 2024">
-                          <i class="fas fa-calendar-check"></i> عرض الحضور
-                        </button>
-                      </td>
-                    </tr>
+                    {{-- الكورسات --}}
+                    @foreach($enrollments as $enrollment)
+                      <tr>
+                        <td>{{ $enrollment->course->title ?? '-' }}</td>
+                        <td>{{ $enrollment->course->category->name ?? '-' }}</td>
+                        <td>
+                          @if($enrollment->course && $enrollment->course->courseInstructors->count())
+                            {{ $enrollment->course->courseInstructors->first()->instructor->name }}
+                          @else
+                            -
+                          @endif
+                        </td>
+                        <td>{{ $enrollment->enrollment_date }}</td>
+                        <td>
+                          <button class="btn btn-attendance">
+                            <i class="fas fa-calendar-check"></i> عرض الحضور
+                          </button>
+                        </td>
+                      </tr>
+                    @endforeach
+
+                    {{-- البكجات --}}
+                    @foreach($studentPackages as $sp)
+                      <tr>
+                        <td>{{ $sp->package->title ?? '-' }}</td>
+                        <td>
+                          @if($sp->package && $sp->package->packageCourses->count())
+                            @foreach($sp->package->packageCourses as $pc)
+                              {{ $pc->course->title }}{{ !$loop->last ? ',' : '' }}
+                            @endforeach
+                          @else
+                            -
+                          @endif
+                        </td>
+                        <td>-</td>
+                        <td>{{ $sp->purchase_date }}</td>
+                        <td>
+                          <button class="btn btn-attendance">
+                            <i class="fas fa-calendar-check"></i> عرض الحضور
+                          </button>
+                        </td>
+                      </tr>
+                    @endforeach
+
+                    @if($enrollments->isEmpty() && $studentPackages->isEmpty())
+                      <tr>
+                        <td colspan="5" class="text-center text-muted">لا يوجد تسجيلات بعد.</td>
+                      </tr>
+                    @endif
                   </tbody>
                 </table>
               </div>

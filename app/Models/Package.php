@@ -38,4 +38,9 @@ class Package extends Model
     { 
         return $this->hasMany(StudentPackage::class); 
     }
+
+    public function packageCourses()
+    {
+        return $this->hasMany(\App\Models\PackageCourse::class, 'package_id');
+    }
 }

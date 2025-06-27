@@ -255,7 +255,7 @@
                                                 <p class="text-sm mb-0 text-uppercase font-weight-bold">Active</p>
                                                 <h5 class="font-weight-bolder">{{ $activeStudents }}</h5>
                                                 <p class="mb-0">
-                                                    <span class="text-success text-sm font-weight-bolder">{{ round(($activeStudents/$totalStudents)*100) }}%</span>
+                                                    <span class="text-success text-sm font-weight-bolder">{{ $totalStudents > 0 ? round(($activeStudents/$totalStudents)*100) : 0 }}%</span>
                                                     of students
                                                 </p>
                                             </div>

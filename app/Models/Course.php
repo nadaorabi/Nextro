@@ -74,60 +74,60 @@ class Course extends Model
 
     // في app/Models/Course.php
 
-public function course_instructors()
-{
-    return $this->hasMany(CourseInstructor::class, 'course_id');
-}
-
-// Get final price after discount
-public function getFinalPriceAttribute()
-{
-    if ($this->is_free) {
-        return 0;
+    public function courseInstructors()
+    {
+        return $this->hasMany(\App\Models\CourseInstructor::class, 'course_id');
     }
-    
-    if ($this->discount_percentage > 0) {
-        $discount = ($this->price * $this->discount_percentage) / 100;
-        return $this->price - $discount;
-    }
-    
-    return $this->price;
-}
 
-// Get formatted price
-public function getFormattedPriceAttribute()
-{
-    if ($this->is_free) {
-        return 'Free';
+    // Get final price after discount
+    public function getFinalPriceAttribute()
+    {
+        if ($this->is_free) {
+            return 0;
+        }
+        
+        if ($this->discount_percentage > 0) {
+            $discount = ($this->price * $this->discount_percentage) / 100;
+            return $this->price - $discount;
+        }
+        
+        return $this->price;
     }
-    
-    $price = $this->final_price;
-    return number_format($price, 2) . ' ' . $this->currency;
-}
 
-// Get original formatted price
-public function getFormattedOriginalPriceAttribute()
-{
-    if ($this->is_free) {
-        return 'Free';
+    // Get formatted price
+    public function getFormattedPriceAttribute()
+    {
+        if ($this->is_free) {
+            return 'Free';
+        }
+        
+        $price = $this->final_price;
+        return number_format($price, 2) . ' ' . $this->currency;
     }
-    
-    return number_format($this->price, 2) . ' ' . $this->currency;
-}
 
-// Check if course has discount
-public function hasDiscount()
-{
-    return $this->discount_percentage > 0 && !$this->is_free;
-}
-
-// Get discount amount
-public function getDiscountAmountAttribute()
-{
-    if (!$this->hasDiscount()) {
-        return 0;
+    // Get original formatted price
+    public function getFormattedOriginalPriceAttribute()
+    {
+        if ($this->is_free) {
+            return 'Free';
+        }
+        
+        return number_format($this->price, 2) . ' ' . $this->currency;
     }
-    
-    return ($this->price * $this->discount_percentage) / 100;
-}
+
+    // Check if course has discount
+    public function hasDiscount()
+    {
+        return $this->discount_percentage > 0 && !$this->is_free;
+    }
+
+    // Get discount amount
+    public function getDiscountAmountAttribute()
+    {
+        if (!$this->hasDiscount()) {
+            return 0;
+        }
+        
+        return ($this->price * $this->discount_percentage) / 100;
+    }
 }
