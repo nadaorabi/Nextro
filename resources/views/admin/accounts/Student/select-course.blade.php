@@ -150,14 +150,158 @@
     .dynamic-btn:hover { background: linear-gradient(90deg,#2563eb 0%,#3b82f6 100%); }
     .form-control:focus { box-shadow: 0 0 0 2px #3b82f6; border-color: #3b82f6; }
     label, strong, .form-control, .dynamic-btn { font-family: 'Tajawal', Arial, sans-serif; }
+    #resultsGrid .card {
+        overflow: hidden;
+        position: relative;
+    }
+    #resultsGrid .card-body {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+    #resultsGrid .card-body .d-flex.gap-2 {
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        gap: 6px;
+        width: 100%;
+    }
+    #resultsGrid .card-body {
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
+    #resultsGrid .card {
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+    #resultsGrid .select-btn, #resultsGrid .info-btn {
+        font-size: 0.95em !important;
+        padding: 4px 12px !important;
+        min-width: 70px;
+        border-radius: 7px !important;
+    }
+    #infoModal .modal-content {
+        border-radius: 0 !important;
+    }
+    #infoModal .btn-close {
+        font-size: 1.5rem;
+        outline: none;
+        box-shadow: none;
+    }
+    #infoModal .modal-dialog {
+        max-width: 450px;
+    }
+    #infoModal .btn-close {
+        font-size: 1.5rem;
+        outline: none;
+        box-shadow: none;
+        filter: grayscale(1) brightness(0.7);
+        background-color: #ccc !important;
+        border-radius: 50%;
+        opacity: 1;
+    }
+    /* كارد الملخص */
+    #summaryCard {
+        display: block;
+        background: linear-gradient(120deg,rgb(208, 236, 250) 0%, #e3eafe 100%);
+        border-radius: 22px;
+        box-shadow: 0 8px 32px rgba(59,130,246,0.13);
+        padding: 32px 36px 28px 36px;
+        margin-top: 36px;
+        margin-bottom: 24px;
+        max-width: 900px;
+        width: 95%;
+        margin-left: auto;
+        margin-right: auto;
+        direction: rtl;
+        border: 1.5px solid #e0e7ef;
+        transition: box-shadow 0.2s, border 0.2s;
+    }
+    #summaryCard .summary-title {
+        font-weight: 900;
+        font-size: 1.35rem;
+        color: #2563eb;
+        margin-bottom: 18px;
+        letter-spacing: 0.5px;
+        text-shadow: 0 2px 8px rgba(37,99,235,0.10);
+    }
+    #summaryCard ul {
+        list-style: none;
+        padding: 0;
+        margin: 0 0 18px 0;
+    }
+    #summaryCard li {
+        background: #f8fafc;
+        border-radius: 12px;
+        margin-bottom: 10px;
+        padding: 10px 18px;
+        font-size: 1.08em;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        justify-content: space-between;
+        box-shadow: 0 1px 6px rgba(59,130,246,0.07);
+    }
+    #summaryCard .total {
+        font-size: 1.18em;
+        font-weight: bold;
+        color: #2563eb;
+        margin-bottom: 16px;
+        background: #e0f2fe;
+        border-radius: 8px;
+        padding: 8px 18px;
+        display: inline-block;
+    }
+    #summaryCard .dynamic-btn {
+        width: 100%;
+        margin-top: 0;
+        font-size: 1.15em;
+        font-weight: 800;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(59,130,246,0.10);
+        background: linear-gradient(90deg,#3b82f6 0%,#2563eb 100%);
+        transition: background 0.2s, box-shadow 0.2s;
+    }
+    #summaryCard .dynamic-btn:hover {
+        background: linear-gradient(90deg,#2563eb 0%,#3b82f6 100%);
+    }
+    #summaryCard .empty-msg {
+        color: #64748b;
+        font-size: 1.08em;
+        text-align: center;
+        margin: 18px 0 10px 0;
+        background: #f1f5f9;
+        border-radius: 8px;
+        padding: 12px 0;
+    }
+    .back-details-btn {
+        background: #8a9bb2 !important;
+        color: #fff !important;
+        border: none !important;
+        border-radius: 14px !important;
+        font-weight: bold;
+        font-size: 1.15em;
+        padding: 12px 28px !important;
+        box-shadow: 0 2px 8px rgba(59,130,246,0.10);
+        transition: background 0.2s;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .back-details-btn:hover {
+        background: #6c7a8a !important;
+        color: #fff !important;
+    }
 </style>
 <div class="container py-4">
     <!-- Student Info Card -->
-    <div class="main-elegant-card mb-5" style="background:linear-gradient(90deg,#3887f6 0%,#2563eb 100%);border-radius:22px;box-shadow:0 4px 24px rgba(37,99,235,0.13);padding:32px 32px 24px 32px;display:flex;align-items:center;gap:24px;">
-        <span class="main-icon" style="width:64px;height:64px;font-size:2.2em;background:rgba(255,255,255,0.18);"><i class="fas fa-user-graduate"></i></span>
+    <div class="main-elegant-card mb-5" style="background:#fff;border-radius:22px;box-shadow:0 4px 24px rgba(37,99,235,0.13);padding:32px 32px 24px 32px;display:flex;align-items:center;gap:24px;position:relative;">
+        <a href="{{ route('admin.accounts.students.show', $student->id) }}" class="back-details-btn" style="position:absolute;top:18px;right:24px;z-index:2;">
+            <i class="fas fa-arrow-left"></i> Back to Details
+        </a>
+        <span class="main-icon" style="width:64px;height:64px;font-size:2.2em;background:rgba(59,130,246,0.10);color:#2563eb;"><i class="fas fa-user-graduate"></i></span>
         <div>
-            <div class="main-title" style="color:#fff;font-size:2em;font-weight:800;margin-bottom:0.2em;letter-spacing:0.5px;">إضافة كورسات أو بكجات للطالب</div>
-            <div class="main-student" style="color:#fff;font-size:1.1em;font-weight:600;background:rgba(255,255,255,0.13);border-radius:8px;padding:4px 18px;display:inline-block;margin-top:8px;box-shadow:0 1px 6px rgba(59,130,246,0.07);">{{ $student->name }}</div>
+            <div class="main-title" style="color:#2563eb;font-size:2em;font-weight:800;margin-bottom:0.2em;letter-spacing:0.5px;">إضافة كورسات أو بكجات للطالب</div>
+            <div class="main-student" style="color:#2563eb;font-size:1.1em;font-weight:600;background:rgba(59,130,246,0.07);border-radius:8px;padding:4px 18px;display:inline-block;margin-top:8px;box-shadow:0 1px 6px rgba(59,130,246,0.07);">{{ $student->name }}</div>
         </div>
     </div>
     <!-- Filter Bar -->
@@ -187,9 +331,6 @@
     <form method="POST" action="{{ route('admin.accounts.students.courses.enroll', $student->id) }}" id="enrollForm">
         @csrf
         <div id="resultsGrid" class="row g-4"></div>
-        <div class="mt-4 text-center">
-            <button type="submit" class="dynamic-btn px-5 py-2"><i class="fas fa-check-circle me-1"></i> تأكيد الإضافة</button>
-        </div>
     </form>
     <!-- Modal -->
     <div class="modal fade" id="infoModal" tabindex="-1" aria-hidden="true">
@@ -202,6 +343,16 @@
           <div class="modal-body" id="infoModalBody"></div>
         </div>
       </div>
+    </div>
+    <!-- كارد ملخص العناصر المختارة -->
+    <div id="summaryCard">
+        <div class="summary-title">ملخص العناصر المختارة</div>
+        <ul id="summaryList"></ul>
+        <div class="total" id="summaryTotalBox">الإجمالي: <span id="summaryTotal">0</span></div>
+        <div class="empty-msg" id="summaryEmptyMsg" style="display:none;">لم يتم اختيار أي عنصر بعد.</div>
+        <button type="submit" form="enrollForm" class="dynamic-btn px-5 py-2" id="confirmBtnSummary">
+            <i class="fas fa-check-circle me-1"></i> تأكيد الإضافة
+        </button>
     </div>
 </div>
 @php
@@ -335,6 +486,7 @@ function renderGrid() {
                 }
             }
             renderGrid();
+            renderSummaryCard();
         });
     });
     // تفعيل زر المعلومات
@@ -369,11 +521,16 @@ function renderGrid() {
             modal.show();
         });
     });
+    // تحديث كارد الملخص
+    renderSummaryCard();
 }
 document.getElementById('searchInput').addEventListener('input', renderGrid);
 document.getElementById('categoryFilter').addEventListener('change', renderGrid);
 document.getElementById('typeFilter').addEventListener('change', renderGrid);
-document.addEventListener('DOMContentLoaded', renderGrid);
+document.addEventListener('DOMContentLoaded', function() {
+    renderGrid();
+    renderSummaryCard();
+});
 // عند إرسال النموذج أضف الحقول المخفية
 const enrollForm = document.getElementById('enrollForm');
 enrollForm.addEventListener('submit', function(e) {
@@ -395,6 +552,39 @@ enrollForm.addEventListener('submit', function(e) {
         this.appendChild(input);
     });
 });
+function renderSummaryCard() {
+    const card = document.getElementById('summaryCard');
+    const list = document.getElementById('summaryList');
+    const totalSpan = document.getElementById('summaryTotal');
+    const totalBox = document.getElementById('summaryTotalBox');
+    const emptyMsg = document.getElementById('summaryEmptyMsg');
+    const confirmBtn = document.getElementById('confirmBtnSummary');
+    let items = [
+        ...allCourses.filter(c => selectedCourses.includes(c.id) || c.enrolled),
+        ...allPackages.filter(p => selectedPackages.includes(p.id) || p.enrolled)
+    ];
+    list.innerHTML = '';
+    let total = 0;
+    let hasNew = false;
+    if(items.length === 0) {
+        totalBox.style.display = 'none';
+        emptyMsg.style.display = 'block';
+    } else {
+        totalBox.style.display = 'inline-block';
+        emptyMsg.style.display = 'none';
+        items.forEach(item => {
+            total += Number(item.price);
+            let type = item.type === 'course' ? 'كورس' : 'بكج';
+            let isNew = (item.type === 'course' ? selectedCourses.includes(item.id) : selectedPackages.includes(item.id));
+            if(isNew) hasNew = true;
+            let badge = item.enrolled && !isNew ? "<span class='badge bg-warning text-dark ms-2'>مسجل مسبقًا</span>" : "<span class='badge bg-success ms-2'>جديد</span>";
+            list.innerHTML += `<li><span><strong>${item.title}</strong> <span class='badge bg-secondary'>${type}</span> ${item.enrolled && !isNew ? badge : (isNew ? badge : '')}</span><span class='badge bg-info'>${item.price} ${item.currency}</span></li>`;
+        });
+    }
+    totalSpan.innerText = total.toFixed(2) + (items[0]?.currency ? ' ' + items[0].currency : '');
+    // تفعيل/تعطيل زر التأكيد حسب وجود عناصر جديدة
+    if(confirmBtn) confirmBtn.disabled = !hasNew;
+}
 </script>
 <style>
 #resultsGrid .card { min-height: 260px; transition: box-shadow .2s, border .2s; border: none; }
