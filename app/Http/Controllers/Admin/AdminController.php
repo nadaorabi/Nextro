@@ -167,9 +167,21 @@ class AdminController extends Controller
     }
 
     // مالية
-    public function financePayments()
+    public function financePayments(Request $request)
     {
-        return view('admin.finance.finance-payments');
+        $student = null;
+        $enrollments = collect();
+        $studentPackages = collect();
+        if ($request->has('student_id')) {
+            $student = \App\Models\User::with('studentNotes')->find($request->student_id);
+            if ($student) {
+                $enrollments = \App\Models\Enrollment::with(['course', 'course.category'])
+                    ->where('student_id', $student->id)->get();
+                $studentPackages = \App\Models\StudentPackage::with(['package', 'package.category'])
+                    ->where('student_id', $student->id)->get();
+            }
+        }
+        return view('admin.finance.finance-payments', compact('student', 'enrollments', 'studentPackages'));
     }
 
     public function logout(Request $request)

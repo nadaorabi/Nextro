@@ -14,6 +14,20 @@
   <link rel="stylesheet" href="{{ asset('css/argon-dashboard.css?v=2.1.0') }}">
   <link rel="stylesheet" href="{{ asset('css/admin-show-pages.css') }}">
   <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+  <style>
+    .btn-danger.btn-sm {
+      padding: 0.25rem 0.5rem;
+      font-size: 0.875rem;
+      border-radius: 0.2rem;
+    }
+    .btn-danger.btn-sm:hover {
+      background-color: #dc3545;
+      border-color: #dc3545;
+    }
+    form[style*="display: inline"] {
+      margin: 0;
+    }
+  </style>
 </head>
 
 <body class="g-sidenav-show bg-gray-100">
@@ -278,6 +292,7 @@
                       <th>أستاذها</th>
                       <th>تاريخ التسجيل</th>
                       <th>الحضور والغياب</th>
+                      <th>الإجراءات</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -298,6 +313,18 @@
                           <button class="btn btn-attendance">
                             <i class="fas fa-calendar-check"></i> عرض الحضور
                           </button>
+                        </td>
+                        <td>
+                          <form action="{{ route('admin.accounts.students.courses.unenroll', ['studentId' => $student->id, 'enrollmentId' => $enrollment->id]) }}" 
+                                method="POST" 
+                                style="display: inline;"
+                                onsubmit="return confirm('هل أنت متأكد من حذف الكورس \'{{ $enrollment->course->title ?? 'الكورس' }}\'؟ سيتم استرداد المبلغ المدفوع.')">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-danger btn-sm">
+                              <i class="fas fa-trash"></i> حذف
+                            </button>
+                          </form>
                         </td>
                       </tr>
                     @endforeach
@@ -322,12 +349,24 @@
                             <i class="fas fa-calendar-check"></i> عرض الحضور
                           </button>
                         </td>
+                        <td>
+                          <form action="{{ route('admin.accounts.students.packages.unenroll', ['studentId' => $student->id, 'packageId' => $sp->id]) }}" 
+                                method="POST" 
+                                style="display: inline;"
+                                onsubmit="return confirm('هل أنت متأكد من حذف الباقة \'{{ $sp->package->title ?? 'الباقة' }}\'؟ سيتم استرداد المبلغ المدفوع.')">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-danger btn-sm">
+                              <i class="fas fa-trash"></i> حذف
+                            </button>
+                          </form>
+                        </td>
                       </tr>
                     @endforeach
 
                     @if($enrollments->isEmpty() && $studentPackages->isEmpty())
                       <tr>
-                        <td colspan="5" class="text-center text-muted">لا يوجد تسجيلات بعد.</td>
+                        <td colspan="6" class="text-center text-muted">لا يوجد تسجيلات بعد.</td>
                       </tr>
                     @endif
                   </tbody>
@@ -400,34 +439,44 @@
 
           <!-- Three Simple Boxes Section -->
           <div class="row mb-4 stats-boxes-row">
-            <div class="col-12 col-md-4 mb-3 mb-md-0">
+            <div class="col-12 col-md-3 mb-3 mb-md-0">
               <div class="stats-box text-center">
                 <div class="stats-icon mb-1">
                   <i class="fas fa-graduation-cap"></i>
                 </div>
                 <div class="stats-title">Total Courses</div>
-                <div class="stats-value text-primary">3</div>
+                <div class="stats-value text-primary">{{ $enrollments->count() }}</div>
                 <div class="stats-desc">Enrolled Courses</div>
               </div>
             </div>
-            <div class="col-12 col-md-4 mb-3 mb-md-0">
+            <div class="col-12 col-md-3 mb-3 mb-md-0">
               <div class="stats-box text-center">
                 <div class="stats-icon mb-1">
-                  <i class="fas fa-calendar-check"></i>
+                  <i class="fas fa-box"></i>
                 </div>
-                <div class="stats-title">Attendance Rate</div>
-                <div class="stats-value text-success">85%</div>
-                <div class="stats-desc">This Month</div>
+                <div class="stats-title">Total Packages</div>
+                <div class="stats-value text-info">{{ $studentPackages->count() }}</div>
+                <div class="stats-desc">Enrolled Packages</div>
               </div>
             </div>
-            <div class="col-12 col-md-4">
+            <div class="col-12 col-md-3 mb-3 mb-md-0">
               <div class="stats-box text-center">
                 <div class="stats-icon mb-1">
                   <i class="fas fa-dollar-sign"></i>
                 </div>
                 <div class="stats-title">Total Paid</div>
-                <div class="stats-value text-warning">$3,000</div>
+                <div class="stats-value text-warning">${{ number_format(abs($payments->where('amount', '<', 0)->sum('amount')), 2) }}</div>
                 <div class="stats-desc">All Time</div>
+              </div>
+            </div>
+            <div class="col-12 col-md-3">
+              <div class="stats-box text-center">
+                <div class="stats-icon mb-1">
+                  <i class="fas fa-wallet"></i>
+                </div>
+                <div class="stats-title">Current Balance</div>
+                <div class="stats-value {{ $totalBalance >= 0 ? 'text-success' : 'text-danger' }}">${{ number_format($totalBalance, 2) }}</div>
+                <div class="stats-desc">Account Balance</div>
               </div>
             </div>
           </div>
@@ -466,41 +515,25 @@
                     </tr>
                   </thead>
                   <tbody>
+                    @forelse($payments as $payment)
                     <tr>
-                      <td>23/04/2024</td>
-                      <td>Student Registration - Ahmed Mohamed</td>
-                      <td><span style="background:#10b981; color:#fff; border-radius:8px; font-weight:600; padding:4px 18px; font-size:1em;">INCOME</span></td>
-                      <td style="font-weight:600; color:#10b981;">+$1,000</td>
+                      <td>{{ $payment->payment_date ? \Carbon\Carbon::parse($payment->payment_date)->format('d/m/Y') : $payment->created_at->format('d/m/Y') }}</td>
+                      <td>{{ $payment->notes }}</td>
+                      <td>
+                        <span style="background:{{ $payment->amount > 0 ? '#10b981' : '#ef4444' }}; color:#fff; border-radius:8px; font-weight:600; padding:4px 18px; font-size:1em;">
+                          {{ $payment->amount > 0 ? 'INCOME' : 'EXPENSE' }}
+                        </span>
+                      </td>
+                      <td style="font-weight:600; color:{{ $payment->amount > 0 ? '#10b981' : '#ef4444' }};">
+                        {{ $payment->amount > 0 ? '+' : '-' }}${{ number_format(abs($payment->amount), 2) }}
+                      </td>
                       <td><span style="background:#14b8a6; color:#fff; border-radius:8px; font-weight:600; padding:4px 18px; font-size:1em;">COMPLETED</span></td>
                     </tr>
+                    @empty
                     <tr>
-                      <td>22/04/2024</td>
-                      <td>Withdrawal to Bank Account</td>
-                      <td><span style="background:#ef4444; color:#fff; border-radius:8px; font-weight:600; padding:4px 18px; font-size:1em;">EXPENSE</span></td>
-                      <td style="font-weight:600; color:#ef4444;">-$500</td>
-                      <td><span style="background:#14b8a6; color:#fff; border-radius:8px; font-weight:600; padding:4px 18px; font-size:1em;">COMPLETED</span></td>
+                      <td colspan="5" class="text-center text-muted">No transactions found.</td>
                     </tr>
-                    <tr>
-                      <td>21/04/2024</td>
-                      <td>Student Registration - Sara Ahmed</td>
-                      <td><span style="background:#10b981; color:#fff; border-radius:8px; font-weight:600; padding:4px 18px; font-size:1em;">INCOME</span></td>
-                      <td style="font-weight:600; color:#10b981;">+$1,000</td>
-                      <td><span style="background:#14b8a6; color:#fff; border-radius:8px; font-weight:600; padding:4px 18px; font-size:1em;">COMPLETED</span></td>
-                    </tr>
-                    <tr>
-                      <td>20/04/2024</td>
-                      <td>Student Registration - Mohamed Ali</td>
-                      <td><span style="background:#10b981; color:#fff; border-radius:8px; font-weight:600; padding:4px 18px; font-size:1em;">INCOME</span></td>
-                      <td style="font-weight:600; color:#10b981;">+$1,000</td>
-                      <td><span style="background:#14b8a6; color:#fff; border-radius:8px; font-weight:600; padding:4px 18px; font-size:1em;">COMPLETED</span></td>
-                    </tr>
-                    <tr>
-                      <td>19/04/2024</td>
-                      <td>Student Registration - Fatima Hassan</td>
-                      <td><span style="background:#10b981; color:#fff; border-radius:8px; font-weight:600; padding:4px 18px; font-size:1em;">INCOME</span></td>
-                      <td style="font-weight:600; color:#10b981;">+$1,000</td>
-                      <td><span style="background:#14b8a6; color:#fff; border-radius:8px; font-weight:600; padding:4px 18px; font-size:1em;">COMPLETED</span></td>
-                    </tr>
+                    @endforelse
                   </tbody>
                 </table>
               </div>
@@ -524,7 +557,10 @@
                   </form>
                 </div>
                 <div>
-                  <a href="{{ route('admin.accounts.students.list') }}" class="btn btn-secondary">
+                  <a href="{{ route('admin.accounts.students.courses.select', $student->id) }}" class="btn btn-success me-2">
+                    <i class="fas fa-plus"></i> Add Course
+                  </a>
+                  <a href="{{ route('admin.accounts.students.list') }}" class="btn btn-secondary me-2">
                     <i class="fas fa-list"></i> Back to List
                   </a>
                   <a href="{{ route('admin.accounts.students.edit', $student->id) }}" class="btn btn-primary">
@@ -976,6 +1012,46 @@
       });
     });
   </script>
+
+  <!-- Modal تأكيد حذف الكورس -->
+  <div class="modal fade" id="confirmDeleteCourseModal" tabindex="-1" aria-labelledby="confirmDeleteCourseModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="confirmDeleteCourseModalLabel">تأكيد حذف الكورس</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p>هل أنت متأكد من حذف هذا الكورس؟</p>
+          <p class="text-warning"><strong>سيتم استرداد المبلغ المدفوع للطالب.</strong></p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+          <button type="button" class="btn btn-danger" id="confirmDeleteCourseBtn">حذف الكورس</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal تأكيد حذف الباقة -->
+  <div class="modal fade" id="confirmDeletePackageModal" tabindex="-1" aria-labelledby="confirmDeletePackageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="confirmDeletePackageModalLabel">تأكيد حذف الباقة</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p>هل أنت متأكد من حذف هذه الباقة؟</p>
+          <p class="text-warning"><strong>سيتم استرداد المبلغ المدفوع للطالب.</strong></p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+          <button type="button" class="btn btn-danger" id="confirmDeletePackageBtn">حذف الباقة</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
 </body>
 

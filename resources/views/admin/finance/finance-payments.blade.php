@@ -47,6 +47,49 @@
                 </div>
             </div>
 
+            @if(isset($student) && $student)
+            <div class="card mb-4">
+                <div class="card-header pb-0">
+                    <h6 class="text-primary fw-bold">تفاصيل الكورسات والبكجات المسجلة للطالب: {{ $student->name }}</h6>
+                </div>
+                <div class="card-body px-0 pt-0 pb-2">
+                    <div class="table-responsive p-0">
+                        <table class="table align-items-center mb-0">
+                            <thead>
+                                <tr>
+                                    <th>النوع</th>
+                                    <th>الاسم</th>
+                                    <th>السعر</th>
+                                    <th>تاريخ التسجيل</th>
+                                    <th>ملاحظات</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($enrollments as $enrollment)
+                                    <tr>
+                                        <td>كورس</td>
+                                        <td>{{ $enrollment->course->title ?? '-' }}</td>
+                                        <td>{{ $enrollment->course->price ?? '-' }} {{ $enrollment->course->currency ?? 'ر.س' }}</td>
+                                        <td>{{ $enrollment->enrollment_date ? $enrollment->enrollment_date->format('Y-m-d') : '-' }}</td>
+                                        <td>{{ $enrollment->notes ?? '-' }}</td>
+                                    </tr>
+                                @endforeach
+                                @foreach($studentPackages as $sp)
+                                    <tr>
+                                        <td>بكج</td>
+                                        <td>{{ $sp->package->name ?? '-' }}</td>
+                                        <td>{{ $sp->package->price ?? '-' }} {{ $sp->package->currency ?? 'ر.س' }}</td>
+                                        <td>{{ $sp->purchase_date ? $sp->purchase_date->format('Y-m-d') : '-' }}</td>
+                                        <td>{{ $sp->notes ?? '-' }}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            @endif
+
             <!-- الإحصائيات -->
             <div class="row">
                 <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">

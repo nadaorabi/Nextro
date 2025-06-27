@@ -108,7 +108,13 @@ class StudentController extends Controller
             ->where('student_id', $id)
             ->get();
 
-        return view('admin.accounts.Student.show', compact('student', 'enrollments', 'studentPackages'));
+        // الحركات المالية
+        $payments = $student->payments()->orderByDesc('payment_date')->get();
+
+        // حساب الرصيد الإجمالي
+        $totalBalance = $payments->sum('amount');
+
+        return view('admin.accounts.Student.show', compact('student', 'enrollments', 'studentPackages', 'payments', 'totalBalance'));
     }
 
     public function edit($id)
@@ -219,37 +225,200 @@ class StudentController extends Controller
         $student = User::findOrFail($id);
         $courses = \App\Models\Course::with('category')->get();
         $packages = \App\Models\Package::with(['category', 'packageCourses.course'])->get();
-        return view('admin.accounts.Student.select-course', compact('student', 'courses', 'packages'));
+        
+        // الكورسات المسجلة مسبقاً
+        $enrolledCourseIds = \App\Models\Enrollment::where('student_id', $id)
+            ->pluck('course_id')
+            ->toArray();
+        
+        // الباقات المسجلة مسبقاً
+        $enrolledPackageIds = \App\Models\StudentPackage::where('student_id', $id)
+            ->pluck('package_id')
+            ->toArray();
+        
+        return view('admin.accounts.Student.select-course', compact(
+            'student', 
+            'courses', 
+            'packages', 
+            'enrolledCourseIds', 
+            'enrolledPackageIds'
+        ));
     }
 
     public function enrollCourse(Request $request, $id)
     {
         $request->validate([
-            'type' => 'required|in:course,package',
-            'item_id' => 'required|integer',
+            'courses' => 'nullable|array',
+            'courses.*' => 'integer|exists:courses,id',
+            'packages' => 'nullable|array',
+            'packages.*' => 'integer|exists:packages,id',
             'discount' => 'nullable|numeric|min:0|max:100',
         ]);
 
         $student = User::findOrFail($id);
+        $discount = $request->discount ?? 0;
+        $enrolledCourses = [];
+        $enrolledPackages = [];
+        $successCount = 0;
 
-        if ($request->type === 'course') {
-            \App\Models\Enrollment::create([
-                'student_id' => $student->id,
-                'course_id' => $request->item_id,
-                'enrollment_date' => now(),
-                // أضف هنا منطق الخصم إذا كان لديك عمود للخصم
-            ]);
-        } else {
-            \App\Models\StudentPackage::create([
-                'student_id' => $student->id,
-                'package_id' => $request->item_id,
-                'amount_paid' => 0, // احسب السعر بعد الخصم إذا أردت
-                'purchase_date' => now(),
-                // أضف هنا منطق الخصم إذا كان لديك عمود للخصم
-            ]);
+        // إضافة الكورسات
+        if ($request->has('courses')) {
+            foreach ($request->courses as $courseId) {
+                // تحقق إذا كان الطالب مسجل مسبقًا في هذا الكورس
+                $alreadyEnrolled = \App\Models\Enrollment::where('student_id', $student->id)
+                    ->where('course_id', $courseId)
+                    ->exists();
+                
+                if ($alreadyEnrolled) {
+                    $course = \App\Models\Course::findOrFail($courseId);
+                    $enrolledCourses[] = $course->title;
+                    continue;
+                }
+
+                $course = \App\Models\Course::findOrFail($courseId);
+                $price = $course->final_price;
+                $discountAmount = $discount > 0 ? ($price * $discount / 100) : 0;
+                $finalAmount = $price - $discountAmount;
+                
+                \App\Models\Enrollment::create([
+                    'student_id' => $student->id,
+                    'course_id' => $courseId,
+                    'enrollment_date' => now(),
+                ]);
+                
+                // إنشاء حركة مالية
+                \App\Models\Payment::create([
+                    'user_id' => $student->id,
+                    'amount' => -$finalAmount, // سالب لأن الطالب يدفع
+                    'type' => 'course_enrollment',
+                    'notes' => 'تسجيل كورس: ' . $course->title . ($discountAmount > 0 ? ' (خصم: ' . $discount . '%)' : ''),
+                    'payment_date' => now(),
+                ]);
+                
+                $successCount++;
+            }
         }
 
+        // إضافة البكجات
+        if ($request->has('packages')) {
+            foreach ($request->packages as $packageId) {
+                // تحقق إذا كان الطالب مسجل مسبقًا في هذه الباقة
+                $alreadyEnrolled = \App\Models\StudentPackage::where('student_id', $student->id)
+                    ->where('package_id', $packageId)
+                    ->exists();
+                
+                if ($alreadyEnrolled) {
+                    $package = \App\Models\Package::findOrFail($packageId);
+                    $enrolledPackages[] = $package->name;
+                    continue;
+                }
+
+                $package = \App\Models\Package::findOrFail($packageId);
+                $price = $package->discounted_price ?? $package->price;
+                $discountAmount = $discount > 0 ? ($price * $discount / 100) : 0;
+                $finalAmount = $price - $discountAmount;
+                
+                \App\Models\StudentPackage::create([
+                    'student_id' => $student->id,
+                    'package_id' => $packageId,
+                    'amount_paid' => $finalAmount,
+                    'purchase_date' => now(),
+                ]);
+                
+                // إنشاء حركة مالية
+                \App\Models\Payment::create([
+                    'user_id' => $student->id,
+                    'amount' => -$finalAmount, // سالب لأن الطالب يدفع
+                    'type' => 'package_enrollment',
+                    'notes' => 'تسجيل باقة: ' . $package->name . ($discountAmount > 0 ? ' (خصم: ' . $discount . '%)' : ''),
+                    'payment_date' => now(),
+                ]);
+                
+                $successCount++;
+            }
+        }
+
+        // رسائل النتيجة
+        $messages = [];
+        
+        if ($successCount > 0) {
+            $messages[] = "تم تسجيل {$successCount} كورس/باقة بنجاح!";
+        }
+        
+        if (!empty($enrolledCourses)) {
+            $coursesList = implode(', ', $enrolledCourses);
+            $messages[] = "الكورسات التالية مسجلة مسبقاً: {$coursesList}";
+        }
+        
+        if (!empty($enrolledPackages)) {
+            $packagesList = implode(', ', $enrolledPackages);
+            $messages[] = "الباقات التالية مسجلة مسبقاً: {$packagesList}";
+        }
+
+        $messageType = !empty($enrolledCourses) || !empty($enrolledPackages) ? 'warning' : 'success';
+        $message = implode(' | ', $messages);
+
         return redirect()->route('admin.accounts.students.show', $student->id)
-            ->with('success', 'تم تسجيل الطالب بنجاح!');
+            ->with($messageType, $message);
+    }
+
+    public function unenrollCourse($studentId, $enrollmentId)
+    {
+        try {
+            $student = User::findOrFail($studentId);
+            $enrollment = \App\Models\Enrollment::where('id', $enrollmentId)
+                ->where('student_id', $studentId)
+                ->with('course')
+                ->firstOrFail();
+
+            $course = $enrollment->course;
+            $coursePrice = $course->final_price;
+
+            // حذف التسجيل
+            $enrollment->delete();
+
+            // إنشاء حركة مالية للاسترداد
+            \App\Models\Payment::create([
+                'user_id' => $student->id,
+                'amount' => $coursePrice, // موجب لأن الطالب يسترد المال
+                'type' => 'course_refund',
+                'notes' => 'حذف كورس: ' . $course->title . ' (استرداد)',
+                'payment_date' => now(),
+            ]);
+
+            return redirect()->back()->with('success', 'تم حذف الكورس بنجاح واسترداد المبلغ!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'فشل في حذف الكورس: ' . $e->getMessage());
+        }
+    }
+
+    public function unenrollPackage($studentId, $packageId)
+    {
+        try {
+            $student = User::findOrFail($studentId);
+            $studentPackage = \App\Models\StudentPackage::where('id', $packageId)
+                ->where('student_id', $studentId)
+                ->with('package')
+                ->firstOrFail();
+
+            $package = $studentPackage->package;
+            $packagePrice = $studentPackage->amount_paid;
+
+            // حذف التسجيل
+            $studentPackage->delete();
+
+            // إنشاء حركة مالية للاسترداد
+            \App\Models\Payment::create([
+                'user_id' => $student->id,
+                'amount' => $packagePrice, // موجب لأن الطالب يسترد المال
+                'type' => 'package_refund',
+                'notes' => 'حذف باقة: ' . $package->name . ' (استرداد)',
+                'payment_date' => now(),
+            ]);
+
+            return redirect()->back()->with('success', 'تم حذف الباقة بنجاح واسترداد المبلغ!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'فشل في حذف الباقة: ' . $e->getMessage());
+        }
     }
 }

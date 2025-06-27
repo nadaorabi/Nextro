@@ -71,6 +71,8 @@ Route::prefix('admin')->middleware('isAdmin')->name('admin.')->group(function ()
         Route::delete('/notes/{noteId}', [StudentController::class, 'deleteNote'])->name('notes.delete');
         Route::get('/{id}/courses/select', [StudentController::class, 'selectCourse'])->name('courses.select');
         Route::post('/{id}/courses/enroll', [StudentController::class, 'enrollCourse'])->name('courses.enroll');
+        Route::delete('/{studentId}/courses/{enrollmentId}/unenroll', [StudentController::class, 'unenrollCourse'])->name('courses.unenroll');
+        Route::delete('/{studentId}/packages/{packageId}/unenroll', [StudentController::class, 'unenrollPackage'])->name('packages.unenroll');
     });
 
     // Teachers Management
