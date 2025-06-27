@@ -67,6 +67,8 @@ Route::prefix('admin')->middleware('isAdmin')->name('admin.')->group(function ()
         Route::put('/{id}', [StudentController::class, 'update'])->name('update');
         Route::get('/{id}', [StudentController::class, 'show'])->name('show');
         Route::delete('/{id}', [StudentController::class, 'destroy'])->name('destroy');
+        Route::post('/{id}/notes', [StudentController::class, 'addNote'])->name('notes.add');
+        Route::delete('/notes/{noteId}', [StudentController::class, 'deleteNote'])->name('notes.delete');
     });
 
     // Teachers Management

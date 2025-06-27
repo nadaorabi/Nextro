@@ -232,18 +232,28 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td><span class="badge-custom badge-user">أ. محمد</span></td>
-                      <td>كثير الغياب</td>
-                      <td>2024-06-20</td>
-                      <td><button class="btn btn-sm btn-outline-danger btn-delete-note"><i class="fas fa-trash"></i></button></td>
-                    </tr>
-                    <tr>
-                      <td><span class="badge-custom badge-admin">الإدارة</span></td>
-                      <td>دائما متأخر</td>
-                      <td>2024-06-19</td>
-                      <td><button class="btn btn-sm btn-outline-danger btn-delete-note"><i class="fas fa-trash"></i></button></td>
-                    </tr>
+                    @forelse(($student->studentNotes ?? []) as $note)
+                      <tr>
+                        <td>
+                          <span class="badge-custom badge-admin">{{ $note->admin->name ?? 'Admin' }}</span>
+                        </td>
+                        <td>{{ $note->note }}</td>
+                        <td>{{ $note->created_at->format('Y-m-d') }}</td>
+                        <td>
+                          <form action="{{ route('admin.accounts.students.notes.delete', $note->id) }}" method="POST" style="display:inline;">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Delete this note?')">
+                              <i class="fas fa-trash"></i>
+                            </button>
+                          </form>
+                        </td>
+                      </tr>
+                    @empty
+                      <tr>
+                        <td colspan="4" class="text-center text-muted">No notes found.</td>
+                      </tr>
+                    @endforelse
                   </tbody>
                 </table>
               </div>
@@ -524,10 +534,11 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form>
+        <form action="{{ route('admin.accounts.students.notes.add', $student->id) }}" method="POST">
+          @csrf
           <div class="mb-3">
             <label for="noteText" class="form-label">Note</label>
-            <textarea class="form-control" id="noteText" rows="3"></textarea>
+            <textarea class="form-control" id="noteText" name="note" rows="3" required></textarea>
           </div>
           <button type="submit" class="btn btn-primary">Save</button>
         </form>

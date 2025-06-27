@@ -64,6 +64,11 @@ class User extends Authenticatable
         return $this->hasMany(Payment::class); 
     }
 
+    public function studentNotes()
+    {
+        return $this->hasMany(\App\Models\StudentNote::class, 'student_id');
+    }
+
     public function isAdmin()
     {
         return $this->role === 'admin';

@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use App\Models\StudentNote;
+use Illuminate\Support\Facades\Auth;
 
 class StudentController extends Controller
 {
@@ -94,8 +96,8 @@ class StudentController extends Controller
 
     public function show($id)
     {
-        $student = User::where('role', 'student')->findOrFail($id);
-        return view('admin.accounts.student.show', compact('student'));
+        $student = User::with(['studentNotes.admin'])->where('role', 'student')->findOrFail($id);
+        return view('admin.accounts.Student.show', compact('student'));
     }
 
     public function edit($id)
@@ -159,5 +161,45 @@ class StudentController extends Controller
             
             return redirect()->back()->with('error', 'Failed to delete student: ' . $e->getMessage());
         }
+    }
+
+    public function addNote(Request $request, $id)
+    {
+        try {
+            $request->validate([
+                'note' => 'required|string|max:1000',
+            ]);
+
+            $note = StudentNote::create([
+                'student_id' => $id,
+                'admin_id' => Auth::id(),
+                'note' => $request->note,
+            ]);
+
+            \Log::info('Note created successfully', [
+                'note_id' => $note->id,
+                'student_id' => $id,
+                'admin_id' => Auth::id(),
+                'note_text' => $request->note
+            ]);
+
+            return redirect()->back()->with('success', 'Note added successfully!');
+        } catch (\Exception $e) {
+            \Log::error('Failed to create note', [
+                'error' => $e->getMessage(),
+                'student_id' => $id,
+                'admin_id' => Auth::id(),
+                'note_text' => $request->note ?? 'null'
+            ]);
+            
+            return redirect()->back()->with('error', 'Failed to add note: ' . $e->getMessage());
+        }
+    }
+
+    public function deleteNote($noteId)
+    {
+        $note = StudentNote::findOrFail($noteId);
+        $note->delete();
+        return redirect()->back()->with('success', 'Note deleted successfully!');
     }
 }
