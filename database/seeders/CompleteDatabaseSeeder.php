@@ -13,6 +13,7 @@ use App\Models\Course;
 use App\Models\Package;
 use App\Models\CourseInstructor;
 use App\Models\Enrollment;
+use App\Models\PackageCourse;
 
 class CompleteDatabaseSeeder extends Seeder
 {
@@ -49,6 +50,10 @@ class CompleteDatabaseSeeder extends Seeder
         $this->command->info('Seeding Enrollments...');
         $this->seedEnrollments();
         
+        // Seed Package Courses
+        $this->command->info('Seeding Package Courses...');
+        $this->seedPackageCourses();
+        
         $this->command->info('Database seeding completed successfully!');
     }
     
@@ -60,7 +65,7 @@ class CompleteDatabaseSeeder extends Seeder
         // Truncate all tables
         $tables = [
             'enrollments', 'course_instructors', 'packages', 
-            'courses', 'categories', 'users'
+            'courses', 'categories', 'users', 'package_courses'
         ];
         
         foreach ($tables as $table) {
@@ -103,12 +108,15 @@ class CompleteDatabaseSeeder extends Seeder
     {
         $categories = [
             ['name' => 'البرمجة', 'description' => 'دورات في لغات البرمجة المختلفة'],
+            ['name' => 'بكالوريا', 'description' => 'فئة البكالوريا', 'status' => 'active'],
+            ['name' => 'تاسع', 'description' => 'فئة الصف التاسع', 'status' => 'active'],
+            ['name' => 'عاشر', 'description' => 'فئة الصف العاشر', 'status' => 'active'],
         ];
         foreach ($categories as $category) {
             \App\Models\Category::create([
                 'name' => $category['name'],
                 'description' => $category['description'],
-                'status' => 'active',
+                'status' => $category['status'] ?? 'active',
                 'image' => null
             ]);
         }
@@ -118,19 +126,25 @@ class CompleteDatabaseSeeder extends Seeder
     {
         $courses = [
             ['title' => 'مقدمة في البرمجة بلغة Python', 'description' => 'دورة شاملة لتعلم أساسيات البرمجة', 'credit_hours' => 40, 'price' => 299, 'currency' => 'SAR'],
+            ['title' => 'رياضيات', 'description' => 'كورس الرياضيات للبكالوريا', 'category_id' => 2, 'price' => 200, 'currency' => 'USD', 'status' => 'active'],
+            ['title' => 'عربي', 'description' => 'كورس اللغة العربية للبكالوريا', 'category_id' => 2, 'price' => 100, 'currency' => 'USD', 'status' => 'active'],
+            ['title' => 'علوم', 'description' => 'كورس العلوم للبكالوريا', 'category_id' => 2, 'price' => 200, 'currency' => 'USD', 'status' => 'active'],
+            ['title' => 'رياضيات تاسع', 'description' => 'كورس الرياضيات للصف التاسع', 'category_id' => 3, 'price' => 150, 'currency' => 'USD', 'status' => 'active'],
+            ['title' => 'عربي تاسع', 'description' => 'كورس اللغة العربية للصف التاسع', 'category_id' => 3, 'price' => 120, 'currency' => 'USD', 'status' => 'active'],
+            ['title' => 'انجليزي تاسع', 'description' => 'كورس اللغة الإنجليزية للصف التاسع', 'category_id' => 3, 'price' => 130, 'currency' => 'USD', 'status' => 'active'],
         ];
         $categories = \App\Models\Category::all();
         foreach ($courses as $index => $course) {
             \App\Models\Course::create([
                 'title' => $course['title'],
                 'description' => $course['description'],
-                'category_id' => $categories[0]->id,
-                'credit_hours' => $course['credit_hours'],
-                'price' => $course['price'],
-                'currency' => $course['currency'],
+                'category_id' => $course['category_id'] ?? $categories[0]->id,
+                'credit_hours' => $course['credit_hours'] ?? 0,
+                'price' => $course['price'] ?? 0,
+                'currency' => $course['currency'] ?? 'SAR',
                 'discount_percentage' => 10,
                 'is_free' => false,
-                'status' => 'active'
+                'status' => $course['status'] ?? 'active'
             ]);
         }
     }
@@ -148,6 +162,14 @@ class CompleteDatabaseSeeder extends Seeder
                 'status' => 'active',
                 'image' => null,
                 'courses' => [1],
+            ],
+            [
+                'name' => 'مسار تعليمي تاسع',
+                'description' => 'باقة شاملة للصف التاسع',
+                'category_id' => 3,
+                'price' => 400,
+                'currency' => 'USD',
+                'status' => 'active'
             ],
         ];
         foreach ($packages as $data) {
@@ -198,6 +220,18 @@ class CompleteDatabaseSeeder extends Seeder
                 'status' => 'active',
                 'notes' => 'ملاحظات حول التسجيل'
             ]);
+        }
+    }
+    
+    private function seedPackageCourses()
+    {
+        $packageCourses = [
+            ['package_id' => 1, 'course_id' => 4],
+            ['package_id' => 1, 'course_id' => 5],
+            ['package_id' => 1, 'course_id' => 6],
+        ];
+        foreach ($packageCourses as $pcData) {
+            \App\Models\PackageCourse::create($pcData);
         }
     }
 } 

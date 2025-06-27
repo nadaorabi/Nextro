@@ -111,7 +111,10 @@
                                 <label class="form-label">Courses</label>
                                 <select name="courses[]" id="coursesSelect" class="form-select select2-multi @error('courses') is-invalid @enderror" multiple>
                                     @foreach ($courses as $course)
-                                        <option value="{{ $course->id }}" data-price="{{ $course->price }}" {{ (collect(old('courses'))->contains($course->id)) ? 'selected' : '' }}>
+                                        <option value="{{ $course->id }}" 
+                                                data-price="{{ $course->price }}" 
+                                                data-category="{{ $course->category_id }}"
+                                                {{ (collect(old('courses'))->contains($course->id)) ? 'selected' : '' }}>
                                             {{ $course->title }}
                                         </option>
                                     @endforeach
@@ -341,6 +344,39 @@
         }
 
         $(document).ready(function() {
+            // حفظ جميع الكورسات في متغير جافاسكريبت
+            var allCourses = [];
+            $('#coursesSelect option').each(function() {
+                allCourses.push({
+                    id: $(this).val(),
+                    text: $(this).text(),
+                    category: $(this).data('category'),
+                    price: $(this).data('price')
+                });
+            });
+
+            function filterCoursesByCategory(categoryId) {
+                var coursesSelect = $('#coursesSelect');
+                // إزالة جميع الخيارات
+                coursesSelect.empty();
+                // إضافة فقط الكورسات من الفئة المختارة
+                var filtered = allCourses.filter(function(course) {
+                    return categoryId ? course.category == categoryId : true;
+                });
+                filtered.forEach(function(course) {
+                    coursesSelect.append(
+                        $('<option>', {
+                            value: course.id,
+                            text: course.text,
+                            'data-category': course.category,
+                            'data-price': course.price
+                        })
+                    );
+                });
+                // إعادة تهيئة Select2
+                coursesSelect.val(null).trigger('change');
+            }
+
             $('#coursesSelect').select2({
                 placeholder: 'اختر الكورسات...',
                 width: '100%',
@@ -353,6 +389,19 @@
                 }
             });
             $('#coursesSelect').on('change', updateOriginalPrice);
+            
+            // تصفية الكورسات حسب الفئة المختارة
+            $('select[name="category_id"]').on('change', function() {
+                const selectedCategoryId = $(this).val();
+                filterCoursesByCategory(selectedCategoryId);
+                updateOriginalPrice();
+            });
+            
+            // تطبيق التصفية عند تحميل الصفحة إذا كانت هناك فئة مختارة مسبقاً
+            const initialCategory = $('select[name="category_id"]').val();
+            if (initialCategory) {
+                filterCoursesByCategory(initialCategory);
+            }
         });
 
         // إضافة مستمعي الأحداث لتحديث السعر النهائي

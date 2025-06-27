@@ -225,23 +225,22 @@ class StudentController extends Controller
         $student = User::findOrFail($id);
         $courses = \App\Models\Course::with('category')->get();
         $packages = \App\Models\Package::with(['category', 'packageCourses.course'])->get();
-        
+        $categories = \App\Models\Category::orderBy('name')->get();
         // الكورسات المسجلة مسبقاً
         $enrolledCourseIds = \App\Models\Enrollment::where('student_id', $id)
             ->pluck('course_id')
             ->toArray();
-        
         // الباقات المسجلة مسبقاً
         $enrolledPackageIds = \App\Models\StudentPackage::where('student_id', $id)
             ->pluck('package_id')
             ->toArray();
-        
         return view('admin.accounts.Student.select-course', compact(
             'student', 
             'courses', 
             'packages', 
             'enrolledCourseIds', 
-            'enrolledPackageIds'
+            'enrolledPackageIds',
+            'categories'
         ));
     }
 
@@ -253,12 +252,15 @@ class StudentController extends Controller
             'packages' => 'nullable|array',
             'packages.*' => 'integer|exists:packages,id',
             'discount' => 'nullable|numeric|min:0|max:100',
+            'course_discounts' => 'nullable|array',
+            'course_discounts.*' => 'nullable|numeric|min:0|max:100',
         ]);
 
         $student = User::findOrFail($id);
         $discount = $request->discount ?? 0;
         $enrolledCourses = [];
         $enrolledPackages = [];
+        $conflictingCourses = [];
         $successCount = 0;
 
         // إضافة الكورسات
@@ -277,7 +279,10 @@ class StudentController extends Controller
 
                 $course = \App\Models\Course::findOrFail($courseId);
                 $price = $course->final_price;
-                $discountAmount = $discount > 0 ? ($price * $discount / 100) : 0;
+                
+                // خصم خاص بالكورس أو الخصم العام
+                $courseDiscount = $request->input("course_discounts.{$courseId}", $discount);
+                $discountAmount = $courseDiscount > 0 ? ($price * $courseDiscount / 100) : 0;
                 $finalAmount = $price - $discountAmount;
                 
                 \App\Models\Enrollment::create([
@@ -291,7 +296,7 @@ class StudentController extends Controller
                     'user_id' => $student->id,
                     'amount' => -$finalAmount, // سالب لأن الطالب يدفع
                     'type' => 'course_enrollment',
-                    'notes' => 'تسجيل كورس: ' . $course->title . ($discountAmount > 0 ? ' (خصم: ' . $discount . '%)' : ''),
+                    'notes' => 'تسجيل كورس: ' . $course->title . ($discountAmount > 0 ? ' (خصم: ' . $courseDiscount . '%)' : ''),
                     'payment_date' => now(),
                 ]);
                 
@@ -317,6 +322,25 @@ class StudentController extends Controller
                 $price = $package->discounted_price ?? $package->price;
                 $discountAmount = $discount > 0 ? ($price * $discount / 100) : 0;
                 $finalAmount = $price - $discountAmount;
+
+                // تحقق من تعارض الكورسات
+                $packageCourses = $package->courses;
+                $conflicts = [];
+                
+                foreach ($packageCourses as $packageCourse) {
+                    $alreadyEnrolledInCourse = \App\Models\Enrollment::where('student_id', $student->id)
+                        ->where('course_id', $packageCourse->id)
+                        ->exists();
+                    
+                    if ($alreadyEnrolledInCourse) {
+                        $conflicts[] = $packageCourse->title;
+                    }
+                }
+                
+                if (!empty($conflicts)) {
+                    $conflictingCourses[] = $package->name . ' (يتعارض مع: ' . implode(', ', $conflicts) . ')';
+                    continue;
+                }
                 
                 \App\Models\StudentPackage::create([
                     'student_id' => $student->id,
@@ -355,7 +379,12 @@ class StudentController extends Controller
             $messages[] = "الباقات التالية مسجلة مسبقاً: {$packagesList}";
         }
 
-        $messageType = !empty($enrolledCourses) || !empty($enrolledPackages) ? 'warning' : 'success';
+        if (!empty($conflictingCourses)) {
+            $conflictsList = implode(', ', $conflictingCourses);
+            $messages[] = "لا يمكن تسجيل الباقات التالية لوجود تعارض: {$conflictsList}";
+        }
+
+        $messageType = !empty($enrolledCourses) || !empty($enrolledPackages) || !empty($conflictingCourses) ? 'warning' : 'success';
         $message = implode(' | ', $messages);
 
         return redirect()->route('admin.accounts.students.show', $student->id)

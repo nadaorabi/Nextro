@@ -59,9 +59,9 @@ class PackageController extends Controller
     // صفحة إضافة باقة جديدة
     public function create()
     {
-        $courses = Course::where('status', 'active')->get();
         $categories = Category::where('status', 'active')->get();
-        return view('admin.educational-packages.create', compact('courses', 'categories'));
+        $courses = Course::where('status', 'active')->get();
+        return view('admin.educational-packages.create', compact('categories', 'courses'));
     }
 
     // حفظ باقة جديدة
@@ -91,20 +91,26 @@ class PackageController extends Controller
             $data['image'] = $request->file('image')->store('packages', 'public');
         }
         
-        // إعداد الأسعار
+        // حساب السعر الأصلي
+        $originalPrice = 0;
         if ($request->filled('original_price')) {
-            $data['original_price'] = floatval($request->input('original_price'));
+            $originalPrice = floatval($request->input('original_price'));
+        } elseif ($request->has('courses')) {
+            // حساب السعر من الكورسات المختارة
+            $courses = \App\Models\Course::whereIn('id', $request->courses)->get();
+            foreach ($courses as $course) {
+                $originalPrice += $course->final_price;
+            }
         }
+        
+        // تعيين الأسعار
+        $data['original_price'] = $originalPrice;
+        $data['price'] = $originalPrice; // السعر الأساسي يساوي السعر الأصلي
         
         $package = Package::create($data);
 
         if ($request->has('courses')) {
             $package->courses()->sync($request->courses);
-            
-            // إذا لم يتم تحديد السعر الأصلي، احسبه من الكورسات
-            if (!$request->filled('original_price')) {
-                $package->original_price = $this->calculateOriginalPrice($package);
-            }
         }
 
         // تحديث السعر المخصوم بناءً على نوع الخصم المختار
@@ -196,6 +202,7 @@ class PackageController extends Controller
         // إعادة حساب السعر الأصلي إذا تم تغيير الكورسات
         if ($request->has('courses')) {
             $package->original_price = $this->calculateOriginalPrice($package);
+            $package->price = $package->original_price; // تحديث السعر الأساسي
         }
         
         // تحديث السعر المخصوم بناءً على نوع الخصم المختار
@@ -273,6 +280,7 @@ class PackageController extends Controller
         // إعادة حساب السعر الأصلي من الكورسات المنسوخة
         if ($newPackage->courses()->count() > 0) {
             $newPackage->original_price = $this->calculateOriginalPrice($newPackage);
+            $newPackage->price = $newPackage->original_price; // تعيين السعر الأساسي
             $newPackage->discounted_price = $newPackage->original_price; // السعر المخصوم يساوي السعر الأصلي في البداية
             $this->updateDiscountPercentage($newPackage);
             $newPackage->save();

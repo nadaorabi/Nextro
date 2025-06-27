@@ -133,7 +133,12 @@
                                 <label class="form-label">Courses</label>
                                 <select name="courses[]" id="coursesSelect" class="form-select select2-multi @error('courses') is-invalid @enderror" multiple>
                                     @foreach ($courses as $course)
-                                        <option value="{{ $course->id }}" data-price="{{ $course->price }}" {{ in_array($course->id, old('courses', $package->courses->pluck('id')->toArray())) ? 'selected' : '' }}>{{ $course->title }}</option>
+                                        <option value="{{ $course->id }}" 
+                                                data-price="{{ $course->price }}" 
+                                                data-category="{{ $course->category_id }}"
+                                                {{ in_array($course->id, old('courses', $package->courses->pluck('id')->toArray())) ? 'selected' : '' }}>
+                                            {{ $course->title }}
+                                        </option>
                                     @endforeach
                                 </select>
                                 @error('courses')
@@ -397,6 +402,37 @@
                 }
             });
             $('#coursesSelect').on('change', updateOriginalPrice);
+            
+            // تصفية الكورسات حسب الفئة المختارة
+            $('select[name="category_id"]').on('change', function() {
+                const selectedCategoryId = $(this).val();
+                const coursesSelect = $('#coursesSelect');
+                
+                if (selectedCategoryId) {
+                    // إزالة جميع الكورسات المختارة أولاً
+                    coursesSelect.val(null).trigger('change');
+                    
+                    // إخفاء جميع الخيارات
+                    coursesSelect.find('option').prop('disabled', true);
+                    
+                    // إظهار الكورسات من الفئة المختارة فقط
+                    coursesSelect.find(`option[data-category="${selectedCategoryId}"]`).prop('disabled', false);
+                    
+                    // تحديث Select2
+                    coursesSelect.trigger('change');
+                } else {
+                    // إظهار جميع الكورسات إذا لم يتم اختيار فئة
+                    coursesSelect.find('option').prop('disabled', false);
+                }
+                
+                updateOriginalPrice();
+            });
+            
+            // تطبيق التصفية عند تحميل الصفحة إذا كانت هناك فئة مختارة مسبقاً
+            const initialCategory = $('select[name="category_id"]').val();
+            if (initialCategory) {
+                $('select[name="category_id"]').trigger('change');
+            }
         });
 
         window.onload = function() {
