@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\Accounts\AdminController as AdminAccountsControll
 use App\Http\Controllers\Admin\Educational\CourseController;
 use App\Http\Controllers\Admin\Educational\PackageController;
 use App\Http\Controllers\Teacher\PasswordController;
+use App\Http\Controllers\Admin\TransactionController;
 
 use App\Models\Category;
 use App\Models\Course;
@@ -56,7 +57,6 @@ Route::prefix('admin')->middleware('isAdmin')->name('admin.')->group(function ()
     Route::get('finance', [AdminController::class, 'finance'])->name('finance');
     Route::get('profile', [AdminController::class, 'profile'])->name('profile');
     Route::post('logout', [AdminController::class, 'logout'])->name('logout');
-
 
     // Accounts Management
     Route::prefix('accounts/students')->name('accounts.students.')->group(function () {
@@ -191,6 +191,18 @@ Route::prefix('admin')->middleware('isAdmin')->name('admin.')->group(function ()
     });
     // مالية
     Route::get('finance/payments', [AdminController::class, 'financePayments'])->name('finance.payments');
+    Route::get('transactions', [TransactionController::class, 'index'])->name('transactions.index');
+    Route::post('transactions', [TransactionController::class, 'store'])->name('transactions.store');
+    Route::put('transactions/{payment}', [TransactionController::class, 'update'])->name('transactions.update');
+    Route::delete('transactions/{payment}', [TransactionController::class, 'destroy'])->name('transactions.destroy');
+    Route::get('transactions/{payment}/receipt', [TransactionController::class, 'generateReceipt'])->name('transactions.receipt');
+    Route::get('students/{student}/account', [TransactionController::class, 'studentAccount'])->name('students.account');
+    Route::post('students/{student}/account/transaction', [TransactionController::class, 'storeStudentTransaction'])->name('students.account.transaction.store');
+    Route::get('teachers/{teacher}/account', [TransactionController::class, 'teacherAccount'])->name('teachers.account');
+    Route::post('teachers/{teacher}/account/transaction', [TransactionController::class, 'storeTeacherTransaction'])->name('teachers.account.transaction.store');
+    Route::get('teachers/{teacher}/account/transaction/{payment}/edit', [TransactionController::class, 'editTeacherTransaction'])->name('teachers.account.transaction.edit');
+    Route::put('teachers/{teacher}/account/transaction/{payment}', [TransactionController::class, 'updateTeacherTransaction'])->name('teachers.account.transaction.update');
+    Route::delete('teachers/{teacher}/account/transaction/{payment}', [TransactionController::class, 'deleteTeacherTransaction'])->name('teachers.account.transaction.delete');
 });
 
 // Password Change Route (outside the group to avoid middleware loop issue)

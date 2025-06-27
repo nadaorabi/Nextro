@@ -144,6 +144,20 @@
                             </div>
 
                             <div class="mb-3">
+                                <label for="instructor_id" class="form-label">اختر الأستاذ</label>
+                                <select name="instructor_id" class="form-select" required>
+                                    <option value="">اختر أستاذ</option>
+                                    @foreach($teachers as $teacher)
+                                        <option value="{{ $teacher->id }}">{{ $teacher->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="instructor_percentage" class="form-label">نسبة الأستاذ من الدورة (%)</label>
+                                <input type="number" name="instructor_percentage" class="form-control" min="0" max="100" required>
+                            </div>
+
+                            <div class="mb-3">
                                 <label class="form-label">Status</label>
                                 <select name="status" class="form-select" required>
                                     <option value="active" {{ old('status') == 'active' ? 'selected' : '' }}>Active</option>

@@ -11,6 +11,8 @@ use App\Models\User;
 use App\Models\Room;
 use App\Models\Payment;
 use App\Models\Receipt;
+use App\Models\Course;
+use App\Models\Package;
 use PDF;
 
 class AdminController extends Controller
@@ -169,19 +171,73 @@ class AdminController extends Controller
     // مالية
     public function financePayments(Request $request)
     {
-        $student = null;
-        $enrollments = collect();
-        $studentPackages = collect();
-        if ($request->has('student_id')) {
-            $student = \App\Models\User::with('studentNotes')->find($request->student_id);
-            if ($student) {
-                $enrollments = \App\Models\Enrollment::with(['course', 'course.category'])
-                    ->where('student_id', $student->id)->get();
-                $studentPackages = \App\Models\StudentPackage::with(['package', 'package.category'])
-                    ->where('student_id', $student->id)->get();
-            }
+        // فلترة متقدمة
+        $query = Payment::with(['user']);
+        
+        // فلترة بالبحث
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->whereHas('user', function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%");
+            })->orWhere('notes', 'like', "%{$search}%");
         }
-        return view('admin.finance.finance-payments', compact('student', 'enrollments', 'studentPackages'));
+        
+        // فلترة بنوع الحساب
+        if ($request->filled('role')) {
+            $query->whereHas('user', function($q) use ($request) {
+                $q->where('role', $request->role);
+            });
+        }
+        
+        // فلترة بنوع المعاملة
+        if ($request->filled('type')) {
+            $query->where('type', $request->type);
+        }
+        
+        // فلترة بالتاريخ
+        if ($request->filled('from')) {
+            $query->whereDate('payment_date', '>=', $request->from);
+        }
+        if ($request->filled('to')) {
+            $query->whereDate('payment_date', '<=', $request->to);
+        }
+        
+        $payments = $query->orderByDesc('payment_date')->paginate(20);
+        
+        // إحصائيات شاملة
+        $totalRevenue = Payment::where('amount', '>', 0)->sum('amount');
+        $totalExpenses = Payment::where('amount', '<', 0)->sum('amount');
+        $currentBalance = $totalRevenue + $totalExpenses; // Expenses are negative
+        
+        // إحصائيات تفصيلية
+        $studentFees = Payment::where('type', 'student_fee')->sum('amount');
+        $packageFees = Payment::where('type', 'package_fee')->sum('amount');
+        $instructorShares = Payment::where('type', 'instructor_share')->sum('amount');
+        $instructorPayments = Payment::where('type', 'instructor_payment')->sum('amount');
+        $discounts = Payment::where('type', 'discount')->sum('amount');
+        $refunds = Payment::where('type', 'refund')->sum('amount');
+        
+        // بيانات للفلترة
+        $users = User::select('id', 'name', 'email', 'role')->orderBy('name')->get();
+        $courses = Course::select('id', 'title')->orderBy('title')->get();
+        $packages = Package::select('id', 'name')->orderBy('name')->get();
+        
+        return view('admin.finance', compact(
+            'payments', 
+            'totalRevenue', 
+            'totalExpenses', 
+            'currentBalance',
+            'studentFees',
+            'packageFees', 
+            'instructorShares',
+            'instructorPayments',
+            'discounts',
+            'refunds',
+            'users', 
+            'courses', 
+            'packages'
+        ));
     }
 
     public function logout(Request $request)

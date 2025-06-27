@@ -111,10 +111,28 @@ class StudentController extends Controller
         // الحركات المالية
         $payments = $student->payments()->orderByDesc('payment_date')->get();
 
+        // مجموع المدفوع فقط من معاملات دفع رسوم طالب
+        $totalPaid = $student->payments()->where('type', 'student_fee')->sum('amount');
+        // مجموع الخصومات فقط من معاملات discount
+        $totalDiscount = $student->payments()->where('type', 'discount')->sum('amount');
+        // مجموع أسعار الكورسات
+        $totalCoursesDue = $enrollments->sum(function($enrollment) {
+            return $enrollment->course ? $enrollment->course->final_price : 0;
+        });
+        // مجموع أسعار الباقات
+        $totalPackagesDue = $studentPackages->sum(function($sp) {
+            return $sp->package ? ($sp->package->discounted_price ?? $sp->package->price) : 0;
+        });
+        // الرسوم المستحقة = الكورسات + الباقات - الخصومات
+        $totalDue = $totalCoursesDue + $totalPackagesDue - $totalDiscount;
+        // مجموع الاسترداد فقط من معاملات refund
+        $totalRefunded = $student->payments()->where('type', 'refund')->sum('amount');
+        // المبلغ المتبقي/المستحق
+        $outstanding = $totalDue - $totalPaid + $totalRefunded;
         // حساب الرصيد الإجمالي
         $totalBalance = $payments->sum('amount');
 
-        return view('admin.accounts.Student.show', compact('student', 'enrollments', 'studentPackages', 'payments', 'totalBalance'));
+        return view('admin.accounts.Student.show', compact('student', 'enrollments', 'studentPackages', 'payments', 'totalBalance', 'totalDue', 'totalPaid', 'totalDiscount', 'outstanding'));
     }
 
     public function edit($id)
@@ -299,6 +317,21 @@ class StudentController extends Controller
                     'notes' => 'تسجيل كورس: ' . $course->title . ($discountAmount > 0 ? ' (خصم: ' . $courseDiscount . '%)' : ''),
                     'payment_date' => now(),
                 ]);
+
+                // إضافة نسبة الأستاذ
+                $courseInstructor = \App\Models\CourseInstructor::where('course_id', $course->id)
+                    ->where('role', 'primary')
+                    ->first();
+                if ($courseInstructor && $courseInstructor->percentage > 0) {
+                    $instructorShare = $finalAmount * ($courseInstructor->percentage / 100);
+                    \App\Models\Payment::create([
+                        'user_id' => $courseInstructor->instructor_id,
+                        'amount' => $instructorShare,
+                        'type' => 'instructor_share',
+                        'notes' => 'نسبة من تسجيل الطالب: ' . $student->name . ' في الدورة: ' . $course->title,
+                        'payment_date' => now(),
+                    ]);
+                }
                 
                 $successCount++;
             }

@@ -43,9 +43,8 @@ class CourseController extends Controller
     {
         try {
             $categories = Category::where('status', 'active')->get();
-           
-            
-            return view('admin.educational-courses.create', compact('categories'));
+            $teachers = \App\Models\User::where('role', 'teacher')->where('is_active', true)->get();
+            return view('admin.educational-courses.create', compact('categories', 'teachers'));
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Error loading create form: ' . $e->getMessage());
         }
@@ -121,6 +120,16 @@ class CourseController extends Controller
             }
 
             $course = Course::create($data);
+
+            // ربط الأستاذ بالكورس مع النسبة
+            if ($request->filled('instructor_id') && $request->filled('instructor_percentage')) {
+                \App\Models\CourseInstructor::create([
+                    'course_id' => $course->id,
+                    'instructor_id' => $request->instructor_id,
+                    'role' => 'primary',
+                    'percentage' => (int) $request->instructor_percentage,
+                ]);
+            }
 
             // Handle packages if any
             if ($request->has('packages') && is_array($request->packages)) {

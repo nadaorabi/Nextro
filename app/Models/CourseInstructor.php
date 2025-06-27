@@ -14,7 +14,8 @@ class CourseInstructor extends Model
         'instructor_id', 
         'role',
         'notes',
-        'semester'
+        'semester',
+        'percentage'
     ];
 
     public function course() 

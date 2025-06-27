@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Enrollment;
 use App\Models\Course;
 use App\Models\User;
+use App\Models\CourseInstructor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -67,6 +68,21 @@ class CourseEnrollmentController extends Controller
                         'notes' => 'Course: ' . $course->title . ' | Discount: ' . $discount . '%',
                         'payment_date' => now(),
                     ]);
+
+                    // إضافة نسبة الأستاذ
+                    $courseInstructor = CourseInstructor::where('course_id', $course->id)
+                        ->where('role', 'primary')
+                        ->first();
+                    if ($courseInstructor && $courseInstructor->percentage > 0) {
+                        $instructorShare = $finalPrice * ($courseInstructor->percentage / 100);
+                        \App\Models\Payment::create([
+                            'user_id' => $courseInstructor->instructor_id,
+                            'amount' => $instructorShare,
+                            'type' => 'instructor_share',
+                            'notes' => 'نسبة من تسجيل طالب جديد في الدورة: ' . $course->title,
+                            'payment_date' => now(),
+                        ]);
+                    }
                 }
                 $added++;
             }

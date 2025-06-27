@@ -650,14 +650,38 @@
 
       <!-- Financial -->
       <li class="nav-item">
-        <a class="nav-link {{ request()->routeIs('admin.finance.*') ? 'active' : '' }}"
-          href="{{ route('admin.finance.payments') }}">
+        <a class="nav-link {{ request()->routeIs('admin.finance.*') ? 'active' : '' }}" 
+          href="#" id="financeDropdown" data-bs-toggle="collapse" data-bs-target="#financeSubmenu"
+          aria-expanded="{{ request()->routeIs('admin.finance.*') ? 'true' : 'false' }}">
           <div
             class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
             <i class="fas fa-wallet text-dark text-sm opacity-10"></i>
           </div>
-          <span class="nav-link-text ms-1">Financial Management</span>
+          <span class="nav-link-text ms-1">الإدارة المالية</span>
         </a>
+        <ul class="nav flex-column collapse {{ request()->routeIs('admin.finance.*') ? 'show' : '' }}"
+          id="financeSubmenu" data-bs-parent="#sidebarAccordion">
+          <li class="nav-item">
+            <a class="nav-link {{ request()->routeIs('admin.finance.payments') ? 'active' : '' }}" href="{{ route('admin.finance.payments') }}">
+              <i class="fas fa-money-check-alt me-2"></i>جميع الحركات المالية
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/admin/transactions">
+              <i class="fas fa-chart-line me-2"></i>إدارة المعاملات
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ route('admin.accounts.students.list') }}">
+              <i class="fas fa-user-graduate me-2"></i>حسابات الطلاب
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ route('admin.accounts.teachers.list') }}">
+              <i class="fas fa-chalkboard-teacher me-2"></i>حسابات الأساتذة
+            </a>
+          </li>
+        </ul>
       </li>
 
       <!-- Facilities Management -->

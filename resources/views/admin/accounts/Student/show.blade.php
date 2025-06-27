@@ -84,7 +84,6 @@
                        class="avatar avatar-xxl rounded-circle mb-3"
                        onerror="this.src='{{ asset('images/default-avatar.png') }}'"
                        alt="{{ $student->name }}">
-                  
                   <!-- Status Badge -->
                   <div class="mb-3">
                     @if($student->is_active == 1)
@@ -95,49 +94,41 @@
                       <span class="badge bg-danger">Inactive</span>
                     @endif
                   </div>
-
                   <!-- Student ID -->
                   <div class="text-center">
                     <h6 class="text-muted mb-1">Student ID</h6>
                     <h5 class="font-weight-bold text-primary">{{ $student->login_id }}</h5>
                   </div>
                 </div>
-
                 <!-- Student Information -->
                 <div class="col-md-9">
                   <h4 class="mb-4">{{ $student->name }}</h4>
-                  
                   <div class="row">
                     <!-- Personal Information -->
                     <div class="col-md-6">
                       <h6 class="text-uppercase text-muted mb-3">Personal Information</h6>
-                      
                       <div class="mb-3">
                         <label class="form-label text-muted">Full Name</label>
                         <p class="font-weight-bold">{{ $student->name }}</p>
                       </div>
-
                       @if($student->father_name)
                       <div class="mb-3">
                         <label class="form-label text-muted">Father's Name</label>
                         <p class="font-weight-bold">{{ $student->father_name }}</p>
                       </div>
                       @endif
-
                       @if($student->mother_name)
                       <div class="mb-3">
                         <label class="form-label text-muted">Mother's Name</label>
                         <p class="font-weight-bold">{{ $student->mother_name }}</p>
                       </div>
                       @endif
-
                       @if($student->birth_date)
                       <div class="mb-3">
                         <label class="form-label text-muted">Birth Date</label>
                         <p class="font-weight-bold">{{ \Carbon\Carbon::parse($student->birth_date)->format('F d, Y') }}</p>
                       </div>
                       @endif
-
                       @if($student->national_id)
                       <div class="mb-3">
                         <label class="form-label text-muted">National ID</label>
@@ -145,11 +136,9 @@
                       </div>
                       @endif
                     </div>
-
                     <!-- Contact Information -->
                     <div class="col-md-6">
                       <h6 class="text-uppercase text-muted mb-3">Contact Information</h6>
-                      
                       <div class="mb-3">
                         <label class="form-label text-muted">Mobile Number</label>
                         <p class="font-weight-bold">
@@ -157,7 +146,6 @@
                           {{ $student->mobile }}
                         </p>
                       </div>
-
                       @if($student->alt_mobile)
                       <div class="mb-3">
                         <label class="form-label text-muted">Alternative Mobile</label>
@@ -167,7 +155,6 @@
                         </p>
                       </div>
                       @endif
-
                       @if($student->email)
                       <div class="mb-3">
                         <label class="form-label text-muted">Email Address</label>
@@ -177,7 +164,6 @@
                         </p>
                       </div>
                       @endif
-
                       @if($student->address)
                       <div class="mb-3">
                         <label class="form-label text-muted">Address</label>
@@ -189,13 +175,125 @@
                       @endif
                     </div>
                   </div>
-                    </div>
-                  </div>
-                        </div>
-                      </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row mb-4 stats-boxes-row">
+            <div class="col-12 col-md-3 mb-3 mb-md-0">
+              <div class="stats-box text-center">
+                <div class="stats-icon mb-1">
+                  <i class="fas fa-graduation-cap"></i>
+                </div>
+                <div class="stats-title">Total Courses</div>
+                <div class="stats-value text-primary">{{ $enrollments->count() }}</div>
+                <div class="stats-desc">Enrolled Courses</div>
+              </div>
+            </div>
+            <div class="col-12 col-md-3 mb-3 mb-md-0">
+              <div class="stats-box text-center">
+                <div class="stats-icon mb-1">
+                  <i class="fas fa-box"></i>
+                </div>
+                <div class="stats-title">Total Packages</div>
+                <div class="stats-value text-info">{{ $studentPackages->count() }}</div>
+                <div class="stats-desc">Enrolled Packages</div>
+              </div>
+            </div>
+         
+          </div>
+          <!-- Financial Summary Cards -->
+          <div class="row mb-4">
+            <div class="col-md-3">
+              <div class="card shadow-sm" style="border-radius:15px;">
+                <div class="card-body text-center">
+                  <div class="h3 text-primary mb-1">{{ number_format($totalDue, 2) }} د.ك</div>
+                  <div class="text-muted">مجموع الرسوم المستحقة</div>
+                  <i class="fas fa-file-invoice-dollar text-primary mt-2" style="font-size: 2rem;"></i>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="card shadow-sm" style="border-radius:15px;">
+                <div class="card-body text-center">
+                  <div class="h3 text-success mb-1">{{ number_format($totalPaid, 2) }} د.ك</div>
+                  <div class="text-muted">إجمالي المدفوع</div>
+                  <i class="fas fa-arrow-up text-success mt-2" style="font-size: 2rem;"></i>
+                </div>
+              </div>
+            </div>
+            @if($totalDiscount > 0)
+            <div class="col-md-3">
+              <div class="card shadow-sm" style="border-radius:15px;">
+                <div class="card-body text-center">
+                  <div class="h3 text-info mb-1">{{ number_format($totalDiscount, 2) }} د.ك</div>
+                  <div class="text-muted">إجمالي الخصومات</div>
+                  <i class="fas fa-percent text-info mt-2" style="font-size: 2rem;"></i>
+                </div>
+              </div>
+            </div>
+            @endif
+            <div class="col-md-3">
+              <div class="card shadow-sm" style="border-radius:15px;">
+                <div class="card-body text-center">
+                  <div class="h3 {{ $outstanding > 0 ? 'text-danger' : 'text-success' }} mb-1">{{ number_format($outstanding, 2) }} د.ك</div>
+                  <div class="text-muted">المبلغ المتبقي/المستحق</div>
+                  <i class="fas fa-balance-scale {{ $outstanding > 0 ? 'text-danger' : 'text-success' }} mt-2" style="font-size: 2rem;"></i>
+                </div>
+              </div>
+            </div>
+          </div>
 
-     <!-- Account Information Card -->
-     <div class="card shadow-sm mb-4">
+          <!-- Last 5 Transactions Table -->
+          <div class="card shadow-sm mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <h6 class="mb-0">آخر 5 معاملات مالية</h6>
+              <a href="{{ route('admin.students.account', $student->id) }}" class="btn btn-outline-primary btn-sm">
+                المزيد <i class="fas fa-arrow-left ms-1"></i>
+              </a>
+            </div>
+            <div class="card-body p-0">
+              <div class="table-responsive">
+                <table class="table align-middle mb-0">
+                  <thead class="table-light">
+                    <tr>
+                      <th>التاريخ</th>
+                      <th>نوع المعاملة</th>
+                      <th>المبلغ</th>
+                      <th>ملاحظات</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @foreach($payments->take(5) as $payment)
+                      <tr>
+                        <td>{{ date('Y-m-d H:i', strtotime($payment->payment_date)) }}</td>
+                        <td>
+                          @if($payment->type == 'student_fee')
+                            <span class="badge bg-info">رسوم طالب</span>
+                          @elseif($payment->type == 'discount')
+                            <span class="badge bg-primary">خصم</span>
+                          @elseif($payment->type == 'refund')
+                            <span class="badge bg-warning text-dark">استرداد</span>
+                          @else
+                            <span class="badge bg-secondary">{{ $payment->type }}</span>
+                          @endif
+                        </td>
+                        <td>
+                          <span class="fw-bold {{ $payment->amount > 0 ? 'text-success' : 'text-danger' }}">
+                            {{ $payment->amount > 0 ? '+' : '' }}{{ number_format($payment->amount, 2) }} د.ك
+                          </span>
+                        </td>
+                        <td>{{ $payment->notes ?? '-' }}</td>
+                      </tr>
+                    @endforeach
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Account Information Card -->
+          <div class="card shadow-sm mb-4">
             <div class="card-header">
               <h6 class="mb-0">Account Information</h6>
             </div>
@@ -438,108 +536,9 @@
           </div>
 
           <!-- Three Simple Boxes Section -->
-          <div class="row mb-4 stats-boxes-row">
-            <div class="col-12 col-md-3 mb-3 mb-md-0">
-              <div class="stats-box text-center">
-                <div class="stats-icon mb-1">
-                  <i class="fas fa-graduation-cap"></i>
-                </div>
-                <div class="stats-title">Total Courses</div>
-                <div class="stats-value text-primary">{{ $enrollments->count() }}</div>
-                <div class="stats-desc">Enrolled Courses</div>
-              </div>
-            </div>
-            <div class="col-12 col-md-3 mb-3 mb-md-0">
-              <div class="stats-box text-center">
-                <div class="stats-icon mb-1">
-                  <i class="fas fa-box"></i>
-                </div>
-                <div class="stats-title">Total Packages</div>
-                <div class="stats-value text-info">{{ $studentPackages->count() }}</div>
-                <div class="stats-desc">Enrolled Packages</div>
-              </div>
-            </div>
-            <div class="col-12 col-md-3 mb-3 mb-md-0">
-              <div class="stats-box text-center">
-                <div class="stats-icon mb-1">
-                  <i class="fas fa-dollar-sign"></i>
-                </div>
-                <div class="stats-title">Total Paid</div>
-                <div class="stats-value text-warning">${{ number_format(abs($payments->where('amount', '<', 0)->sum('amount')), 2) }}</div>
-                <div class="stats-desc">All Time</div>
-              </div>
-            </div>
-            <div class="col-12 col-md-3">
-              <div class="stats-box text-center">
-                <div class="stats-icon mb-1">
-                  <i class="fas fa-wallet"></i>
-                </div>
-                <div class="stats-title">Current Balance</div>
-                <div class="stats-value {{ $totalBalance >= 0 ? 'text-success' : 'text-danger' }}">${{ number_format($totalBalance, 2) }}</div>
-                <div class="stats-desc">Account Balance</div>
-              </div>
-            </div>
-          </div>
+      
 
-          <!-- Transaction History Section -->
-          <div class="custom-card mb-4">
-            <div class="custom-card-header d-flex justify-content-between align-items-center">
-              <span>Transaction History</span>
-              <div class="d-flex align-items-center gap-2 flex-wrap filter-bar">
-                <!-- Dropdown for years -->
-                <div class="dropdown">
-                  <button class="filter-btn dropdown-toggle" type="button" id="yearDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                    <span id="selectedYear">All Year</span> <i class="fas fa-chevron-down ms-1"></i>
-                  </button>
-                  <ul class="dropdown-menu" aria-labelledby="yearDropdown">
-                    <li><a class="dropdown-item year-option" href="#" data-year="all">All Year</a></li>
-                    <li><a class="dropdown-item year-option" href="#" data-year="2024">2024</a></li>
-                    <li><a class="dropdown-item year-option" href="#" data-year="2023">2023</a></li>
-                    <li><a class="dropdown-item year-option" href="#" data-year="2022">2022</a></li>
-                  </ul>
-                </div>
-                <!-- Month picker -->
-                <input type="month" class="filter-input" id="monthPicker" placeholder="شهر/سنة yyyy">
-              </div>
-            </div>
-            <div class="custom-card-body p-0">
-              <div class="table-responsive">
-                <table class="table mb-0 transaction-table">
-                  <thead>
-                    <tr>
-                      <th>DATE</th>
-                      <th>DESCRIPTION</th>
-                      <th>TYPE</th>
-                      <th>AMOUNT</th>
-                      <th>STATUS</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    @forelse($payments as $payment)
-                    <tr>
-                      <td>{{ $payment->payment_date ? \Carbon\Carbon::parse($payment->payment_date)->format('d/m/Y') : $payment->created_at->format('d/m/Y') }}</td>
-                      <td>{{ $payment->notes }}</td>
-                      <td>
-                        <span style="background:{{ $payment->amount > 0 ? '#10b981' : '#ef4444' }}; color:#fff; border-radius:8px; font-weight:600; padding:4px 18px; font-size:1em;">
-                          {{ $payment->amount > 0 ? 'INCOME' : 'EXPENSE' }}
-                        </span>
-                      </td>
-                      <td style="font-weight:600; color:{{ $payment->amount > 0 ? '#10b981' : '#ef4444' }};">
-                        {{ $payment->amount > 0 ? '+' : '-' }}${{ number_format(abs($payment->amount), 2) }}
-                      </td>
-                      <td><span style="background:#14b8a6; color:#fff; border-radius:8px; font-weight:600; padding:4px 18px; font-size:1em;">COMPLETED</span></td>
-                    </tr>
-                    @empty
-                    <tr>
-                      <td colspan="5" class="text-center text-muted">No transactions found.</td>
-                    </tr>
-                    @endforelse
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-
+       
           <!-- Action Buttons -->
           <div class="card shadow-sm">
             <div class="card-body">

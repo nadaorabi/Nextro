@@ -442,6 +442,10 @@
                                                             class="btn btn-link text-primary p-2">
                                                             <i class="fas fa-eye"></i>
                                                         </a>
+                                                        <a href="{{ route('admin.teachers.account', $teacher->id) }}"
+                                                            class="btn btn-link text-success p-2" title="الحساب المالي">
+                                                            <i class="fas fa-wallet"></i>
+                                                        </a>
                                                         <button class="btn btn-link text-dark p-2"
                                                             onclick="printCredentials('{{ $teacher->login_id }}', '{{ $teacher->name }}', '{{ $teacher->plain_password }}')"
                                                             title="Print Credentials">
