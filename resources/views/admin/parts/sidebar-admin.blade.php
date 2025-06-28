@@ -26,6 +26,43 @@
     box-shadow: 0 4px 8px -2px rgba(58, 116, 254, 0.4);
   }
 
+  /* Disabled Navigation Items */
+  .sidenav .nav-item.disabled .nav-link {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+    color: #999 !important;
+    background-color: #f8f9fa !important;
+    border: 1px solid #e9ecef;
+  }
+
+  .sidenav .nav-item.disabled .nav-link:hover {
+    background-color: #f8f9fa !important;
+    transform: none;
+    color: #999 !important;
+  }
+
+  .sidenav .nav-item.disabled .nav-link i {
+    opacity: 0.5;
+  }
+
+  .sidenav .nav-item.disabled .nav-link .icon-shape {
+    opacity: 0.3;
+  }
+
+  /* Disabled submenu items */
+  .sidenav .nav-item.disabled .collapse .nav-link {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+    color: #999 !important;
+  }
+
+  .sidenav .nav-item.disabled .collapse .nav-link:hover {
+    color: #999 !important;
+    background: transparent !important;
+  }
+
   /* Dropdown Arrow Indicator */
   .sidenav .nav-link[data-bs-toggle="collapse"] {
     position: relative;
@@ -44,6 +81,11 @@
 
   .sidenav .nav-link[data-bs-toggle="collapse"][aria-expanded="true"]::after {
     transform: translateY(-50%) rotate(-90deg);
+  }
+
+  /* Disabled dropdown arrows */
+  .sidenav .nav-item.disabled .nav-link[data-bs-toggle="collapse"]::after {
+    opacity: 0.3;
   }
 
   /* Nested Menu Structure & Styling */
@@ -427,7 +469,7 @@
                 <a class="nav-link {{ request()->routeIs('admin.accounts.teachers.create') ? 'active' : '' }}"
                   href="{{ route('admin.accounts.teachers.create') }}">
                   <i class="fas fa-user-plus me-2"></i>
-                  Add Teacher
+                  Add Teacher>
                 </a>
               </li>
               <li class="nav-item">
@@ -564,12 +606,54 @@
             </ul>
           </li>
 
+          <!-- جدولة الكورسات والمسارات -->
+          <li class="nav-item">
+            <a class="nav-link {{ request()->routeIs('admin.schedules.*') ? 'active' : '' }}" href="{{ route('admin.schedules.index') }}">
+              <i class="fas fa-calendar-alt me-2 text-dark text-sm opacity-10"></i>
+              جدولة الكورسات والمسارات
+            </a>
+          </li>
+
+        </ul>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link {{ request()->routeIs('admin.finance.*') ? 'active' : '' }}" 
+          href="#" id="financeDropdown" data-bs-toggle="collapse" data-bs-target="#financeSubmenu"
+          aria-expanded="{{ request()->routeIs('admin.finance.*') ? 'true' : 'false' }}">
+          <div
+            class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+            <i class="fas fa-wallet text-dark text-sm opacity-10"></i>
+          </div>
+          <span class="nav-link-text ms-1">Financial Management</span>
+        </a>
+        <ul class="nav flex-column collapse {{ request()->routeIs('admin.finance.*') ? 'show' : '' }}"
+          id="financeSubmenu" data-bs-parent="#sidebarAccordion">
+          <li class="nav-item">
+            <a class="nav-link {{ request()->routeIs('admin.finance.payments') ? 'active' : '' }}" href="{{ route('admin.finance.payments') }}">
+              <i class="fas fa-money-check-alt me-2"></i>All financial transactions
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/admin/transactions">
+              <i class="fas fa-chart-line me-2"></i> Transaction management
+            </a>
+          </li>
+          <!-- <li class="nav-item">
+            <a class="nav-link" href="{{ route('admin.accounts.students.list') }}">
+              <i class="fas fa-user-graduate me-2"></i>حسابات الطلاب
+            </a>
+          </li> -->
+          <!-- <li class="nav-item">
+            <a class="nav-link" href="{{ route('admin.accounts.teachers.list') }}">
+              <i class="fas fa-chalkboard-teacher me-2"></i>حسابات الأساتذة
+            </a>
+          </li> -->
         </ul>
       </li>
 
 
       <!-- Monitoring and Supervision -->
-      <li class="nav-item">
+      <li class="nav-item disabled">
         <a class="nav-link {{ request()->routeIs('admin.supervision.*') ? 'active' : '' }}" href="#"
           id="monitoringDropdown" data-bs-toggle="collapse" data-bs-target="#monitoringSubmenu"
           aria-expanded="{{ request()->routeIs('admin.supervision.*') ? 'true' : 'false' }}">
@@ -606,7 +690,7 @@
       </li>
 
       <!-- Schedules -->
-      <li class="nav-item">
+      <li class="nav-item disabled">
         <a class="nav-link {{ request()->routeIs('admin.tables.*') ? 'active' : '' }}" href="#" id="scheduleDropdown"
           data-bs-toggle="collapse" data-bs-target="#scheduleSubmenu"
           aria-expanded="{{ request()->routeIs('admin.tables.*') ? 'true' : 'false' }}">
@@ -649,40 +733,7 @@
       </li>
 
       <!-- Financial -->
-      <li class="nav-item">
-        <a class="nav-link {{ request()->routeIs('admin.finance.*') ? 'active' : '' }}" 
-          href="#" id="financeDropdown" data-bs-toggle="collapse" data-bs-target="#financeSubmenu"
-          aria-expanded="{{ request()->routeIs('admin.finance.*') ? 'true' : 'false' }}">
-          <div
-            class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-            <i class="fas fa-wallet text-dark text-sm opacity-10"></i>
-          </div>
-          <span class="nav-link-text ms-1">الإدارة المالية</span>
-        </a>
-        <ul class="nav flex-column collapse {{ request()->routeIs('admin.finance.*') ? 'show' : '' }}"
-          id="financeSubmenu" data-bs-parent="#sidebarAccordion">
-          <li class="nav-item">
-            <a class="nav-link {{ request()->routeIs('admin.finance.payments') ? 'active' : '' }}" href="{{ route('admin.finance.payments') }}">
-              <i class="fas fa-money-check-alt me-2"></i>جميع الحركات المالية
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/admin/transactions">
-              <i class="fas fa-chart-line me-2"></i>إدارة المعاملات
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{{ route('admin.accounts.students.list') }}">
-              <i class="fas fa-user-graduate me-2"></i>حسابات الطلاب
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{{ route('admin.accounts.teachers.list') }}">
-              <i class="fas fa-chalkboard-teacher me-2"></i>حسابات الأساتذة
-            </a>
-          </li>
-        </ul>
-      </li>
+   
 
       <!-- Facilities Management -->
       <li class="nav-item">
@@ -698,37 +749,17 @@
         <ul class="nav flex-column collapse {{ request()->routeIs('admin.facilities.*') ? 'show' : '' }}"
           id="facilitiesSubmenu" data-bs-parent="#sidebarAccordion">
           <li class="nav-item">
-            <a class="nav-link" href="#">
-              <div
-                class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                <i class="fas fa-door-open text-dark text-sm opacity-10"></i>
-              </div>
-              <span class="nav-link-text ms-1">Add/Edit Hall</span>
+            <a class="nav-link {{ request()->routeIs('admin.facilities.rooms.*') ? 'active' : '' }}" href="{{ route('admin.facilities.rooms.index') }}">
+              <i class="fas fa-door-open me-2 text-dark text-sm opacity-10"></i>
+              Manage Rooms
             </a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-              <div
-                class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                <i class="fas fa-calendar-week text-dark text-sm opacity-10"></i>
-              </div>
-              <span class="nav-link-text ms-1">Schedule Halls</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-              <div
-                class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                <i class="fas fa-broom text-dark text-sm opacity-10"></i>
-              </div>
-              <span class="nav-link-text ms-1">Manage Facility Availability</span>
-            </a>
-          </li>
+          <!-- يمكنك إضافة خيارات أخرى هنا مثل halls أو availability ... -->
         </ul>
       </li>
 
       <!-- Exams Management -->
-      <li class="nav-item">
+      <li class="nav-item disabled">
         <a class="nav-link {{ request()->routeIs('admin.exams.*') ? 'active' : '' }}" href="#" id="examsDropdown"
           data-bs-toggle="collapse" data-bs-target="#examsSubmenu"
           aria-expanded="{{ request()->routeIs('admin.exams.*') ? 'true' : 'false' }}">
@@ -759,7 +790,7 @@
       </li>
 
       <!-- Reports & Analytics -->
-      <li class="nav-item">
+      <li class="nav-item disabled">
         <a class="nav-link {{ request()->routeIs('admin.reports.*') ? 'active' : '' }}" href="#"
           id="reportsDropdown" data-bs-toggle="collapse" data-bs-target="#reportsSubmenu"
           aria-expanded="{{ request()->routeIs('admin.reports.*') ? 'true' : 'false' }}">
@@ -790,7 +821,7 @@
       </li>
 
       <!-- Website Management -->
-      <li class="nav-item">
+      <li class="nav-item disabled">
         <a class="nav-link {{ request()->routeIs('admin.site.*') ? 'active' : '' }}" href="#" id="siteDropdown"
           data-bs-toggle="collapse" data-bs-target="#siteSubmenu"
           aria-expanded="{{ request()->routeIs('admin.site.*') ? 'true' : 'false' }}">

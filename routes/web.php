@@ -13,6 +13,8 @@ use App\Http\Controllers\Admin\Educational\CourseController;
 use App\Http\Controllers\Admin\Educational\PackageController;
 use App\Http\Controllers\Teacher\PasswordController;
 use App\Http\Controllers\Admin\TransactionController;
+use App\Http\Controllers\Admin\CourseScheduleController;
+use App\Http\Controllers\Admin\RoomController;
 
 use App\Models\Category;
 use App\Models\Course;
@@ -144,10 +146,6 @@ Route::prefix('admin')->middleware('isAdmin')->name('admin.')->group(function ()
         // Course Exams
         Route::post('/exams/store', [\App\Http\Controllers\Admin\CourseExamController::class, 'store'])->name('exams.store');
         Route::delete('/exams/{exam}', [\App\Http\Controllers\Admin\CourseExamController::class, 'destroy'])->name('exams.destroy');
-        
-        // Course Schedules
-        Route::post('/schedules/store', [\App\Http\Controllers\Admin\CourseScheduleController::class, 'store'])->name('schedules.store');
-        Route::delete('/schedules/{schedule}', [\App\Http\Controllers\Admin\CourseScheduleController::class, 'destroy'])->name('schedules.destroy');
     });
     // Educational Packages Management
     Route::prefix('educational-packages')->name('educational-packages.')->group(function () {
@@ -188,6 +186,9 @@ Route::prefix('admin')->middleware('isAdmin')->name('admin.')->group(function ()
         Route::post('halls/store', [AdminController::class, 'hallsStore'])->name('halls.store');
         Route::get('halls/list', [AdminController::class, 'hallsList'])->name('halls.list');
         Route::get('manage', [AdminController::class, 'facilitiesManage'])->name('manage');
+        Route::get('rooms', [RoomController::class, 'index'])->name('rooms.index');
+        Route::post('rooms', [RoomController::class, 'store'])->name('rooms.store');
+        Route::delete('rooms/{room}', [RoomController::class, 'destroy'])->name('rooms.destroy');
     });
     // مالية
     Route::get('finance/payments', [AdminController::class, 'financePayments'])->name('finance.payments');
@@ -203,13 +204,19 @@ Route::prefix('admin')->middleware('isAdmin')->name('admin.')->group(function ()
     Route::get('teachers/{teacher}/account/transaction/{payment}/edit', [TransactionController::class, 'editTeacherTransaction'])->name('teachers.account.transaction.edit');
     Route::put('teachers/{teacher}/account/transaction/{payment}', [TransactionController::class, 'updateTeacherTransaction'])->name('teachers.account.transaction.update');
     Route::delete('teachers/{teacher}/account/transaction/{payment}', [TransactionController::class, 'deleteTeacherTransaction'])->name('teachers.account.transaction.delete');
+
+    Route::get('schedules', [CourseScheduleController::class, 'index'])->name('schedules.index');
+    Route::get('schedules/{course}', [CourseScheduleController::class, 'show'])->name('schedules.show');
+    Route::post('schedules', [CourseScheduleController::class, 'store'])->name('schedules.store');
+    Route::delete('schedules/{schedule}', [CourseScheduleController::class, 'destroy'])->name('schedules.destroy');
+    Route::put('schedules/{schedule}', [CourseScheduleController::class, 'update'])->name('schedules.update');
 });
 
 // Password Change Route (outside the group to avoid middleware loop issue)
 Route::get('teacher/password/change', [PasswordController::class, 'create'])->middleware('auth')->name('teacher.password.change');
 Route::post('teacher/password/update', [PasswordController::class, 'store'])->middleware('auth')->name('teacher.password.update');
 
-// راوتات المدرس
+// راوتانعمت المدرس
 Route::prefix('teacher')->middleware(['isTeacher', 'password.changed'])->name('teacher.')->group(function () {
     Route::get('dashboard', [TeacherController::class, 'dashboard'])->name('dashboard');
     Route::get('billing', [TeacherController::class, 'billing'])->name('billing');

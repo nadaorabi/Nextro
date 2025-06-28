@@ -11,6 +11,11 @@ class Schedule extends Model
 
     protected $fillable = [
         'course_id', 
+        'day_of_week',
+        'session_date',
+        'start_time',
+        'end_time',
+        'room_id',
         'title',
         'description',
         'day', 
@@ -23,5 +28,10 @@ class Schedule extends Model
     public function course() 
     { 
         return $this->belongsTo(Course::class); 
+    }
+
+    public function room()
+    {
+        return $this->belongsTo(Room::class);
     }
 }
