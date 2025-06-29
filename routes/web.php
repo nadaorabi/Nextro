@@ -207,6 +207,7 @@ Route::prefix('admin')->middleware('isAdmin')->name('admin.')->group(function ()
 
     Route::get('schedules', [CourseScheduleController::class, 'index'])->name('schedules.index');
     Route::get('schedules/{course}', [CourseScheduleController::class, 'show'])->name('schedules.show');
+    Route::get('schedules/package/{package}', [CourseScheduleController::class, 'showPackage'])->name('schedules.show-package');
     Route::post('schedules', [CourseScheduleController::class, 'store'])->name('schedules.store');
     Route::delete('schedules/{schedule}', [CourseScheduleController::class, 'destroy'])->name('schedules.destroy');
     Route::put('schedules/{schedule}', [CourseScheduleController::class, 'update'])->name('schedules.update');

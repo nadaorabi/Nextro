@@ -93,8 +93,8 @@
                     @forelse($course->schedules as $schedule)
                         <tr>
                             <td>{{ __($schedule->day_of_week) }}</td>
-                            <td>{{ \Carbon\Carbon::createFromFormat('H:i:s', $schedule->start_time)->format('h:i A') }}</td>
-                            <td>{{ \Carbon\Carbon::createFromFormat('H:i:s', $schedule->end_time)->format('h:i A') }}</td>
+                            <td>{{ \Carbon\Carbon::parse($schedule->start_time)->format('h:i A') }}</td>
+                            <td>{{ \Carbon\Carbon::parse($schedule->end_time)->format('h:i A') }}</td>
                             <td>{{ $schedule->room ? $schedule->room->room_number : $schedule->room_id }}</td>
                             <td>{{ $schedule->created_at->format('Y-m-d H:i') }}</td>
                             <td>{{ $schedule->session_date ? \Carbon\Carbon::parse($schedule->session_date)->format('Y-m-d') : '' }}</td>
@@ -119,11 +119,11 @@
                                         <div class="modal-body">
                                           <div class="mb-3">
                                             <label class="form-label">وقت البداية</label>
-                                            <input type="time" name="start_time" class="form-control" value="{{ $schedule->start_time }}" required>
+                                            <input type="time" name="start_time" class="form-control" value="{{ \Carbon\Carbon::parse($schedule->start_time)->format('H:i') }}" required>
                                           </div>
                                           <div class="mb-3">
                                             <label class="form-label">وقت النهاية</label>
-                                            <input type="time" name="end_time" class="form-control" value="{{ $schedule->end_time }}" required>
+                                            <input type="time" name="end_time" class="form-control" value="{{ \Carbon\Carbon::parse($schedule->end_time)->format('H:i') }}" required>
                                           </div>
                                         </div>
                                         <div class="modal-footer">

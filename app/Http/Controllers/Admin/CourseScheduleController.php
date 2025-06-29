@@ -14,9 +14,57 @@ class CourseScheduleController extends Controller
     // عرض جميع الكورسات والمسارات مع الفلترة
     public function index(Request $request)
     {
-        $courses = Course::with('schedules')->get();
-        // يمكنك إضافة فلترة حسب الطلب لاحقاً
-        return view('admin.schedules.index', compact('courses'));
+        $query = Course::with(['schedules', 'category']);
+        $packageQuery = \App\Models\Package::with(['courses.schedules', 'category']);
+        
+        // فلترة حسب البحث
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                  ->orWhere('description', 'like', "%{$search}%")
+                  ->orWhereHas('category', function($catQuery) use ($search) {
+                      $catQuery->where('name', 'like', "%{$search}%");
+                  });
+            });
+            
+            $packageQuery->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('description', 'like', "%{$search}%")
+                  ->orWhereHas('category', function($catQuery) use ($search) {
+                      $catQuery->where('name', 'like', "%{$search}%");
+                  });
+            });
+        }
+        
+        // فلترة حسب النوع
+        if ($request->filled('type')) {
+            if ($request->type === 'package') {
+                $query = Course::whereRaw('1 = 0'); // لا تظهر الكورسات
+            } elseif ($request->type === 'course') {
+                $packageQuery = \App\Models\Package::whereRaw('1 = 0'); // لا تظهر البكجات
+            }
+        }
+        
+        // فلترة حسب الحالة
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+            $packageQuery->where('status', $request->status);
+        }
+        
+        $courses = $query->get();
+        $packages = $packageQuery->get();
+        
+        // إضافة تسجيل للتشخيص
+        \Log::info('Schedules index request:', [
+            'search' => $request->search,
+            'type' => $request->type,
+            'status' => $request->status,
+            'courses_count' => $courses->count(),
+            'packages_count' => $packages->count()
+        ]);
+        
+        return view('admin.schedules.index', compact('courses', 'packages'));
     }
 
     // عرض الجدولة لكورس أو مسار
@@ -25,6 +73,14 @@ class CourseScheduleController extends Controller
         $course->load('schedules');
         $rooms = \App\Models\Room::all();
         return view('admin.schedules.show', compact('course', 'rooms'));
+    }
+
+    // عرض تفاصيل البكج والمواد الموجودة فيه
+    public function showPackage(\App\Models\Package $package)
+    {
+        $package->load(['courses.schedules', 'courses.category']);
+        $rooms = \App\Models\Room::all();
+        return view('admin.schedules.show-package', compact('package', 'rooms'));
     }
 
     // إضافة أو تعديل الجدولة مع التحقق من التعارض
@@ -55,6 +111,7 @@ class CourseScheduleController extends Controller
 
         if ($validator->fails()) {
             \Log::error('Schedule validation failed:', $validator->errors()->toArray());
+            \Log::info('Received data:', $request->all());
             return redirect()->back()
                 ->withErrors($validator)
                 ->withInput();
@@ -111,8 +168,8 @@ class CourseScheduleController extends Controller
                 'course_id' => $request->course_id,
                 'day_of_week' => $day_of_week,
                 'session_date' => $request->session_date,
-                'start_time' => $request->start_time,
-                'end_time' => $request->end_time,
+                'start_time' => $request->start_time . ':00',
+                'end_time' => $request->end_time . ':00',
                 'room_id' => $request->room_id,
             ];
             
@@ -159,6 +216,8 @@ class CourseScheduleController extends Controller
         ]);
 
         if ($validator->fails()) {
+            \Log::error('Schedule update validation failed:', $validator->errors()->toArray());
+            \Log::info('Received data:', $request->all());
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
@@ -204,8 +263,12 @@ class CourseScheduleController extends Controller
             return redirect()->back()->with('error', 'لا يمكن جدولة نفس الكورس في أكثر من قاعة بنفس الوقت!')->withInput();
         }
 
-        $schedule->start_time = $request->start_time;
-        $schedule->end_time = $request->end_time;
+        // إضافة ثواني للوقت قبل الحفظ (00:00)
+        $start_time_with_seconds = $request->start_time . ':00';
+        $end_time_with_seconds = $request->end_time . ':00';
+
+        $schedule->start_time = $start_time_with_seconds;
+        $schedule->end_time = $end_time_with_seconds;
         $schedule->save();
 
         return redirect()->back()->with('success', 'تم تعديل أوقات الجدولة بنجاح!');
