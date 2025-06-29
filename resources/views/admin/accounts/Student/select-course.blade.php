@@ -345,11 +345,7 @@
       </div>
     </div>
     <!-- كارد ملخص العناصر المختارة -->
-    <div id="summaryCard">
-        <div class="summary-title">ملخص العناصر المختارة</div>
-        <ul id="summaryList"></ul>
-        <div class="total" id="summaryTotalBox">الإجمالي: <span id="summaryTotal">0</span></div>
-        <div class="empty-msg" id="summaryEmptyMsg" style="display:none;">لم يتم اختيار أي عنصر بعد.</div>
+    <div class="d-flex justify-content-center my-5">
         <button type="submit" form="enrollForm" class="dynamic-btn px-5 py-2" id="confirmBtnSummary">
             <i class="fas fa-check-circle me-1"></i> تأكيد الإضافة
         </button>
@@ -486,7 +482,6 @@ function renderGrid() {
                 }
             }
             renderGrid();
-            renderSummaryCard();
         });
     });
     // تفعيل زر المعلومات
@@ -521,15 +516,12 @@ function renderGrid() {
             modal.show();
         });
     });
-    // تحديث كارد الملخص
-    renderSummaryCard();
 }
 document.getElementById('searchInput').addEventListener('input', renderGrid);
 document.getElementById('categoryFilter').addEventListener('change', renderGrid);
 document.getElementById('typeFilter').addEventListener('change', renderGrid);
 document.addEventListener('DOMContentLoaded', function() {
     renderGrid();
-    renderSummaryCard();
 });
 // عند إرسال النموذج أضف الحقول المخفية
 const enrollForm = document.getElementById('enrollForm');
@@ -552,39 +544,6 @@ enrollForm.addEventListener('submit', function(e) {
         this.appendChild(input);
     });
 });
-function renderSummaryCard() {
-    const card = document.getElementById('summaryCard');
-    const list = document.getElementById('summaryList');
-    const totalSpan = document.getElementById('summaryTotal');
-    const totalBox = document.getElementById('summaryTotalBox');
-    const emptyMsg = document.getElementById('summaryEmptyMsg');
-    const confirmBtn = document.getElementById('confirmBtnSummary');
-    let items = [
-        ...allCourses.filter(c => selectedCourses.includes(c.id) || c.enrolled),
-        ...allPackages.filter(p => selectedPackages.includes(p.id) || p.enrolled)
-    ];
-    list.innerHTML = '';
-    let total = 0;
-    let hasNew = false;
-    if(items.length === 0) {
-        totalBox.style.display = 'none';
-        emptyMsg.style.display = 'block';
-    } else {
-        totalBox.style.display = 'inline-block';
-        emptyMsg.style.display = 'none';
-        items.forEach(item => {
-            total += Number(item.price);
-            let type = item.type === 'course' ? 'كورس' : 'بكج';
-            let isNew = (item.type === 'course' ? selectedCourses.includes(item.id) : selectedPackages.includes(item.id));
-            if(isNew) hasNew = true;
-            let badge = item.enrolled && !isNew ? "<span class='badge bg-warning text-dark ms-2'>مسجل مسبقًا</span>" : "<span class='badge bg-success ms-2'>جديد</span>";
-            list.innerHTML += `<li><span><strong>${item.title}</strong> <span class='badge bg-secondary'>${type}</span> ${item.enrolled && !isNew ? badge : (isNew ? badge : '')}</span><span class='badge bg-info'>${item.price} ${item.currency}</span></li>`;
-        });
-    }
-    totalSpan.innerText = total.toFixed(2) + (items[0]?.currency ? ' ' + items[0].currency : '');
-    // تفعيل/تعطيل زر التأكيد حسب وجود عناصر جديدة
-    if(confirmBtn) confirmBtn.disabled = !hasNew;
-}
 </script>
 <style>
 #resultsGrid .card { min-height: 260px; transition: box-shadow .2s, border .2s; border: none; }

@@ -27,6 +27,37 @@
     form[style*="display: inline"] {
       margin: 0;
     }
+    .stats-card {
+      min-height: 210px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      border-radius: 1.2rem;
+      box-shadow: 0 2px 8px #e3eaf1;
+      background: #fff;
+      padding: 1.5rem;
+    }
+    .stats-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 0.5rem auto;
+      font-size: 1.8rem;
+      color: white !important;
+    }
+    .stats-title {
+      font-size: 1rem;
+      color: #888;
+      margin-bottom: 0.3rem;
+    }
+    .stats-value {
+      font-size: 1.8rem;
+      font-weight: bold;
+      margin-bottom: 0.2rem;
+    }
   </style>
 </head>
 
@@ -179,83 +210,102 @@
               </div>
             </div>
           </div>
-          <div class="row mb-4 stats-boxes-row">
-            <div class="col-12 col-md-3 mb-3 mb-md-0">
-              <div class="stats-box text-center">
-                <div class="stats-icon mb-1">
-                  <i class="fas fa-graduation-cap"></i>
+
+          <!-- Account Information Card -->
+          <div class="card shadow-sm mb-4">
+            <div class="card-header">
+              <h6 class="mb-0">Account Information</h6>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-3">
+                  <label class="form-label text-muted">Registration Date</label>
+                  <p class="font-weight-bold">{{ $student->created_at->format('F d, Y') }}</p>
                 </div>
-                <div class="stats-title">Total Courses</div>
-                <div class="stats-value text-primary">{{ $enrollments->count() }}</div>
-                <div class="stats-desc">Enrolled Courses</div>
+                <div class="col-md-3">
+                  <label class="form-label text-muted">Last Updated</label>
+                  <p class="font-weight-bold">{{ $student->updated_at->format('F d, Y') }}</p>
+                </div>
+                <div class="col-md-3">
+                  <label class="form-label text-muted">Login ID</label>
+                  <p class="font-weight-bold text-primary">{{ $student->login_id }}</p>
+                </div>
+                <div class="col-md-3">
+                  <label class="form-label text-muted">Password</label>
+                  <div class="position-relative">
+                    <input id="student-password" type="password" class="form-control font-weight-bold ps-4 pe-5 password-field" value="{{ $student->plain_password ?? '' }}" readonly>
+                    <span class="position-absolute top-50 end-0 translate-middle-y me-3" style="cursor:pointer;" id="togglePassword">
+                      <i class="fas fa-eye text-secondary"></i>
+                    </span>
+                  </div>
+                </div>
               </div>
             </div>
-            <div class="col-12 col-md-3 mb-3 mb-md-0">
-              <div class="stats-box text-center">
-                <div class="stats-icon mb-1">
-                  <i class="fas fa-box"></i>
-                </div>
-                <div class="stats-title">Total Packages</div>
-                <div class="stats-value text-info">{{ $studentPackages->count() }}</div>
-                <div class="stats-desc">Enrolled Packages</div>
-              </div>
-            </div>
-         
           </div>
-          <!-- Financial Summary Cards -->
-          <div class="row mb-4">
-            <div class="col-md-3">
-              <div class="card shadow-sm" style="border-radius:15px;">
-                <div class="card-body text-center">
-                  <div class="h3 text-primary mb-1">{{ number_format($totalDue, 2) }} د.ك</div>
-                  <div class="text-muted">مجموع الرسوم المستحقة</div>
-                  <i class="fas fa-file-invoice-dollar text-primary mt-2" style="font-size: 2rem;"></i>
-                </div>
+
+          <div class="row mb-4 g-4">
+            <div class="col-12 col-md-4">
+              <div class="stats-card text-center">
+                <div class="stats-icon" style="background-color:#6c63ff;"><i class="fas fa-graduation-cap"></i></div>
+                <div class="stats-title">Total Courses</div>
+                <div class="stats-value" style="color:#6c63ff;">{{ $enrollments->count() }}</div>
+                <div class="small text-secondary">Enrolled Courses</div>
               </div>
             </div>
-            <div class="col-md-3">
-              <div class="card shadow-sm" style="border-radius:15px;">
-                <div class="card-body text-center">
-                  <div class="h3 text-success mb-1">{{ number_format($totalPaid, 2) }} د.ك</div>
-                  <div class="text-muted">إجمالي المدفوع</div>
-                  <i class="fas fa-arrow-up text-success mt-2" style="font-size: 2rem;"></i>
-                </div>
+            <div class="col-12 col-md-4">
+              <div class="stats-card text-center">
+                <div class="stats-icon" style="background-color:#3f51b5;"><i class="fas fa-box"></i></div>
+                <div class="stats-title">Total Packages</div>
+                <div class="stats-value" style="color:#3f51b5;">{{ $studentPackages->count() }}</div>
+                <div class="small text-secondary">Enrolled Packages</div>
+              </div>
+            </div>
+            <div class="col-12 col-md-4">
+              <div class="stats-card text-center">
+                <div class="stats-icon" style="background-color:#2196f3;"><i class="fas fa-file-invoice-dollar"></i></div>
+                <div class="stats-title">مجموع الرسوم المستحقة</div>
+                <div class="stats-value" style="color:#2196f3;">{{ number_format($totalDue, 2) }} د.ك</div>
+              </div>
+            </div>
+            <div class="col-12 col-md-4">
+              <div class="stats-card text-center">
+                <div class="stats-icon" style="background-color:#4caf50;"><i class="fas fa-arrow-up"></i></div>
+                <div class="stats-title">إجمالي المدفوع</div>
+                <div class="stats-value" style="color:#4caf50;">{{ number_format($totalPaid, 2) }} د.ك</div>
               </div>
             </div>
             @if($totalDiscount > 0)
-            <div class="col-md-3">
-              <div class="card shadow-sm" style="border-radius:15px;">
-                <div class="card-body text-center">
-                  <div class="h3 text-info mb-1">{{ number_format($totalDiscount, 2) }} د.ك</div>
-                  <div class="text-muted">إجمالي الخصومات</div>
-                  <i class="fas fa-percent text-info mt-2" style="font-size: 2rem;"></i>
-                </div>
+            <div class="col-12 col-md-4">
+              <div class="stats-card text-center">
+                <div class="stats-icon" style="background-color:#00bcd4;"><i class="fas fa-percent"></i></div>
+                <div class="stats-title">إجمالي الخصومات</div>
+                <div class="stats-value" style="color:#00bcd4;">{{ number_format($totalDiscount, 2) }} د.ك</div>
               </div>
             </div>
             @endif
-            <div class="col-md-3">
-              <div class="card shadow-sm" style="border-radius:15px;">
-                <div class="card-body text-center">
-                  <div class="h3 {{ $outstanding > 0 ? 'text-danger' : 'text-success' }} mb-1">{{ number_format($outstanding, 2) }} د.ك</div>
-                  <div class="text-muted">المبلغ المتبقي/المستحق</div>
-                  <i class="fas fa-balance-scale {{ $outstanding > 0 ? 'text-danger' : 'text-success' }} mt-2" style="font-size: 2rem;"></i>
+            <div class="col-12 col-md-4">
+              <div class="stats-card text-center">
+                <div class="stats-icon" style="background-color:{{ $outstanding > 0 ? '#f44336' : '#4caf50' }};"><i class="fas fa-balance-scale"></i></div>
+                <div class="stats-title">المبلغ المتبقي/المستحق</div>
+                <div class="stats-value" style="color:{{ $outstanding > 0 ? '#f44336' : '#4caf50' }};">
+                  {{ number_format($outstanding, 2) }} د.ك
                 </div>
               </div>
             </div>
           </div>
 
           <!-- Last 5 Transactions Table -->
-          <div class="card shadow-sm mb-4">
-            <div class="card-header d-flex justify-content-between align-items-center">
-              <h6 class="mb-0">آخر 5 معاملات مالية</h6>
+          <div class="custom-card mb-4">
+            <div class="custom-card-header d-flex justify-content-between align-items-center">
+              <span>آخر 5 معاملات مالية</span>
               <a href="{{ route('admin.students.account', $student->id) }}" class="btn btn-outline-primary btn-sm">
                 المزيد <i class="fas fa-arrow-left ms-1"></i>
               </a>
             </div>
-            <div class="card-body p-0">
-              <div class="table-responsive">
-                <table class="table align-middle mb-0">
-                  <thead class="table-light">
+            <div class="custom-card-body p-0">
+              <div class="custom-table-responsive">
+                <table class="custom-table">
+                  <thead>
                     <tr>
                       <th>التاريخ</th>
                       <th>نوع المعاملة</th>
@@ -288,38 +338,6 @@
                     @endforeach
                   </tbody>
                 </table>
-              </div>
-            </div>
-          </div>
-
-          <!-- Account Information Card -->
-          <div class="card shadow-sm mb-4">
-            <div class="card-header">
-              <h6 class="mb-0">Account Information</h6>
-            </div>
-            <div class="card-body">
-              <div class="row">
-                <div class="col-md-3">
-                  <label class="form-label text-muted">Registration Date</label>
-                  <p class="font-weight-bold">{{ $student->created_at->format('F d, Y') }}</p>
-                </div>
-                <div class="col-md-3">
-                  <label class="form-label text-muted">Last Updated</label>
-                  <p class="font-weight-bold">{{ $student->updated_at->format('F d, Y') }}</p>
-                </div>
-                <div class="col-md-3">
-                  <label class="form-label text-muted">Login ID</label>
-                  <p class="font-weight-bold text-primary">{{ $student->login_id }}</p>
-                </div>
-                <div class="col-md-3">
-                  <label class="form-label text-muted">Password</label>
-                  <div class="position-relative">
-                    <input id="student-password" type="password" class="form-control font-weight-bold ps-4 pe-5 password-field" value="{{ $student->plain_password ?? '' }}" readonly>
-                    <span class="position-absolute top-50 end-0 translate-middle-y me-3" style="cursor:pointer;" id="togglePassword">
-                      <i class="fas fa-eye text-secondary"></i>
-                    </span>
-                  </div>
-                </div>
               </div>
             </div>
           </div>
@@ -416,7 +434,7 @@
                           <form action="{{ route('admin.accounts.students.courses.unenroll', ['studentId' => $student->id, 'enrollmentId' => $enrollment->id]) }}" 
                                 method="POST" 
                                 style="display: inline;"
-                                onsubmit="return confirm('هل أنت متأكد من حذف الكورس \'{{ $enrollment->course->title ?? 'الكورس' }}\'؟ سيتم استرداد المبلغ المدفوع.')">
+                                onsubmit="return confirm('هل أنت متأكد من حذف الكورس \'{{ $enrollment->course->title ?? 'الكورس' }}\'? سيتم استرداد المبلغ المدفوع.')">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="btn btn-danger btn-sm">
@@ -451,7 +469,7 @@
                           <form action="{{ route('admin.accounts.students.packages.unenroll', ['studentId' => $student->id, 'packageId' => $sp->id]) }}" 
                                 method="POST" 
                                 style="display: inline;"
-                                onsubmit="return confirm('هل أنت متأكد من حذف الباقة \'{{ $sp->package->title ?? 'الباقة' }}\'؟ سيتم استرداد المبلغ المدفوع.')">
+                                onsubmit="return confirm('هل أنت متأكد من حذف الباقة \'{{ $sp->package->title ?? 'الباقة' }}\'? سيتم استرداد المبلغ المدفوع.')">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="btn btn-danger btn-sm">
@@ -535,10 +553,6 @@
             </div>
           </div>
 
-          <!-- Three Simple Boxes Section -->
-      
-
-       
           <!-- Action Buttons -->
           <div class="card shadow-sm">
             <div class="card-body">
