@@ -215,6 +215,19 @@ Route::prefix('admin')->middleware('isAdmin')->name('admin.')->group(function ()
     Route::post('schedules', [CourseScheduleController::class, 'store'])->name('schedules.store');
     Route::delete('schedules/{schedule}', [CourseScheduleController::class, 'destroy'])->name('schedules.destroy');
     Route::put('schedules/{schedule}', [CourseScheduleController::class, 'update'])->name('schedules.update');
+
+    // Attendance Management
+    Route::prefix('attendance')->name('attendance.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Admin\AttendanceController::class, 'index'])->name('index');
+        Route::get('/details', [\App\Http\Controllers\Admin\AttendanceController::class, 'details'])->name('details');
+        Route::get('/take/{schedule}', [\App\Http\Controllers\Admin\AttendanceController::class, 'take'])->name('take');
+        Route::get('/qr-codes/{schedule}', [\App\Http\Controllers\Admin\AttendanceController::class, 'studentQRCodes'])->name('qr-codes');
+        Route::post('/scan', [\App\Http\Controllers\Admin\AttendanceController::class, 'scan'])->name('scan');
+        Route::post('/mark-present', [\App\Http\Controllers\Admin\AttendanceController::class, 'markPresent'])->name('mark-present');
+        Route::post('/mark-absent', [\App\Http\Controllers\Admin\AttendanceController::class, 'markAbsent'])->name('mark-absent');
+        Route::get('/export', [\App\Http\Controllers\Admin\AttendanceController::class, 'export'])->name('export');
+        Route::get('enrollment/{enrollment}', [\App\Http\Controllers\Admin\AttendanceController::class, 'attendanceByEnrollment'])->name('by-enrollment');
+    });
 });
 
 // Password Change Route (outside the group to avoid middleware loop issue)

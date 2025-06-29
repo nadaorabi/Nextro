@@ -9,10 +9,15 @@ class Attendance extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['enrollment_id', 'date', 'status', 'method'];
+    protected $fillable = ['enrollment_id', 'schedule_id', 'date', 'status', 'method'];
 
     public function enrollment() 
     { 
         return $this->belongsTo(Enrollment::class); 
+    }
+
+    public function schedule()
+    {
+        return $this->belongsTo(Schedule::class);
     }
 }

@@ -683,7 +683,15 @@
           <!-- يمكنك إضافة خيارات أخرى هنا مثل halls أو availability ... -->
         </ul>
       </li>
-
+      <li class="nav-item mt-3">
+        <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">Attendance Management</h6>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link {{ request()->routeIs('admin.attendance.*') ? 'active' : '' }}" href="{{ route('admin.attendance.index') }}">
+          <i class="fas fa-user-check me-2 text-dark text-sm opacity-10"></i>
+          Attendance & Absence
+        </a>
+      </li>
       <!-- Monitoring and Supervision -->
       <li class="nav-item disabled">
         <a class="nav-link {{ request()->routeIs('admin.supervision.*') ? 'active' : '' }}" href="#"
@@ -860,6 +868,9 @@
           </li>
         </ul>
       </li>
+
+      <!-- Attendance Management -->
+   
     </ul>
   </div>
 

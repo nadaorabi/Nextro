@@ -426,7 +426,7 @@
                         </td>
                         <td>{{ $enrollment->enrollment_date }}</td>
                         <td>
-                          <button class="btn btn-attendance">
+                          <button class="btn btn-attendance" data-enrollment-id="{{ $enrollment->id }}" onclick="showAttendanceModal(this)">
                             <i class="fas fa-calendar-check"></i> عرض الحضور
                           </button>
                         </td>
@@ -617,84 +617,16 @@
     </div>
   </div>
 </div>
-<!-- Modal للحضور والغياب -->
+<!-- Modal -->
 <div class="modal fade" id="attendanceModal" tabindex="-1" aria-labelledby="attendanceModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="attendanceModalLabel">سجل الحضور والغياب</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <h5 class="modal-title" id="attendanceModalLabel">سجل الحضور</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="إغلاق"></button>
       </div>
-      <div class="modal-body">
-        <div class="row mb-3">
-          <div class="col-md-4">
-            <strong>المادة:</strong> <span id="modalCourse"></span>
-          </div>
-          <div class="col-md-4">
-            <strong>الأستاذ:</strong> <span id="modalTeacher"></span>
-          </div>
-          <div class="col-md-4">
-            <strong>المسار:</strong> <span id="modalTrack"></span>
-          </div>
-        </div>
-        <div class="table-responsive">
-          <table class="table table-striped">
-            <thead>
-              <tr>
-                <th>التاريخ</th>
-                <th>اليوم</th>
-                <th>الوقت</th>
-                <th>الحالة</th>
-                <th>ملاحظات</th>
-              </tr>
-            </thead>
-            <tbody id="attendanceTableBody">
-              <!-- سيتم ملؤها بالجافا سكريبت -->
-            </tbody>
-          </table>
-        </div>
-        <div class="row mt-3">
-          <div class="col-md-6">
-            <div class="card bg-light">
-              <div class="card-body">
-                <h6 class="card-title">إحصائيات الحضور</h6>
-                <div class="row">
-                  <div class="col-6">
-                    <div class="text-center">
-                      <div class="h4 text-success" id="presentCount">0</div>
-                      <small class="text-muted">حضور</small>
-                    </div>
-                  </div>
-                  <div class="col-6">
-                    <div class="text-center">
-                      <div class="h4 text-danger" id="absentCount">0</div>
-                      <small class="text-muted">غياب</small>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-6">
-            <div class="card bg-light">
-              <div class="card-body">
-                <h6 class="card-title">نسبة الحضور</h6>
-                <div class="text-center">
-                  <div class="h4 text-primary" id="attendancePercentage">0%</div>
-                  <div class="progress mt-2">
-                    <div class="progress-bar bg-success" id="attendanceProgress" role="progressbar" style="width: 0%"></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
-        <button type="button" class="btn btn-primary" onclick="printAttendanceReport()">
-          <i class="fas fa-print"></i> طباعة التقرير
-        </button>
+      <div class="modal-body" id="attendanceModalBody">
+        <div class="text-center text-muted">جاري التحميل...</div>
       </div>
     </div>
   </div>
@@ -1012,6 +944,45 @@
         });
       });
     });
+
+    function showAttendanceModal(btn) {
+        var enrollmentId = btn.getAttribute('data-enrollment-id');
+        var modal = new bootstrap.Modal(document.getElementById('attendanceModal'));
+        var body = document.getElementById('attendanceModalBody');
+        body.innerHTML = '<div class="text-center text-muted">جاري التحميل...</div>';
+        modal.show();
+
+        fetch('/admin/attendance/enrollment/' + enrollmentId)
+            .then(res => res.json())
+            .then(data => {
+                let html = `<h5 class="mb-3">الطالب: <b>${data.student}</b> | المادة: <b>${data.course}</b></h5>`;
+                html += `<div class="table-responsive"><table class="table table-bordered"><thead>
+                    <tr>
+                        <th>اليوم</th>
+                        <th>التاريخ</th>
+                        <th>الوقت</th>
+                        <th>القاعة</th>
+                        <th>الحالة</th>
+                        <th>طريقة التسجيل</th>
+                    </tr>
+                </thead><tbody>`;
+                data.sessions.forEach(s => {
+                    html += `<tr>
+                        <td>${s.day}</td>
+                        <td>${s.date}</td>
+                        <td>${s.start_time} - ${s.end_time}</td>
+                        <td>${s.room || '-'}</td>
+                        <td>
+                            ${s.status === 'present' ? '<span class="badge bg-success">حاضر</span>' : '<span class="badge bg-danger">غائب</span>'}
+                            ${s.time && s.status === 'present' ? `<br><small>${s.time}</small>` : ''}
+                        </td>
+                        <td>${s.method === '-' ? '-' : (s.method === 'QR' ? 'QR' : 'يدوي')}</td>
+                    </tr>`;
+                });
+                html += '</tbody></table></div>';
+                body.innerHTML = html;
+            });
+    }
   </script>
 
   <!-- Modal تأكيد حذف الكورس -->
