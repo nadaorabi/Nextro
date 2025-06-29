@@ -220,6 +220,7 @@ Route::prefix('admin')->middleware('isAdmin')->name('admin.')->group(function ()
     Route::prefix('attendance')->name('attendance.')->group(function () {
         Route::get('/', [\App\Http\Controllers\Admin\AttendanceController::class, 'index'])->name('index');
         Route::get('/details', [\App\Http\Controllers\Admin\AttendanceController::class, 'details'])->name('details');
+        Route::get('/schedule/{schedule}/details', [\App\Http\Controllers\Admin\AttendanceController::class, 'scheduleDetails'])->name('schedule-details');
         Route::get('/take/{schedule}', [\App\Http\Controllers\Admin\AttendanceController::class, 'take'])->name('take');
         Route::get('/qr-codes/{schedule}', [\App\Http\Controllers\Admin\AttendanceController::class, 'studentQRCodes'])->name('qr-codes');
         Route::post('/scan', [\App\Http\Controllers\Admin\AttendanceController::class, 'scan'])->name('scan');
@@ -227,6 +228,11 @@ Route::prefix('admin')->middleware('isAdmin')->name('admin.')->group(function ()
         Route::post('/mark-absent', [\App\Http\Controllers\Admin\AttendanceController::class, 'markAbsent'])->name('mark-absent');
         Route::get('/export', [\App\Http\Controllers\Admin\AttendanceController::class, 'export'])->name('export');
         Route::get('enrollment/{enrollment}', [\App\Http\Controllers\Admin\AttendanceController::class, 'attendanceByEnrollment'])->name('by-enrollment');
+        
+        // Routes جديدة للميزات المطلوبة
+        Route::get('/schedule/{schedule}/stats', [\App\Http\Controllers\Admin\AttendanceController::class, 'getStats'])->name('get-stats');
+        Route::get('/schedule/{schedule}/present-students', [\App\Http\Controllers\Admin\AttendanceController::class, 'getPresentStudents'])->name('get-present-students');
+        Route::post('/remove-attendance', [\App\Http\Controllers\Admin\AttendanceController::class, 'removeAttendance'])->name('remove');
     });
 });
 

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>QR Code Test</title>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+</head>
+<body>
+    <h1>QR Code Test</h1>
+    <p>هذا QR code يحتوي على login_id للطالب: 20240004</p>
+    <div id="qrcode"></div>
+    
+    <script>
+        // إنشاء QR code يحتوي على login_id للطالب
+        QRCode.toCanvas(document.getElementById('qrcode'), '20240004', {
+            width: 200,
+            height: 200,
+            margin: 2,
+            color: {
+                dark: '#000000',
+                light: '#FFFFFF'
+            }
+        }, function (error) {
+            if (error) console.error(error);
+            console.log('QR Code generated successfully');
+        });
+    </script>
+</body>
+</html> 
