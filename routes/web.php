@@ -176,6 +176,8 @@ Route::prefix('admin')->middleware('isAdmin')->name('admin.')->group(function ()
     Route::get('supervision/attendance', [AdminController::class, 'supervisionAttendance'])->name('supervision.attendance');
     Route::get('supervision/complaints', [AdminController::class, 'supervisionComplaints'])->name('supervision.complaints');
     Route::get('supervision/qr', [AdminController::class, 'supervisionQR'])->name('supervision.qr');
+    // جدول الحصص (الإدارة) - الحل الجذري
+    Route::get('schedules/board', [CourseScheduleController::class, 'schedulesBoard'])->name('schedules.board');
     // جداول
     Route::get('tables/create', [AdminController::class, 'tablesCreate'])->name('tables.create');
     Route::get('tables/edit', [AdminController::class, 'tablesEdit'])->name('tables.edit');
@@ -189,6 +191,8 @@ Route::prefix('admin')->middleware('isAdmin')->name('admin.')->group(function ()
         Route::get('rooms', [RoomController::class, 'index'])->name('rooms.index');
         Route::post('rooms', [RoomController::class, 'store'])->name('rooms.store');
         Route::delete('rooms/{room}', [RoomController::class, 'destroy'])->name('rooms.destroy');
+        Route::get('rooms/{room}/edit', [RoomController::class, 'edit'])->name('rooms.edit');
+        Route::put('rooms/{room}', [RoomController::class, 'update'])->name('rooms.update');
     });
     // مالية
     Route::get('finance/payments', [AdminController::class, 'financePayments'])->name('finance.payments');

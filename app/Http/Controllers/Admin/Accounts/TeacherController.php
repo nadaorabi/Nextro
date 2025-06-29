@@ -84,7 +84,26 @@ class TeacherController extends Controller
     public function show($id)
     {
         $teacher = User::where('role', 'teacher')->findOrFail($id);
-        return view('admin.accounts.teacher.show', compact('teacher'));
+        $latestPayments = $teacher->payments()->latest('payment_date')->limit(5)->get();
+        $coursesTaught = $teacher->coursesTaught()->with(['course.schedules.room'])->get();
+        $allSchedules = collect();
+        foreach ($coursesTaught as $courseInstructor) {
+            $course = $courseInstructor->course;
+            if ($course && $course->schedules) {
+                foreach ($course->schedules as $schedule) {
+                    $allSchedules->push([
+                        'course' => $course->title,
+                        'session_date' => $schedule->session_date,
+                        'day_of_week' => $schedule->day_of_week,
+                        'start_time' => $schedule->start_time,
+                        'end_time' => $schedule->end_time,
+                        'room' => $schedule->room ? ($schedule->room->room_number ?? $schedule->room->name ?? '') : '',
+                    ]);
+                }
+            }
+        }
+        $allSchedules = $allSchedules->sortBy([['session_date', 'asc'], ['start_time', 'asc']])->values();
+        return view('admin.accounts.teacher.show', compact('teacher', 'latestPayments', 'allSchedules', 'coursesTaught'));
     }
 
     public function edit($id)

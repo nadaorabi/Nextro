@@ -513,7 +513,10 @@
         </ul>
       </li>
 
-      <!-- Educational Materials Management-->
+      <!-- Educational Management -->
+      <li class="nav-item mt-3">
+        <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">Educational Management</h6>
+      </li>
       <li class="nav-item">
         <a class="nav-link {{ request()->routeIs('admin.educational-categories.*') || request()->routeIs('admin.educational-courses.*') || request()->routeIs('admin.educational-packages.*') ? 'active' : '' }}"
           href="#" id="materialsDropdown" data-bs-toggle="collapse" data-bs-target="#materialsSubmenu"
@@ -610,7 +613,14 @@
           <li class="nav-item">
             <a class="nav-link {{ request()->routeIs('admin.schedules.*') ? 'active' : '' }}" href="{{ route('admin.schedules.index') }}">
               <i class="fas fa-calendar-alt me-2 text-dark text-sm opacity-10"></i>
-              جدولة الكورسات والمسارات
+              Course scheduling
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link {{ request()->routeIs('admin.schedules.board') ? 'active' : '' }}" href="{{ route('admin.schedules.board') }}">
+              <i class="fas fa-table me-2 text-dark text-sm opacity-10"></i>
+              Management tables
             </a>
           </li>
 
@@ -651,6 +661,28 @@
         </ul>
       </li>
 
+       <!-- Facilities Management -->
+       <li class="nav-item">
+        <a class="nav-link {{ request()->routeIs('admin.facilities.*') ? 'active' : '' }}" href="#"
+          id="facilitiesDropdown" data-bs-toggle="collapse" data-bs-target="#facilitiesSubmenu"
+          aria-expanded="{{ request()->routeIs('admin.facilities.*') ? 'true' : 'false' }}">
+          <div
+            class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+            <i class="fas fa-building-user text-dark text-sm opacity-10"></i>
+          </div>
+          <span class="nav-link-text ms-1">Facilities Management</span>
+        </a>
+        <ul class="nav flex-column collapse {{ request()->routeIs('admin.facilities.*') ? 'show' : '' }}"
+          id="facilitiesSubmenu" data-bs-parent="#sidebarAccordion">
+          <li class="nav-item">
+            <a class="nav-link {{ request()->routeIs('admin.facilities.rooms.*') ? 'active' : '' }}" href="{{ route('admin.facilities.rooms.index') }}">
+              <i class="fas fa-door-open me-2 text-dark text-sm opacity-10"></i>
+              Manage Rooms
+            </a>
+          </li>
+          <!-- يمكنك إضافة خيارات أخرى هنا مثل halls أو availability ... -->
+        </ul>
+      </li>
 
       <!-- Monitoring and Supervision -->
       <li class="nav-item disabled">
@@ -735,29 +767,7 @@
       <!-- Financial -->
    
 
-      <!-- Facilities Management -->
-      <li class="nav-item">
-        <a class="nav-link {{ request()->routeIs('admin.facilities.*') ? 'active' : '' }}" href="#"
-          id="facilitiesDropdown" data-bs-toggle="collapse" data-bs-target="#facilitiesSubmenu"
-          aria-expanded="{{ request()->routeIs('admin.facilities.*') ? 'true' : 'false' }}">
-          <div
-            class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-            <i class="fas fa-building-user text-dark text-sm opacity-10"></i>
-          </div>
-          <span class="nav-link-text ms-1">Facilities Management</span>
-        </a>
-        <ul class="nav flex-column collapse {{ request()->routeIs('admin.facilities.*') ? 'show' : '' }}"
-          id="facilitiesSubmenu" data-bs-parent="#sidebarAccordion">
-          <li class="nav-item">
-            <a class="nav-link {{ request()->routeIs('admin.facilities.rooms.*') ? 'active' : '' }}" href="{{ route('admin.facilities.rooms.index') }}">
-              <i class="fas fa-door-open me-2 text-dark text-sm opacity-10"></i>
-              Manage Rooms
-            </a>
-          </li>
-          <!-- يمكنك إضافة خيارات أخرى هنا مثل halls أو availability ... -->
-        </ul>
-      </li>
-
+   
       <!-- Exams Management -->
       <li class="nav-item disabled">
         <a class="nav-link {{ request()->routeIs('admin.exams.*') ? 'active' : '' }}" href="#" id="examsDropdown"

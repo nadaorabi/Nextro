@@ -99,40 +99,78 @@ class StudentController extends Controller
         $student = User::with(['studentNotes.admin'])->findOrFail($id);
 
         // الكورسات المسجل بها الطالب
-        $enrollments = \App\Models\Enrollment::with(['course', 'course.category', 'course.courseInstructors.instructor'])
+        $enrollments = \App\Models\Enrollment::with(['course', 'course.category', 'course.courseInstructors.instructor', 'course.schedules.room'])
             ->where('student_id', $id)
             ->get();
 
         // البكجات المسجل بها الطالب
-        $studentPackages = \App\Models\StudentPackage::with(['package', 'package.packageCourses.course'])
+        $studentPackages = \App\Models\StudentPackage::with(['package', 'package.packageCourses.course.schedules.room'])
             ->where('student_id', $id)
             ->get();
 
+        // جميع جداول الكورسات المسجل بها الطالب مباشرة
+        $courseSchedules = collect();
+        foreach ($enrollments as $enrollment) {
+            if ($enrollment->course && $enrollment->course->schedules) {
+                foreach ($enrollment->course->schedules as $schedule) {
+                    $courseSchedules->push([
+                        'type' => 'course',
+                        'name' => $enrollment->course->title,
+                        'category' => $enrollment->course->category->name ?? '',
+                        'session_date' => $schedule->session_date,
+                        'day_of_week' => $schedule->day_of_week,
+                        'start_time' => $schedule->start_time,
+                        'end_time' => $schedule->end_time,
+                        'room' => $schedule->room ? ($schedule->room->room_number ?? $schedule->room->name ?? '') : '',
+                    ]);
+                }
+            }
+        }
+
+        // جميع جداول الكورسات ضمن البكجات
+        $packageSchedules = collect();
+        foreach ($studentPackages as $sp) {
+            if ($sp->package && $sp->package->packageCourses) {
+                foreach ($sp->package->packageCourses as $pc) {
+                    $course = $pc->course;
+                    if ($course && $course->schedules) {
+                        foreach ($course->schedules as $schedule) {
+                            $packageSchedules->push([
+                                'type' => 'package',
+                                'package_name' => $sp->package->name,
+                                'name' => $course->title,
+                                'category' => $course->category->name ?? '',
+                                'session_date' => $schedule->session_date,
+                                'day_of_week' => $schedule->day_of_week,
+                                'start_time' => $schedule->start_time,
+                                'end_time' => $schedule->end_time,
+                                'room' => $schedule->room ? ($schedule->room->room_number ?? $schedule->room->name ?? '') : '',
+                            ]);
+                        }
+                    }
+                }
+            }
+        }
+
+        // دمج وترتيب كل الجداول حسب التاريخ والوقت
+        $allSchedules = $courseSchedules->merge($packageSchedules)->sortBy([['session_date', 'asc'], ['start_time', 'asc']])->values();
+
         // الحركات المالية
         $payments = $student->payments()->orderByDesc('payment_date')->get();
-
-        // مجموع المدفوع فقط من معاملات دفع رسوم طالب
         $totalPaid = $student->payments()->where('type', 'student_fee')->sum('amount');
-        // مجموع الخصومات فقط من معاملات discount
         $totalDiscount = $student->payments()->where('type', 'discount')->sum('amount');
-        // مجموع أسعار الكورسات
         $totalCoursesDue = $enrollments->sum(function($enrollment) {
             return $enrollment->course ? $enrollment->course->final_price : 0;
         });
-        // مجموع أسعار الباقات
         $totalPackagesDue = $studentPackages->sum(function($sp) {
             return $sp->package ? ($sp->package->discounted_price ?? $sp->package->price) : 0;
         });
-        // الرسوم المستحقة = الكورسات + الباقات - الخصومات
         $totalDue = $totalCoursesDue + $totalPackagesDue - $totalDiscount;
-        // مجموع الاسترداد فقط من معاملات refund
         $totalRefunded = $student->payments()->where('type', 'refund')->sum('amount');
-        // المبلغ المتبقي/المستحق
         $outstanding = $totalDue - $totalPaid + $totalRefunded;
-        // حساب الرصيد الإجمالي
         $totalBalance = $payments->sum('amount');
 
-        return view('admin.accounts.Student.show', compact('student', 'enrollments', 'studentPackages', 'payments', 'totalBalance', 'totalDue', 'totalPaid', 'totalDiscount', 'outstanding'));
+        return view('admin.accounts.Student.show', compact('student', 'enrollments', 'studentPackages', 'payments', 'totalBalance', 'totalDue', 'totalPaid', 'totalDiscount', 'outstanding', 'allSchedules'));
     }
 
     public function edit($id)

@@ -273,4 +273,50 @@ class CourseScheduleController extends Controller
 
         return redirect()->back()->with('success', 'تم تعديل أوقات الجدولة بنجاح!');
     }
+
+    public function schedulesBoard(Request $request)
+    {
+        \Log::info('schedulesBoard method called', ['request' => $request->all()]);
+        
+        $query = \App\Models\Schedule::with([
+            'course.category',
+            'room',
+            'course.courseInstructors.instructor',
+        ]);
+
+        // فلترة حسب المادة
+        if ($request->filled('course_id')) {
+            $query->where('course_id', $request->course_id);
+        }
+        // فلترة حسب القاعة
+        if ($request->filled('room_id')) {
+            $query->where('room_id', $request->room_id);
+        }
+        // فلترة حسب الأستاذ
+        if ($request->filled('instructor_id')) {
+            $query->whereHas('course.courseInstructors', function($q) use ($request) {
+                $q->where('instructor_id', $request->instructor_id);
+            });
+        }
+        // فلترة حسب المسار
+        if ($request->filled('category_id')) {
+            $query->whereHas('course.category', function($q) use ($request) {
+                $q->where('id', $request->category_id);
+            });
+        }
+        // فلترة حسب اليوم أو التاريخ
+        if ($request->filled('session_date')) {
+            $query->where('session_date', $request->session_date);
+        } elseif ($request->filled('week_start')) {
+            $query->whereBetween('session_date', [$request->week_start, $request->week_end]);
+        }
+
+        $schedules = $query->orderBy('session_date')->orderBy('start_time')->get();
+        $courses = \App\Models\Course::with('category')->get();
+        $rooms = \App\Models\Room::all();
+        $categories = \App\Models\Category::all();
+        $instructors = \App\Models\User::where('role', 'teacher')->get();
+
+        return view('admin.schedules.board', compact('schedules', 'courses', 'rooms', 'categories', 'instructors'));
+    }
 } 

@@ -311,101 +311,61 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td>عربي</td>
-                      <td>تاسع صيفي 2025</td>
-                      <td>15 طالب</td>
-                      <td>2024-06-20</td>
-                      <td>
-                        <button class="btn btn-attendance" data-bs-toggle="modal" data-bs-target="#attendanceModal" data-course="عربي">
+                    @forelse($coursesTaught as $courseInstructor)
+                      @php $course = $courseInstructor->course; @endphp
+                      <tr>
+                        <td>{{ $course->title ?? '-' }}</td>
+                        <td>{{ $course->category->name ?? '-' }}</td>
+                        <td>{{ $course->enrollments->count() }} طالب</td>
+                        <td>{{ $course->schedules->min('session_date') ?? '-' }}</td>
+                        <td>
+                          <button class="btn btn-attendance" data-bs-toggle="modal" data-bs-target="#attendanceModal" data-course="{{ $course->title }}">
                           <i class="fas fa-users"></i> حضور
                         </button>
                       </td>
                     </tr>
-                    <tr>
-                      <td>رياضيات</td>
-                      <td>حادي عشر شتوي 2024</td>
-                      <td>12 طالب</td>
-                      <td>2024-05-10</td>
-                      <td>
-                        <button class="btn btn-attendance" data-bs-toggle="modal" data-bs-target="#attendanceModal" data-course="رياضيات">
-                          <i class="fas fa-users"></i> حضور
-                        </button>
-                      </td>
+                    @empty
+                      <tr>
+                        <td colspan="5" class="text-center text-muted">لا توجد كورسات لهذا الأستاذ.</td>
                     </tr>
-                    <tr>
-                      <td>فيزياء</td>
-                      <td>ثاني عشر علمي</td>
-                      <td>8 طلاب</td>
-                      <td>2024-04-15</td>
-                      <td>
-                        <button class="btn btn-attendance" data-bs-toggle="modal" data-bs-target="#attendanceModal" data-course="فيزياء">
-                          <i class="fas fa-users"></i> حضور
-                        </button>
-                      </td>
-                    </tr>
+                    @endforelse
                   </tbody>
                 </table>
               </div>
             </div>
           </div>
 
-          <!-- Class Schedule Section -->
+          <!-- جدول حصص الأستاذ -->
           <div class="custom-card mb-4">
             <div class="custom-card-header d-flex justify-content-between align-items-center">
-              <span>Class Schedule</span>
-              <button onclick="printScheduleTable()" class="btn btn-main d-flex align-items-center gap-2">
-                <i class="fas fa-print"></i> Print
-              </button>
+              <span><i class="fas fa-calendar-alt me-2"></i>Class Schedule</span>
             </div>
             <div class="custom-card-body p-0">
               <div class="custom-table-responsive">
-                <table class="custom-table" id="schedule-table-print">
+                <table class="custom-table">
                   <thead>
                     <tr>
-                      <th>اليوم \ الوقت</th>
-                      <th>09:00 - 10:30</th>
-                      <th>10:45 - 12:15</th>
-                      <th>12:30 - 14:00</th>
+                      <th>Date</th>
+                      <th>Day</th>
+                      <th>Time</th>
+                      <th>Course</th>
+                      <th>Room</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td>السبت</td>
-                      <td>عربي<br><span style="font-size:0.93em; color:#28a745;">قاعة 1</span></td>
-                      <td>رياضيات<br><span style="font-size:0.93em; color:#28a745;">قاعة 2</span></td>
-                      <td>فيزياء<br><span style="font-size:0.93em; color:#28a745;">قاعة 3</span></td>
+                    @forelse($allSchedules as $sch)
+                      <tr>
+                        <td>{{ $sch['session_date'] }}</td>
+                        <td>{{ ucfirst($sch['day_of_week']) }}</td>
+                        <td>{{ substr($sch['start_time'],0,5) }} - {{ substr($sch['end_time'],0,5) }}</td>
+                        <td>{{ $sch['course'] }}</td>
+                        <td>{{ $sch['room'] }}</td>
                     </tr>
+                    @empty
                     <tr>
-                      <td>الأحد</td>
-                      <td>رياضيات<br><span style="font-size:0.93em; color:#28a745;">قاعة 2</span></td>
-                      <td>عربي<br><span style="font-size:0.93em; color:#28a745;">قاعة 1</span></td>
-                      <td>فيزياء<br><span style="font-size:0.93em; color:#28a745;">قاعة 3</span></td>
+                        <td colspan="5" class="text-center text-muted">No schedule found for this teacher.</td>
                     </tr>
-                    <tr>
-                      <td>الاثنين</td>
-                      <td>عربي<br><span style="font-size:0.93em; color:#28a745;">قاعة 1</span></td>
-                      <td>رياضيات<br><span style="font-size:0.93em; color:#28a745;">قاعة 2</span></td>
-                      <td>فيزياء<br><span style="font-size:0.93em; color:#28a745;">قاعة 3</span></td>
-                    </tr>
-                    <tr>
-                      <td>الثلاثاء</td>
-                      <td>فيزياء<br><span style="font-size:0.93em; color:#28a745;">قاعة 3</span></td>
-                      <td>عربي<br><span style="font-size:0.93em; color:#28a745;">قاعة 1</span></td>
-                      <td>رياضيات<br><span style="font-size:0.93em; color:#28a745;">قاعة 2</span></td>
-                    </tr>
-                    <tr>
-                      <td>الأربعاء</td>
-                      <td>رياضيات<br><span style="font-size:0.93em; color:#28a745;">قاعة 2</span></td>
-                      <td>فيزياء<br><span style="font-size:0.93em; color:#28a745;">قاعة 3</span></td>
-                      <td>عربي<br><span style="font-size:0.93em; color:#28a745;">قاعة 1</span></td>
-                    </tr>
-                    <tr>
-                      <td>الخميس</td>
-                      <td>عربي<br><span style="font-size:0.93em; color:#28a745;">قاعة 1</span></td>
-                      <td>رياضيات<br><span style="font-size:0.93em; color:#28a745;">قاعة 2</span></td>
-                      <td>فيزياء<br><span style="font-size:0.93em; color:#28a745;">قاعة 3</span></td>
-                    </tr>
+                    @endforelse
                   </tbody>
                 </table>
               </div>
@@ -480,46 +440,34 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td>23/04/2024</td>
-                      <td>Student Registration - Ahmed Mohamed</td>
-                      <td><span style="background:#10b981; color:#fff; border-radius:8px; font-weight:600; padding:4px 18px; font-size:1em;">INCOME</span></td>
-                      <td style="font-weight:600; color:#10b981;">+$1,000</td>
+                    @forelse($latestPayments as $payment)
+                      <tr>
+                        <td>{{ \Carbon\Carbon::parse($payment->payment_date)->format('d/m/Y') }}</td>
+                        <td>{{ $payment->description ?? $payment->notes ?? '-' }}</td>
+                        <td>
+                          @if($payment->type == 'income' || $payment->type == 'instructor_payment' || $payment->type == 'salary' || $payment->type == 'bonus' || $payment->type == 'instructor_share')
+                            <span style="background:#10b981; color:#fff; border-radius:8px; font-weight:600; padding:4px 18px; font-size:1em;">INCOME</span>
+                          @else
+                            <span style="background:#ef4444; color:#fff; border-radius:8px; font-weight:600; padding:4px 18px; font-size:1em;">EXPENSE</span>
+                          @endif
+                        </td>
+                        <td style="font-weight:600; color:{{ ($payment->type == 'income' || $payment->type == 'instructor_payment' || $payment->type == 'salary' || $payment->type == 'bonus' || $payment->type == 'instructor_share') ? '#10b981' : '#ef4444' }};">
+                          {{ ($payment->type == 'income' || $payment->type == 'instructor_payment' || $payment->type == 'salary' || $payment->type == 'bonus' || $payment->type == 'instructor_share') ? '+' : '-' }}${{ number_format(abs($payment->amount), 0) }}
+                        </td>
                       <td><span style="background:#14b8a6; color:#fff; border-radius:8px; font-weight:600; padding:4px 18px; font-size:1em;">COMPLETED</span></td>
                     </tr>
-                    <tr>
-                      <td>22/04/2024</td>
-                      <td>Withdrawal to Bank Account</td>
-                      <td><span style="background:#ef4444; color:#fff; border-radius:8px; font-weight:600; padding:4px 18px; font-size:1em;">EXPENSE</span></td>
-                      <td style="font-weight:600; color:#ef4444;">-$500</td>
-                      <td><span style="background:#14b8a6; color:#fff; border-radius:8px; font-weight:600; padding:4px 18px; font-size:1em;">COMPLETED</span></td>
+                    @empty
+                      <tr>
+                        <td colspan="5" class="text-center text-muted">لا توجد حركات مالية.</td>
                     </tr>
-                    <tr>
-                      <td>21/04/2024</td>
-                      <td>Student Registration - Sara Ahmed</td>
-                      <td><span style="background:#10b981; color:#fff; border-radius:8px; font-weight:600; padding:4px 18px; font-size:1em;">INCOME</span></td>
-                      <td style="font-weight:600; color:#10b981;">+$1,000</td>
-                      <td><span style="background:#14b8a6; color:#fff; border-radius:8px; font-weight:600; padding:4px 18px; font-size:1em;">COMPLETED</span></td>
-                    </tr>
-                    <tr>
-                      <td>20/04/2024</td>
-                      <td>Student Registration - Mohamed Ali</td>
-                      <td><span style="background:#10b981; color:#fff; border-radius:8px; font-weight:600; padding:4px 18px; font-size:1em;">INCOME</span></td>
-                      <td style="font-weight:600; color:#10b981;">+$1,000</td>
-                      <td><span style="background:#14b8a6; color:#fff; border-radius:8px; font-weight:600; padding:4px 18px; font-size:1em;">COMPLETED</span></td>
-                    </tr>
-                    <tr>
-                      <td>19/04/2024</td>
-                      <td>Student Registration - Fatima Hassan</td>
-                      <td><span style="background:#10b981; color:#fff; border-radius:8px; font-weight:600; padding:4px 18px; font-size:1em;">INCOME</span></td>
-                      <td style="font-weight:600; color:#10b981;">+$1,000</td>
-                      <td><span style="background:#14b8a6; color:#fff; border-radius:8px; font-weight:600; padding:4px 18px; font-size:1em;">COMPLETED</span></td>
-                    </tr>
+                    @endforelse
                   </tbody>
                 </table>
               </div>
             </div>
           </div>
+
+  
 
           <!-- Action Buttons -->
           <div class="card shadow-sm">

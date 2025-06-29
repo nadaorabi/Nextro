@@ -40,6 +40,17 @@
   overflow: hidden;
   background: #fafdff;
   min-width: 600px;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid #d1e3f3;
+  box-shadow: 0 2px 8px #e3eaf1;
+}
+
+.custom-table th, .custom-table td {
+  border: 1px solid #d1e3f3;
+  text-align: center;
+  padding: 0.65rem 0.5rem;
+  background-clip: padding-box;
 }
 
 .custom-table th {
@@ -48,7 +59,6 @@
   font-weight: bold;
   font-size: 1.05rem;
   border-bottom: 2px solid #e3eaf1;
-  text-align: center;
 }
 
 .custom-table td {
@@ -56,11 +66,10 @@
   vertical-align: middle;
   font-size: 1.01rem;
   border-bottom: 1px solid #f0f4f8;
-  text-align: center;
 }
 
 .custom-table tr:last-child td {
-  border-bottom: none;
+  border-bottom: 1px solid #d1e3f3;
 }
 
 /* Badge Styles */

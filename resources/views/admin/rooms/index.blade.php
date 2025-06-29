@@ -57,6 +57,7 @@
                             <td>{{ $room->capacity }}</td>
                             <td>{{ $room->location }}</td>
                             <td>
+                                <a href="{{ route('admin.facilities.rooms.edit', $room->id) }}" class="btn btn-primary btn-sm me-1">تعديل</a>
                                 <form method="POST" action="{{ route('admin.facilities.rooms.destroy', $room->id) }}" style="display:inline-block;">
                                     @csrf
                                     @method('DELETE')

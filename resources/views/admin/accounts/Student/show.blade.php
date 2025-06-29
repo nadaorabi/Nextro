@@ -504,49 +504,37 @@
                 <table class="custom-table" id="schedule-table-print">
                   <thead>
                     <tr>
-                      <th>اليوم \ الوقت</th>
-                      <th>09:00 - 10:30</th>
-                      <th>10:45 - 12:15</th>
-                      <th>12:30 - 14:00</th>
+                      <th>Date</th>
+                      <th>Day</th>
+                      <th>Time</th>
+                      <th>Course</th>
+                      <th>Type</th>
+                      <th>Package</th>
+                      <th>Room</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td>السبت</td>
-                      <td>عربي<br><span style="font-size:0.93em; color:#28a745;">قاعة 1</span></td>
-                      <td>رياضيات<br><span style="font-size:0.93em; color:#28a745;">قاعة 2</span></td>
-                      <td>فيزياء<br><span style="font-size:0.93em; color:#28a745;">قاعة 3</span></td>
-                    </tr>
-                    <tr>
-                      <td>الأحد</td>
-                      <td>رياضيات<br><span style="font-size:0.93em; color:#28a745;">قاعة 2</span></td>
-                      <td>عربي<br><span style="font-size:0.93em; color:#28a745;">قاعة 1</span></td>
-                      <td>فيزياء<br><span style="font-size:0.93em; color:#28a745;">قاعة 3</span></td>
-                    </tr>
-                    <tr>
-                      <td>الاثنين</td>
-                      <td>عربي<br><span style="font-size:0.93em; color:#28a745;">قاعة 1</span></td>
-                      <td>رياضيات<br><span style="font-size:0.93em; color:#28a745;">قاعة 2</span></td>
-                      <td>فيزياء<br><span style="font-size:0.93em; color:#28a745;">قاعة 3</span></td>
-                    </tr>
-                    <tr>
-                      <td>الثلاثاء</td>
-                      <td>فيزياء<br><span style="font-size:0.93em; color:#28a745;">قاعة 3</span></td>
-                      <td>عربي<br><span style="font-size:0.93em; color:#28a745;">قاعة 1</span></td>
-                      <td>رياضيات<br><span style="font-size:0.93em; color:#28a745;">قاعة 2</span></td>
-                    </tr>
-                    <tr>
-                      <td>الأربعاء</td>
-                      <td>رياضيات<br><span style="font-size:0.93em; color:#28a745;">قاعة 2</span></td>
-                      <td>فيزياء<br><span style="font-size:0.93em; color:#28a745;">قاعة 3</span></td>
-                      <td>عربي<br><span style="font-size:0.93em; color:#28a745;">قاعة 1</span></td>
-                    </tr>
-                    <tr>
-                      <td>الخميس</td>
-                      <td>عربي<br><span style="font-size:0.93em; color:#28a745;">قاعة 1</span></td>
-                      <td>رياضيات<br><span style="font-size:0.93em; color:#28a745;">قاعة 2</span></td>
-                      <td>فيزياء<br><span style="font-size:0.93em; color:#28a745;">قاعة 3</span></td>
-                    </tr>
+                    @forelse($allSchedules as $sch)
+                      <tr>
+                        <td>{{ $sch['session_date'] }}</td>
+                        <td>{{ ucfirst($sch['day_of_week']) }}</td>
+                        <td>{{ substr($sch['start_time'],0,5) }} - {{ substr($sch['end_time'],0,5) }}</td>
+                        <td>{{ $sch['name'] }}</td>
+                        <td>
+                          @if($sch['type'] === 'package')
+                            <span class="badge bg-info">Package</span>
+                          @else
+                            <span class="badge bg-primary">Course</span>
+                          @endif
+                        </td>
+                        <td>{{ $sch['type'] === 'package' ? $sch['package_name'] : '-' }}</td>
+                        <td>{{ $sch['room'] }}</td>
+                      </tr>
+                    @empty
+                      <tr>
+                        <td colspan="7" class="text-center text-muted">No schedule found for this student.</td>
+                      </tr>
+                    @endforelse
                   </tbody>
                 </table>
               </div>
