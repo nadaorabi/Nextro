@@ -175,9 +175,28 @@ class CourseScheduleController extends Controller
             
             \Log::info('Creating schedule with data:', $scheduleData);
             
-            Schedule::create($scheduleData);
+            $schedule = Schedule::create($scheduleData);
             
-            return redirect()->back()->with('success', 'تمت إضافة الجدولة بنجاح!');
+            // Create default pending attendance records for all enrolled students
+            $enrollments = \App\Models\Enrollment::where('course_id', $request->course_id)->get();
+            $attendanceRecords = [];
+            foreach ($enrollments as $enrollment) {
+                $attendanceRecords[] = [
+                    'enrollment_id' => $enrollment->id,
+                    'schedule_id' => $schedule->id,
+                    'date' => $request->session_date,
+                    'status' => 'pending',
+                    'method' => 'auto',
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ];
+            }
+            
+            if (!empty($attendanceRecords)) {
+                \App\Models\Attendance::insert($attendanceRecords);
+            }
+            
+            return redirect()->back()->with('success', 'Schedule added successfully!');
         } catch (\Exception $e) {
             \Log::error('Error creating schedule:', [
                 'message' => $e->getMessage(),

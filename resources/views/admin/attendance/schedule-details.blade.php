@@ -55,8 +55,12 @@
                                     <td>
                                         @if($studentData['status'] === 'present')
                                             <span class="badge bg-success">حاضر</span>
-                                        @else
+                                        @elseif($studentData['status'] === 'absent')
                                             <span class="badge bg-danger">غائب</span>
+                                        @elseif($studentData['status'] === 'pending')
+                                            <span class="badge bg-warning">في الانتظار</span>
+                                        @else
+                                            <span class="badge bg-secondary">غير محدد</span>
                                         @endif
                                     </td>
                                     <td>
@@ -81,13 +85,28 @@
                                                     data-date="{{ date('Y-m-d') }}">
                                                 <i class="fas fa-times me-1"></i> تسجيل غياب
                                             </button>
-                                        @else
+                                        @elseif($studentData['status'] === 'absent')
                                             <button class="btn btn-sm btn-outline-success mark-present-btn"
                                                     data-enrollment="{{ $studentData['enrollment']->id }}"
                                                     data-schedule="{{ $schedule->id }}"
                                                     data-date="{{ date('Y-m-d') }}">
                                                 <i class="fas fa-check me-1"></i> تسجيل حضور
                                             </button>
+                                        @elseif($studentData['status'] === 'pending')
+                                            <div class="btn-group" role="group">
+                                                <button class="btn btn-sm btn-outline-success mark-present-btn"
+                                                        data-enrollment="{{ $studentData['enrollment']->id }}"
+                                                        data-schedule="{{ $schedule->id }}"
+                                                        data-date="{{ date('Y-m-d') }}">
+                                                    <i class="fas fa-check me-1"></i> حضور
+                                                </button>
+                                                <button class="btn btn-sm btn-outline-danger mark-absent-btn" 
+                                                        data-enrollment="{{ $studentData['enrollment']->id }}"
+                                                        data-schedule="{{ $schedule->id }}"
+                                                        data-date="{{ date('Y-m-d') }}">
+                                                    <i class="fas fa-times me-1"></i> غياب
+                                                </button>
+                                            </div>
                                         @endif
                                     </td>
                                 </tr>

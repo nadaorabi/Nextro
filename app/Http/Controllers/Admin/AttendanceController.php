@@ -143,21 +143,28 @@ class AttendanceController extends Controller
         $studentsData = [];
         foreach ($enrollments as $enrollment) {
             $attendance = $enrollment->attendance->first();
+            $status = 'pending'; // الحالة الافتراضية
+            
+            if ($attendance) {
+                $status = $attendance->status; // present, absent, أو pending
+            }
+            
             $studentsData[] = [
                 'enrollment' => $enrollment,
                 'student' => $enrollment->student,
-                'status' => $attendance ? $attendance->status : 'absent',
+                'status' => $status,
                 'method' => $attendance ? $attendance->method : null,
-                'time' => $attendance ? $attendance->created_at->format('H:i:s') : null,
+                'time' => $attendance && $attendance->status === 'present' ? $attendance->created_at->format('H:i:s') : null,
             ];
         }
         
         // إحصائيات
         $totalStudents = count($studentsData);
         $presentCount = collect($studentsData)->where('status', 'present')->count();
-        $absentCount = $totalStudents - $presentCount;
+        $absentCount = collect($studentsData)->where('status', 'absent')->count();
+        $pendingCount = collect($studentsData)->where('status', 'pending')->count();
             
-        return view('admin.attendance.student-qr-codes', compact('schedule', 'studentsData', 'totalStudents', 'presentCount', 'absentCount'));
+        return view('admin.attendance.student-qr-codes', compact('schedule', 'studentsData', 'totalStudents', 'presentCount', 'absentCount', 'pendingCount'));
     }
 
     // استقبال بيانات QR وتسجيل الحضور
@@ -198,28 +205,46 @@ class AttendanceController extends Controller
         }
 
         // تحقق من عدم تكرار الحضور لنفس الجلسة
-        $exists = \App\Models\Attendance::where('enrollment_id', $enrollment->id)
+        $existingAttendance = \App\Models\Attendance::where('enrollment_id', $enrollment->id)
             ->where('schedule_id', $scheduleId)
-            ->where('status', 'present')
             ->where('date', $today)
-            ->exists();
-        if ($exists) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'تم تسجيل حضور الطالب (' . $student->name . ') مسبقًا اليوم.',
-                'student_name' => $student->name,
-                'login_id' => $student->login_id,
-            ]);
+            ->first();
+            
+        if ($existingAttendance) {
+            if ($existingAttendance->status === 'present') {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'تم تسجيل حضور الطالب (' . $student->name . ') مسبقًا اليوم.',
+                    'student_name' => $student->name,
+                    'login_id' => $student->login_id,
+                ]);
+            } elseif ($existingAttendance->status === 'absent') {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'الطالب (' . $student->name . ') محدد كغائب لهذا اليوم.',
+                    'student_name' => $student->name,
+                    'login_id' => $student->login_id,
+                ]);
+            }
         }
 
-        // تسجيل الحضور
-        \App\Models\Attendance::create([
-            'enrollment_id' => $enrollment->id,
-            'schedule_id' => $scheduleId,
-            'date' => $today,
-            'status' => 'present',
-            'method' => 'QR',
-        ]);
+        // تحديث أو إنشاء سجل الحضور
+        if ($existingAttendance) {
+            // تحديث السجل الموجود من pending إلى present
+            $existingAttendance->update([
+                'status' => 'present',
+                'method' => 'QR',
+            ]);
+        } else {
+            // إنشاء سجل جديد
+            \App\Models\Attendance::create([
+                'enrollment_id' => $enrollment->id,
+                'schedule_id' => $scheduleId,
+                'date' => $today,
+                'status' => 'present',
+                'method' => 'QR',
+            ]);
+        }
 
         // جلب قائمة الطلاب الحاضرين لهذه الحصة اليوم
         $attendances = \App\Models\Attendance::where('schedule_id', $scheduleId)
@@ -251,27 +276,35 @@ class AttendanceController extends Controller
             'date' => 'required|date',
         ]);
 
-        // تحقق من عدم تكرار الحضور لنفس الجلسة
-        $exists = \App\Models\Attendance::where('enrollment_id', $data['enrollment_id'])
+        // البحث عن سجل الحضور الموجود
+        $existingAttendance = \App\Models\Attendance::where('enrollment_id', $data['enrollment_id'])
             ->where('schedule_id', $data['schedule_id'])
-            ->where('status', 'present')
-            ->exists();
+            ->where('date', $data['date'])
+            ->first();
 
-        if ($exists) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Attendance already recorded for this student in this session.'
+        if ($existingAttendance) {
+            if ($existingAttendance->status === 'present') {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Attendance already recorded for this student in this session.'
+                ]);
+            } else {
+                // تحديث السجل الموجود إلى present
+                $existingAttendance->update([
+                    'status' => 'present',
+                    'method' => 'manual',
+                ]);
+            }
+        } else {
+            // إنشاء سجل جديد
+            \App\Models\Attendance::create([
+                'enrollment_id' => $data['enrollment_id'],
+                'schedule_id' => $data['schedule_id'],
+                'date' => $data['date'],
+                'status' => 'present',
+                'method' => 'manual',
             ]);
         }
-
-        // تسجيل الحضور
-        \App\Models\Attendance::create([
-            'enrollment_id' => $data['enrollment_id'],
-            'schedule_id' => $data['schedule_id'],
-            'date' => $data['date'],
-            'status' => 'present',
-            'method' => 'manual',
-        ]);
 
         return response()->json([
             'status' => 'success',
@@ -288,12 +321,28 @@ class AttendanceController extends Controller
             'date' => 'required|date',
         ]);
 
-        // حذف سجل الحضور للمحاضرة المحددة
-        \App\Models\Attendance::where('enrollment_id', $data['enrollment_id'])
+        // البحث عن سجل الحضور الموجود أو إنشاء واحد جديد
+        $attendance = \App\Models\Attendance::where('enrollment_id', $data['enrollment_id'])
             ->where('schedule_id', $data['schedule_id'])
             ->where('date', $data['date'])
-            ->where('status', 'present')
-            ->delete();
+            ->first();
+            
+        if ($attendance) {
+            // تحديث الحالة إلى absent
+            $attendance->update([
+                'status' => 'absent',
+                'method' => 'manual',
+            ]);
+        } else {
+            // إنشاء سجل جديد بحالة absent
+            \App\Models\Attendance::create([
+                'enrollment_id' => $data['enrollment_id'],
+                'schedule_id' => $data['schedule_id'],
+                'date' => $data['date'],
+                'status' => 'absent',
+                'method' => 'manual',
+            ]);
+        }
 
         return response()->json([
             'status' => 'success',
@@ -446,12 +495,18 @@ class AttendanceController extends Controller
         $studentsData = [];
         foreach ($enrollments as $enrollment) {
             $attendance = $enrollment->attendance->first();
+            $status = 'pending'; // الحالة الافتراضية
+            
+            if ($attendance) {
+                $status = $attendance->status; // present, absent, أو pending
+            }
+            
             $studentsData[] = [
                 'student' => $enrollment->student,
                 'enrollment' => $enrollment,
-                'status' => $attendance ? $attendance->status : 'absent',
+                'status' => $status,
                 'method' => $attendance ? $attendance->method : null,
-                'time' => $attendance ? $attendance->created_at->format('H:i:s') : null,
+                'time' => $attendance && $attendance->status === 'present' ? $attendance->created_at->format('H:i:s') : null,
                 'attendance_id' => $attendance ? $attendance->id : null,
             ];
         }
@@ -459,14 +514,16 @@ class AttendanceController extends Controller
         // إحصائيات
         $totalStudents = count($studentsData);
         $presentCount = collect($studentsData)->where('status', 'present')->count();
-        $absentCount = $totalStudents - $presentCount;
+        $absentCount = collect($studentsData)->where('status', 'absent')->count();
+        $pendingCount = collect($studentsData)->where('status', 'pending')->count();
         
         return view('admin.attendance.schedule-details', compact(
             'schedule', 
             'studentsData', 
             'totalStudents', 
             'presentCount', 
-            'absentCount'
+            'absentCount',
+            'pendingCount'
         ));
     }
 
@@ -477,18 +534,31 @@ class AttendanceController extends Controller
         $studentCount = \App\Models\Enrollment::where('course_id', $schedule->course_id)->count();
         
         // حساب الحضور للمحاضرة المحددة فقط
-        $attendanceCount = \App\Models\Attendance::whereIn('enrollment_id', \App\Models\Enrollment::where('course_id', $schedule->course_id)->pluck('id'))
+        $presentCount = \App\Models\Attendance::whereIn('enrollment_id', \App\Models\Enrollment::where('course_id', $schedule->course_id)->pluck('id'))
             ->where('schedule_id', $scheduleId)
             ->where('date', date('Y-m-d'))
             ->where('status', 'present')
             ->count();
+            
+        $absentCount = \App\Models\Attendance::whereIn('enrollment_id', \App\Models\Enrollment::where('course_id', $schedule->course_id)->pluck('id'))
+            ->where('schedule_id', $scheduleId)
+            ->where('date', date('Y-m-d'))
+            ->where('status', 'absent')
+            ->count();
+            
+        $pendingCount = \App\Models\Attendance::whereIn('enrollment_id', \App\Models\Enrollment::where('course_id', $schedule->course_id)->pluck('id'))
+            ->where('schedule_id', $scheduleId)
+            ->where('date', date('Y-m-d'))
+            ->where('status', 'pending')
+            ->count();
         
-        $percentage = $studentCount > 0 ? round(($attendanceCount / $studentCount) * 100, 1) : 0;
+        $percentage = $studentCount > 0 ? round(($presentCount / $studentCount) * 100, 1) : 0;
         
         return response()->json([
             'total_students' => $studentCount,
-            'present_count' => $attendanceCount,
-            'absent_count' => max($studentCount - $attendanceCount, 0),
+            'present_count' => $presentCount,
+            'absent_count' => $absentCount,
+            'pending_count' => $pendingCount,
             'percentage' => $percentage
         ]);
     }

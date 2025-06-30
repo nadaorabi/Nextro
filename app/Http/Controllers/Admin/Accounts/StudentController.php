@@ -113,6 +113,17 @@ class StudentController extends Controller
         foreach ($enrollments as $enrollment) {
             if ($enrollment->course && $enrollment->course->schedules) {
                 foreach ($enrollment->course->schedules as $schedule) {
+                    // البحث عن سجل الحضور لهذا الطالب في هذه الحصة
+                    $attendance = \App\Models\Attendance::where('enrollment_id', $enrollment->id)
+                        ->where('schedule_id', $schedule->id)
+                        ->where('date', $schedule->session_date)
+                        ->first();
+                    
+                    $attendanceStatus = 'pending'; // الحالة الافتراضية
+                    if ($attendance) {
+                        $attendanceStatus = $attendance->status;
+                    }
+                    
                     $courseSchedules->push([
                         'type' => 'course',
                         'name' => $enrollment->course->title,
@@ -122,6 +133,7 @@ class StudentController extends Controller
                         'start_time' => $schedule->start_time,
                         'end_time' => $schedule->end_time,
                         'room' => $schedule->room ? ($schedule->room->room_number ?? $schedule->room->name ?? '') : '',
+                        'attendance_status' => $this->getAttendanceStatus($enrollment->id, $schedule->id, $schedule->session_date),
                     ]);
                 }
             }
@@ -135,6 +147,17 @@ class StudentController extends Controller
                     $course = $pc->course;
                     if ($course && $course->schedules) {
                         foreach ($course->schedules as $schedule) {
+                            // البحث عن سجل الحضور لهذا الطالب في هذه الحصة
+                            $attendance = \App\Models\Attendance::where('enrollment_id', $enrollment->id)
+                                ->where('schedule_id', $schedule->id)
+                                ->where('date', $schedule->session_date)
+                                ->first();
+                            
+                            $attendanceStatus = 'pending'; // الحالة الافتراضية
+                            if ($attendance) {
+                                $attendanceStatus = $attendance->status;
+                            }
+                            
                             $packageSchedules->push([
                                 'type' => 'package',
                                 'package_name' => $sp->package->name,
@@ -145,6 +168,7 @@ class StudentController extends Controller
                                 'start_time' => $schedule->start_time,
                                 'end_time' => $schedule->end_time,
                                 'room' => $schedule->room ? ($schedule->room->room_number ?? $schedule->room->name ?? '') : '',
+                                'attendance_status' => $this->getAttendanceStatus($enrollment->id, $schedule->id, $schedule->session_date),
                             ]);
                         }
                     }
@@ -520,5 +544,16 @@ class StudentController extends Controller
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'فشل في حذف الباقة: ' . $e->getMessage());
         }
+    }
+
+    // Helper method to get attendance status
+    private function getAttendanceStatus($enrollmentId, $scheduleId, $date)
+    {
+        $attendance = \App\Models\Attendance::where('enrollment_id', $enrollmentId)
+            ->where('schedule_id', $scheduleId)
+            ->where('date', $date)
+            ->first();
+        
+        return $attendance ? $attendance->status : 'pending';
     }
 }

@@ -52,8 +52,12 @@
                         <div class="mb-2">
                             @if($studentData['status'] === 'present')
                                 <span class="badge bg-success">حاضر</span>
-                            @else
+                            @elseif($studentData['status'] === 'absent')
                                 <span class="badge bg-danger">غائب</span>
+                            @elseif($studentData['status'] === 'pending')
+                                <span class="badge bg-warning">في الانتظار</span>
+                            @else
+                                <span class="badge bg-secondary">غير محدد</span>
                             @endif
                         </div>
                     </div>
