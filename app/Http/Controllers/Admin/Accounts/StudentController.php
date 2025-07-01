@@ -27,7 +27,7 @@ class StudentController extends Controller
 
         $students = $query->latest()->paginate(10)->appends($request->all());
 
-        return view('admin.accounts.student.index', compact(
+        return view('admin.accounts.Student.index', compact(
             'students',
             'totalStudents',
             'activeStudents',
@@ -40,7 +40,7 @@ class StudentController extends Controller
 
     public function create()
     {
-        return view('admin.accounts.student.create');
+        return view('admin.accounts.Student.create');
     }
 
     public function store(Request $request)
@@ -200,7 +200,7 @@ class StudentController extends Controller
     public function edit($id)
     {
         $student = User::where('role', 'student')->findOrFail($id);
-        return view('admin.accounts.student.edit', compact('student'));
+        return view('admin.accounts.Student.edit', compact('student'));
     }
 
     public function update(Request $request, $id)
