@@ -17,7 +17,7 @@ class TeacherController extends Controller
    
     public function showLoginForm()
     {
-        return view('teacher.sign-in');
+        return view('Teacher.sign-in');
     }
 
     public function login(Request $request)
