@@ -22,7 +22,7 @@ class AdminController extends Controller
         if (auth()->user()->role == 'admin') {
             session()->flash('welcome', 'أهلاً وسهلاً بك مسؤول النظام');
         }
-        return view('Admin.dashboard');
+        return view('admin.dashboard');
     }
 
     public function billing()
