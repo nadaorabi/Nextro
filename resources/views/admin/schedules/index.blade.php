@@ -5,7 +5,7 @@
     
     <!-- إحصائيات سريعة -->
     <div class="row mb-4">
-        <div class="col-md-3">
+        <div class="col-12 col-md-3 mb-3 mb-md-0">
             <div class="card bg-primary text-white">
                 <div class="card-body">
                     <div class="d-flex justify-content-between">
@@ -20,7 +20,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-12 col-md-3 mb-3 mb-md-0">
             <div class="card bg-success text-white">
                 <div class="card-body">
                     <div class="d-flex justify-content-between">
@@ -35,7 +35,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-12 col-md-3 mb-3 mb-md-0">
             <div class="card bg-info text-white">
                 <div class="card-body">
                     <div class="d-flex justify-content-between">
@@ -56,7 +56,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-12 col-md-3">
             <div class="card bg-warning text-white">
                 <div class="card-body">
                     <div class="d-flex justify-content-between">
@@ -85,31 +85,31 @@
     <div class="card mb-4">
         <div class="card-body">
             <form method="GET" action="" class="row g-3">
-                <div class="col-md-3">
+                <div class="col-12 col-md-3">
                     <input type="text" name="search" class="form-control" placeholder="بحث باسم الكورس أو المسار أو البكج..." value="{{ request('search') }}">
                 </div>
-                <div class="col-md-2">
+                <div class="col-12 col-md-2">
                     <select name="type" class="form-select">
                         <option value="">الكل</option>
                         <option value="course" {{ request('type') === 'course' ? 'selected' : '' }}>كورسات</option>
                         <option value="package" {{ request('type') === 'package' ? 'selected' : '' }}>بكجات</option>
                     </select>
                 </div>
-                <div class="col-md-2">
+                <div class="col-12 col-md-2">
                     <select name="status" class="form-select">
                         <option value="">جميع الحالات</option>
                         <option value="active" {{ request('status') === 'active' ? 'selected' : '' }}>نشط</option>
                         <option value="inactive" {{ request('status') === 'inactive' ? 'selected' : '' }}>غير نشط</option>
                     </select>
                 </div>
-                <div class="col-md-2">
-                    <button type="submit" class="btn btn-primary">
+                <div class="col-12 col-md-2">
+                    <button type="submit" class="btn btn-primary w-100">
                         <i class="fas fa-search me-2"></i>
                         فلترة
                     </button>
                 </div>
-                <div class="col-md-2">
-                    <a href="{{ route('admin.schedules.index') }}" class="btn btn-secondary">
+                <div class="col-12 col-md-2">
+                    <a href="{{ route('admin.schedules.index') }}" class="btn btn-secondary w-100">
                         <i class="fas fa-refresh me-2"></i>
                         إعادة تعيين
                     </a>
@@ -131,30 +131,32 @@
         </div>
         <div class="card-body">
             @if($courses->count() > 0)
-                <table class="table table-bordered table-hover">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>الاسم</th>
-                            <th>النوع</th>
-                            <th>عدد الجدولات</th>
-                            <th>إجراءات</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($courses as $course)
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                        <thead>
                             <tr>
-                                <td>{{ $course->id }}</td>
-                                <td>{{ $course->name ?? $course->title }}</td>
-                                <td>{{ $course->is_track ? 'مسار تعليمي' : 'كورس' }}</td>
-                                <td>{{ $course->schedules->count() }}</td>
-                                <td>
-                                    <a href="{{ route('admin.schedules.show', $course->id) }}" class="btn btn-info btn-sm">عرض الجدولة</a>
-                                </td>
+                                <th>#</th>
+                                <th>الاسم</th>
+                                <th>النوع</th>
+                                <th>عدد الجدولات</th>
+                                <th>إجراءات</th>
                             </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            @foreach($courses as $course)
+                                <tr>
+                                    <td>{{ $course->id }}</td>
+                                    <td>{{ $course->name ?? $course->title }}</td>
+                                    <td>{{ $course->is_track ? 'مسار تعليمي' : 'كورس' }}</td>
+                                    <td>{{ $course->schedules->count() }}</td>
+                                    <td>
+                                        <a href="{{ route('admin.schedules.show', $course->id) }}" class="btn btn-info btn-sm">عرض الجدولة</a>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
             @else
                 <div class="text-center py-4">
                     <i class="fas fa-search fa-3x text-muted mb-3"></i>
@@ -180,43 +182,45 @@
         </div>
         <div class="card-body">
             @if($packages->count() > 0)
-                <table class="table table-bordered table-hover">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>اسم البكج</th>
-                            <th>الفئة</th>
-                            <th>عدد المواد</th>
-                            <th>إجمالي الجدولات</th>
-                            <th>إجراءات</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($packages as $package)
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                        <thead>
                             <tr>
-                                <td>{{ $package->id }}</td>
-                                <td>{{ $package->name }}</td>
-                                <td>{{ $package->category ? $package->category->name : 'غير محدد' }}</td>
-                                <td>{{ $package->courses->count() }}</td>
-                                <td>
-                                    @php
-                                        $totalSchedules = 0;
-                                        foreach($package->courses as $course) {
-                                            $totalSchedules += $course->schedules->count();
-                                        }
-                                    @endphp
-                                    {{ $totalSchedules }}
-                                </td>
-                                <td>
-                                    <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#packageModal{{ $package->id }}">
-                                        <i class="fas fa-eye me-1"></i>
-                                        عرض المواد
-                                    </button>
-                                </td>
+                                <th>#</th>
+                                <th>اسم البكج</th>
+                                <th>الفئة</th>
+                                <th>عدد المواد</th>
+                                <th>إجمالي الجدولات</th>
+                                <th>إجراءات</th>
                             </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            @foreach($packages as $package)
+                                <tr>
+                                    <td>{{ $package->id }}</td>
+                                    <td>{{ $package->name }}</td>
+                                    <td>{{ $package->category ? $package->category->name : 'غير محدد' }}</td>
+                                    <td>{{ $package->courses->count() }}</td>
+                                    <td>
+                                        @php
+                                            $totalSchedules = 0;
+                                            foreach($package->courses as $course) {
+                                                $totalSchedules += $course->schedules->count();
+                                            }
+                                        @endphp
+                                        {{ $totalSchedules }}
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#packageModal{{ $package->id }}">
+                                            <i class="fas fa-eye me-1"></i>
+                                            عرض المواد
+                                        </button>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
             @else
                 <div class="text-center py-4">
                     <i class="fas fa-box-open fa-3x text-muted mb-3"></i>
