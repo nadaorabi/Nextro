@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="apple-touch-icon" sizes="76x76" href="{{ asset('images/apple-icon.png') }}">
   <link rel="icon" type="image/png" href="{{ asset('images/favicon.png') }}">
-  <title>Students</title>
+  <title>طلاب المعلم - {{ $teacher->name }}</title>
   <!-- Fonts and icons -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Cairo:wght@400;700&display=swap" rel="stylesheet">
   <link href="https://demos.creative-tim.com/argon-dashboard-pro/assets/css/nucleo-icons.css" rel="stylesheet" />
@@ -18,6 +18,13 @@
       font-family: 'Inter', 'Cairo', sans-serif;
       background: linear-gradient(135deg, #e0e7ff 0%, #f5f7fa 100%);
       min-height: 100vh;
+    }
+    .teacher-info-card {
+      background: linear-gradient(45deg, #5e72e4, #825ee4);
+      color: white;
+      border-radius: 1rem;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
     }
     .filter-bar {
       display: flex;
@@ -235,6 +242,33 @@
       from { opacity: 0; transform: translateX(-10px); }
       to { opacity: 1; transform: none; }
     }
+    .course-badge {
+      background: linear-gradient(45deg, #2dce89, #2dcecc);
+      color: white;
+      padding: 0.3rem 0.8rem;
+      border-radius: 50px;
+      font-size: 0.8rem;
+      margin: 0.2rem;
+      display: inline-block;
+    }
+    .package-badge {
+      background: linear-gradient(45deg, #fb6340, #fbb140);
+      color: white;
+      padding: 0.3rem 0.8rem;
+      border-radius: 50px;
+      font-size: 0.8rem;
+      margin: 0.2rem;
+      display: inline-block;
+    }
+    .enrollment-type-badge {
+      background: linear-gradient(45deg, #11cdef, #1171ef);
+      color: white;
+      padding: 0.2rem 0.6rem;
+      border-radius: 50px;
+      font-size: 0.7rem;
+      margin: 0.1rem;
+      display: inline-block;
+    }
     @media (max-width: 900px) {
       .students-table th, .students-table td {
         padding: 10px 8px;
@@ -281,49 +315,147 @@
   
   <main class="main-content position-relative max-height-vh-100 h-100">
     <div class="container-fluid py-4">
+      <!-- معلومات المعلم -->
+      <div class="teacher-info-card">
+        <div class="row align-items-center">
+          <div class="col-md-8">
+            <h3 class="mb-2">
+              <i class="fas fa-chalkboard-teacher me-2"></i>
+              {{ $teacher->name }}
+            </h3>
+            <p class="mb-1">
+              <i class="fas fa-id-card me-2"></i>
+              رقم الهوية: {{ $teacher->login_id }}
+            </p>
+            <p class="mb-1">
+              <i class="fas fa-phone me-2"></i>
+              الهاتف: {{ $teacher->mobile ?? 'غير محدد' }}
+            </p>
+            @if($teacher->email)
+            <p class="mb-0">
+              <i class="fas fa-envelope me-2"></i>
+              البريد الإلكتروني: {{ $teacher->email }}
+            </p>
+            @endif
+          </div>
+          <div class="col-md-4 text-end">
+            <div class="stats-card">
+              <h4 class="mb-1">{{ $allStudents->count() }}</h4>
+              <p class="mb-0 text-muted">الطلاب</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="filter-bar" id="courseFilterBar">
         <button type="button" class="filter-pill active" data-course="all">
           <span class="filter-icon"><i class="fas fa-users"></i></span>
-          All <span class="count" id="all-count">0</span>
+          جميع الطلاب <span class="count" id="all-count">{{ $allStudents->count() }}</span>
         </button>
-        <button type="button" class="filter-pill" data-course="Mathematics">
-          <span class="filter-icon"><i class="fas fa-calculator"></i></span>
-          Mathematics <span class="count" id="math-count">0</span>
-        </button>
-        <button type="button" class="filter-pill" data-course="Science">
-          <span class="filter-icon"><i class="fas fa-flask"></i></span>
-          Science <span class="count" id="science-count">0</span>
-        </button>
-        <button type="button" class="filter-pill" data-course="English">
+        <button type="button" class="filter-pill" data-course="direct_courses">
           <span class="filter-icon"><i class="fas fa-book"></i></span>
-          English <span class="count" id="english-count">0</span>
+          الكورسات المباشرة <span class="count" id="direct-courses-count">{{ $allStudents->where('enrollment_type', 'course')->count() }}</span>
         </button>
-        <button type="button" class="filter-pill" data-course="History">
-          <span class="filter-icon"><i class="fas fa-landmark"></i></span>
-          History <span class="count" id="history-count">0</span>
+        <button type="button" class="filter-pill" data-course="packages">
+          <span class="filter-icon"><i class="fas fa-box"></i></span>
+          البكجات <span class="count" id="packages-count">{{ $allStudents->where('enrollment_type', 'package')->count() }}</span>
         </button>
+        @foreach($teacherCourses as $courseInstructor)
+        @php $course = $courseInstructor->course; @endphp
+        <button type="button" class="filter-pill" data-course="{{ $course->title }}">
+          <span class="filter-icon"><i class="fas fa-graduation-cap"></i></span>
+          {{ $course->title }} <span class="count" id="{{ Str::slug($course->title) }}-count">{{ $allStudents->filter(function($student) use ($course) { return $student['courses']->where('title', $course->title)->count() > 0; })->count() }}</span>
+        </button>
+        @endforeach
       </div>
+      
       <div class="glass-search">
         <span class="search-icon"><i class="fas fa-search"></i></span>
-        <input type="text" id="studentSearch" placeholder="Search student by name...">
-        </div>
+        <input type="text" id="studentSearch" placeholder="البحث عن طالب بالاسم...">
+      </div>
+      
       <div class="students-count-bar" id="studentsCountBar">
-        Showing <span id="current-count">0</span> students
-          </div>
+        عرض <span id="current-count">{{ $allStudents->count() }}</span> طالب
+      </div>
+      
       <div class="students-table">
         <div class="table-responsive">
           <table class="table align-items-center mb-0">
             <thead>
               <tr>
-                <th>Student</th>
-                <th>Course</th>
-                <th>Email</th>
-                <th>Phone</th>
-                <th>Action</th>
+                <th>الطالب</th>
+                <th>الكورسات</th>
+                <th>البكجات</th>
+                <th>نوع التسجيل</th>
+                <th>البريد الإلكتروني</th>
+                <th>الهاتف</th>
+                <th>الإجراءات</th>
               </tr>
             </thead>
             <tbody id="studentsList">
-              <!-- Student rows will be populated by JavaScript -->
+              @forelse($allStudents as $student)
+              <tr style="animation-delay:{{ $loop->index * 0.07 }}s">
+                <td>
+                  <div class="student-info">
+                    <img src="{{ asset($student['avatar'] ?? 'images/default-avatar.png') }}" 
+                         class="student-avatar" alt="{{ $student['name'] }}"
+                         onerror="this.src='{{ asset('images/default-avatar.png') }}'">
+                    <div>
+                      <span class="student-name">{{ $student['name'] }}</span>
+                      <br>
+                      <small class="text-muted">ID: {{ $student['login_id'] }}</small>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  @foreach($student['courses'] as $course)
+                  <span class="course-badge">
+                    {{ $course['title'] }}
+                    @if($course['type'] == 'package_course')
+                      <small>({{ $course['package_name'] }})</small>
+                    @endif
+                  </span>
+                  @endforeach
+                </td>
+                <td>
+                  @foreach($student['packages'] as $package)
+                  <span class="package-badge">{{ $package['title'] }}</span>
+                  @endforeach
+                </td>
+                <td>
+                  @if($student['enrollment_type'] == 'course')
+                    <span class="enrollment-type-badge">كورس مباشر</span>
+                  @else
+                    <span class="enrollment-type-badge">بكج</span>
+                  @endif
+                </td>
+                <td>
+                  <span class="student-contact">
+                    <i class="fas fa-envelope"></i> 
+                    {{ $student['email'] ?? 'غير محدد' }}
+                  </span>
+                </td>
+                <td>
+                  <span class="student-contact">
+                    <i class="fas fa-phone"></i> 
+                    {{ $student['mobile'] ?? 'غير محدد' }}
+                  </span>
+                </td>
+                <td>
+                  <button class="message-btn" onclick="sendMessage('{{ $student['name'] }}')">
+                    <i class="fas fa-paper-plane"></i>
+                    <span class="btn-text">رسالة</span>
+                  </button>
+                </td>
+              </tr>
+              @empty
+              <tr>
+                <td colspan="7" class="text-center text-muted py-4">
+                  <i class="fas fa-users fa-2x mb-3"></i>
+                  <p class="mb-0">لا يوجد طلاب مسجلين في كورسات أو بكجات هذا المعلم</p>
+                </td>
+              </tr>
+              @endforelse
             </tbody>
           </table>
         </div>
@@ -337,72 +469,31 @@
   <script src="{{ asset('js/plugins/perfect-scrollbar.min.js') }}"></script>
   <script src="{{ asset('js/plugins/smooth-scrollbar.min.js') }}"></script>
   <script src="{{ asset('js/argon-dashboard.min.js') }}"></script>
+  
   <script>
-    // Sample student data
-    const students = [
-      {
-        id: 1,
-        name: 'Ali Hassan',
-        course: 'Mathematics',
-        img: 'https://randomuser.me/api/portraits/men/32.jpg',
-        email: 'ali@example.com',
-        phone: '+20 123 456 7890'
-      },
-      {
-        id: 2,
-        name: 'Sara Ahmed',
-        course: 'Science',
-        img: 'https://randomuser.me/api/portraits/women/44.jpg',
-        email: 'sara@example.com',
-        phone: '+20 123 456 7891'
-      },
-      {
-        id: 3,
-        name: 'John Smith',
-        course: 'English',
-        img: 'https://randomuser.me/api/portraits/men/45.jpg',
-        email: 'john@example.com',
-        phone: '+20 123 456 7892'
-      },
-      {
-        id: 4,
-        name: 'Mona Khaled',
-        course: 'History',
-        img: 'https://randomuser.me/api/portraits/women/65.jpg',
-        email: 'mona@example.com',
-        phone: '+20 123 456 7893'
-      },
-      {
-        id: 5,
-        name: 'Omar Youssef',
-        course: 'Mathematics',
-        img: 'https://randomuser.me/api/portraits/men/36.jpg',
-        email: 'omar@example.com',
-        phone: '+20 123 456 7894'
-      },
-      {
-        id: 6,
-        name: 'Lina Samir',
-        course: 'Science',
-        img: 'https://randomuser.me/api/portraits/women/50.jpg',
-        email: 'lina@example.com',
-        phone: '+20 123 456 7895'
-      }
-    ];
+    // بيانات الطلاب من الخادم
+    const students = @json($allStudents);
+    const teacherCourses = @json($teacherCourses);
 
     let selectedCourse = 'all';
 
     function updateCourseCounts() {
       const counts = {
         'all': students.length,
-        'Mathematics': students.filter(s => s.course === 'Mathematics').length,
-        'Science': students.filter(s => s.course === 'Science').length,
-        'English': students.filter(s => s.course === 'English').length,
-        'History': students.filter(s => s.course === 'History').length
+        'direct_courses': students.filter(s => s.enrollment_type === 'course').length,
+        'packages': students.filter(s => s.enrollment_type === 'package').length,
       };
 
+      // إضافة عدد الطلاب لكل كورس
+      teacherCourses.forEach(courseInstructor => {
+        const courseTitle = courseInstructor.course.title;
+        counts[courseTitle] = students.filter(student => 
+          student.courses.some(course => course.title === courseTitle)
+        ).length;
+      });
+
       Object.keys(counts).forEach(course => {
-        const countElement = document.getElementById(`${course.toLowerCase()}-count`);
+        const countElement = document.getElementById(`${course.toLowerCase().replace(/\s+/g, '-')}-count`);
         if (countElement) {
           countElement.textContent = counts[course];
         }
@@ -414,40 +505,88 @@
       const list = document.getElementById('studentsList');
       list.innerHTML = '';
 
-      const filteredStudents = students.filter(stu =>
-        (selectedCourse === 'all' || stu.course === selectedCourse) &&
-        (stu.name.toLowerCase().includes(search))
-      );
+      const filteredStudents = students.filter(stu => {
+        const matchesSearch = stu.name.toLowerCase().includes(search);
+        let matchesCourse = true;
+        
+        if (selectedCourse === 'all') {
+          matchesCourse = true;
+        } else if (selectedCourse === 'direct_courses') {
+          matchesCourse = stu.enrollment_type === 'course';
+        } else if (selectedCourse === 'packages') {
+          matchesCourse = stu.enrollment_type === 'package';
+        } else {
+          matchesCourse = stu.courses.some(course => course.title === selectedCourse);
+        }
+        
+        return matchesSearch && matchesCourse;
+      });
 
       document.getElementById('current-count').textContent = filteredStudents.length;
 
+      if (filteredStudents.length === 0) {
+        list.innerHTML = `
+          <tr>
+            <td colspan="7" class="text-center text-muted py-4">
+              <i class="fas fa-search fa-2x mb-3"></i>
+              <p class="mb-0">لا توجد نتائج للبحث</p>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
       filteredStudents.forEach((stu, idx) => {
-        let courseClass = '';
-        if (stu.course === 'Mathematics') courseClass = 'math';
-        if (stu.course === 'Science') courseClass = 'science';
-        if (stu.course === 'English') courseClass = 'english';
-        if (stu.course === 'History') courseClass = 'history';
+        const coursesHtml = stu.courses.map(course => {
+          let badgeClass = 'course-badge';
+          let text = course.title;
+          if (course.type === 'package_course') {
+            text += ` <small>(${course.package_name})</small>`;
+          }
+          return `<span class="${badgeClass}">${text}</span>`;
+        }).join('');
+
+        const packagesHtml = stu.packages.map(package => 
+          `<span class="package-badge">${package.title}</span>`
+        ).join('');
+
+        const enrollmentType = stu.enrollment_type === 'course' ? 'كورس مباشر' : 'بكج';
+
         list.innerHTML += `
           <tr style="animation-delay:${idx * 0.07}s">
             <td>
               <div class="student-info">
-                <img src="${stu.img}" class="student-avatar" alt="${stu.name}">
-                <span class="student-name">${stu.name}</span>
-            </div>
+                <img src="${stu.avatar ? '{{ asset('') }}' + stu.avatar : '{{ asset('images/default-avatar.png') }}'" 
+                     class="student-avatar" alt="${stu.name}"
+                     onerror="this.src='{{ asset('images/default-avatar.png') }}'">
+                <div>
+                  <span class="student-name">${stu.name}</span>
+                  <br>
+                  <small class="text-muted">ID: ${stu.login_id}</small>
+                </div>
+              </div>
+            </td>
+            <td>${coursesHtml}</td>
+            <td>${packagesHtml}</td>
+            <td>
+              <span class="enrollment-type-badge">${enrollmentType}</span>
             </td>
             <td>
-              <a href="#" class="student-course ${courseClass}">${stu.course}</a>
+              <span class="student-contact">
+                <i class="fas fa-envelope"></i> 
+                ${stu.email || 'غير محدد'}
+              </span>
             </td>
             <td>
-              <span class="student-contact"><i class="fas fa-envelope"></i> ${stu.email}</span>
-            </td>
-            <td>
-              <span class="student-contact"><i class="fas fa-phone"></i> ${stu.phone}</span>
+              <span class="student-contact">
+                <i class="fas fa-phone"></i> 
+                ${stu.mobile || 'غير محدد'}
+              </span>
             </td>
             <td>
               <button class="message-btn" onclick="sendMessage('${stu.name}')">
                 <i class="fas fa-paper-plane"></i>
-                <span class="btn-text">Message</span>
+                <span class="btn-text">رسالة</span>
               </button>
             </td>
           </tr>
@@ -456,27 +595,26 @@
     }
 
     function sendMessage(studentName) {
-      alert(`Message form will open for ${studentName}`);
-      // Here you can implement the actual messaging functionality
+      alert(`إرسال رسالة إلى ${studentName}`);
     }
 
-    // Event Listeners
-    document.getElementById('studentSearch').addEventListener('input', renderStudents);
-
-    document.querySelectorAll('.filter-pill').forEach(btn => {
-      btn.addEventListener('click', function() {
-        document.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active'));
-        this.classList.add('active');
-        selectedCourse = this.getAttribute('data-course');
-        renderStudents();
-      });
-    });
-
-    // Initialize
-    window.onload = function() {
+    // Event listeners
+    document.addEventListener('DOMContentLoaded', function() {
       updateCourseCounts();
-      renderStudents();
-    };
+      
+      // Filter pills
+      document.querySelectorAll('.filter-pill').forEach(pill => {
+        pill.addEventListener('click', function() {
+          document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+          this.classList.add('active');
+          selectedCourse = this.dataset.course;
+          renderStudents();
+        });
+      });
+
+      // Search input
+      document.getElementById('studentSearch').addEventListener('input', renderStudents);
+    });
   </script>
 </body>
 

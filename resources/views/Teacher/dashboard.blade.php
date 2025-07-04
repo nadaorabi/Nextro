@@ -8,7 +8,7 @@
   <link rel="icon" type="image/png" href="{{ asset('images/favicon.png') }}">
 
   <title>
-  dashboard teacher
+    لوحة تحكم المعلم - {{ $teacher->name }}
   </title>
   <!--     Fonts and icons     -->
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
@@ -19,18 +19,7 @@
   <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
   <!-- CSS Files -->
   <link id="pagestyle" href="{{ asset('css/argon-dashboard.css?v=2.1.0') }}" rel="stylesheet" />
-</head>
-
-<body class="g-sidenav-show   bg-gray-100">
- 
-  @include('teacher.parts.sidebar-teacher')
-
-  <main class="main-content position-relative border-radius-lg ">
-    <!-- Animated Welcome Message -->
-    <div class="container mt-4 text-center">
-      <h1 class="welcome-animated">Welcome, Teacher 👋</h1>
-    </div>
-    <style>
+  <style>
     .welcome-animated {
         display: inline-block;
         font-size: 2.5rem;
@@ -52,382 +41,322 @@
         0% { background-position: 0% 50%; }
         100% { background-position: 100% 50%; }
     }
-    </style>
+    .teacher-info-card {
+      background: linear-gradient(45deg, #5e72e4, #825ee4);
+      color: white;
+      border-radius: 1rem;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .schedule-card {
+      background: white;
+      border-radius: 1rem;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      box-shadow: 0 0 2rem 0 rgba(136, 152, 170, .15);
+      transition: transform 0.3s ease;
+    }
+    .schedule-card:hover {
+      transform: translateY(-5px);
+    }
+    .course-badge {
+      background: linear-gradient(45deg, #2dce89, #2dcecc);
+      color: white;
+      padding: 0.3rem 0.8rem;
+      border-radius: 50px;
+      font-size: 0.8rem;
+      margin: 0.2rem;
+      display: inline-block;
+    }
+  </style>
+</head>
+
+<body class="g-sidenav-show bg-gray-100">
+ 
+  @include('teacher.parts.sidebar-teacher')
+
+  <main class="main-content position-relative border-radius-lg ">
+    <!-- Animated Welcome Message -->
+    <div class="container mt-4 text-center">
+      <h1 class="welcome-animated">أهلاً وسهلاً بك {{ $teacher->name }} 👋</h1>
+    </div>
     <!-- End Animated Welcome Message -->
-    <!-- Navbar -->
-  
-    <!-- End Navbar -->
+    
+    <!-- معلومات المعلم -->
     <div class="container-fluid py-4">
+      <div class="teacher-info-card">
+        <div class="row align-items-center">
+          <div class="col-md-8">
+            <h3 class="mb-2">
+              <i class="fas fa-chalkboard-teacher me-2"></i>
+              {{ $teacher->name }}
+            </h3>
+            <p class="mb-1">
+              <i class="fas fa-id-card me-2"></i>
+              رقم الهوية: {{ $teacher->login_id }}
+            </p>
+            <p class="mb-1">
+              <i class="fas fa-phone me-2"></i>
+              الهاتف: {{ $teacher->mobile ?? 'غير محدد' }}
+            </p>
+            @if($teacher->email)
+            <p class="mb-0">
+              <i class="fas fa-envelope me-2"></i>
+              البريد الإلكتروني: {{ $teacher->email }}
+            </p>
+            @endif
+          </div>
+          <div class="col-md-4 text-end">
+            <div class="row text-center">
+              <div class="col-6">
+                <h4 class="mb-1">{{ $totalCourses }}</h4>
+                <small>الكورسات</small>
+              </div>
+              <div class="col-6">
+                <h4 class="mb-1">{{ $totalStudents }}</h4>
+                <small>الطلاب</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="row">
-    <!-- Number of Classes -->
+        <!-- عدد الكورسات -->
         <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
           <div class="card">
             <div class="card-body p-3">
               <div class="row">
                 <div class="col-8">
                   <div class="numbers">
-                <p class="text-sm mb-0 text-uppercase font-weight-bold">My Current Classes</p>
-                <h5 class="font-weight-bolder">5</h5>
+                    <p class="text-sm mb-0 text-uppercase font-weight-bold">كورساتي الحالية</p>
+                    <h5 class="font-weight-bolder">{{ $totalCourses }}</h5>
                     <p class="mb-0">
-                  <span class="text-success text-sm font-weight-bolder">+1</span>
-                  Since last semester
+                      <span class="text-success text-sm font-weight-bolder">+{{ $teacherCourses->count() }}</span>
+                      كورس نشط
                     </p>
                   </div>
                 </div>
                 <div class="col-4 text-end">
                   <div class="icon icon-shape bg-gradient-primary shadow-primary text-center rounded-circle">
-                <i class="ni ni-books text-lg opacity-10" aria-hidden="true"></i>
+                    <i class="ni ni-books text-lg opacity-10" aria-hidden="true"></i>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </div>
-    <!-- Number of Students -->
+        
+        <!-- عدد الطلاب -->
         <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
           <div class="card">
             <div class="card-body p-3">
               <div class="row">
                 <div class="col-8">
                   <div class="numbers">
-                <p class="text-sm mb-0 text-uppercase font-weight-bold">Number of Students</p>
-                <h5 class="font-weight-bolder">120</h5>
+                    <p class="text-sm mb-0 text-uppercase font-weight-bold">عدد الطلاب</p>
+                    <h5 class="font-weight-bolder">{{ $totalStudents }}</h5>
                     <p class="mb-0">
-                  <span class="text-success text-sm font-weight-bolder">+3</span>
-                  This week
+                      <span class="text-success text-sm font-weight-bolder">+{{ $totalStudents }}</span>
+                      طالب مسجل
                     </p>
                   </div>
                 </div>
                 <div class="col-4 text-end">
                   <div class="icon icon-shape bg-gradient-danger shadow-danger text-center rounded-circle">
-                <i class="ni ni-hat-3 text-lg opacity-10" aria-hidden="true"></i>
+                    <i class="ni ni-hat-3 text-lg opacity-10" aria-hidden="true"></i>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </div>
-    <!-- New Assignments -->
+        
+        <!-- عدد الحصص -->
         <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
           <div class="card">
             <div class="card-body p-3">
               <div class="row">
                 <div class="col-8">
                   <div class="numbers">
-                <p class="text-sm mb-0 text-uppercase font-weight-bold">Assignments Received</p>
-                <h5 class="font-weight-bolder">37</h5>
+                    <p class="text-sm mb-0 text-uppercase font-weight-bold">عدد الحصص</p>
+                    <h5 class="font-weight-bolder">{{ $totalSchedules }}</h5>
                     <p class="mb-0">
-                  <span class="text-danger text-sm font-weight-bolder">+10</span>
-                  Today
+                      <span class="text-success text-sm font-weight-bolder">+{{ $totalSchedules }}</span>
+                      حصة مجدولة
                     </p>
                   </div>
                 </div>
                 <div class="col-4 text-end">
                   <div class="icon icon-shape bg-gradient-success shadow-success text-center rounded-circle">
-                <i class="ni ni-folder-17 text-lg opacity-10" aria-hidden="true"></i>
+                    <i class="ni ni-calendar-grid-58 text-lg opacity-10" aria-hidden="true"></i>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </div>
-    <!-- Graded Exams -->
+        
+        <!-- الأرباح -->
         <div class="col-xl-3 col-sm-6">
           <div class="card">
             <div class="card-body p-3">
               <div class="row">
                 <div class="col-8">
                   <div class="numbers">
-                <p class="text-sm mb-0 text-uppercase font-weight-bold">Graded Exams</p>
-                <h5 class="font-weight-bolder">22</h5>
+                    <p class="text-sm mb-0 text-uppercase font-weight-bold">الأرباح المتوقعة</p>
+                    <h5 class="font-weight-bolder">{{ number_format($totalEarnings, 2) }}</h5>
                     <p class="mb-0">
-                  <span class="text-success text-sm font-weight-bolder">+4</span>
-                  This week
+                      <span class="text-success text-sm font-weight-bolder">$</span>
+                      ريال سعودي
                     </p>
                   </div>
                 </div>
                 <div class="col-4 text-end">
                   <div class="icon icon-shape bg-gradient-warning shadow-warning text-center rounded-circle">
-                <i class="ni ni-check-bold text-lg opacity-10" aria-hidden="true"></i>
+                    <i class="ni ni-money-coins text-lg opacity-10" aria-hidden="true"></i>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-  </div>
 
-  <!-- Student Performance Chart and Quick Tasks -->
+      <!-- الجداول القادمة والكورسات -->
       <div class="row mt-4">
-    <!-- Student Performance Chart -->
+        <!-- الجداول القادمة -->
         <div class="col-lg-7 mb-lg-0 mb-4">
-          <div class="card z-index-2 h-100">
-            <div class="card-header pb-0 pt-3 bg-transparent">
-          <h6 class="text-capitalize">Student Performance Tracking</h6>
-              <p class="text-sm mb-0">
-                <i class="fa fa-arrow-up text-success"></i>
-            <span class="font-weight-bold">+4%</span> improvement since last week
-              </p>
-            </div>
-            <div class="card-body p-3">
-              <div class="chart">
-                <canvas id="chart-line" class="chart-canvas" height="300"></canvas>
-              </div>
-            </div>
-          </div>
-        </div>
-    <!-- Quick Tasks -->
-        <div class="col-lg-5">
-      <div class="card" style="font-size: 1.3rem; min-height: 350px;">
+          <div class="card">
             <div class="card-header pb-0 p-3">
-          <h6 class="mb-0">Quick Tasks</h6>
+              <h6 class="mb-0">
+                <i class="fas fa-calendar-alt me-2"></i>
+                الجداول القادمة
+              </h6>
             </div>
             <div class="card-body p-3">
-              <ul class="list-group">
-            <!-- Assignments Awaiting Grading -->
-                <li class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg">
-                  <div class="d-flex align-items-center">
-                    <div class="icon icon-shape icon-sm me-3 bg-gradient-dark shadow text-center">
-                  <i class="ni ni-folder-17 text-white opacity-10"></i>
+              @if($upcomingSchedules->count() > 0)
+                @foreach($upcomingSchedules->take(5) as $schedule)
+                <div class="schedule-card">
+                  <div class="row align-items-center">
+                    <div class="col-md-8">
+                      <h6 class="mb-1">{{ $schedule['course'] }}</h6>
+                      <p class="mb-1 text-muted">
+                        <i class="fas fa-calendar me-1"></i>
+                        {{ \Carbon\Carbon::parse($schedule['session_date'])->format('Y-m-d') }}
+                        ({{ __(ucfirst($schedule['day_of_week'])) }})
+                      </p>
+                      <p class="mb-0 text-muted">
+                        <i class="fas fa-clock me-1"></i>
+                        {{ substr($schedule['start_time'], 0, 5) }} - {{ substr($schedule['end_time'], 0, 5) }}
+                        <i class="fas fa-door-open ms-2 me-1"></i>
+                        {{ $schedule['room'] ?: 'غير محدد' }}
+                      </p>
                     </div>
-                    <div class="d-flex flex-column">
-                  <h6 class="mb-1 text-dark text-sm">📌 Assignments Awaiting Grading</h6>
-                  <span class="text-xs">12 assignments not graded yet</span>
-                    </div>
-                  </div>
-                </li>
-            <!-- Today's Scheduled Lessons -->
-                <li class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg">
-                  <div class="d-flex align-items-center">
-                    <div class="icon icon-shape icon-sm me-3 bg-gradient-dark shadow text-center">
-                  <i class="ni ni-calendar-grid-58 text-white opacity-10"></i>
-                    </div>
-                    <div class="d-flex flex-column">
-                  <h6 class="mb-1 text-dark text-sm">📅 Today's Scheduled Lessons</h6>
-                  <span class="text-xs">3 scheduled classes</span>
+                    <div class="col-md-4 text-end">
+                      <span class="course-badge">{{ $schedule['category'] }}</span>
                     </div>
                   </div>
-                </li>
-            <!-- New Messages from Students -->
-                <li class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg">
-                  <div class="d-flex align-items-center">
-                    <div class="icon icon-shape icon-sm me-3 bg-gradient-dark shadow text-center">
-                  <i class="ni ni-email-83 text-white opacity-10"></i>
-                    </div>
-                    <div class="d-flex flex-column">
-                  <h6 class="mb-1 text-dark text-sm">📤 New Messages from Students</h6>
-                  <span class="text-xs">5 new messages</span>
-                    </div>
+                </div>
+                @endforeach
+              @else
+                <div class="text-center text-muted py-4">
+                  <i class="fas fa-calendar-times fa-2x mb-3"></i>
+                  <p class="mb-0">لا توجد جداول قادمة</p>
+                </div>
+              @endif
+            </div>
+          </div>
+        </div>
+        
+        <!-- الكورسات -->
+        <div class="col-lg-5">
+          <div class="card">
+            <div class="card-header pb-0 p-3">
+              <h6 class="mb-0">
+                <i class="fas fa-book me-2"></i>
+                كورساتي
+              </h6>
+            </div>
+            <div class="card-body p-3">
+              @if($teacherCourses->count() > 0)
+                @foreach($teacherCourses as $courseInstructor)
+                @php $course = $courseInstructor->course; @endphp
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                  <div>
+                    <h6 class="mb-1">{{ $course->title }}</h6>
+                    <p class="mb-0 text-muted">{{ $course->category->name ?? 'غير محدد' }}</p>
                   </div>
-                </li>
-            <!-- Review or Evaluation Requests -->
-                <li class="list-group-item border-0 d-flex justify-content-between ps-0 border-radius-lg">
-                  <div class="d-flex align-items-center">
-                    <div class="icon icon-shape icon-sm me-3 bg-gradient-dark shadow text-center">
-                  <i class="ni ni-ruler-pencil text-white opacity-10"></i>
-                    </div>
-                    <div class="d-flex flex-column">
-                  <h6 class="mb-1 text-dark text-sm">🎓 Review or Evaluation Requests</h6>
-                  <span class="text-xs">2 new requests</span>
-                    </div>
+                  <div class="text-end">
+                    <span class="badge bg-primary">{{ $course->enrollments->count() }} طالب</span>
+                    @if($courseInstructor->percentage > 0)
+                    <span class="badge bg-success">{{ $courseInstructor->percentage }}%</span>
+                    @endif
                   </div>
-                </li>
-              </ul>
+                </div>
+                @endforeach
+              @else
+                <div class="text-center text-muted py-4">
+                  <i class="fas fa-book fa-2x mb-3"></i>
+                  <p class="mb-0">لا توجد كورسات مسندة لك</p>
+                </div>
+              @endif
             </div>
           </div>
         </div>
       </div>
 
-  <!-- Class Performance Table and Carousel -->
-  <div class="row mt-4">
-    <!-- Class Performance Table -->
-    <div class="col-lg-7 mb-lg-0 mb-4">
-      <div class="card">
-        <div class="card-header pb-0 p-3">
-          <h6 class="mb-2">Class Performance</h6>
-        </div>
-        <div class="table-responsive">
-          <table class="table align-items-center">
-            <tbody>
-              <tr>
-                <td>10th Grade - Mathematics</td>
-                <td>28 students</td>
-                <td>87%</td>
-                <td>5% absence</td>
-              </tr>
-              <tr>
-                <td>9th Grade - Science</td>
-                <td>32 students</td>
-                <td>79%</td>
-                <td>8% absence</td>
-              </tr>
-              <tr>
-                <td>11th Grade - Chemistry</td>
-                <td>20 students</td>
-                <td>92%</td>
-                <td>3% absence</td>
-              </tr>
-              <tr>
-                <td>8th Grade - Physics</td>
-                <td>25 students</td>
-                <td>73%</td>
-                <td>11% absence</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-    <!-- Carousel Section -->
-    <div class="col-lg-5">
-      <div class="card card-carousel overflow-hidden h-100 p-0">
-        <div id="carouselExampleCaptions" class="carousel slide h-100" data-bs-ride="carousel">
-          <div class="carousel-inner border-radius-lg h-100">
-            <div class="carousel-item h-100 active" style="background-image: url('{{ asset('images/carousel-1.jpg') }}'); background-size: cover;">
-              <div class="carousel-caption d-none d-md-block bottom-0 text-start start-0 ms-5">
-                <div class="icon icon-shape icon-sm bg-white text-center border-radius-md mb-3">
-                  <i class="ni ni-camera-compact text-dark opacity-10"></i>
-                </div>
-                <h5 class="text-white mb-1">Get started with Argon</h5>
-                <p>There's nothing I really wanted to do in life that I wasn't able to get good at.</p>
-              </div>
+      <!-- آخر المدفوعات -->
+      @if($recentPayments->count() > 0)
+      <div class="row mt-4">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-header pb-0 p-3">
+              <h6 class="mb-0">
+                <i class="fas fa-money-bill-wave me-2"></i>
+                آخر المدفوعات
+              </h6>
             </div>
-            <div class="carousel-item h-100" style="background-image: url('{{ asset('images/carousel-2.jpg') }}'); background-size: cover;">
-              <div class="carousel-caption d-none d-md-block bottom-0 text-start start-0 ms-5">
-                <div class="icon icon-shape icon-sm bg-white text-center border-radius-md mb-3">
-                  <i class="ni ni-bulb-61 text-dark opacity-10"></i>
-                </div>
-                <h5 class="text-white mb-1">Faster way to create web pages</h5>
-                <p>That's my skill. I'm not really specifically talented at anything except for the ability to learn.</p>
-              </div>
-            </div>
-            <div class="carousel-item h-100" style="background-image: url('{{ asset('images/carousel-3.jpg') }}'); background-size: cover;">
-              <div class="carousel-caption d-none d-md-block bottom-0 text-start start-0 ms-5">
-                <div class="icon icon-shape icon-sm bg-white text-center border-radius-md mb-3">
-                  <i class="ni ni-trophy text-dark opacity-10"></i>
-                </div>
-                <h5 class="text-white mb-1">Share with us your design tips!</h5>
-                <p>Don't be afraid to be wrong because you can't learn anything from a compliment.</p>
+            <div class="card-body p-3">
+              <div class="table-responsive">
+                <table class="table align-items-center mb-0">
+                  <thead>
+                    <tr>
+                      <th>التاريخ</th>
+                      <th>المبلغ</th>
+                      <th>الملاحظات</th>
+                      <th>الحالة</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @foreach($recentPayments as $payment)
+                    <tr>
+                      <td>{{ \Carbon\Carbon::parse($payment->payment_date)->format('Y-m-d') }}</td>
+                      <td>{{ number_format($payment->amount, 2) }} ريال</td>
+                      <td>{{ $payment->notes }}</td>
+                      <td>
+                        <span class="badge bg-{{ $payment->status == 'completed' ? 'success' : 'warning' }}">
+                          {{ $payment->status == 'completed' ? 'مكتمل' : 'قيد الانتظار' }}
+                        </span>
+                      </td>
+                    </tr>
+                    @endforeach
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>
-          <button class="carousel-control-prev w-5 me-3" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Previous</span>
-          </button>
-          <button class="carousel-control-next w-5 me-3" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Next</span>
-          </button>
         </div>
       </div>
+      @endif
     </div>
-  </div>
-</div>
-
   </main>
- 
+
   <!--   Core JS Files   -->
   <script src="{{ asset('js/core/popper.min.js') }}"></script>
   <script src="{{ asset('js/core/bootstrap.min.js') }}"></script>
   <script src="{{ asset('js/plugins/perfect-scrollbar.min.js') }}"></script>
   <script src="{{ asset('js/plugins/smooth-scrollbar.min.js') }}"></script>
-  <script src="{{ asset('js/plugins/chartjs.min.js') }}"></script>
-  <script>
-    var ctx1 = document.getElementById("chart-line").getContext("2d");
-
-    var gradientStroke1 = ctx1.createLinearGradient(0, 230, 0, 50);
-
-    gradientStroke1.addColorStop(1, 'rgba(94, 114, 228, 0.2)');
-    gradientStroke1.addColorStop(0.2, 'rgba(94, 114, 228, 0.0)');
-    gradientStroke1.addColorStop(0, 'rgba(94, 114, 228, 0)');
-    new Chart(ctx1, {
-      type: "line",
-      data: {
-        labels: ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-        datasets: [{
-          label: "Mobile apps",
-          tension: 0.4,
-          borderWidth: 0,
-          pointRadius: 0,
-          borderColor: "#5e72e4",
-          backgroundColor: gradientStroke1,
-          borderWidth: 3,
-          fill: true,
-          data: [50, 40, 300, 220, 500, 250, 400, 230, 500],
-          maxBarThickness: 6
-
-        }],
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: {
-            display: false,
-          }
-        },
-        interaction: {
-          intersect: false,
-          mode: 'index',
-        },
-        scales: {
-          y: {
-            grid: {
-              drawBorder: false,
-              display: true,
-              drawOnChartArea: true,
-              drawTicks: false,
-              borderDash: [5, 5]
-            },
-            ticks: {
-              display: true,
-              padding: 10,
-              color: '#fbfbfb',
-              font: {
-                size: 11,
-                family: "Open Sans",
-                style: 'normal',
-                lineHeight: 2
-              },
-            }
-          },
-          x: {
-            grid: {
-              drawBorder: false,
-              display: false,
-              drawOnChartArea: false,
-              drawTicks: false,
-              borderDash: [5, 5]
-            },
-            ticks: {
-              display: true,
-              color: '#ccc',
-              padding: 20,
-              font: {
-                size: 11,
-                family: "Open Sans",
-                style: 'normal',
-                lineHeight: 2
-              },
-            }
-          },
-        },
-      },
-    });
-  </script>
-  <script>
-    var win = navigator.platform.indexOf('Win') > -1;
-    if (win && document.querySelector('#sidenav-scrollbar')) {
-      var options = {
-        damping: '0.5'
-      }
-      Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
-    }
-  </script>
-  <!-- Github buttons -->
-  <script async defer src="https://buttons.github.io/buttons.js"></script>
-  <!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->
   <script src="{{ asset('js/argon-dashboard.min.js?v=2.1.0') }}"></script>
 </body>
 

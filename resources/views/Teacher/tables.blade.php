@@ -7,7 +7,7 @@
   <link rel="apple-touch-icon" sizes="76x76" href="{{ asset('images/apple-icon.png') }}">
   <link rel="icon" type="image/png" href="{{ asset('images/favicon.png') }}">
   <title>
-    Class Schedule
+    جداول المعلم - {{ $teacher->name }}
   </title>
   <!--     Fonts and icons     -->
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
@@ -56,6 +56,13 @@
       border-radius: 50px;
       font-size: 0.875rem;
     }
+    .category-badge {
+      background: linear-gradient(45deg, #2dce89, #2dcecc);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 50px;
+      font-size: 0.875rem;
+    }
     .table-header {
       background: linear-gradient(45deg, #5e72e4, #825ee4) !important;
     }
@@ -75,10 +82,24 @@
       font-size: 1rem;
       margin-bottom: 2rem;
     }
+    .teacher-info-card {
+      background: linear-gradient(45deg, #5e72e4, #825ee4);
+      color: white;
+      border-radius: 1rem;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .stats-card {
+      background: white;
+      border-radius: 1rem;
+      padding: 1.5rem;
+      box-shadow: 0 0 2rem 0 rgba(136, 152, 170, .15);
+      margin-bottom: 1rem;
+    }
   </style>
 </head>
 
-<body class="g-sidenav-show   bg-gray-100">
+<body class="g-sidenav-show bg-gray-100">
 
   @include('teacher.parts.sidebar-teacher')
   <main class="main-content position-relative border-radius-lg ">
@@ -88,7 +109,37 @@
     <div class="container-fluid py-4">
       <div class="row">
         <div class="col-12">
-       
+          <!-- معلومات المعلم -->
+          <div class="teacher-info-card">
+            <div class="row align-items-center">
+              <div class="col-md-8">
+                <h3 class="mb-2">
+                  <i class="fas fa-chalkboard-teacher me-2"></i>
+                  {{ $teacher->name }}
+                </h3>
+                <p class="mb-1">
+                  <i class="fas fa-id-card me-2"></i>
+                  رقم الهوية: {{ $teacher->login_id }}
+                </p>
+                <p class="mb-1">
+                  <i class="fas fa-phone me-2"></i>
+                  الهاتف: {{ $teacher->mobile ?? 'غير محدد' }}
+                </p>
+                @if($teacher->email)
+                <p class="mb-0">
+                  <i class="fas fa-envelope me-2"></i>
+                  البريد الإلكتروني: {{ $teacher->email }}
+                </p>
+                @endif
+              </div>
+              <div class="col-md-4 text-end">
+                <div class="stats-card">
+                  <h4 class="mb-1">{{ $teacherCourses->count() }}</h4>
+                  <p class="mb-0 text-muted">الكورسات</p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
      
@@ -99,8 +150,8 @@
               <div class="d-flex align-items-center">
                 <i class="fa fa-calendar-alt text-primary me-2" style="font-size:1.5rem;"></i>
                 <div>
-                  <h5 class="schedule-title mb-0">Class Schedule</h5>
-                  <p class="schedule-subtitle mb-0">Teacher's Schedule for Current Semester</p>
+                  <h5 class="schedule-title mb-0">جداول المعلم</h5>
+                  <p class="schedule-subtitle mb-0">جميع الجداول والكورسات الخاصة بالمعلم</p>
                 </div>
               </div>
             </div>
@@ -110,103 +161,54 @@
                   <table class="table align-items-center mb-0">
                     <thead class="table-header">
                       <tr>
-                        <th class="text-uppercase text-white text-xxs font-weight-bolder opacity-8 ps-4">Day</th>
-                        <th class="text-uppercase text-white text-xxs font-weight-bolder opacity-8">Time</th>
-                        <th class="text-uppercase text-white text-xxs font-weight-bolder opacity-8">Room</th>
-                        <th class="text-uppercase text-white text-xxs font-weight-bolder opacity-8">Subject</th>
+                        <th class="text-uppercase text-white text-xxs font-weight-bolder opacity-8 ps-4">التاريخ</th>
+                        <th class="text-uppercase text-white text-xxs font-weight-bolder opacity-8">اليوم</th>
+                        <th class="text-uppercase text-white text-xxs font-weight-bolder opacity-8">الوقت</th>
+                        <th class="text-uppercase text-white text-xxs font-weight-bolder opacity-8">القاعة</th>
+                        <th class="text-uppercase text-white text-xxs font-weight-bolder opacity-8">المادة</th>
+                        <th class="text-uppercase text-white text-xxs font-weight-bolder opacity-8">المسار</th>
                       </tr>
                     </thead>
                     <tbody>
+                      @forelse($allSchedules as $schedule)
                       <tr class="table-row">
                         <td class="ps-4">
-                          <span class="text-secondary text-xs font-weight-bold">Sunday</span>
+                          <span class="text-secondary text-xs font-weight-bold">
+                            {{ \Carbon\Carbon::parse($schedule['session_date'])->format('Y-m-d') }}
+                          </span>
+                        </td>
+                        <td>
+                          <span class="text-secondary text-xs font-weight-bold">
+                            {{ __(ucfirst($schedule['day_of_week'])) }}
+                          </span>
                         </td>
                         <td>
                           <span class="time-badge">
-                            <i class="fa fa-clock me-1"></i>08:00 - 09:00
+                            <i class="fa fa-clock me-1"></i>
+                            {{ substr($schedule['start_time'], 0, 5) }} - {{ substr($schedule['end_time'], 0, 5) }}
                           </span>
                         </td>
                         <td>
                           <span class="room-badge">
-                            <i class="fa fa-door-open me-1"></i>201
+                            <i class="fa fa-door-open me-1"></i>
+                            {{ $schedule['room'] ?: 'غير محدد' }}
                           </span>
                         </td>
                         <td>
-                          <span class="subject-badge">Mathematics</span>
+                          <span class="subject-badge">{{ $schedule['course'] }}</span>
+                        </td>
+                        <td>
+                          <span class="category-badge">{{ $schedule['category'] }}</span>
                         </td>
                       </tr>
-                      <tr class="table-row">
-                        <td class="ps-4">
-                          <span class="text-secondary text-xs font-weight-bold">Monday</span>
-                        </td>
-                        <td>
-                          <span class="time-badge">
-                            <i class="fa fa-clock me-1"></i>10:00 - 11:00
-                          </span>
-                        </td>
-                        <td>
-                          <span class="room-badge">
-                            <i class="fa fa-door-open me-1"></i>105
-                          </span>
-                        </td>
-                        <td>
-                          <span class="subject-badge">Mathematics</span>
+                      @empty
+                      <tr>
+                        <td colspan="6" class="text-center text-muted py-4">
+                          <i class="fas fa-calendar-times fa-2x mb-3"></i>
+                          <p class="mb-0">لا توجد جداول لهذا المعلم حالياً</p>
                         </td>
                       </tr>
-                      <tr class="table-row">
-                        <td class="ps-4">
-                          <span class="text-secondary text-xs font-weight-bold">Tuesday</span>
-                        </td>
-                        <td>
-                          <span class="time-badge">
-                            <i class="fa fa-clock me-1"></i>09:00 - 10:00
-                          </span>
-                        </td>
-                        <td>
-                          <span class="room-badge">
-                            <i class="fa fa-door-open me-1"></i>210
-                          </span>
-                        </td>
-                        <td>
-                          <span class="subject-badge">Mathematics</span>
-                        </td>
-                      </tr>
-                      <tr class="table-row">
-                        <td class="ps-4">
-                          <span class="text-secondary text-xs font-weight-bold">Wednesday</span>
-                        </td>
-                        <td>
-                          <span class="time-badge">
-                            <i class="fa fa-clock me-1"></i>11:00 - 12:00
-                          </span>
-                        </td>
-                        <td>
-                          <span class="room-badge">
-                            <i class="fa fa-door-open me-1"></i>305
-                          </span>
-                        </td>
-                        <td>
-                          <span class="subject-badge">Mathematics</span>
-                        </td>
-                      </tr>
-                      <tr class="table-row">
-                        <td class="ps-4">
-                          <span class="text-secondary text-xs font-weight-bold">Thursday</span>
-                        </td>
-                        <td>
-                          <span class="time-badge">
-                            <i class="fa fa-clock me-1"></i>08:00 - 09:00
-                          </span>
-                        </td>
-                        <td>
-                          <span class="room-badge">
-                            <i class="fa fa-door-open me-1"></i>201
-                          </span>
-                        </td>
-                        <td>
-                          <span class="subject-badge">Mathematics</span>
-                        </td>
-                      </tr>
+                      @endforelse
                     </tbody>
                   </table>
                 </div>
@@ -215,6 +217,51 @@
           </div>
         </div>
       </div>
+
+      <!-- إحصائيات إضافية -->
+      @if($teacherCourses->count() > 0)
+      <div class="row mt-4">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-header pb-0">
+              <h6 class="mb-0">
+                <i class="fas fa-chart-bar me-2"></i>
+                إحصائيات الكورسات
+              </h6>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                @foreach($teacherCourses as $courseInstructor)
+                @php $course = $courseInstructor->course; @endphp
+                <div class="col-md-4 mb-3">
+                  <div class="stats-card">
+                    <h6 class="mb-2">{{ $course->title }}</h6>
+                    <div class="row text-center">
+                      <div class="col-6">
+                        <h5 class="text-primary mb-1">{{ $course->enrollments->count() }}</h5>
+                        <small class="text-muted">الطلاب</small>
+                      </div>
+                      <div class="col-6">
+                        <h5 class="text-success mb-1">{{ $course->schedules->count() }}</h5>
+                        <small class="text-muted">الحصص</small>
+                      </div>
+                    </div>
+                    <div class="mt-2">
+                      <span class="badge bg-info">{{ $course->category->name ?? 'غير محدد' }}</span>
+                      @if($courseInstructor->percentage > 0)
+                      <span class="badge bg-warning">{{ $courseInstructor->percentage }}%</span>
+                      @endif
+                    </div>
+                  </div>
+                </div>
+                @endforeach
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      @endif
+
       <footer class="footer pt-3  ">
         <div class="container-fluid">
           <div class="row align-items-center justify-content-lg-between">
