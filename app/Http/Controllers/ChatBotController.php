@@ -230,7 +230,7 @@ class ChatBotController extends Controller
                 ? "تم إنشائي وتدريبي بواسطة فريق نظام NEXTRO لمساعدة الطلاب أكاديميًا."
                 : "I was created and trained by the NEXTRO system team to help students succeed academically.";
         }
-        // رفض أي سؤال غير تعليمي
+        // فقط إذا كانت الرسالة فعلاً غير تعليمية أو غير لائقة
         if (preg_match('/(سياسة|دين|ترفيه|حياة شخصية|طب|علاقات|مال|شائعات|أخبار|رياضة|فن|مشاهير|سياسي|اقتصاد|اقتصادي|اجتماعي|اجتماعية|حب|زواج|طلاق|عاطفة|جريمة|جنايات|سجن|مخدرات|جنس|جنسية|سيرة ذاتية|شخصية|شخصيات|مشاهير|فنان|فنانة|ممثل|ممثلة|مغني|مغنية|موسيقى|أغاني|أغنية|فيديو|يوتيوب|تيك توك|انستجرام|فيسبوك|تويتر|سناب|واتساب|سيارة|سيارات|سفر|سياحة|طبخ|أكل|مطاعم|ألعاب|لعبة|game|games|sport|celebrity|celebrities|politics|religion|personal|life|love|marriage|divorce|crime|drugs|sex|biography|famous|actor|actress|singer|music|song|video|youtube|tiktok|instagram|facebook|twitter|snap|whatsapp|car|cars|travel|tourism|cooking|food|restaurant|restaurants|game|games)/u', $message)) {
             return $isArabic
                 ? "عذراً، لا يمكنني مناقشة هذا النوع من الأسئلة. اسألني عن موضوع دراسي أو أكاديمي."
