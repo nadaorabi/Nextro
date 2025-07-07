@@ -260,6 +260,19 @@ Route::prefix('teacher')->middleware(['isTeacher', 'password.changed'])->name('t
     Route::get('finance', [TeacherController::class, 'finance'])->name('finance');
     Route::get('profile', [TeacherController::class, 'profile'])->name('profile');
     Route::post('logout', [TeacherController::class, 'logout'])->name('logout');
+    
+    // Attendance Management for Teachers
+    Route::prefix('attendance')->name('attendance.')->group(function () {
+        Route::get('/details', [\App\Http\Controllers\Admin\AttendanceController::class, 'details'])->name('details');
+        Route::get('/schedule/{schedule}/details', [\App\Http\Controllers\Admin\AttendanceController::class, 'scheduleDetails'])->name('schedule-details');
+        Route::get('/qr-codes/{schedule}', [\App\Http\Controllers\Admin\AttendanceController::class, 'studentQRCodes'])->name('qr-codes');
+        Route::post('/scan', [\App\Http\Controllers\Admin\AttendanceController::class, 'scan'])->name('scan');
+        Route::post('/mark-present', [\App\Http\Controllers\Admin\AttendanceController::class, 'markPresent'])->name('mark-present');
+        Route::post('/mark-absent', [\App\Http\Controllers\Admin\AttendanceController::class, 'markAbsent'])->name('mark-absent');
+        Route::get('/export', [\App\Http\Controllers\Admin\AttendanceController::class, 'export'])->name('export');
+        Route::get('enrollment/{enrollment}', [\App\Http\Controllers\Admin\AttendanceController::class, 'attendanceByEnrollment'])->name('by-enrollment');
+        Route::get('/take/{schedule}', [\App\Http\Controllers\Admin\AttendanceController::class, 'take'])->name('take');
+    });
 });
 
 

@@ -179,6 +179,21 @@ class AttendanceController extends Controller
 
         // جلب الحصة
         $schedule = \App\Models\Schedule::findOrFail($scheduleId);
+        
+        // التحقق من أن المستخدم مدرس ومسموح له بأخذ الحضور لهذا الكورس
+        $user = auth()->user();
+        if ($user && $user->role === 'teacher') {
+            $courseInstructor = \App\Models\CourseInstructor::where('instructor_id', $user->id)
+                ->where('course_id', $schedule->course_id)
+                ->first();
+            
+            if (!$courseInstructor) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'غير مسموح لك بأخذ الحضور لهذا الكورس!'
+                ], 403);
+            }
+        }
 
         // جلب الطالب عبر login_id فقط
         $student = \App\Models\User::where('login_id', $qrValue)
@@ -186,7 +201,7 @@ class AttendanceController extends Controller
             ->first();
         if (!$student) {
             return response()->json([
-                'status' => 'error',
+                'success' => false,
                 'message' => 'الطالب غير موجود (QR غير صحيح)!'
             ]);
         }
@@ -198,7 +213,7 @@ class AttendanceController extends Controller
 
         if (!$enrollment) {
             return response()->json([
-                'status' => 'error',
+                'success' => false,
                 'message' => 'الطالب غير مسجل في هذا المقرر!'
             ]);
         }
@@ -211,14 +226,14 @@ class AttendanceController extends Controller
         if ($existingAttendance) {
             if ($existingAttendance->status === 'present') {
                 return response()->json([
-                    'status' => 'error',
+                    'success' => false,
                     'message' => 'تم تسجيل حضور الطالب (' . $student->name . ') مسبقًا اليوم.',
                     'student_name' => $student->name,
                     'login_id' => $student->login_id,
                 ]);
             } elseif ($existingAttendance->status === 'absent') {
                 return response()->json([
-                    'status' => 'error',
+                    'success' => false,
                     'message' => 'الطالب (' . $student->name . ') محدد كغائب لهذا اليوم.',
                     'student_name' => $student->name,
                     'login_id' => $student->login_id,
@@ -259,7 +274,7 @@ class AttendanceController extends Controller
         });
 
         return response()->json([
-            'status' => 'success',
+            'success' => true,
             'message' => 'تم تسجيل الحضور بنجاح!',
             'present_students' => $presentStudents
         ]);
@@ -514,7 +529,11 @@ class AttendanceController extends Controller
         $absentCount = collect($studentsData)->where('status', 'absent')->count();
         $pendingCount = collect($studentsData)->where('status', 'pending')->count();
         
-        return view('admin.attendance.schedule-details', compact(
+        $view = 'admin.attendance.schedule-details';
+        if (auth()->check() && auth()->user()->role === 'teacher') {
+            $view = 'Teacher.attendance.schedule-details';
+        }
+        return view($view, compact(
             'schedule', 
             'studentsData', 
             'totalStudents', 

@@ -501,36 +501,18 @@ class TeacherController extends Controller
         // جلب بيانات المعلم المسجل دخوله
         $teacher = auth()->user();
         
-        // جلب الكورسات التي يدرسها المعلم مع الجداول
+        // جلب الكورسات التي يدرسها المعلم مع الجداول والعلاقات
         $teacherCourses = \App\Models\CourseInstructor::where('instructor_id', $teacher->id)
-            ->with(['course.category', 'course.schedules.room'])
+            ->with([
+                'course.category', 
+                'course.schedules.room', 
+                'course.enrollments',
+                'course.packages',
+                'instructor'
+            ])
             ->get();
         
-        // تجميع جميع الجداول للمعلم
-        $allSchedules = collect();
-        foreach ($teacherCourses as $courseInstructor) {
-            $course = $courseInstructor->course;
-            if ($course && $course->schedules) {
-                foreach ($course->schedules as $schedule) {
-                    $allSchedules->push([
-                        'id' => $schedule->id,
-                        'course' => $course->title,
-                        'category' => $course->category->name ?? '',
-                        'session_date' => $schedule->session_date,
-                        'day_of_week' => $schedule->day_of_week,
-                        'start_time' => $schedule->start_time,
-                        'end_time' => $schedule->end_time,
-                        'room' => $schedule->room ? ($schedule->room->room_number ?? $schedule->room->name ?? '') : '',
-                        'course_id' => $course->id,
-                    ]);
-                }
-            }
-        }
-        
-        // ترتيب الجداول حسب التاريخ والوقت
-        $allSchedules = $allSchedules->sortBy([['session_date', 'asc'], ['start_time', 'asc']])->values();
-        
-        return view('teacher.QR-scan', compact('teacher', 'allSchedules', 'teacherCourses'));
+        return view('teacher.QR-scan', compact('teacher', 'teacherCourses'));
     }
 
 }
