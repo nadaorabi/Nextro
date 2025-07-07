@@ -973,7 +973,15 @@
                         <td>${s.start_time} - ${s.end_time}</td>
                         <td>${s.room || '-'}</td>
                         <td>
-                            ${s.status === 'present' ? '<span class="badge bg-success">Present</span>' : '<span class="badge bg-danger">Absent</span>'}
+                            ${
+                              s.status === 'present'
+                                ? '<span class="badge bg-success">Present</span>'
+                                : s.status === 'pending'
+                                ? '<span class="badge bg-warning text-dark">Pending</span>'
+                                : s.status === 'late'
+                                ? '<span class="badge bg-info text-dark">late</span>'
+                                : '<span class="badge bg-danger">Absent</span>'
+                            }
                             ${s.time && s.status === 'present' ? `<br><small>${s.time}</small>` : ''}
                         </td>
                         <td>${s.method === '-' ? '-' : (s.method === 'QR' ? 'QR' : 'Manual')}</td>

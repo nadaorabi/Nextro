@@ -20,7 +20,7 @@ class AttendanceController extends Controller
                 // حساب الحضور للمحاضرة المحددة فقط
                 $attendanceCount = \App\Models\Attendance::whereIn('enrollment_id', \App\Models\Enrollment::where('course_id', $course->id)->pluck('id'))
                     ->where('schedule_id', $schedule->id)
-                    ->where('date', date('Y-m-d'))
+                    
                     ->where('status', 'present')
                     ->count();
                 $scheduleStats[$schedule->id] = [
@@ -117,13 +117,13 @@ class AttendanceController extends Controller
     {
         $schedule = \App\Models\Schedule::with(['course.courseInstructors.instructor', 'room'])->findOrFail($scheduleId);
         $studentCount = \App\Models\Enrollment::where('course_id', $schedule->course_id)->count();
-        
         // حساب الحضور للمحاضرة المحددة فقط
-        $currentAttendanceCount = \App\Models\Attendance::whereIn('enrollment_id', \App\Models\Enrollment::where('course_id', $schedule->course_id)->pluck('id'))
-            ->where('schedule_id', $scheduleId)
+        $presentEnrollmentIds = \App\Models\Attendance::where('schedule_id', $scheduleId)
             ->where('date', date('Y-m-d'))
             ->where('status', 'present')
-            ->count();
+            ->pluck('enrollment_id')
+            ->unique();
+        $currentAttendanceCount = $presentEnrollmentIds->count();
         $absentCount = max($studentCount - $currentAttendanceCount, 0);
         return view('admin.attendance.take', compact('schedule', 'studentCount', 'currentAttendanceCount', 'absentCount'));
     }
@@ -135,8 +135,7 @@ class AttendanceController extends Controller
         
         // جلب الطلاب المسجلين في هذا الكورس مع بيانات الحضور
         $enrollments = \App\Models\Enrollment::with(['student', 'attendance' => function($q) use ($scheduleId) {
-            $q->where('schedule_id', $scheduleId)
-              ->where('date', date('Y-m-d'));
+            $q->where('schedule_id', $scheduleId);
         }])->where('course_id', $schedule->course_id)->get();
         
         // تحضير البيانات مع حالة الحضور لكل طالب
@@ -207,7 +206,6 @@ class AttendanceController extends Controller
         // تحقق من عدم تكرار الحضور لنفس الجلسة
         $existingAttendance = \App\Models\Attendance::where('enrollment_id', $enrollment->id)
             ->where('schedule_id', $scheduleId)
-            ->where('date', $today)
             ->first();
             
         if ($existingAttendance) {
@@ -279,7 +277,7 @@ class AttendanceController extends Controller
         // البحث عن سجل الحضور الموجود
         $existingAttendance = \App\Models\Attendance::where('enrollment_id', $data['enrollment_id'])
             ->where('schedule_id', $data['schedule_id'])
-            ->where('date', $data['date'])
+            
             ->first();
 
         if ($existingAttendance) {
@@ -324,7 +322,7 @@ class AttendanceController extends Controller
         // البحث عن سجل الحضور الموجود أو إنشاء واحد جديد
         $attendance = \App\Models\Attendance::where('enrollment_id', $data['enrollment_id'])
             ->where('schedule_id', $data['schedule_id'])
-            ->where('date', $data['date'])
+            
             ->first();
             
         if ($attendance) {
@@ -487,8 +485,7 @@ class AttendanceController extends Controller
         
         // جلب جميع الطلاب المسجلين في هذا الكورس
         $enrollments = \App\Models\Enrollment::with(['student', 'attendance' => function($q) use ($scheduleId) {
-            $q->where('schedule_id', $scheduleId)
-              ->where('date', date('Y-m-d'));
+            $q->where('schedule_id', $scheduleId);
         }])->where('course_id', $schedule->course_id)->get();
         
         // تحضير البيانات مع حالة الحضور لكل طالب
@@ -532,28 +529,15 @@ class AttendanceController extends Controller
     {
         $schedule = \App\Models\Schedule::findOrFail($scheduleId);
         $studentCount = \App\Models\Enrollment::where('course_id', $schedule->course_id)->count();
-        
-        // حساب الحضور للمحاضرة المحددة فقط
-        $presentCount = \App\Models\Attendance::whereIn('enrollment_id', \App\Models\Enrollment::where('course_id', $schedule->course_id)->pluck('id'))
-            ->where('schedule_id', $scheduleId)
-            ->where('date', date('Y-m-d'))
+        $presentEnrollmentIds = \App\Models\Attendance::where('schedule_id', $scheduleId)
+            
             ->where('status', 'present')
-            ->count();
-            
-        $absentCount = \App\Models\Attendance::whereIn('enrollment_id', \App\Models\Enrollment::where('course_id', $schedule->course_id)->pluck('id'))
-            ->where('schedule_id', $scheduleId)
-            ->where('date', date('Y-m-d'))
-            ->where('status', 'absent')
-            ->count();
-            
-        $pendingCount = \App\Models\Attendance::whereIn('enrollment_id', \App\Models\Enrollment::where('course_id', $schedule->course_id)->pluck('id'))
-            ->where('schedule_id', $scheduleId)
-            ->where('date', date('Y-m-d'))
-            ->where('status', 'pending')
-            ->count();
-        
+            ->pluck('enrollment_id')
+            ->unique();
+        $presentCount = $presentEnrollmentIds->count();
+        $absentCount = max($studentCount - $presentCount, 0);
+        $pendingCount = $studentCount - $presentCount - $absentCount;
         $percentage = $studentCount > 0 ? round(($presentCount / $studentCount) * 100, 1) : 0;
-        
         return response()->json([
             'total_students' => $studentCount,
             'present_count' => $presentCount,
