@@ -212,4 +212,15 @@ return [
         // 'ExampleClass' => App\Example\ExampleClass::class,
     ])->toArray(),
 
+    /*
+    |--------------------------------------------------------------------------
+    | OpenAI API Configuration
+    |--------------------------------------------------------------------------
+    |
+    | Configuration for OpenAI ChatGPT API integration.
+    |
+    */
+
+    'openai_api_key' => env('OPENAI_API_KEY', ''),
+
 ];

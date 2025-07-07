@@ -15,6 +15,7 @@ use App\Http\Controllers\Teacher\PasswordController;
 use App\Http\Controllers\Admin\TransactionController;
 use App\Http\Controllers\Admin\CourseScheduleController;
 use App\Http\Controllers\Admin\RoomController;
+use App\Http\Controllers\ChatBotController;
 
 use App\Models\Category;
 use App\Models\Course;
@@ -40,6 +41,13 @@ Route::get('user/Staff', [HomeController::class, 'ShowStaffPage'])->name('Staff_
 Route::get('user/Elements', [HomeController::class, 'ShowElementsPage'])->name('elements_page');
 Route::get('user/Contact', [HomeController::class, 'ShowContactPage'])->name('Contact_page');
 Route::get('user/Profile', [HomeController::class, 'ShowProfilePage'])->name('profile_page');
+
+// ChatBot Routes
+Route::get('user/chatbot', [ChatBotController::class, 'showChat'])->name('chatbot');
+Route::post('user/chatbot/send', [ChatBotController::class, 'sendMessage'])->name('chatbot.send');
+Route::get('user/chatbot/history', [ChatBotController::class, 'getChatHistory'])->name('chatbot.history');
+Route::post('user/chatbot/clear', [ChatBotController::class, 'clearChatHistory'])->name('chatbot.clear');
+Route::get('user/chatbot/status', [ChatBotController::class, 'getStatus'])->name('chatbot.status');
 
 // صفحة تسجيل الدخول الموحدة للمدرس/الأدمن
 Route::get('staff/login', [TeacherController::class, 'showLoginForm'])->name('staff.login');
