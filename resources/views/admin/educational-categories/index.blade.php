@@ -4,10 +4,88 @@
 
 @push('styles')
     <style>
-        .custom-icon-style {
-            transform: translateY(-4px);
-            display: inline-block;
+        .stat-card {
+            min-height: 140px;
+            border-radius: 16px;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
+            padding: 24px;
+            background: #fff;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0, 0, 0, 0.04);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
         }
+        
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.12);
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--card-color, #5e72e4);
+        }
+        
+        .stat-card.primary::before { background: #5e72e4; }
+        .stat-card.success::before { background: #2dce89; }
+        .stat-card.info::before { background: #11cdef; }
+        .stat-card.warning::before { background: #fb6340; }
+        
+        .stat-card .stat-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px auto;
+            font-size: 24px;
+            color: white;
+        }
+        
+        .stat-card .stat-icon.primary { background: linear-gradient(45deg, #5e72e4, #825ee4); }
+        .stat-card .stat-icon.success { background: linear-gradient(45deg, #2dce89, #2dcecc); }
+        .stat-card .stat-icon.info { background: linear-gradient(45deg, #11cdef, #1171ef); }
+        .stat-card .stat-icon.warning { background: linear-gradient(45deg, #fb6340, #fbb140); }
+        
+        .stat-card .stat-title {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #8898aa;
+            margin-bottom: 8px;
+            line-height: 1.2;
+        }
+        
+        .stat-card .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #32325d;
+            margin-bottom: 4px;
+            line-height: 1;
+        }
+        
+        .stat-card .stat-description {
+            font-size: 0.875rem;
+            color: #8898aa;
+            margin: 0;
+            line-height: 1.3;
+        }
+        
+        .stat-card .stat-description .highlight {
+            font-weight: 600;
+        }
+        
+        .stat-card .stat-description .success { color: #2dce89; }
+        .stat-card .stat-description .info { color: #11cdef; }
+        .stat-card .stat-description .warning { color: #fb6340; }
 
         .welcome-animated {
             font-size: 2.5rem;
@@ -23,56 +101,20 @@
         }
 
         @keyframes bounce {
-            0% {
-                transform: translateY(0);
-            }
-
-            100% {
-                transform: translateY(-20px);
-            }
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-20px); }
         }
 
         @keyframes gradientMove {
-            0% {
-                background-position: 0% 50%;
-            }
-
-            100% {
-                background-position: 100% 50%;
-            }
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
         }
 
-        .table th,
-        .table td {
+        .table th, .table td {
             vertical-align: middle;
             text-align: center;
         }
 
-        .filter-bar {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            justify-content: flex-end;
-            margin-bottom: 20px;
-        }
-
-        .filter-bar select,
-        .filter-bar input[type="text"] {
-            min-width: 140px;
-            max-width: 200px;
-            border-radius: 8px;
-            border: 1px solid #ddd;
-            padding: 6px 12px;
-        }
-
-        @media (max-width: 600px) {
-            .filter-bar {
-                flex-direction: column;
-                align-items: stretch;
-            }
-        }
-
-        /* Modal Enhancements */
         .modal-content {
             border-radius: 15px;
             overflow: hidden;
@@ -84,17 +126,7 @@
             border-bottom: 1px solid #e9ecef;
         }
 
-        .modal-body {
-            background-color: #ffffff;
-        }
-
-        .modal-footer {
-            background-color: #ffffff;
-            border-top: 1px solid #e9ecef;
-        }
-
-        .form-control:focus,
-        .form-select:focus {
+        .form-control:focus, .form-select:focus {
             border-color: #667eea;
             box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
         }
@@ -120,7 +152,6 @@
             border-radius: 10px;
         }
 
-        /* Animation for modal */
         .modal.fade .modal-dialog {
             transition: transform 0.3s ease-out;
             transform: translate(0, -50px);
@@ -130,7 +161,6 @@
             transform: none;
         }
 
-        /* Icon animations */
         .icon-shape {
             transition: all 0.3s ease;
         }
@@ -139,10 +169,27 @@
             transform: scale(1.1);
         }
 
-        /* File upload area */
         .border-dashed:hover {
             border-color: #667eea !important;
             background-color: rgba(102, 126, 234, 0.05) !important;
+        }
+        
+        @media (max-width: 991px) {
+            .stat-card {
+                min-height: 120px;
+                padding: 20px;
+            }
+            
+            .stat-card .stat-icon {
+                width: 48px;
+                height: 48px;
+                font-size: 20px;
+                margin-bottom: 12px;
+            }
+            
+            .stat-card .stat-value {
+                font-size: 2rem;
+            }
         }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -155,9 +202,8 @@
         <div class="card-body p-3">
             <div class="row">
                 <div class="col-lg-6">
-                    <h1 class="text-gradient text-primary welcome-animated">Educational Category 📚
-                    </h1>
-                    <p class="mb-0">Manage, add, and edit educational materials and resources</p>
+                    <h1 class="text-gradient text-primary">Educational Categories Management</h1>
+                    <p class="mb-0">Manage, add, and edit educational categories and resources</p>
                 </div>
                 <div class="col-lg-6 text-end">
                     <a href="{{ route('admin.educational-categories.create') }}" class="btn btn-primary mb-0">
@@ -171,111 +217,57 @@
     <!-- Statistics Cards -->
     <div class="row mb-4">
         <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
-            <div class="card">
-                <div class="card-body p-3">
-                    <div class="row">
-                        <div class="col-8">
-                            <div class="numbers">
-                                <p class="text-sm mb-0 text-uppercase font-weight-bold">Total Categories
-                                </p>
-                                <h5 class="font-weight-bolder">{{ $totalCategories }}</h5>
-                                <p class="mb-0">
-                                    <span class="text-success text-sm font-weight-bolder">+{{ $categories->count() }}</span>
-                                    on this page
-                                </p>
-                            </div>
-                        </div>
-                        <div class="col-4">
-                            <div class="icon icon-shape bg-gradient-primary shadow-primary text-center rounded-circle">
-                                <i class="ni ni-collection text-lg opacity-10 custom-icon-style" aria-hidden="true"></i>
-                            </div>
-                        </div>
-                    </div>
+            <div class="card stat-card primary">
+                <div class="stat-icon primary">
+                    <i class="fas fa-folder"></i>
+                </div>
+                <div class="stat-title">Total Categories</div>
+                <div class="stat-value">{{ $totalCategories }}</div>
+                <div class="stat-description">
+                    <span class="highlight success">+{{ $categories->count() }}</span> on this page
                 </div>
             </div>
         </div>
 
         <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
-            <div class="card">
-                <div class="card-body p-3">
-                    <div class="row">
-                        <div class="col-8">
-                            <div class="numbers">
-                                <p class="text-sm mb-0 text-uppercase font-weight-bold">Active
-                                    Categories</p>
-                                <h5 class="font-weight-bolder">{{ $activeCategories }}</h5>
-                                <p class="mb-0">
-                                    <span class="text-success text-sm font-weight-bolder">
-                                        {{ round(($activeCategories / max($totalCategories, 1)) * 100) }}%
-                                    </span> are active
-                                </p>
-                            </div>
-                        </div>
-                        <div class="col-4">
-                            <div class="icon icon-shape bg-gradient-success shadow-success text-center rounded-circle">
-                                <i class="ni ni-check-bold text-lg opacity-10 custom-icon-style" aria-hidden="true"></i>
-                            </div>
-                        </div>
-                    </div>
+            <div class="card stat-card success">
+                <div class="stat-icon success">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="stat-title">Active Categories</div>
+                <div class="stat-value">{{ $activeCategories }}</div>
+                <div class="stat-description">
+                    <span class="highlight success">{{ round(($activeCategories / max($totalCategories, 1)) * 100) }}%</span> are active
                 </div>
             </div>
         </div>
 
         <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
-            <div class="card">
-                <div class="card-body p-3">
-                    <div class="row">
-                        <div class="col-8">
-                            <div class="numbers">
-                                <p class="text-sm mb-0 text-uppercase font-weight-bold">Linked Courses
-                                </p>
-                                <h5 class="font-weight-bolder">{{ $linkedCourses }}</h5>
-                                <p class="mb-0">
-                                    <span
-                                        class="text-info text-sm font-weight-bolder">{{ $categories->where('courses_count', '>', 0)->count() }}</span>
-                                    categories linked
-                                </p>
-                            </div>
-                        </div>
-                        <div class="col-4">
-                            <div class="icon icon-shape bg-gradient-info shadow-info text-center rounded-circle">
-                                <i class="ni ni-tag text-lg opacity-10 custom-icon-style" aria-hidden="true"></i>
-                            </div>
-                        </div>
-                    </div>
+            <div class="card stat-card info">
+                <div class="stat-icon info">
+                    <i class="fas fa-link"></i>
+                </div>
+                <div class="stat-title">Linked Courses</div>
+                <div class="stat-value">{{ $linkedCourses }}</div>
+                <div class="stat-description">
+                    <span class="highlight info">{{ $categories->where('courses_count', '>', 0)->count() }}</span> categories linked
                 </div>
             </div>
         </div>
 
         <div class="col-xl-3 col-sm-6">
-            <div class="card">
-                <div class="card-body p-3">
-                    <div class="row">
-                        <div class="col-8">
-                            <div class="numbers">
-                                <p class="text-sm mb-0 text-uppercase font-weight-bold">Last Created</p>
-                                <h5 class="font-weight-bolder">
-                                    {{ $latestCategory ? \Illuminate\Support\Str::limit($latestCategory->name, 14) : '-' }}
-                                </h5>
-                                <p class="mb-0">
-                                    <span class="text-warning text-sm font-weight-bolder">
-                                        {{ $latestCategory ? $latestCategory->created_at->diffForHumans() : '' }}
-                                    </span>
-                                    created
-                                </p>
-                            </div>
-                        </div>
-                        <div class="col-4">
-                            <div class="icon icon-shape bg-gradient-warning shadow-warning text-center rounded-circle">
-                                <i class="ni ni-time-alarm text-lg opacity-10 custom-icon-style" aria-hidden="true"></i>
-                            </div>
-                        </div>
-                    </div>
+            <div class="card stat-card warning">
+                <div class="stat-icon warning">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="stat-title">Latest Category</div>
+                <div class="stat-value">{{ $latestCategory ? \Illuminate\Support\Str::limit($latestCategory->name, 10) : '-' }}</div>
+                <div class="stat-description">
+                    <span class="highlight warning">{{ $latestCategory ? $latestCategory->created_at->diffForHumans() : 'None' }}</span>
                 </div>
             </div>
         </div>
     </div>
-
 
     <!-- Filters -->
     <div class="card mb-4">
@@ -283,7 +275,7 @@
             <div class="row">
                 <div class="col-md-3">
                     <div class="form-group">
-                        <label class="form-label">Status</label>
+                        <label class="form-label">Status Filter</label>
                         <select id="status-filter" class="form-select">
                             <option value="">All Statuses</option>
                             <option value="Active">Active</option>
@@ -293,7 +285,7 @@
                 </div>
                 <div class="col-md-3">
                     <div class="form-group">
-                        <label class="form-label">Search</label>
+                        <label class="form-label">Search Categories</label>
                         <div class="input-group">
                             <span class="input-group-text"><i class="fas fa-search"></i></span>
                             <input id="search-input" type="text" class="form-control" placeholder="Search by category name...">
@@ -304,12 +296,10 @@
         </div>
     </div>
 
-
-
-    <!-- Materials Table -->
+    <!-- Categories Table -->
     <div class="card">
         <div class="card-header pb-0">
-            <h6 class="text-primary fw-bold">Categories</h6>
+            <h6 class="text-primary fw-bold">Educational Categories</h6>
         </div>
         <div class="card-body px-0 pt-0 pb-2">
             <div class="table-responsive p-0">
@@ -317,11 +307,11 @@
                     <thead>
                         <tr>
                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                Category</th>
+                                Category Details</th>
                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                ID</th>
+                                Category ID</th>
                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                Courses</th>
+                                Linked Courses</th>
                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                 Status</th>
                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
@@ -337,12 +327,11 @@
                                         <div>
                                             <img src="{{ $category->image ? asset('storage/' . $category->image) : asset('images/theme/category-default.png') }}"
                                                 class="avatar avatar-sm me-3" alt="category">
-
                                         </div>
-                                        <div class="d-flex flex-column justify-content-center ">
-                                            <h6 class="mb-0 text-sm ">{{ $category->name }}</h6>
+                                        <div class="d-flex flex-column justify-content-center">
+                                            <h6 class="mb-0 text-sm">{{ $category->name }}</h6>
                                             <p class="text-xs text-secondary mb-0">
-                                                {{ $category->description }}
+                                                {{ $category->description ?: 'No description available' }}
                                             </p>
                                         </div>
                                     </div>
@@ -368,21 +357,23 @@
                                 <td class="align-middle">
                                     <div class="d-flex align-items-center gap-2">
                                         <button class="btn btn-link text-info p-2" data-bs-toggle="modal"
-                                            data-bs-target="#editCategoryModal-{{ $category->id }}">
+                                            data-bs-target="#editCategoryModal-{{ $category->id }}"
+                                            title="Edit Category">
                                             <i class="fas fa-edit"></i>
                                         </button>
 
                                         <a href="{{ route('admin.educational-categories.show', $category->id) }}"
-                                            class="btn btn-link text-primary p-2">
+                                            class="btn btn-link text-primary p-2"
+                                            title="View Category Details">
                                             <i class="fas fa-eye"></i>
                                         </a>
 
                                         <button class="btn btn-link text-danger p-2" data-bs-toggle="modal"
                                             data-bs-target="#deleteCategoryModal"
-                                            onclick="confirmCategoryDelete({{ $category->id }}, '{{ $category->name }}')">
+                                            onclick="confirmCategoryDelete({{ $category->id }}, '{{ $category->name }}')"
+                                            title="Delete Category">
                                             <i class="fas fa-trash"></i>
                                         </button>
-
                                     </div>
                                 </td>
                             </tr>
@@ -391,7 +382,7 @@
                 </table>
             </div>
 
-            <!-- Modal Delete Confirmation -->
+            <!-- Delete Confirmation Modal -->
             <div class="modal fade" id="deleteCategoryModal" tabindex="-1" aria-labelledby="deleteCategoryModalLabel"
                 aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
@@ -448,7 +439,7 @@
     </div>
 
     @foreach ($categories as $category)
-        <!-- Modal Edit Category خارج الجدول -->
+        <!-- Edit Category Modal -->
         <div class="modal fade" id="editCategoryModal-{{ $category->id }}" tabindex="-1"
             aria-labelledby="editCategoryModalLabel-{{ $category->id }}" aria-hidden="true"
             data-bs-backdrop="static">

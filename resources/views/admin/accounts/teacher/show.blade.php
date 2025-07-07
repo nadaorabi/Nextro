@@ -29,12 +29,12 @@
             <div class="card-body">
               <div class="d-flex justify-content-between align-items-center">
                 <div>
-                  <h4 class="mb-0">Teacher Information</h4>
-                  <p class="text-muted mb-0">View teacher details and information</p>
+                  <h4 class="mb-0">Teacher Profile Details</h4>
+                  <p class="text-muted mb-0">View comprehensive teacher information and account details</p>
                 </div>
                 <div>
                   <a href="{{ route('admin.accounts.teachers.list') }}" class="btn btn-secondary">
-                    <i class="fas fa-arrow-left"></i> Back to List
+                    <i class="fas fa-arrow-left"></i> Back to Teachers List
                   </a>
                   <a href="{{ route('admin.accounts.teachers.edit', $teacher->id) }}" class="btn btn-primary">
                     <i class="fas fa-edit"></i> Edit Teacher
@@ -223,7 +223,7 @@
           <!-- Account Information Card -->
           <div class="card shadow-sm mb-4">
             <div class="card-header">
-              <h6 class="mb-0">Account Information</h6>
+              <h6 class="mb-0">Account Details</h6>
             </div>
             <div class="card-body">
               <div class="row">
@@ -255,9 +255,9 @@
           <!-- Notes Section -->
           <div class="custom-card mb-4">
             <div class="custom-card-header d-flex justify-content-between align-items-center">
-              <span>Notes</span>
+              <span>Teacher Notes</span>
               <button type="button" class="btn btn-main d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#addNoteModal">
-                <i class="fas fa-plus"></i> Add
+                <i class="fas fa-plus"></i> Add Note
               </button>
             </div>
             <div class="custom-card-body p-0">
@@ -266,9 +266,9 @@
                   <thead>
                     <tr>
                       <th>Added By</th>
-                      <th>Note</th>
-                      <th>Date</th>
-                      <th></th>
+                      <th>Note Content</th>
+                      <th>Date Added</th>
+                      <th>Actions</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -293,9 +293,9 @@
           <!-- Teacher Courses Section -->
           <div class="custom-card mb-4">
             <div class="custom-card-header d-flex justify-content-between align-items-center">
-              <span>Teacher Courses</span>
+              <span>Assigned Courses</span>
               <button type="button" class="btn btn-main d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#addCourseModal">
-                <i class="fas fa-plus"></i> إضافة كورس
+                <i class="fas fa-plus"></i> Add Course
               </button>
             </div>
             <div class="custom-card-body p-0">
@@ -303,11 +303,11 @@
                 <table class="custom-table">
                   <thead>
                     <tr>
-                      <th>اسم المادة</th>
-                      <th>المسار</th>
-                      <th>عدد الطلاب</th>
-                      <th>تاريخ البدء</th>
-                      <th>الحضور</th>
+                      <th>Course Name</th>
+                      <th>Category</th>
+                      <th>Students Count</th>
+                      <th>Start Date</th>
+                      <th>Attendance</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -316,17 +316,17 @@
                       <tr>
                         <td>{{ $course->title ?? '-' }}</td>
                         <td>{{ $course->category->name ?? '-' }}</td>
-                        <td>{{ $course->enrollments->count() }} طالب</td>
+                        <td>{{ $course->enrollments->count() }} students</td>
                         <td>{{ $course->schedules->min('session_date') ?? '-' }}</td>
                         <td>
                           <button class="btn btn-attendance" data-bs-toggle="modal" data-bs-target="#attendanceModal" data-course="{{ $course->title }}">
-                          <i class="fas fa-users"></i> حضور
+                          <i class="fas fa-users"></i> View Attendance
                         </button>
                       </td>
                     </tr>
                     @empty
                       <tr>
-                        <td colspan="5" class="text-center text-muted">لا توجد كورسات لهذا الأستاذ.</td>
+                        <td colspan="5" class="text-center text-muted">No courses assigned to this teacher.</td>
                     </tr>
                     @endforelse
                   </tbody>
@@ -381,7 +381,7 @@
                 </div>
                 <div class="stats-title">Total Courses</div>
                 <div class="stats-value text-primary">3</div>
-                <div class="stats-desc">Enrolled Courses</div>
+                <div class="stats-desc">Assigned Courses</div>
               </div>
             </div>
             <div class="col-12 col-md-4 mb-3 mb-md-0">
@@ -409,7 +409,7 @@
           <!-- Transaction History Section -->
           <div class="custom-card mb-4">
             <div class="custom-card-header d-flex justify-content-between align-items-center">
-              <span>Transaction History</span>
+              <span>Financial Transaction History</span>
               <div class="d-flex align-items-center gap-2 flex-wrap filter-bar">
                 <!-- Dropdown for years -->
                 <div class="dropdown">
@@ -458,7 +458,7 @@
                     </tr>
                     @empty
                       <tr>
-                        <td colspan="5" class="text-center text-muted">لا توجد حركات مالية.</td>
+                        <td colspan="5" class="text-center text-muted">No financial transactions found.</td>
                     </tr>
                     @endforelse
                   </tbody>
@@ -481,16 +481,16 @@
                     @csrf
                     @method('DELETE')
                     <button type="submit" class="btn btn-danger">
-                      <i class="fas fa-trash"></i> Delete Teacher
+                      <i class="fas fa-trash"></i> Delete Teacher Account
                     </button>
                   </form>
                 </div>
                 <div>
                   <a href="{{ route('admin.accounts.teachers.list') }}" class="btn btn-secondary">
-                    <i class="fas fa-list"></i> Back to List
+                    <i class="fas fa-list"></i> Back to Teachers List
                   </a>
                   <a href="{{ route('admin.accounts.teachers.edit', $teacher->id) }}" class="btn btn-primary">
-                    <i class="fas fa-edit"></i> Edit Teacher
+                    <i class="fas fa-edit"></i> Edit Teacher Profile
                   </a>
                 </div>
               </div>
@@ -508,16 +508,16 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="addNoteModalLabel">Add Note</h5>
+          <h5 class="modal-title" id="addNoteModalLabel">Add Teacher Note</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
           <form>
             <div class="mb-3">
-              <label for="noteText" class="form-label">Note</label>
-              <textarea class="form-control" id="noteText" rows="3"></textarea>
+              <label for="noteText" class="form-label">Note Content</label>
+              <textarea class="form-control" id="noteText" rows="3" placeholder="Enter note about this teacher..."></textarea>
             </div>
-            <button type="submit" class="btn btn-primary">Save</button>
+            <button type="submit" class="btn btn-primary">Save Note</button>
           </form>
         </div>
       </div>

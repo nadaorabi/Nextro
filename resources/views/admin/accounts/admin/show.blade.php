@@ -12,6 +12,7 @@
   <link href="https://demos.creative-tim.com/argon-dashboard-pro/assets/css/nucleo-icons.css" rel="stylesheet" />
   <link href="https://demos.creative-tim.com/argon-dashboard-pro/assets/css/nucleo-svg.css" rel="stylesheet" />
   <link rel="stylesheet" href="{{ asset('css/argon-dashboard.css?v=2.1.0') }}">
+  <link rel="stylesheet" href="{{ asset('css/admin-show-pages.css') }}">
   <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
 </head>
 
@@ -28,12 +29,12 @@
             <div class="card-body">
               <div class="d-flex justify-content-between align-items-center">
                 <div>
-                  <h4 class="mb-0">Admin Information</h4>
-                  <p class="text-muted mb-0">View admin details and information</p>
+                  <h4 class="mb-0">Admin Profile Details</h4>
+                  <p class="text-muted mb-0">View comprehensive admin information and account details</p>
                 </div>
                 <div>
                   <a href="{{ route('admin.accounts.admins.list') }}" class="btn btn-secondary">
-                    <i class="fas fa-arrow-left"></i> Back to List
+                    <i class="fas fa-arrow-left"></i> Back to Admins List
                   </a>
                   <a href="{{ route('admin.accounts.admins.edit', $admin->id) }}" class="btn btn-primary">
                     <i class="fas fa-edit"></i> Edit Admin
@@ -65,8 +66,9 @@
               <div class="row">
                 <!-- Admin Photo -->
                 <div class="col-md-3 text-center">
-                  <img src="{{ asset('images/default-avatar.png') }}" 
+                  <img src="{{ asset($admin->avatar ?? 'images/default-avatar.png') }}" 
                        class="avatar avatar-xxl rounded-circle mb-3"
+                       onerror="this.src='{{ asset('images/default-avatar.png') }}'"
                        alt="{{ $admin->name }}">
                   
                   <!-- Status Badge -->
@@ -171,111 +173,13 @@
                       @endif
                     </div>
                   </div>
-
-                  
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- تحسين ستايل البادجات والجداول والتحريك في الموبايل -->
-          <style>
-            .custom-card {
-              border-radius: 16px;
-              box-shadow: 0 2px 12px rgba(44,62,80,0.09);
-              background: #fff;
-              margin-bottom: 24px;
-              overflow: hidden;
-            }
-            .custom-card-header {
-              background: linear-gradient(90deg,#eaf3fb 60%,#fafdff 100%);
-              padding: 12px 24px;
-              font-weight: bold;
-              font-size: 1.15rem;
-              color: #2266aa;
-              border-bottom: 1px solid #e3eaf1;
-              display: flex;
-              align-items: center;
-              justify-content: space-between;
-            }
-            .custom-card-body {
-              padding: 20px 24px;
-              background: linear-gradient(120deg,#fafdff 60%,#eaf6ff 100%);
-            }
-            .custom-table-responsive {
-              width: 100%;
-              overflow-x: auto;
-              -webkit-overflow-scrolling: touch;
-              margin-bottom: 1rem;
-            }
-            .custom-table {
-              width: 100%;
-              border-radius: 12px;
-              overflow: hidden;
-              background: #fafdff;
-              min-width: 600px;
-            }
-            .custom-table th {
-              background: linear-gradient(90deg,#eaf3fb 60%,#fafdff 100%);
-              color: #2266aa;
-              font-weight: bold;
-              font-size: 1.05rem;
-              border-bottom: 2px solid #e3eaf1;
-              text-align: center;
-            }
-            .custom-table td {
-              background: #fff;
-              vertical-align: middle;
-              font-size: 1.01rem;
-              border-bottom: 1px solid #f0f4f8;
-              text-align: center;
-            }
-            .custom-table tr:last-child td {
-              border-bottom: none;
-            }
-            .badge-custom {
-              border-radius: 999px;
-              padding: 4px 18px;
-              font-size: 1em;
-              font-weight: 500;
-              box-shadow: 0 1px 4px rgba(44,62,80,0.07);
-              display: inline-block;
-              min-width: 80px;
-              text-align: center;
-              letter-spacing: 0.5px;
-              border: none;
-            }
-            .badge-paid {
-              background: linear-gradient(90deg,#34d399 60%,#10b981 100%);
-              color: #fff;
-            }
-            .badge-unpaid {
-              background: linear-gradient(90deg,#f87171 60%,#ef4444 100%);
-              color: #fff;
-            }
-            .badge-user {
-              background: #60a5fa;
-              color: #fff;
-            }
-            .badge-admin {
-              background: #6ee7b7;
-              color: #166534;
-            }
-            @media (max-width: 768px) {
-              .custom-table-responsive {
-                margin-bottom: 1rem;
-              }
-              .custom-table {
-                min-width: 600px;
-              }
-            }
-          </style>
-
           <!-- Account Information Card -->
           <div class="card shadow-sm mb-4">
-            <div class="card-header">
-              <h6 class="mb-0">Account Information</h6>
-            </div>
             <div class="card-body">
               <div class="row">
                 <div class="col-md-3">
@@ -343,17 +247,6 @@
       return confirm(`Are you sure you want to delete the admin "${adminName}"?\n\nThis action cannot be undone.`);
     }
   </script>
-
-  <style>
-    .table-responsive {
-      overflow-x: auto !important;
-      -webkit-overflow-scrolling: touch;
-      border-radius: 0 !important;
-    }
-    .table-responsive table {
-      min-width: 600px;
-    }
-  </style>
 
   <script>
     document.addEventListener('DOMContentLoaded', function() {

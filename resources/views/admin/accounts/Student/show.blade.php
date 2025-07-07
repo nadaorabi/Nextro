@@ -263,43 +263,43 @@
             <div class="col-12 col-md-4">
               <div class="stats-card text-center">
                 <div class="stats-icon" style="background-color:#2196f3;"><i class="fas fa-file-invoice-dollar"></i></div>
-                <div class="stats-title">مجموع الرسوم المستحقة</div>
-                <div class="stats-value" style="color:#2196f3;">{{ number_format($totalDue, 2) }} د.ك</div>
+                <div class="stats-title">Total Fees Due</div>
+                <div class="stats-value" style="color:#2196f3;">${{ number_format($totalDue, 2) }}</div>
               </div>
             </div>
             <div class="col-12 col-md-4">
               <div class="stats-card text-center">
                 <div class="stats-icon" style="background-color:#4caf50;"><i class="fas fa-arrow-up"></i></div>
-                <div class="stats-title">إجمالي المدفوع</div>
-                <div class="stats-value" style="color:#4caf50;">{{ number_format($totalPaid, 2) }} د.ك</div>
+                <div class="stats-title">Total Paid</div>
+                <div class="stats-value" style="color:#4caf50;">${{ number_format($totalPaid, 2) }}</div>
               </div>
             </div>
             @if($totalDiscount > 0)
             <div class="col-12 col-md-4">
               <div class="stats-card text-center">
                 <div class="stats-icon" style="background-color:#00bcd4;"><i class="fas fa-percent"></i></div>
-                <div class="stats-title">إجمالي الخصومات</div>
-                <div class="stats-value" style="color:#00bcd4;">{{ number_format($totalDiscount, 2) }} د.ك</div>
+                <div class="stats-title">Total Discounts</div>
+                <div class="stats-value" style="color:#00bcd4;">${{ number_format($totalDiscount, 2) }}</div>
               </div>
             </div>
             @endif
             <div class="col-12 col-md-4">
               <div class="stats-card text-center">
                 <div class="stats-icon" style="background-color:{{ $outstanding > 0 ? '#f44336' : '#4caf50' }};"><i class="fas fa-balance-scale"></i></div>
-                <div class="stats-title">المبلغ المتبقي/المستحق</div>
+                <div class="stats-title">Outstanding Balance</div>
                 <div class="stats-value" style="color:{{ $outstanding > 0 ? '#f44336' : '#4caf50' }};">
-                  {{ number_format($outstanding, 2) }} د.ك
+                  ${{ number_format($outstanding, 2) }}
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- Last 5 Transactions Table -->
+          <!-- Recent Financial Transactions Table -->
           <div class="custom-card mb-4">
             <div class="custom-card-header d-flex justify-content-between align-items-center">
-              <span>آخر 5 معاملات مالية</span>
+              <span>Recent Financial Transactions</span>
               <a href="{{ route('admin.students.account', $student->id) }}" class="btn btn-outline-primary btn-sm">
-                المزيد <i class="fas fa-arrow-left ms-1"></i>
+                View More <i class="fas fa-arrow-right ms-1"></i>
               </a>
             </div>
             <div class="custom-card-body p-0">
@@ -307,10 +307,10 @@
                 <table class="custom-table">
                   <thead>
                     <tr>
-                      <th>التاريخ</th>
-                      <th>نوع المعاملة</th>
-                      <th>المبلغ</th>
-                      <th>ملاحظات</th>
+                      <th>Date</th>
+                      <th>Transaction Type</th>
+                      <th>Amount</th>
+                      <th>Notes</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -319,18 +319,18 @@
                         <td>{{ date('Y-m-d H:i', strtotime($payment->payment_date)) }}</td>
                         <td>
                           @if($payment->type == 'student_fee')
-                            <span class="badge bg-info">رسوم طالب</span>
+                            <span class="badge bg-info">Student Fee</span>
                           @elseif($payment->type == 'discount')
-                            <span class="badge bg-primary">خصم</span>
+                            <span class="badge bg-primary">Discount</span>
                           @elseif($payment->type == 'refund')
-                            <span class="badge bg-warning text-dark">استرداد</span>
+                            <span class="badge bg-warning text-dark">Refund</span>
                           @else
                             <span class="badge bg-secondary">{{ $payment->type }}</span>
                           @endif
                         </td>
                         <td>
                           <span class="fw-bold {{ $payment->amount > 0 ? 'text-success' : 'text-danger' }}">
-                            {{ $payment->amount > 0 ? '+' : '' }}{{ number_format($payment->amount, 2) }} د.ك
+                            {{ $payment->amount > 0 ? '+' : '' }}${{ number_format($payment->amount, 2) }}
                           </span>
                         </td>
                         <td>{{ $payment->notes ?? '-' }}</td>
@@ -356,9 +356,9 @@
                   <thead>
                     <tr>
                       <th>Added By</th>
-                      <th>Note</th>
-                      <th>Date</th>
-                      <th></th>
+                      <th>Note Content</th>
+                      <th>Date Added</th>
+                      <th>Actions</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -381,7 +381,7 @@
                       </tr>
                     @empty
                       <tr>
-                        <td colspan="4" class="text-center text-muted">No notes found.</td>
+                        <td colspan="4" class="text-center text-muted">No notes have been added yet.</td>
                       </tr>
                     @endforelse
                   </tbody>
@@ -395,7 +395,7 @@
             <div class="custom-card-header d-flex justify-content-between align-items-center">
               <span>Student Enrollments</span>
               <a href="{{ route('admin.accounts.students.courses.select', $student->id) }}" class="btn btn-main d-flex align-items-center gap-2">
-                <i class="fas fa-plus"></i> إضافة كورس/مسار
+                <i class="fas fa-plus"></i> Add Course/Package
               </a>
             </div>
             <div class="custom-card-body p-0">
@@ -403,16 +403,16 @@
                 <table class="custom-table">
                   <thead>
                     <tr>
-                      <th>اسم المادة</th>
-                      <th>مسارها</th>
-                      <th>أستاذها</th>
-                      <th>تاريخ التسجيل</th>
-                      <th>الحضور والغياب</th>
-                      <th>الإجراءات</th>
+                      <th>Course/Package Name</th>
+                      <th>Category</th>
+                      <th>Instructor</th>
+                      <th>Enrollment Date</th>
+                      <th>Attendance Record</th>
+                      <th>Actions</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {{-- الكورسات --}}
+                    {{-- Courses --}}
                     @foreach($enrollments as $enrollment)
                       <tr>
                         <td>{{ $enrollment->course->title ?? '-' }}</td>
@@ -427,25 +427,25 @@
                         <td>{{ $enrollment->enrollment_date }}</td>
                         <td>
                           <button class="btn btn-attendance" data-enrollment-id="{{ $enrollment->id }}" onclick="showAttendanceModal(this)">
-                            <i class="fas fa-calendar-check"></i> عرض الحضور
+                            <i class="fas fa-calendar-check"></i> View Attendance
                           </button>
                         </td>
                         <td>
                           <form action="{{ route('admin.accounts.students.courses.unenroll', ['studentId' => $student->id, 'enrollmentId' => $enrollment->id]) }}" 
                                 method="POST" 
                                 style="display: inline;"
-                                onsubmit="return confirm('هل أنت متأكد من حذف الكورس \'{{ $enrollment->course->title ?? 'الكورس' }}\'? سيتم استرداد المبلغ المدفوع.')">
+                                onsubmit="return confirm('Are you sure you want to remove the course \'{{ $enrollment->course->title ?? 'Course' }}\'? The paid amount will be refunded.')">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="btn btn-danger btn-sm">
-                              <i class="fas fa-trash"></i> حذف
+                              <i class="fas fa-trash"></i> Remove
                             </button>
                           </form>
                         </td>
                       </tr>
                     @endforeach
 
-                    {{-- البكجات --}}
+                    {{-- Packages --}}
                     @foreach($studentPackages as $sp)
                       <tr>
                         <td>{{ $sp->package->title ?? '-' }}</td>
@@ -462,18 +462,18 @@
                         <td>{{ $sp->purchase_date }}</td>
                         <td>
                           <button class="btn btn-attendance">
-                            <i class="fas fa-calendar-check"></i> عرض الحضور
+                            <i class="fas fa-calendar-check"></i> View Attendance
                           </button>
                         </td>
                         <td>
                           <form action="{{ route('admin.accounts.students.packages.unenroll', ['studentId' => $student->id, 'packageId' => $sp->id]) }}" 
                                 method="POST" 
                                 style="display: inline;"
-                                onsubmit="return confirm('هل أنت متأكد من حذف الباقة \'{{ $sp->package->title ?? 'الباقة' }}\'? سيتم استرداد المبلغ المدفوع.')">
+                                onsubmit="return confirm('Are you sure you want to remove the package \'{{ $sp->package->title ?? 'Package' }}\'? The paid amount will be refunded.')">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="btn btn-danger btn-sm">
-                              <i class="fas fa-trash"></i> حذف
+                              <i class="fas fa-trash"></i> Remove
                             </button>
                           </form>
                         </td>
@@ -482,7 +482,7 @@
 
                     @if($enrollments->isEmpty() && $studentPackages->isEmpty())
                       <tr>
-                        <td colspan="6" class="text-center text-muted">لا يوجد تسجيلات بعد.</td>
+                        <td colspan="6" class="text-center text-muted">No course or package enrollments yet.</td>
                       </tr>
                     @endif
                   </tbody>
@@ -504,13 +504,13 @@
                 <table class="custom-table" id="schedule-table-print">
                   <thead>
                     <tr>
-                      <th>Date</th>
-                      <th>Day</th>
-                      <th>Time</th>
+                      <th>Session Date</th>
+                      <th>Day of Week</th>
+                      <th>Class Time</th>
                       <th>Course</th>
-                      <th>Type</th>
-                      <th>Package</th>
-                      <th>Room</th>
+                      <th>Enrollment Type</th>
+                      <th>Package Name</th>
+                      <th>Classroom</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -532,7 +532,7 @@
                       </tr>
                     @empty
                       <tr>
-                        <td colspan="7" class="text-center text-muted">No schedule found for this student.</td>
+                        <td colspan="7" class="text-center text-muted">No class schedule available for this student.</td>
                       </tr>
                     @endforelse
                   </tbody>
@@ -578,7 +578,7 @@
   </main>
 
   <!-- Modals -->
-  <!-- Modal لإضافة ملاحظة -->
+  <!-- Modal for Adding Note -->
 <div class="modal fade" id="addNoteModal" tabindex="-1" aria-labelledby="addNoteModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -599,106 +599,106 @@
     </div>
   </div>
 </div>
-<!-- Modal تأكيد حذف الملاحظة -->
+<!-- Modal for Confirming Note Deletion -->
 <div class="modal fade" id="confirmDeleteNoteModal" tabindex="-1" aria-labelledby="confirmDeleteNoteModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="confirmDeleteNoteModalLabel">تأكيد الحذف</h5>
+        <h5 class="modal-title" id="confirmDeleteNoteModalLabel">Confirm Deletion</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        هل أنت متأكد أنك تريد حذف هذه الملاحظة؟ لا يمكن التراجع عن هذا الإجراء.
+        Are you sure you want to delete this note? This action cannot be undone.
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
-        <button type="button" class="btn btn-danger" id="confirmDeleteNoteBtn">حذف</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-danger" id="confirmDeleteNoteBtn">Delete</button>
       </div>
     </div>
   </div>
 </div>
-<!-- Modal -->
+<!-- Attendance Modal -->
 <div class="modal fade" id="attendanceModal" tabindex="-1" aria-labelledby="attendanceModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="attendanceModalLabel">سجل الحضور</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="إغلاق"></button>
+        <h5 class="modal-title" id="attendanceModalLabel">Attendance Record</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body" id="attendanceModalBody">
-        <div class="text-center text-muted">جاري التحميل...</div>
+        <div class="text-center text-muted">Loading...</div>
       </div>
     </div>
   </div>
 </div>
-<!-- مودال إضافة كورس أو بكيج مع تفاصيل -->
+<!-- Modal for Adding Course or Package with Details -->
 <div class="modal fade" id="addCourseModal" tabindex="-1" aria-labelledby="addCourseModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="addCourseModalLabel">إضافة كورس أو مسار</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="إغلاق"></button>
+        <h5 class="modal-title" id="addCourseModalLabel">Add Course or Package</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <form onsubmit="event.preventDefault(); confirmAddCourse();">
-          <!-- نوع التسجيل -->
+          <!-- Registration Type -->
           <div class="mb-3">
-            <label class="form-label">نوع التسجيل</label>
+            <label class="form-label">Registration Type</label>
             <select class="form-select" id="enrollType" onchange="toggleEnrollTypeDetails()">
-              <option value="course">كورس</option>
-              <option value="package">بكيج</option>
+              <option value="course">Course</option>
+              <option value="package">Package</option>
             </select>
           </div>
-          <!-- اختيار الكورس -->
+          <!-- Select Course -->
           <div class="mb-3" id="courseBox">
-            <label class="form-label">اختر الكورس</label>
+            <label class="form-label">Select Course</label>
             <select class="form-select" id="courseSelect" onchange="showCourseDetails()">
-              <option value="">-- اختر --</option>
-              <option value="1">عربي</option>
-              <option value="2">رياضيات</option>
-              <option value="3">فيزياء</option>
+              <option value="">-- Select --</option>
+              <option value="1">Arabic</option>
+              <option value="2">Mathematics</option>
+              <option value="3">Physics</option>
             </select>
             <div id="courseDetails" class="mt-2" style="display:none;">
               <div class="border rounded p-2 bg-light">
-                <div><b>الأستاذ:</b> <span id="courseTeacher"></span></div>
-                <div><b>السعر:</b> <span id="coursePrice"></span></div>
-                <div><b>الوصف:</b> <span id="courseDesc"></span></div>
+                <div><b>Instructor:</b> <span id="courseTeacher"></span></div>
+                <div><b>Price:</b> <span id="coursePrice"></span></div>
+                <div><b>Description:</b> <span id="courseDesc"></span></div>
               </div>
             </div>
           </div>
-          <!-- اختيار البكيج -->
+          <!-- Select Package -->
           <div class="mb-3 d-none" id="packageBox">
-            <label class="form-label">اختر البكيج</label>
+            <label class="form-label">Select Package</label>
             <select class="form-select" id="packageSelect" onchange="showPackageDetails()">
-              <option value="">-- اختر --</option>
-              <option value="1">بكيج التاسع</option>
-              <option value="2">بكيج الحادي عشر</option>
+              <option value="">-- Select --</option>
+              <option value="1">Grade 9 Package</option>
+              <option value="2">Grade 11 Package</option>
             </select>
             <div id="packageDetails" class="mt-2" style="display:none;">
               <div class="border rounded p-2 bg-light">
-                <div><b>عدد الكورسات:</b> <span id="packageCourses"></span></div>
-                <div><b>السعر:</b> <span id="packagePrice"></span></div>
-                <div><b>الوصف:</b> <span id="packageDesc"></span></div>
+                <div><b>Number of Courses:</b> <span id="packageCourses"></span></div>
+                <div><b>Price:</b> <span id="packagePrice"></span></div>
+                <div><b>Description:</b> <span id="packageDesc"></span></div>
               </div>
             </div>
           </div>
-          <button type="submit" class="btn btn-success w-100 mt-3">تأكيد الإضافة</button>
+          <button type="submit" class="btn btn-success w-100 mt-3">Confirm Addition</button>
         </form>
       </div>
     </div>
   </div>
 </div>
-<!-- مودال تأكيد الإضافة -->
+<!-- Modal for Confirming Addition -->
 <div class="modal fade" id="confirmAddModal" tabindex="-1" aria-labelledby="confirmAddModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="confirmAddModalLabel">تمت الإضافة بنجاح</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="إغلاق"></button>
+        <h5 class="modal-title" id="confirmAddModalLabel">Successfully Added</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body text-center">
         <i class="fas fa-check-circle fa-3x text-success mb-3"></i>
-        <div>تمت إضافة الكورس/المسار للطالب بنجاح (وهمي - فرونت فقط)</div>
+        <div>Course/Package has been successfully added to the student (Demo - Frontend only)</div>
       </div>
     </div>
   </div>
@@ -755,29 +755,29 @@
     // Sample attendance data generator
     function generateAttendanceData(course) {
       const attendanceData = {
-        'عربي': [
-          { date: '2024-06-20', day: 'الخميس', time: '09:00 - 10:30', status: 'حاضر', notes: '' },
-          { date: '2024-06-19', day: 'الأربعاء', time: '09:00 - 10:30', status: 'غائب', notes: 'عذر طبي' },
-          { date: '2024-06-18', day: 'الثلاثاء', time: '09:00 - 10:30', status: 'حاضر', notes: '' },
-          { date: '2024-06-17', day: 'الاثنين', time: '09:00 - 10:30', status: 'حاضر', notes: '' },
-          { date: '2024-06-16', day: 'الأحد', time: '09:00 - 10:30', status: 'غائب', notes: 'سفر' },
-          { date: '2024-06-15', day: 'السبت', time: '09:00 - 10:30', status: 'حاضر', notes: '' }
+        'Arabic': [
+          { date: '2024-06-20', day: 'Thursday', time: '09:00 - 10:30', status: 'Present', notes: '' },
+          { date: '2024-06-19', day: 'Wednesday', time: '09:00 - 10:30', status: 'Absent', notes: 'Medical excuse' },
+          { date: '2024-06-18', day: 'Tuesday', time: '09:00 - 10:30', status: 'Present', notes: '' },
+          { date: '2024-06-17', day: 'Monday', time: '09:00 - 10:30', status: 'Present', notes: '' },
+          { date: '2024-06-16', day: 'Sunday', time: '09:00 - 10:30', status: 'Absent', notes: 'Travel' },
+          { date: '2024-06-15', day: 'Saturday', time: '09:00 - 10:30', status: 'Present', notes: '' }
         ],
-        'رياضيات': [
-          { date: '2024-06-20', day: 'الخميس', time: '10:45 - 12:15', status: 'حاضر', notes: '' },
-          { date: '2024-06-19', day: 'الأربعاء', time: '10:45 - 12:15', status: 'حاضر', notes: '' },
-          { date: '2024-06-18', day: 'الثلاثاء', time: '10:45 - 12:15', status: 'غائب', notes: 'مرض' },
-          { date: '2024-06-17', day: 'الاثنين', time: '10:45 - 12:15', status: 'حاضر', notes: '' },
-          { date: '2024-06-16', day: 'الأحد', time: '10:45 - 12:15', status: 'حاضر', notes: '' },
-          { date: '2024-06-15', day: 'السبت', time: '10:45 - 12:15', status: 'حاضر', notes: '' }
+        'Mathematics': [
+          { date: '2024-06-20', day: 'Thursday', time: '10:45 - 12:15', status: 'Present', notes: '' },
+          { date: '2024-06-19', day: 'Wednesday', time: '10:45 - 12:15', status: 'Present', notes: '' },
+          { date: '2024-06-18', day: 'Tuesday', time: '10:45 - 12:15', status: 'Absent', notes: 'Illness' },
+          { date: '2024-06-17', day: 'Monday', time: '10:45 - 12:15', status: 'Present', notes: '' },
+          { date: '2024-06-16', day: 'Sunday', time: '10:45 - 12:15', status: 'Present', notes: '' },
+          { date: '2024-06-15', day: 'Saturday', time: '10:45 - 12:15', status: 'Present', notes: '' }
         ],
-        'فيزياء': [
-          { date: '2024-06-20', day: 'الخميس', time: '12:30 - 14:00', status: 'حاضر', notes: '' },
-          { date: '2024-06-19', day: 'الأربعاء', time: '12:30 - 14:00', status: 'حاضر', notes: '' },
-          { date: '2024-06-18', day: 'الثلاثاء', time: '12:30 - 14:00', status: 'حاضر', notes: '' },
-          { date: '2024-06-17', day: 'الاثنين', time: '12:30 - 14:00', status: 'غائب', notes: 'موعد طبي' },
-          { date: '2024-06-16', day: 'الأحد', time: '12:30 - 14:00', status: 'حاضر', notes: '' },
-          { date: '2024-06-15', day: 'السبت', time: '12:30 - 14:00', status: 'حاضر', notes: '' }
+        'Physics': [
+          { date: '2024-06-20', day: 'Thursday', time: '12:30 - 14:00', status: 'Present', notes: '' },
+          { date: '2024-06-19', day: 'Wednesday', time: '12:30 - 14:00', status: 'Present', notes: '' },
+          { date: '2024-06-18', day: 'Tuesday', time: '12:30 - 14:00', status: 'Present', notes: '' },
+          { date: '2024-06-17', day: 'Monday', time: '12:30 - 14:00', status: 'Absent', notes: 'Medical appointment' },
+          { date: '2024-06-16', day: 'Sunday', time: '12:30 - 14:00', status: 'Present', notes: '' },
+          { date: '2024-06-15', day: 'Saturday', time: '12:30 - 14:00', status: 'Present', notes: '' }
         ]
       };
 
@@ -788,27 +788,27 @@
       let presentCount = 0;
       let absentCount = 0;
 
-      data.forEach(record => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-          <td>${record.date}</td>
-          <td>${record.day}</td>
-          <td>${record.time}</td>
-          <td>
-            <span class="badge ${record.status === 'حاضر' ? 'bg-success' : 'bg-danger'}">
-              ${record.status}
-            </span>
-          </td>
-          <td>${record.notes || '-'}</td>
-        `;
-        tableBody.appendChild(row);
+              data.forEach(record => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${record.date}</td>
+            <td>${record.day}</td>
+            <td>${record.time}</td>
+            <td>
+              <span class="badge ${record.status === 'Present' ? 'bg-success' : 'bg-danger'}">
+                ${record.status}
+              </span>
+            </td>
+            <td>${record.notes || '-'}</td>
+          `;
+          tableBody.appendChild(row);
 
-        if (record.status === 'حاضر') {
-          presentCount++;
-        } else {
-          absentCount++;
-        }
-      });
+          if (record.status === 'Present') {
+            presentCount++;
+          } else {
+            absentCount++;
+          }
+        });
 
       // Update statistics
       document.getElementById('presentCount').textContent = presentCount;
@@ -830,18 +830,18 @@
       const percentage = document.getElementById('attendancePercentage').textContent;
 
       const win = window.open('', '', 'height=700,width=900');
-      win.document.write('<html><head><title>تقرير الحضور والغياب</title>');
-      win.document.write('<style>body{font-family:Tahoma,Arial,sans-serif; direction:rtl;} table{width:100%;border-collapse:collapse;} th,td{border:1px solid #ddd;padding:8px;text-align:center;} th{background:#f2f2f2;} .header{text-align:center;margin-bottom:20px;} .stats{display:flex;justify-content:space-around;margin:20px 0;}</style>');
+      win.document.write('<html><head><title>Attendance Report</title>');
+      win.document.write('<style>body{font-family:Tahoma,Arial,sans-serif; direction:ltr;} table{width:100%;border-collapse:collapse;} th,td{border:1px solid #ddd;padding:8px;text-align:center;} th{background:#f2f2f2;} .header{text-align:center;margin-bottom:20px;} .stats{display:flex;justify-content:space-around;margin:20px 0;}</style>');
       win.document.write('</head><body>');
       win.document.write('<div class="header">');
-      win.document.write('<h2>تقرير الحضور والغياب</h2>');
-      win.document.write(`<p><strong>الطالب:</strong> {{ $student->name }} | <strong>المادة:</strong> ${course} | <strong>الأستاذ:</strong> ${teacher} | <strong>المسار:</strong> ${track}</p>`);
+      win.document.write('<h2>Attendance Report</h2>');
+      win.document.write(`<p><strong>Student:</strong> {{ $student->name }} | <strong>Course:</strong> ${course} | <strong>Instructor:</strong> ${teacher} | <strong>Track:</strong> ${track}</p>`);
       win.document.write('</div>');
       
       win.document.write('<div class="stats">');
-      win.document.write(`<div><strong>عدد الحضور:</strong> ${presentCount}</div>`);
-      win.document.write(`<div><strong>عدد الغياب:</strong> ${absentCount}</div>`);
-      win.document.write(`<div><strong>نسبة الحضور:</strong> ${percentage}</div>`);
+      win.document.write(`<div><strong>Present Count:</strong> ${presentCount}</div>`);
+      win.document.write(`<div><strong>Absent Count:</strong> ${absentCount}</div>`);
+      win.document.write(`<div><strong>Attendance Rate:</strong> ${percentage}</div>`);
       win.document.write('</div>');
       
       win.document.write(document.querySelector('#attendanceModal .table-responsive table').outerHTML);
@@ -888,13 +888,13 @@
 
     // Course/package management
     const courses = {
-      1: { teacher: 'أ. محمد', price: '1500 SYP', desc: 'دورة عربي مكثفة' },
-      2: { teacher: 'أ. أحمد', price: '1200 SYP', desc: 'دورة رياضيات تأسيسية' },
-      3: { teacher: 'أ. سامر', price: '2000 SYP', desc: 'دورة فيزياء متقدمة' }
+      1: { teacher: 'Prof. Mohammad', price: '$1500', desc: 'Intensive Arabic Course' },
+      2: { teacher: 'Prof. Ahmad', price: '$1200', desc: 'Foundation Mathematics Course' },
+      3: { teacher: 'Prof. Samer', price: '$2000', desc: 'Advanced Physics Course' }
     };
     const packages = {
-      1: { courses: 'عربي، رياضيات، فيزياء', price: '4000 SYP', desc: 'بكيج التاسع لجميع المواد' },
-      2: { courses: 'فيزياء، كيمياء', price: '3000 SYP', desc: 'بكيج الحادي عشر العلمي' }
+      1: { courses: 'Arabic, Mathematics, Physics', price: '$4000', desc: 'Grade 9 Package for All Subjects' },
+      2: { courses: 'Physics, Chemistry', price: '$3000', desc: 'Grade 11 Science Package' }
     };
 
     function toggleEnrollTypeDetails() {
@@ -940,7 +940,7 @@
         item.addEventListener('click', function(e) {
           e.preventDefault();
           var year = this.getAttribute('data-year');
-          document.getElementById('selectedYear').textContent = (year === 'all') ? 'All Year' : year;
+          document.getElementById('selectedYear').textContent = (year === 'all') ? 'All Years' : year;
         });
       });
     });
@@ -949,21 +949,21 @@
         var enrollmentId = btn.getAttribute('data-enrollment-id');
         var modal = new bootstrap.Modal(document.getElementById('attendanceModal'));
         var body = document.getElementById('attendanceModalBody');
-        body.innerHTML = '<div class="text-center text-muted">جاري التحميل...</div>';
+        body.innerHTML = '<div class="text-center text-muted">Loading...</div>';
         modal.show();
 
         fetch('/admin/attendance/enrollment/' + enrollmentId)
             .then(res => res.json())
             .then(data => {
-                let html = `<h5 class="mb-3">الطالب: <b>${data.student}</b> | المادة: <b>${data.course}</b></h5>`;
+                let html = `<h5 class="mb-3">Student: <b>${data.student}</b> | Course: <b>${data.course}</b></h5>`;
                 html += `<div class="table-responsive"><table class="table table-bordered"><thead>
                     <tr>
-                        <th>اليوم</th>
-                        <th>التاريخ</th>
-                        <th>الوقت</th>
-                        <th>القاعة</th>
-                        <th>الحالة</th>
-                        <th>طريقة التسجيل</th>
+                        <th>Day</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Room</th>
+                        <th>Status</th>
+                        <th>Registration Method</th>
                     </tr>
                 </thead><tbody>`;
                 data.sessions.forEach(s => {
@@ -973,10 +973,10 @@
                         <td>${s.start_time} - ${s.end_time}</td>
                         <td>${s.room || '-'}</td>
                         <td>
-                            ${s.status === 'present' ? '<span class="badge bg-success">حاضر</span>' : '<span class="badge bg-danger">غائب</span>'}
+                            ${s.status === 'present' ? '<span class="badge bg-success">Present</span>' : '<span class="badge bg-danger">Absent</span>'}
                             ${s.time && s.status === 'present' ? `<br><small>${s.time}</small>` : ''}
                         </td>
-                        <td>${s.method === '-' ? '-' : (s.method === 'QR' ? 'QR' : 'يدوي')}</td>
+                        <td>${s.method === '-' ? '-' : (s.method === 'QR' ? 'QR' : 'Manual')}</td>
                     </tr>`;
                 });
                 html += '</tbody></table></div>';
@@ -985,41 +985,41 @@
     }
   </script>
 
-  <!-- Modal تأكيد حذف الكورس -->
+  <!-- Modal for Confirming Course Deletion -->
   <div class="modal fade" id="confirmDeleteCourseModal" tabindex="-1" aria-labelledby="confirmDeleteCourseModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="confirmDeleteCourseModalLabel">تأكيد حذف الكورس</h5>
+          <h5 class="modal-title" id="confirmDeleteCourseModalLabel">Confirm Course Deletion</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <p>هل أنت متأكد من حذف هذا الكورس؟</p>
-          <p class="text-warning"><strong>سيتم استرداد المبلغ المدفوع للطالب.</strong></p>
+          <p>Are you sure you want to delete this course?</p>
+          <p class="text-warning"><strong>The paid amount will be refunded to the student.</strong></p>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
-          <button type="button" class="btn btn-danger" id="confirmDeleteCourseBtn">حذف الكورس</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-danger" id="confirmDeleteCourseBtn">Delete Course</button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Modal تأكيد حذف الباقة -->
+  <!-- Modal for Confirming Package Deletion -->
   <div class="modal fade" id="confirmDeletePackageModal" tabindex="-1" aria-labelledby="confirmDeletePackageModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="confirmDeletePackageModalLabel">تأكيد حذف الباقة</h5>
+          <h5 class="modal-title" id="confirmDeletePackageModalLabel">Confirm Package Deletion</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <p>هل أنت متأكد من حذف هذه الباقة؟</p>
-          <p class="text-warning"><strong>سيتم استرداد المبلغ المدفوع للطالب.</strong></p>
+          <p>Are you sure you want to delete this package?</p>
+          <p class="text-warning"><strong>The paid amount will be refunded to the student.</strong></p>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
-          <button type="button" class="btn btn-danger" id="confirmDeletePackageBtn">حذف الباقة</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-danger" id="confirmDeletePackageBtn">Delete Package</button>
         </div>
       </div>
     </div>

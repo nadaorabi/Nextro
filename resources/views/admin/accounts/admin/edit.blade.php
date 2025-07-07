@@ -28,12 +28,12 @@
             <div class="card-body">
               <div class="d-flex justify-content-between align-items-center">
                 <div>
-                  <h4 class="mb-0">Edit Admin</h4>
-                  <p class="text-muted mb-0">Update admin information</p>
+                  <h4 class="mb-0">Edit Admin Profile</h4>
+                  <p class="text-muted mb-0">Update admin information and account details</p>
                 </div>
                 <div>
                   <a href="{{ route('admin.accounts.admins.show', $admin->id) }}" class="btn btn-secondary">
-                    <i class="fas fa-arrow-left"></i> Back to Details
+                    <i class="fas fa-arrow-left"></i> Back to Admin Details
                   </a>
                 </div>
               </div>
@@ -68,7 +68,7 @@
             </div>
           @endif
 
-          <!-- Edit Form Card -->
+          <!-- Admin Information Update Form -->
           <div class="card shadow-sm">
             <div class="card-body">
               <form action="{{ route('admin.accounts.admins.update', $admin->id) }}" method="POST" class="text-start" autocomplete="off">
@@ -78,47 +78,47 @@
                 <!-- Full Name -->
                 <div class="mb-3">
                   <label class="form-label">Full Name <span class="text-danger">*</span></label>
-                  <input type="text" name="name" class="form-control" value="{{ old('name', $admin->name) }}" required maxlength="255">
+                  <input type="text" name="name" class="form-control" value="{{ old('name', $admin->name) }}" required maxlength="255" placeholder="Enter admin's full name">
                 </div>
 
-                <!-- Mobile -->
+                <!-- Mobile Number -->
                 <div class="mb-3">
                   <label class="form-label">Mobile Number <span class="text-danger">*</span></label>
-                  <input type="tel" name="mobile" class="form-control" value="{{ old('mobile', $admin->mobile) }}" required pattern="[0-9]{9,15}" maxlength="15">
+                  <input type="tel" name="mobile" class="form-control" value="{{ old('mobile', $admin->mobile) }}" required pattern="[0-9]{9,15}" maxlength="15" placeholder="Enter mobile number">
                 </div>
 
-                <!-- Email -->
+                <!-- Email Address -->
                 <div class="mb-3">
-                  <label class="form-label">Email Address <span class="text-danger">*</span></label>
-                  <input type="email" name="email" class="form-control" value="{{ old('email', $admin->email) }}" required maxlength="255">
+                  <label class="form-label">Email Address</label>
+                  <input type="email" name="email" class="form-control" value="{{ old('email', $admin->email) }}" maxlength="255" placeholder="Enter email address">
                 </div>
 
                 <!-- Address -->
                 <div class="mb-3">
                   <label class="form-label">Address</label>
-                  <input type="text" name="address" class="form-control" value="{{ old('address', $admin->address) }}" maxlength="255">
+                  <input type="text" name="address" class="form-control" value="{{ old('address', $admin->address) }}" maxlength="255" placeholder="Enter address">
                 </div>
 
-                <!-- Status -->
+                <!-- Admin Status -->
                 <div class="mb-3">
-                  <label class="form-label">Status <span class="text-danger">*</span></label>
+                  <label class="form-label">Admin Status <span class="text-danger">*</span></label>
                   <select name="is_active" class="form-select" required>
                     <option value="1" {{ old('is_active', $admin->is_active) == 1 ? 'selected' : '' }}>Active</option>
                     <option value="0" {{ old('is_active', $admin->is_active) == 0 ? 'selected' : '' }}>Inactive</option>
                   </select>
                 </div>
 
-                <!-- Notes -->
+                <!-- Additional Notes -->
                 <div class="mb-3">
-                  <label class="form-label">Notes</label>
-                  <textarea name="notes" class="form-control" rows="3" maxlength="1000">{{ old('notes', $admin->notes) }}</textarea>
+                  <label class="form-label">Additional Notes</label>
+                  <textarea name="notes" class="form-control" rows="3" maxlength="1000" placeholder="Any additional notes about the admin">{{ old('notes', $admin->notes) }}</textarea>
                 </div>
 
-                <!-- Password Edit -->
+                <!-- Password Update -->
                 <div class="mb-3">
                   <label class="form-label">Password <span class="text-danger">*</span></label>
                   <div class="position-relative">
-                    <input id="edit-admin-password" type="password" name="password" class="form-control ps-4 pe-5" value="{{ old('password', $admin->plain_password) }}" autocomplete="new-password" maxlength="255" style="background:#f8fafc; border-radius:12px; border:1.5px solid #d1e7ff; box-shadow:0 2px 8px rgba(44,62,80,0.07); font-size:1.15rem; letter-spacing:2px;">
+                    <input id="edit-admin-password" type="password" name="password" class="form-control ps-4 pe-5" value="{{ old('password', $admin->plain_password) }}" autocomplete="new-password" maxlength="255" placeholder="Enter new password" style="background:#f8fafc; border-radius:12px; border:1.5px solid #d1e7ff; box-shadow:0 2px 8px rgba(44,62,80,0.07); font-size:1.15rem; letter-spacing:2px;">
                     <span class="position-absolute top-50 end-0 translate-middle-y me-3" style="cursor:pointer;" id="toggleEditPassword">
                       <i class="fas fa-eye text-secondary"></i>
                     </span>
@@ -126,7 +126,7 @@
                   <small class="form-text text-muted">Leave blank to keep the current password.</small>
                 </div>
 
-                <!-- Read-only Information -->
+                <!-- Account Information (Read-only) -->
                 <div class="card bg-light mb-3">
                   <div class="card-body">
                     <h6 class="text-muted mb-3">Account Information (Read-only)</h6>
@@ -143,13 +143,13 @@
                   </div>
                 </div>
 
-                <!-- Submit Buttons -->
+                <!-- Action Buttons -->
                 <div class="d-flex justify-content-between">
                   <a href="{{ route('admin.accounts.admins.show', $admin->id) }}" class="btn btn-secondary">
                     <i class="fas fa-times"></i> Cancel
                   </a>
                   <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-save"></i> Update Admin
+                    <i class="fas fa-save"></i> Update Admin Profile
                   </button>
                 </div>
               </form>

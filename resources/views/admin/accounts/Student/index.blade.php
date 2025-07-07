@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="apple-touch-icon" sizes="76x76" href="{{ asset('images/apple-icon.png') }}">
     <link rel="icon" type="image/png" href="{{ asset('images/favicon.png') }}">
-    <title>Student Management</title>
+    <title>Student Account Management</title>
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
     <link href="https://demos.creative-tim.com/argon-dashboard-pro/assets/css/nucleo-icons.css" rel="stylesheet" />
     <link href="https://demos.creative-tim.com/argon-dashboard-pro/assets/css/nucleo-svg.css" rel="stylesheet" />
@@ -135,39 +135,103 @@
         }
 
         .stat-card {
-            min-height: 170px;
-            height: 170px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            border-radius: 18px;
-            box-shadow: 0 2px 12px rgba(44,62,80,0.09);
-            padding: 24px 18px 18px 18px;
+            min-height: 140px;
+            border-radius: 16px;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
+            padding: 24px;
             background: #fff;
-            transition: box-shadow 0.2s;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0, 0, 0, 0.04);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
         }
-        .stat-card .icon {
+        
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.12);
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--card-color, #5e72e4);
+        }
+        
+        .stat-card.primary::before { background: #5e72e4; }
+        .stat-card.success::before { background: #2dce89; }
+        .stat-card.info::before { background: #11cdef; }
+        .stat-card.danger::before { background: #f5365c; }
+        
+        .stat-card .stat-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px auto;
+            font-size: 24px;
+            color: white;
+        }
+        
+        .stat-card .stat-icon.primary { background: linear-gradient(45deg, #5e72e4, #825ee4); }
+        .stat-card .stat-icon.success { background: linear-gradient(45deg, #2dce89, #2dcecc); }
+        .stat-card .stat-icon.info { background: linear-gradient(45deg, #11cdef, #1171ef); }
+        .stat-card .stat-icon.danger { background: linear-gradient(45deg, #f5365c, #f56036); }
+        
+        .stat-card .stat-title {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #8898aa;
             margin-bottom: 8px;
+            line-height: 1.2;
         }
-        .stat-card .numbers h5,
-        .stat-card .numbers .fs-2 {
-            font-size: 2.1rem !important;
-            font-weight: bold;
+        
+        .stat-card .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #32325d;
+            margin-bottom: 4px;
+            line-height: 1;
         }
-        .stat-card .numbers p,
-        .stat-card .fw-bold,
-        .stat-card .text-info {
-            font-size: 1rem;
+        
+        .stat-card .stat-description {
+            font-size: 0.875rem;
+            color: #8898aa;
+            margin: 0;
+            line-height: 1.3;
         }
-        .stat-card .text-sm {
-            font-size: 0.98rem;
+        
+        .stat-card .stat-description .highlight {
+            font-weight: 600;
         }
+        
+        .stat-card .stat-description .success { color: #2dce89; }
+        .stat-card .stat-description .info { color: #11cdef; }
+        .stat-card .stat-description .danger { color: #f5365c; }
+        
         @media (max-width: 991px) {
             .stat-card {
-                min-height: 140px;
-                height: auto;
-                padding: 18px 10px;
+                min-height: 120px;
+                padding: 20px;
+            }
+            
+            .stat-card .stat-icon {
+                width: 48px;
+                height: 48px;
+                font-size: 20px;
+                margin-bottom: 12px;
+            }
+            
+            .stat-card .stat-value {
+                font-size: 2rem;
             }
         }
     </style>
@@ -205,12 +269,12 @@
                         <div class="card-body p-3">
                             <div class="row">
                                 <div class="col-lg-6">
-                                    <h1 class="text-gradient text-primary">Student Management</h1>
-                                    <p class="mb-0">Manage, add, and edit student accounts</p>
+                                    <h1 class="text-gradient text-primary">Student Account Management</h1>
+                                    <p class="mb-0">View, manage, and oversee all registered student accounts</p>
                                 </div>
                                 <div class="col-lg-6 text-end">
                                     <a href="{{ url('admin/accounts/students/create') }}" class="btn btn-primary mb-0">
-                                        <i class="fas fa-plus"></i>&nbsp;&nbsp;Add New Student
+                                        <i class="fas fa-user-plus"></i>&nbsp;&nbsp;Create New Student
                                     </a>
                                 </div>
                             </div>
@@ -220,106 +284,53 @@
                     <!-- Statistics Cards -->
                     <div class="row mb-4">
                         <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
-                            <div class="card stat-card">
-                                <div class="card-body p-3">
-                                    <div class="row">
-                                        <div class="col-8">
-                                            <div class="numbers">
-                                                <p class="text-sm mb-0 text-uppercase font-weight-bold">Total Students
-                                                </p>
-                                                <h5 class="font-weight-bolder">{{ $totalStudents }}</h5>
-                                                <p class="mb-0">
-                                                    <span class="text-success text-sm font-weight-bolder">+{{ $studentsThisMonth }}</span>
-                                                    this month
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <div class="col-4">
-                                            <div
-                                                class="icon icon-shape bg-gradient-primary shadow-primary text-center rounded-circle">
-                                                <i class="ni ni-hat-3 text-lg opacity-10 custom-icon-style"
-                                                    aria-hidden="true"></i>
-                                            </div>
-                                        </div>
-                                    </div>
+                            <div class="card stat-card primary">
+                                <div class="stat-icon primary">
+                                    <i class="fas fa-graduation-cap"></i>
+                                </div>
+                                <div class="stat-title">Total Students</div>
+                                <div class="stat-value">{{ $totalStudents }}</div>
+                                <div class="stat-description">
+                                    <span class="highlight success">+{{ $studentsThisMonth }}</span> new this month
                                 </div>
                             </div>
                         </div>
 
                         <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
-                            <div class="card stat-card">
-                                <div class="card-body p-3">
-                                    <div class="row">
-                                        <div class="col-8">
-                                            <div class="numbers">
-                                                <p class="text-sm mb-0 text-uppercase font-weight-bold">Active</p>
-                                                <h5 class="font-weight-bolder">{{ $activeStudents }}</h5>
-                                                <p class="mb-0">
-                                                    <span class="text-success text-sm font-weight-bolder">{{ $totalStudents > 0 ? round(($activeStudents/$totalStudents)*100) : 0 }}%</span>
-                                                    of students
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <div class="col-4">
-                                            <div
-                                                class="icon icon-shape bg-gradient-success shadow-success text-center rounded-circle">
-                                                <i class="ni ni-check-bold text-lg opacity-10 custom-icon-style"
-                                                    aria-hidden="true"></i>
-                                            </div>
-                                        </div>
-                                    </div>
+                            <div class="card stat-card success">
+                                <div class="stat-icon success">
+                                    <i class="fas fa-check-circle"></i>
+                                </div>
+                                <div class="stat-title">Active Students</div>
+                                <div class="stat-value">{{ $activeStudents }}</div>
+                                <div class="stat-description">
+                                    <span class="highlight success">{{ $totalStudents > 0 ? round(($activeStudents/$totalStudents)*100) : 0 }}%</span> of all students
                                 </div>
                             </div>
                         </div>
 
                         <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
-                            <div class="card stat-card">
-                                <div class="card-body p-3">
-                                    <div class="row">
-                                        <div class="col-8">
-                                            <div class="numbers">
-                                                <p class="text-sm mb-0 text-uppercase font-weight-bold">Graduated</p>
-                                                <h5 class="font-weight-bolder">{{ $graduatedStudents }}</h5>
-                                                <p class="mb-0">
-                                                    <span class="text-info text-sm font-weight-bolder">5</span> this
-                                                    year
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <div class="col-4">
-                                            <div
-                                                class="icon icon-shape bg-gradient-info shadow-info text-center rounded-circle">
-                                                <i class="ni ni-trophy text-lg opacity-10 custom-icon-style"
-                                                    aria-hidden="true"></i>
-                                            </div>
-                                        </div>
-                                    </div>
+                            <div class="card stat-card info">
+                                <div class="stat-icon info">
+                                    <i class="fas fa-trophy"></i>
+                                </div>
+                                <div class="stat-title">Graduated Students</div>
+                                <div class="stat-value">{{ $graduatedStudents }}</div>
+                                <div class="stat-description">
+                                    <span class="highlight info">5</span> this year
                                 </div>
                             </div>
                         </div>
 
                         <div class="col-xl-3 col-sm-6">
-                            <div class="card stat-card">
-                                <div class="card-body p-3">
-                                    <div class="row">
-                                        <div class="col-8">
-                                            <div class="numbers">
-                                                <p class="text-sm mb-0 text-uppercase font-weight-bold">Blocked</p>
-                                                <h5 class="font-weight-bolder">{{ $blockedStudents }}</h5>
-                                                <p class="mb-0">
-                                                    <span class="text-danger text-sm font-weight-bolder">account</span>
-                                                    blocked
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <div class="col-4">
-                                            <div
-                                                class="icon icon-shape bg-gradient-danger shadow-danger text-center rounded-circle">
-                                                <i class="ni ni-fat-delete text-lg opacity-10 custom-icon-style"
-                                                    aria-hidden="true"></i>
-                                            </div>
-                                        </div>
-                                    </div>
+                            <div class="card stat-card danger">
+                                <div class="stat-icon danger">
+                                    <i class="fas fa-times-circle"></i>
+                                </div>
+                                <div class="stat-title">Inactive Students</div>
+                                <div class="stat-value">{{ $blockedStudents }}</div>
+                                <div class="stat-description">
+                                    <span class="highlight danger">accounts</span> suspended
                                 </div>
                             </div>
                         </div>
@@ -331,24 +342,24 @@
                             <div class="row">
                                 <div class="col-md-3">
                                     <div class="form-group">
-                                        <label class="form-label">Status</label>
+                                        <label class="form-label">Account Status</label>
                                         <select id="status-filter" class="form-select">
                                             <option value="">All Statuses</option>
                                             <option>Active</option>
                                             <option>Graduated</option>
-                                            <option>Blocked</option>
+                                            <option>Inactive</option>
                                         </select>
                                     </div>
                                 </div>
                                 <div class="col-md-3">
                                     <div class="form-group">
-                                        <label class="form-label">Category</label>
+                                        <label class="form-label">Study Level</label>
                                         <select id="level-filter" class="form-select">
-                                            <option value="">All Categories</option>
-                                            <option>Category 1</option>
-                                            <option>Category 2</option>
-                                            <option>Category 3</option>
-                                            <option>Category 4</option>
+                                            <option value="">All Levels</option>
+                                            <option>Beginner Level</option>
+                                            <option>Intermediate Level</option>
+                                            <option>Advanced Level</option>
+                                            <option>Expert Level</option>
                                         </select>
                                     </div>
                                 </div>
@@ -365,11 +376,11 @@
                                 </div>
                                 <div class="col-md-3">
                                     <div class="form-group">
-                                        <label class="form-label">Search</label>
+                                        <label class="form-label">Search Students</label>
                                         <div class="input-group">
                                             <span class="input-group-text"><i class="fas fa-search"></i></span>
                                             <input id="search-input" type="text" class="form-control"
-                                                placeholder="Search by name, email, or ID...">
+                                                placeholder="Search by name, email, or student ID...">
                                         </div>
                                     </div>
                                 </div>
@@ -384,12 +395,12 @@
                                 <table id="students-table" class="table align-items-center mb-0">
                                     <thead>
                                         <tr>
-                                            <th>Student</th>
-                                            <th>ID</th>
-                                            <th>Password</th>
-                                            <th>Status</th>
+                                            <th>Student Information</th>
+                                            <th>Student ID</th>
+                                            <th>Initial Password</th>
+                                            <th>Account Status</th>
                                             <th>Registration Date</th>
-                                            <th>QR</th>
+                                            <th>QR Code</th>
                                             <th>Actions</th>
                                         </tr>
                                     </thead>
@@ -449,7 +460,7 @@
                                                             <i class="fas fa-eye"></i>
                                                         </a>
                                                         <a href="{{ route('admin.students.account', $student->id) }}"
-                                                            class="btn btn-link text-success p-2" title="الحساب المالي">
+                                                            class="btn btn-link text-success p-2" title="Financial Account">
                                                             <i class="fas fa-wallet"></i>
                                                         </a>
                                                         <button class="btn btn-link text-dark p-2"
@@ -477,8 +488,8 @@
 
                             <!-- Pagination -->
                             <div class="d-flex justify-content-between align-items-center p-3">
-                                <p class="text-sm mb-0">Showing {{ $students->firstItem() }} -
-                                    {{ $students->lastItem() }} of {{ $students->total() }} students</p>
+                                <p class="text-sm mb-0">Showing {{ $students->firstItem() ?? 0 }} -
+                                    {{ $students->lastItem() ?? 0 }} of {{ $students->total() }} total students</p>
                                 {{ $students->links('pagination::bootstrap-4') }}
                             </div>
                         </div>
@@ -495,7 +506,7 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="studentCardModalLabel">Student ID Card</h5>
+                    <h5 class="modal-title" id="studentCardModalLabel">Student Identification Card</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body" id="studentCardPrintArea">
@@ -522,11 +533,11 @@
                             <div class="text-center">
                                 <div class="row">
                                     <div class="col-6 text-center">
-                                        <strong class="d-block text-xs text-muted">ID</strong>
+                                        <strong class="d-block text-xs text-muted">Student ID</strong>
                                         <span id="modal-student-id" class="font-weight-bold"></span>
                                     </div>
                                     <div class="col-6 text-center">
-                                        <strong class="d-block text-xs text-muted">Registered</strong>
+                                        <strong class="d-block text-xs text-muted">Registration Date</strong>
                                         <span id="modal-student-reg-date" class="font-weight-bold"></span>
                                     </div>
                                 </div>
@@ -535,9 +546,12 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" onclick="printStudentCard()"><i
-                            class="fas fa-print"></i> Print</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times"></i> Close
+                    </button>
+                    <button type="button" class="btn btn-primary" onclick="printStudentCard()">
+                        <i class="fas fa-print"></i> Print ID Card
+                    </button>
                 </div>
             </div>
         </div>
@@ -549,7 +563,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="editStudentModalLabel">Edit Student Data</h5>
+                    <h5 class="modal-title" id="editStudentModalLabel">Edit Student Information</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -608,8 +622,8 @@
                             <i class="fas fa-exclamation-triangle text-danger text-lg opacity-10"></i>
                         </div>
                         <div>
-                            <h5 class="modal-title mb-0" id="deleteConfirmModalLabel">Confirm Deletion</h5>
-                            <p class="text-white-50 mb-0 small">This action cannot be undone</p>
+                            <h5 class="modal-title mb-0" id="deleteConfirmModalLabel">Confirm Student Deletion</h5>
+                            <p class="text-white-50 mb-0 small">This action is permanent and cannot be undone</p>
                         </div>
                     </div>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -619,7 +633,7 @@
                         <div class="icon icon-shape bg-gradient-danger shadow-danger text-center rounded-circle mx-auto mb-3" style="width: 80px; height: 80px;">
                             <i class="fas fa-user-times text-white text-lg opacity-10" style="font-size: 2rem;"></i>
                         </div>
-                        <h6 class="text-danger mb-2">Are you sure you want to delete this student?</h6>
+                        <h6 class="text-danger mb-2">Are you absolutely sure you want to delete this student account?</h6>
                         <p class="text-muted mb-0" id="deleteStudentName"></p>
                     </div>
                     
@@ -629,9 +643,10 @@
                             <div>
                                 <strong>Warning:</strong> This will permanently delete the student account and all associated data.
                                 <ul class="mb-0 mt-2 small">
-                                    <li>Student profile will be removed</li>
-                                    <li>All records will be deleted</li>
-                                    <li>This action cannot be undone</li>
+                                    <li>Complete student profile will be removed</li>
+                                    <li>All enrollment and attendance records will be deleted</li>
+                                    <li>Financial records and payment history will be lost</li>
+                                    <li>This action cannot be reversed or undone</li>
                                 </ul>
                             </div>
                         </div>
@@ -652,13 +667,13 @@
                 </div>
                 <div class="modal-footer border-0 bg-light">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                        <i class="fas fa-times me-2"></i>Cancel
+                        <i class="fas fa-times me-2"></i>Cancel Deletion
                     </button>
                     <form id="deleteForm" method="POST" style="display: inline;">
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="btn btn-secondary" disabled>
-                            <i class="fas fa-trash me-2"></i>Delete Student
+                            <i class="fas fa-trash me-2"></i>Permanently Delete Student
                         </button>
                     </form>
                 </div>
@@ -777,7 +792,7 @@
                 const studentAvatar = studentCardModal.querySelector('#modal-student-avatar');
                 const studentRegDate = studentCardModal.querySelector('#modal-student-reg-date');
 
-                modalTitle.textContent = 'Student ID Card: ' + name;
+                modalTitle.textContent = 'Student Identification Card: ' + name;
                 studentName.textContent = name;
                 studentId.textContent = id;
                 studentEmail.textContent = email;
@@ -808,7 +823,7 @@
 
         function printCredentials(studentId, studentPassword, studentName) {
             if (!studentPassword || studentPassword.trim() === '') {
-                alert('Initial password is not available for this student.');
+                alert('Initial password is not available for this student account.');
                 return;
             }
 
@@ -842,8 +857,8 @@
             printWindow.document.write(`<div class="cred-label">Student Name</div><div class="cred-value">${studentName}</div>`);
             printWindow.document.write(`<div class="cred-label">Student ID</div><div class="cred-id">${studentId}</div>`);
             printWindow.document.write(`<div class="cred-label">Password</div><div class="cred-pass">${studentPassword}</div>`);
-            printWindow.document.write('<div class="cred-footer">Keep this information confidential</div>');
-            printWindow.document.write('<button class="print-btn" onclick="window.print()">Print</button>');
+            printWindow.document.write('<div class="cred-footer">Keep this information secure and confidential</div>');
+            printWindow.document.write('<button class="print-btn" onclick="window.print()">Print Credentials</button>');
             printWindow.document.write('</div>');
             printWindow.document.write('</body></html>');
 
@@ -935,7 +950,7 @@
                 .then(data => {
                     if (data.success) {
                         // Show success message
-                        submitBtn.innerHTML = '<i class="fas fa-check me-2"></i>Deleted Successfully!';
+                        submitBtn.innerHTML = '<i class="fas fa-check me-2"></i>Student Deleted Successfully!';
                         submitBtn.classList.remove('btn-danger');
                         submitBtn.classList.add('btn-success');
                         
@@ -950,7 +965,7 @@
                             }, 300);
                         }, 1500);
                     } else {
-                        throw new Error(data.message || 'Failed to delete student');
+                        throw new Error(data.message || 'Failed to delete student account');
                     }
                 })
                 .catch(error => {
@@ -976,7 +991,7 @@
             // Reset modal when hidden
             deleteModal.addEventListener('hidden.bs.modal', function() {
                 const submitBtn = deleteForm.querySelector('button[type="submit"]');
-                submitBtn.innerHTML = '<i class="fas fa-trash me-2"></i>Delete Student';
+                submitBtn.innerHTML = '<i class="fas fa-trash me-2"></i>Permanently Delete Student';
                 submitBtn.disabled = true;
                 submitBtn.classList.remove('btn-success', 'btn-danger');
                 submitBtn.classList.add('btn-secondary');

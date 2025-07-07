@@ -33,7 +33,7 @@
                 </div>
                 <div>
                   <a href="{{ route('admin.accounts.teachers.list') }}" class="btn btn-secondary">
-                    <i class="fas fa-arrow-left"></i> Back to List
+                    <i class="fas fa-arrow-left"></i> Back to Teachers List
                   </a>
                 </div>
               </div>
@@ -68,7 +68,7 @@
             </div>
           @endif
 
-          <!-- Add Form Card -->
+          <!-- Teacher Registration Form -->
           <div class="card shadow-sm">
             <div class="card-body">
               <form action="{{ route('admin.accounts.teachers.store') }}" method="POST" class="text-start" autocomplete="off">
@@ -78,60 +78,62 @@
                   <!-- Full Name -->
                   <div class="col-md-6 mb-3">
                     <label class="form-label">Full Name <span class="text-danger">*</span></label>
-                    <input type="text" name="name" class="form-control" value="{{ old('name') }}" required maxlength="255">
+                    <input type="text" name="name" class="form-control" value="{{ old('name') }}" required maxlength="255" placeholder="Enter teacher's full name">
                   </div>
 
-                  <!-- Mobile -->
+                  <!-- Mobile Number -->
                   <div class="col-md-6 mb-3">
                     <label class="form-label">Mobile Number <span class="text-danger">*</span></label>
-                    <input type="tel" name="mobile" class="form-control" value="{{ old('mobile') }}" required pattern="[0-9]{9,15}" maxlength="15">
+                    <input type="tel" name="mobile" class="form-control" value="{{ old('mobile') }}" required pattern="[0-9]{9,15}" maxlength="15" placeholder="Enter mobile number">
                   </div>
                 </div>
 
                 <div class="row">
-                  <!-- Email -->
+                  <!-- Email Address -->
                   <div class="col-md-6 mb-3">
                     <label class="form-label">Email Address</label>
-                    <input type="email" name="email" class="form-control" value="{{ old('email') }}" maxlength="255">
+                    <input type="email" name="email" class="form-control" value="{{ old('email') }}" maxlength="255" placeholder="Enter email address">
                   </div>
 
                   <!-- Address -->
                   <div class="col-md-6 mb-3">
                     <label class="form-label">Address</label>
-                    <input type="text" name="address" class="form-control" value="{{ old('address') }}" maxlength="255">
+                    <input type="text" name="address" class="form-control" value="{{ old('address') }}" maxlength="255" placeholder="Enter address">
                   </div>
                 </div>
 
                 <div class="row">
-                  <!-- Status -->
+                  <!-- Teacher Status -->
                   <div class="col-md-6 mb-3">
-                    <label class="form-label">Status <span class="text-danger">*</span></label>
+                    <label class="form-label">Teacher Status <span class="text-danger">*</span></label>
                     <select name="is_active" class="form-select" required>
+                      <option value="">Select Status</option>
                       <option value="1" {{ old('is_active', '1') == '1' ? 'selected' : '' }}>Active</option>
+                      <option value="2" {{ old('is_active') == '2' ? 'selected' : '' }}>Experienced</option>
                       <option value="0" {{ old('is_active') == '0' ? 'selected' : '' }}>Inactive</option>
                     </select>
                   </div>
                 </div>
 
-                <!-- Notes -->
+                <!-- Additional Notes -->
                 <div class="mb-3">
-                  <label class="form-label">Notes (Optional)</label>
-                  <textarea name="notes" class="form-control" rows="3" maxlength="500" placeholder="Any additional notes about the teacher...">{{ old('notes') }}</textarea>
+                  <label class="form-label">Additional Notes</label>
+                  <textarea name="notes" class="form-control" rows="3" maxlength="500" placeholder="Any additional notes about the teacher (optional)">{{ old('notes') }}</textarea>
                 </div>
 
-                <!-- Information Note -->
+                <!-- Information Notice -->
                 <div class="alert alert-info">
                   <i class="fas fa-info-circle me-2"></i>
-                  <strong>Note:</strong> A unique Teacher ID and password will be automatically generated when the teacher is created.
+                  <strong>Note:</strong> A unique Teacher ID and password will be automatically generated when the teacher account is created.
                 </div>
 
-                <!-- Submit Buttons -->
+                <!-- Action Buttons -->
                 <div class="d-flex justify-content-between">
                   <a href="{{ route('admin.accounts.teachers.list') }}" class="btn btn-secondary">
                     <i class="fas fa-times"></i> Cancel
                   </a>
                   <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-plus"></i> Add Teacher
+                    <i class="fas fa-plus"></i> Create Teacher Account
                   </button>
                 </div>
               </form>

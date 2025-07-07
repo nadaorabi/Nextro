@@ -29,11 +29,11 @@
               <div class="d-flex justify-content-between align-items-center">
                 <div>
                   <h4 class="mb-0">Add New Admin</h4>
-                  <p class="text-muted mb-0">Create a new admin account</p>
+                  <p class="text-muted mb-0">Create a new admin account with essential information</p>
                 </div>
                 <div>
                   <a href="{{ route('admin.accounts.admins.list') }}" class="btn btn-secondary">
-                    <i class="fas fa-arrow-left"></i> Back to List
+                    <i class="fas fa-arrow-left"></i> Back to Admins List
                   </a>
                 </div>
               </div>
@@ -68,7 +68,7 @@
             </div>
           @endif
 
-          <!-- Add Form Card -->
+          <!-- Admin Registration Form -->
           <div class="card shadow-sm">
             <div class="card-body">
               <form action="{{ route('admin.accounts.admins.store') }}" method="POST" class="text-start" autocomplete="off">
@@ -78,60 +78,61 @@
                   <!-- Full Name -->
                   <div class="col-md-6 mb-3">
                     <label class="form-label">Full Name <span class="text-danger">*</span></label>
-                    <input type="text" name="name" class="form-control" value="{{ old('name') }}" required maxlength="255">
+                    <input type="text" name="name" class="form-control" value="{{ old('name') }}" required maxlength="255" placeholder="Enter admin's full name">
                   </div>
 
-                  <!-- Mobile -->
+                  <!-- Mobile Number -->
                   <div class="col-md-6 mb-3">
                     <label class="form-label">Mobile Number <span class="text-danger">*</span></label>
-                    <input type="tel" name="mobile" class="form-control" value="{{ old('mobile') }}" required pattern="[0-9]{9,15}" maxlength="15">
+                    <input type="tel" name="mobile" class="form-control" value="{{ old('mobile') }}" required pattern="[0-9]{9,15}" maxlength="15" placeholder="Enter mobile number">
                   </div>
                 </div>
 
                 <div class="row">
-                  <!-- Email -->
+                  <!-- Email Address -->
                   <div class="col-md-6 mb-3">
                     <label class="form-label">Email Address</label>
-                    <input type="email" name="email" class="form-control" value="{{ old('email') }}" maxlength="255">
+                    <input type="email" name="email" class="form-control" value="{{ old('email') }}" maxlength="255" placeholder="Enter email address">
                   </div>
 
                   <!-- Address -->
                   <div class="col-md-6 mb-3">
                     <label class="form-label">Address</label>
-                    <input type="text" name="address" class="form-control" value="{{ old('address') }}" maxlength="255">
+                    <input type="text" name="address" class="form-control" value="{{ old('address') }}" maxlength="255" placeholder="Enter address">
                   </div>
                 </div>
 
                 <div class="row">
-                  <!-- Status -->
+                  <!-- Admin Status -->
                   <div class="col-md-6 mb-3">
-                    <label class="form-label">Status <span class="text-danger">*</span></label>
+                    <label class="form-label">Admin Status <span class="text-danger">*</span></label>
                     <select name="is_active" class="form-select" required>
+                      <option value="">Select Status</option>
                       <option value="1" {{ old('is_active', '1') == '1' ? 'selected' : '' }}>Active</option>
                       <option value="0" {{ old('is_active') == '0' ? 'selected' : '' }}>Inactive</option>
                     </select>
                   </div>
                 </div>
 
-                <!-- Notes -->
+                <!-- Additional Notes -->
                 <div class="mb-3">
-                  <label class="form-label">Notes (Optional)</label>
-                  <textarea name="notes" class="form-control" rows="3" maxlength="500" placeholder="Any additional notes about the admin...">{{ old('notes') }}</textarea>
+                  <label class="form-label">Additional Notes</label>
+                  <textarea name="notes" class="form-control" rows="3" maxlength="500" placeholder="Any additional notes about the admin (optional)">{{ old('notes') }}</textarea>
                 </div>
 
-                <!-- Information Note -->
+                <!-- Information Notice -->
                 <div class="alert alert-info">
                   <i class="fas fa-info-circle me-2"></i>
-                  <strong>Note:</strong> A unique Admin ID and password will be automatically generated when the admin is created.
+                  <strong>Note:</strong> A unique Admin ID and password will be automatically generated when the admin account is created.
                 </div>
 
-                <!-- Submit Buttons -->
+                <!-- Action Buttons -->
                 <div class="d-flex justify-content-between">
                   <a href="{{ route('admin.accounts.admins.list') }}" class="btn btn-secondary">
                     <i class="fas fa-times"></i> Cancel
                   </a>
                   <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-plus"></i> Add Admin
+                    <i class="fas fa-plus"></i> Create Admin Account
                   </button>
                 </div>
               </form>

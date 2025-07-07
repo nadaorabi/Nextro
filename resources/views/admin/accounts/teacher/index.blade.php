@@ -146,39 +146,103 @@
         }
 
         .stat-card {
-            min-height: 170px;
-            height: 170px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            border-radius: 18px;
-            box-shadow: 0 2px 12px rgba(44,62,80,0.09);
-            padding: 24px 18px 18px 18px;
+            min-height: 140px;
+            border-radius: 16px;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
+            padding: 24px;
             background: #fff;
-            transition: box-shadow 0.2s;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0, 0, 0, 0.04);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
         }
-        .stat-card .icon {
+        
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.12);
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--card-color, #5e72e4);
+        }
+        
+        .stat-card.primary::before { background: #5e72e4; }
+        .stat-card.success::before { background: #2dce89; }
+        .stat-card.info::before { background: #11cdef; }
+        .stat-card.danger::before { background: #f5365c; }
+        
+        .stat-card .stat-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px auto;
+            font-size: 24px;
+            color: white;
+        }
+        
+        .stat-card .stat-icon.primary { background: linear-gradient(45deg, #5e72e4, #825ee4); }
+        .stat-card .stat-icon.success { background: linear-gradient(45deg, #2dce89, #2dcecc); }
+        .stat-card .stat-icon.info { background: linear-gradient(45deg, #11cdef, #1171ef); }
+        .stat-card .stat-icon.danger { background: linear-gradient(45deg, #f5365c, #f56036); }
+        
+        .stat-card .stat-title {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #8898aa;
             margin-bottom: 8px;
+            line-height: 1.2;
         }
-        .stat-card h5,
-        .stat-card .fs-2 {
-            font-size: 2.1rem !important;
-            font-weight: bold;
+        
+        .stat-card .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #32325d;
+            margin-bottom: 4px;
+            line-height: 1;
         }
-        .stat-card p,
-        .stat-card .fw-bold,
-        .stat-card .text-info {
-            font-size: 1rem;
+        
+        .stat-card .stat-description {
+            font-size: 0.875rem;
+            color: #8898aa;
+            margin: 0;
+            line-height: 1.3;
         }
-        .stat-card .text-sm {
-            font-size: 0.98rem;
+        
+        .stat-card .stat-description .highlight {
+            font-weight: 600;
         }
+        
+        .stat-card .stat-description .success { color: #2dce89; }
+        .stat-card .stat-description .info { color: #11cdef; }
+        .stat-card .stat-description .danger { color: #f5365c; }
+        
         @media (max-width: 991px) {
             .stat-card {
-                min-height: 140px;
-                height: auto;
-                padding: 18px 10px;
+                min-height: 120px;
+                padding: 20px;
+            }
+            
+            .stat-card .stat-icon {
+                width: 48px;
+                height: 48px;
+                font-size: 20px;
+                margin-bottom: 12px;
+            }
+            
+            .stat-card .stat-value {
+                font-size: 2rem;
             }
         }
     </style>
@@ -231,97 +295,53 @@
                     <!-- Statistics Cards -->
                     <div class="row mb-4">
                         <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
-                            <div class="card stat-card">
-                                <div class="card-body p-3">
-                                    <div class="row">
-                                        <div class="col-8">
-                                            <div class="numbers">
-                                                <p class="text-sm mb-0 text-uppercase font-weight-bold">Total Teachers</p>
-                                                <h5 class="font-weight-bolder">{{ $totalTeachers }}</h5>
-                                                <p class="mb-0">
-                                                    <span class="text-success text-sm font-weight-bolder">+{{ $teachersThisMonth }}</span>
-                                                    this month
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <div class="col-4">
-                                            <div class="icon icon-shape bg-gradient-primary shadow-primary text-center rounded-circle">
-                                                <i class="ni ni-single-02 text-lg opacity-10 custom-icon-style" aria-hidden="true"></i>
-                                            </div>
-                                        </div>
-                                    </div>
+                            <div class="card stat-card primary">
+                                <div class="stat-icon primary">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                                <div class="stat-title">Total Teachers</div>
+                                <div class="stat-value">{{ $totalTeachers }}</div>
+                                <div class="stat-description">
+                                    <span class="highlight success">+{{ $teachersThisMonth }}</span> this month
                                 </div>
                             </div>
                         </div>
 
                         <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
-                            <div class="card stat-card">
-                                <div class="card-body p-3">
-                                    <div class="row">
-                                        <div class="col-8">
-                                            <div class="numbers">
-                                                <p class="text-sm mb-0 text-uppercase font-weight-bold">Active</p>
-                                                <h5 class="font-weight-bolder">{{ $activeTeachers }}</h5>
-                                                <p class="mb-0">
-                                                    <span class="text-success text-sm font-weight-bolder">{{ $totalTeachers > 0 ? round(($activeTeachers/$totalTeachers)*100) : 0 }}%</span>
-                                                    of teachers
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <div class="col-4">
-                                            <div class="icon icon-shape bg-gradient-success shadow-success text-center rounded-circle">
-                                                <i class="ni ni-check-bold text-lg opacity-10 custom-icon-style" aria-hidden="true"></i>
-                                            </div>
-                                        </div>
-                                    </div>
+                            <div class="card stat-card success">
+                                <div class="stat-icon success">
+                                    <i class="fas fa-check-circle"></i>
+                                </div>
+                                <div class="stat-title">Active</div>
+                                <div class="stat-value">{{ $activeTeachers }}</div>
+                                <div class="stat-description">
+                                    <span class="highlight success">{{ $totalTeachers > 0 ? round(($activeTeachers/$totalTeachers)*100) : 0 }}%</span> of teachers
                                 </div>
                             </div>
                         </div>
 
                         <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
-                            <div class="card stat-card">
-                                <div class="card-body p-3">
-                                    <div class="row">
-                                        <div class="col-8">
-                                            <div class="numbers">
-                                                <p class="text-sm mb-0 text-uppercase font-weight-bold">Experienced</p>
-                                                <h5 class="font-weight-bolder">{{ $graduatedTeachers }}</h5>
-                                                <p class="mb-0">
-                                                    <span class="text-info text-sm font-weight-bolder">5+ years</span>
-                                                    experience
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <div class="col-4">
-                                            <div class="icon icon-shape bg-gradient-info shadow-info text-center rounded-circle">
-                                                <i class="ni ni-trophy text-lg opacity-10 custom-icon-style" aria-hidden="true"></i>
-                                            </div>
-                                        </div>
-                                    </div>
+                            <div class="card stat-card info">
+                                <div class="stat-icon info">
+                                    <i class="fas fa-trophy"></i>
+                                </div>
+                                <div class="stat-title">Experienced</div>
+                                <div class="stat-value">{{ $graduatedTeachers }}</div>
+                                <div class="stat-description">
+                                    <span class="highlight info">5+ years</span> experience
                                 </div>
                             </div>
                         </div>
 
                         <div class="col-xl-3 col-sm-6">
-                            <div class="card stat-card">
-                                <div class="card-body p-3">
-                                    <div class="row">
-                                        <div class="col-8">
-                                            <div class="numbers">
-                                                <p class="text-sm mb-0 text-uppercase font-weight-bold">Inactive</p>
-                                                <h5 class="font-weight-bolder">{{ $blockedTeachers }}</h5>
-                                                <p class="mb-0">
-                                                    <span class="text-danger text-sm font-weight-bolder">account</span>
-                                                    inactive
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <div class="col-4">
-                                            <div class="icon icon-shape bg-gradient-danger shadow-danger text-center rounded-circle">
-                                                <i class="ni ni-fat-delete text-lg opacity-10 custom-icon-style" aria-hidden="true"></i>
-                                            </div>
-                                        </div>
-                                    </div>
+                            <div class="card stat-card danger">
+                                <div class="stat-icon danger">
+                                    <i class="fas fa-times-circle"></i>
+                                </div>
+                                <div class="stat-title">Inactive</div>
+                                <div class="stat-value">{{ $blockedTeachers }}</div>
+                                <div class="stat-description">
+                                    <span class="highlight danger">account</span> inactive
                                 </div>
                             </div>
                         </div>
@@ -332,14 +352,15 @@
                         <div class="card-body p-3">
                             <div class="row">
                                 <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label class="form-label">Status</label>
-                                        <select id="status-filter" class="form-select">
-                                            <option value="">All Statuses</option>
-                                            <option>Active</option>
-                                            <option>Inactive</option>
-                                        </select>
-                                    </div>
+                                                            <div class="form-group">
+                            <label class="form-label">Teacher Status</label>
+                            <select id="status-filter" class="form-select">
+                                <option value="">All Statuses</option>
+                                <option>Active</option>
+                                <option>Experienced</option>
+                                <option>Inactive</option>
+                            </select>
+                        </div>
                                 </div>
                                 <div class="col-md-3">
                                     <div class="form-group">
@@ -386,8 +407,8 @@
                                 <table id="teachers-table" class="table align-items-center mb-0">
                                     <thead>
                                         <tr>
-                                            <th>Teacher</th>
-                                            <th>ID</th>
+                                            <th>Teacher Information</th>
+                                            <th>Teacher ID</th>
                                             <th>Password</th>
                                             <th>Specialization</th>
                                             <th>Status</th>
@@ -442,15 +463,15 @@
                                                             class="btn btn-link text-primary p-2">
                                                             <i class="fas fa-eye"></i>
                                                         </a>
-                                                        <a href="{{ route('admin.teachers.account', $teacher->id) }}"
-                                                            class="btn btn-link text-success p-2" title="الحساب المالي">
-                                                            <i class="fas fa-wallet"></i>
-                                                        </a>
-                                                        <button class="btn btn-link text-dark p-2"
-                                                            onclick="printCredentials('{{ $teacher->login_id }}', '{{ $teacher->name }}', '{{ $teacher->plain_password }}')"
-                                                            title="Print Credentials">
-                                                            <i class="fas fa-key"></i>
-                                                    </button>
+                                                                                <a href="{{ route('admin.teachers.account', $teacher->id) }}"
+                            class="btn btn-link text-success p-2" title="Financial Account">
+                            <i class="fas fa-wallet"></i>
+                        </a>
+                                                                                <button class="btn btn-link text-dark p-2"
+                            onclick="printCredentials('{{ $teacher->login_id }}', '{{ $teacher->name }}', '{{ $teacher->plain_password }}')"
+                            title="Print Login Credentials">
+                            <i class="fas fa-key"></i>
+                    </button>
                                                         
                                                         <form action="{{ route('admin.accounts.teachers.destroy', $teacher->id) }}"
                                                             method="POST" onsubmit="return false;" class="delete-form">
@@ -495,7 +516,7 @@
                             <i class="fas fa-exclamation-triangle text-danger text-lg opacity-10"></i>
                         </div>
                         <div>
-                            <h5 class="modal-title mb-0" id="deleteConfirmModalLabel">Confirm Deletion</h5>
+                            <h5 class="modal-title mb-0" id="deleteConfirmModalLabel">Confirm Teacher Deletion</h5>
                             <p class="text-white-50 mb-0 small">This action cannot be undone</p>
                         </div>
                     </div>
@@ -506,7 +527,7 @@
                         <div class="icon icon-shape bg-gradient-danger shadow-danger text-center rounded-circle mx-auto mb-3" style="width: 80px; height: 80px;">
                             <i class="fas fa-user-times text-white text-lg opacity-10" style="font-size: 2rem;"></i>
                         </div>
-                        <h6 class="text-danger mb-2">Are you sure you want to delete this teacher?</h6>
+                        <h6 class="text-danger mb-2">Are you sure you want to delete this teacher account?</h6>
                         <p class="text-muted mb-0" id="deleteTeacherName"></p>
                     </div>
                     
@@ -516,8 +537,9 @@
                             <div>
                                 <strong>Warning:</strong> This will permanently delete the teacher account and all associated data.
                                 <ul class="mb-0 mt-2 small">
-                                    <li>Teacher profile will be removed</li>
-                                    <li>All records will be deleted</li>
+                                    <li>Teacher profile will be permanently removed</li>
+                                    <li>All course assignments will be deleted</li>
+                                    <li>All financial records will be removed</li>
                                     <li>This action cannot be undone</li>
                                 </ul>
                             </div>
@@ -545,7 +567,7 @@
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="btn btn-secondary" disabled>
-                            <i class="fas fa-trash me-2"></i>Delete Teacher
+                            <i class="fas fa-trash me-2"></i>Delete Teacher Account
                         </button>
                     </form>
                 </div>

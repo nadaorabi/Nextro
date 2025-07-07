@@ -199,7 +199,7 @@
         border-radius: 50%;
         opacity: 1;
     }
-    /* كارد الملخص */
+    /* Summary Card */
     #summaryCard {
         display: block;
         background: linear-gradient(120deg,rgb(208, 236, 250) 0%, #e3eafe 100%);
@@ -300,19 +300,19 @@
         </a>
         <span class="main-icon" style="width:64px;height:64px;font-size:2.2em;background:rgba(59,130,246,0.10);color:#2563eb;"><i class="fas fa-user-graduate"></i></span>
         <div>
-            <div class="main-title" style="color:#2563eb;font-size:2em;font-weight:800;margin-bottom:0.2em;letter-spacing:0.5px;">إضافة كورسات أو بكجات للطالب</div>
-            <div class="main-student" style="color:#2563eb;font-size:1.1em;font-weight:600;background:rgba(59,130,246,0.07);border-radius:8px;padding:4px 18px;display:inline-block;margin-top:8px;box-shadow:0 1px 6px rgba(59,130,246,0.07);">{{ $student->name }}</div>
+                            <div class="main-title" style="color:#2563eb;font-size:1.5em;font-weight:800;margin-bottom:0.2em;letter-spacing:0.5px;">Add Courses or Packages for Student</div>
+                            <div class="main-student" style="color:#2563eb;font-size:1em;font-weight:600;background:rgba(59,130,246,0.07);border-radius:8px;padding:4px 18px;display:inline-block;margin-top:8px;box-shadow:0 1px 6px rgba(59,130,246,0.07);">{{ $student->name }}</div>
         </div>
     </div>
     <!-- Filter Bar -->
     <div class="card shadow-sm mb-4 p-3" style="border-radius:18px;background:linear-gradient(90deg,#f1f5fb 0%,#e3eafe 100%);box-shadow:0 2px 12px rgba(59,130,246,0.09);">
         <form id="filterForm" class="row g-2 align-items-center" onsubmit="return false;">
             <div class="col-md-4 col-12">
-                <input type="text" id="searchInput" class="form-control" placeholder="ابحث باسم الكورس أو البكج..." style="border-radius:12px;">
+                <input type="text" id="searchInput" class="form-control" placeholder="Search by course or package name..." style="border-radius:12px;">
             </div>
             <div class="col-md-3 col-6">
                 <select id="categoryFilter" class="form-select" style="border-radius:12px;">
-                    <option value="">كل الفئات</option>
+                    <option value="">All Categories</option>
                     @foreach($categories as $category)
                         <option value="{{ $category->id }}">{{ $category->name }}</option>
                     @endforeach
@@ -320,9 +320,9 @@
             </div>
             <div class="col-md-3 col-6">
                 <select id="typeFilter" class="form-select" style="border-radius:12px;">
-                    <option value="all">كورسات وبكجات</option>
-                    <option value="course">كورسات فقط</option>
-                    <option value="package">بكجات فقط</option>
+                    <option value="all">Courses & Packages</option>
+                    <option value="course">Courses Only</option>
+                    <option value="package">Packages Only</option>
                 </select>
             </div>
         </form>
@@ -337,17 +337,17 @@
       <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="infoModalLabel">معلومات</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="إغلاق"></button>
+            <h5 class="modal-title" id="infoModalLabel">Information</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body" id="infoModalBody"></div>
         </div>
       </div>
     </div>
-    <!-- كارد ملخص العناصر المختارة -->
+    <!-- Selected Items Summary Card -->
     <div class="d-flex justify-content-center my-5">
         <button type="submit" form="enrollForm" class="dynamic-btn px-5 py-2" id="confirmBtnSummary">
-            <i class="fas fa-check-circle me-1"></i> تأكيد الإضافة
+            <i class="fas fa-check-circle me-1"></i> Confirm Enrollment
         </button>
     </div>
 </div>
@@ -360,7 +360,7 @@
             'category' => $c->category ? $c->category->name : '',
             'description' => $c->description,
             'price' => $c->price,
-            'currency' => $c->currency ?? 'ر.س',
+            'currency' => $c->currency ?? '$',
             'type' => 'course',
             'enrolled' => in_array($c->id, $enrolledCourseIds),
         ];
@@ -373,7 +373,7 @@
             'category' => $p->category ? $p->category->name : '',
             'description' => $p->description,
             'price' => $p->discounted_price ?? $p->price,
-            'currency' => $p->currency ?? 'ر.س',
+            'currency' => $p->currency ?? '$',
             'type' => 'package',
             'courses' => $p->packageCourses->map(function($pc){
                 $c = $pc->course;
@@ -382,7 +382,7 @@
                     'category' => $c->category->name ?? '',
                     'description' => $c->description,
                     'price' => $c->price,
-                    'currency' => $c->currency ?? 'ر.س',
+                    'currency' => $c->currency ?? '$',
                 ] : null;
             })->filter()->values(),
             'enrolled' => in_array($p->id, $enrolledPackageIds),
@@ -411,13 +411,13 @@ function renderGrid() {
     const grid = document.getElementById('resultsGrid');
     grid.innerHTML = '';
     if(items.length === 0) {
-        grid.innerHTML = '<div class="text-center text-muted py-5">لا توجد نتائج مطابقة</div>';
+        grid.innerHTML = '<div class="text-center text-muted py-5">No matching results found</div>';
         return;
     }
     items.forEach(item => {
         let icon = item.type === 'course' ? 'fa-book' : 'fa-box';
         let color = item.type === 'course' ? 'linear-gradient(135deg,#2563eb 0%,#60a5fa 100%)' : 'linear-gradient(135deg,#a21caf 0%,#f472b6 100%)';
-        let enrolled = item.enrolled ? '<span class="badge bg-warning mb-2">مسجل مسبقاً</span>' : '';
+        let enrolled = item.enrolled ? '<span class="badge bg-warning mb-2">Already Enrolled</span>' : '';
         let extra = '';
         let conflictMsg = '';
         let canSelect = true;
@@ -430,15 +430,15 @@ function renderGrid() {
             });
             if(conflicts.length) {
                 canSelect = false;
-                conflictMsg = `<div class='alert alert-danger p-2 mb-2' style='font-size:0.98em;'>لا يمكن تسجيل البكج لأن الطالب مسجل في: <strong>${conflicts.map(c=>c.title).join('، ')}</strong></div>`;
+                conflictMsg = `<div class='alert alert-danger p-2 mb-2' style='font-size:0.98em;'>Cannot enroll in package because student is already enrolled in: <strong>${conflicts.map(c=>c.title).join(', ')}</strong></div>`;
             }
-            extra = `<div class='small text-secondary mb-1'>الدورات: ${item.courses.map(c=>c.title).join(', ')}</div>`;
+            extra = `<div class='small text-secondary mb-1'>Courses: ${item.courses.map(c=>c.title).join(', ')}</div>`;
         }
         let isSelected = (item.type === 'course' ? selectedCourses.includes(item.id) : selectedPackages.includes(item.id));
         let selectClass = isSelected ? 'selected-card' : '';
         let disabled = item.enrolled || !canSelect ? 'pointer-events:none;opacity:0.6;' : '';
-        let selectBtn = item.enrolled || !canSelect ? '' : `<button type='button' class='btn btn-sm btn-outline-primary select-btn' data-id='${item.id}' data-type='${item.type}' style='border-radius:8px;font-weight:700;'><i class='fas fa-check'></i> ${isSelected ? 'إلغاء' : 'تحديد'}</button>`;
-        let infoBtn = `<button type='button' class='btn btn-sm btn-outline-info info-btn' data-id='${item.id}' data-type='${item.type}' style='border-radius:8px;font-weight:700;'><i class='fas fa-info-circle'></i> معلومات</button>`;
+        let selectBtn = item.enrolled || !canSelect ? '' : `<button type='button' class='btn btn-sm btn-outline-primary select-btn' data-id='${item.id}' data-type='${item.type}' style='border-radius:8px;font-weight:700;'><i class='fas fa-check'></i> ${isSelected ? 'Deselect' : 'Select'}</button>`;
+        let infoBtn = `<button type='button' class='btn btn-sm btn-outline-info info-btn' data-id='${item.id}' data-type='${item.type}' style='border-radius:8px;font-weight:700;'><i class='fas fa-info-circle'></i> Info</button>`;
         grid.innerHTML += `
         <div class='col-lg-4 col-md-6 col-12'>
             <div class='card shadow-sm h-100 selectable-card ${selectClass}' style='border-radius:18px;cursor:pointer;${disabled};transition:box-shadow .2s,border .2s;' data-id='${item.id}' data-type='${item.type}'>
@@ -462,7 +462,7 @@ function renderGrid() {
             </div>
         </div>`;
     });
-    // تفعيل التحديد عبر الزر فقط
+    // Enable selection via button only
     document.querySelectorAll('.select-btn').forEach(btn => {
         btn.addEventListener('click', function(e) {
             e.stopPropagation();
@@ -484,7 +484,7 @@ function renderGrid() {
             renderGrid();
         });
     });
-    // تفعيل زر المعلومات
+    // Enable info button
     document.querySelectorAll('.info-btn').forEach(btn => {
         btn.addEventListener('click', function(e) {
             e.stopPropagation();
@@ -503,14 +503,14 @@ function renderGrid() {
                         <div class='mb-2 text-secondary'>${item.description || ''}</div>
                         <div class='mb-2'><span class='badge bg-info'>${item.price} ${item.currency}</span></div>`;
                 if(item.courses && item.courses.length) {
-                    html += `<div class='mt-3'><strong>الدورات المضمنة:</strong><table class='table table-bordered mt-2'><thead><tr><th>اسم الكورس</th><th>الفئة</th><th>الوصف</th><th>السعر</th></tr></thead><tbody>`;
+                    html += `<div class='mt-3'><strong>Included Courses:</strong><table class='table table-bordered mt-2'><thead><tr><th>Course Name</th><th>Category</th><th>Description</th><th>Price</th></tr></thead><tbody>`;
                     item.courses.forEach(c => {
                         html += `<tr><td>${c.title}</td><td>${c.category}</td><td>${c.description || ''}</td><td>${c.price} ${c.currency}</td></tr>`;
                     });
                     html += `</tbody></table></div>`;
                 }
             }
-            document.getElementById('infoModalLabel').innerText = type === 'course' ? 'معلومات الكورس' : 'معلومات البكج';
+            document.getElementById('infoModalLabel').innerText = type === 'course' ? 'Course Information' : 'Package Information';
             document.getElementById('infoModalBody').innerHTML = html;
             let modal = new bootstrap.Modal(document.getElementById('infoModal'));
             modal.show();
@@ -523,7 +523,7 @@ document.getElementById('typeFilter').addEventListener('change', renderGrid);
 document.addEventListener('DOMContentLoaded', function() {
     renderGrid();
 });
-// عند إرسال النموذج أضف الحقول المخفية
+// When submitting form add hidden fields
 const enrollForm = document.getElementById('enrollForm');
 enrollForm.addEventListener('submit', function(e) {
     document.querySelectorAll('.hidden-enroll').forEach(el => el.remove());
