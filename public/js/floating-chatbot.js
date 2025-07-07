@@ -350,4 +350,32 @@ window.sendChatbotMessage = function(message) {
     if (window.floatingChatbot) {
         window.floatingChatbot.send(message);
     }
-}; 
+};
+
+// إظهار/إخفاء نافذة الشات مع الحركة
+const chatbotBtn = document.querySelector('.floating-chatbot-btn');
+const chatbotWindow = document.querySelector('.floating-chatbot-window');
+const chatbotClose = document.querySelector('.floating-chatbot-close');
+
+if (chatbotBtn && chatbotWindow) {
+  chatbotBtn.addEventListener('click', function(e) {
+    chatbotWindow.classList.toggle('active');
+  });
+}
+// إغلاق عند الضغط على زر الإغلاق
+if (chatbotClose && chatbotWindow) {
+  chatbotClose.addEventListener('click', function() {
+    chatbotWindow.classList.remove('active');
+  });
+}
+// إغلاق عند الضغط خارج النافذة
+window.addEventListener('click', function(e) {
+  if (chatbotWindow && chatbotWindow.classList.contains('active')) {
+    if (!chatbotWindow.contains(e.target) && !chatbotBtn.contains(e.target)) {
+      chatbotWindow.classList.remove('active');
+    }
+  }
+});
+
+// تفعيل البوت العائم تلقائياً
+new FloatingChatbot(); 

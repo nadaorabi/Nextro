@@ -56,9 +56,7 @@
 
   {{-- Floating Chatbot for Students Only --}}
   @if(Auth::check() && Auth::user()->role === 'student')
-  <script>
-    window.isStudent = true;
-  </script>
+    {{-- فقط تضمين ملفات CSS وJS، بدون أي عناصر HTML يدوية --}}
   @endif
 
   <div id="overlayer"></div>

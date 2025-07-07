@@ -222,20 +222,30 @@ class ChatBotController extends Controller
      */
     private function getDirectAnswer($message)
     {
-        $message = mb_strtolower($message, 'UTF-8');
+        $message = trim(mb_strtolower($message, 'UTF-8'));
         $isArabic = preg_match('/[\x{0600}-\x{06FF}]/u', $message);
-        // Special answer for creator question
-        if (preg_match('/(من صنعك|من صممك|who made you|who created you)/iu', $message)) {
+
+        // شرط التحية
+        if (preg_match('/^(مرحبا|أهلاً|السلام عليكم|hi|hello|hey|good morning|good evening|welcome)/iu', $message)) {
             return $isArabic
-                ? "تم إنشائي وتدريبي بواسطة فريق نظام NEXTRO لمساعدة الطلاب أكاديميًا."
-                : "I was created and trained by the NEXTRO system team to help students succeed academically.";
+                ? "مرحباً! كيف يمكنني مساعدتك في دراستك؟"
+                : "Hello! How can I help you with your studies?";
         }
+
         // فقط إذا كانت الرسالة فعلاً غير تعليمية أو غير لائقة
         if (preg_match('/(سياسة|دين|ترفيه|حياة شخصية|طب|علاقات|مال|شائعات|أخبار|رياضة|فن|مشاهير|سياسي|اقتصاد|اقتصادي|اجتماعي|اجتماعية|حب|زواج|طلاق|عاطفة|جريمة|جنايات|سجن|مخدرات|جنس|جنسية|سيرة ذاتية|شخصية|شخصيات|مشاهير|فنان|فنانة|ممثل|ممثلة|مغني|مغنية|موسيقى|أغاني|أغنية|فيديو|يوتيوب|تيك توك|انستجرام|فيسبوك|تويتر|سناب|واتساب|سيارة|سيارات|سفر|سياحة|طبخ|أكل|مطاعم|ألعاب|لعبة|game|games|sport|celebrity|celebrities|politics|religion|personal|life|love|marriage|divorce|crime|drugs|sex|biography|famous|actor|actress|singer|music|song|video|youtube|tiktok|instagram|facebook|twitter|snap|whatsapp|car|cars|travel|tourism|cooking|food|restaurant|restaurants|game|games)/u', $message)) {
             return $isArabic
                 ? "عذراً، لا يمكنني مناقشة هذا النوع من الأسئلة. اسألني عن موضوع دراسي أو أكاديمي."
                 : "Sorry, I can't discuss this type of question. Please ask me about an academic or educational topic.";
         }
+
+        // إذا لم تكن الرسالة سؤالاً (لا تحتوي على ؟ أو أداة استفهام)
+        if (!preg_match('/(\?|\b(ما|متى|كيف|لماذا|هل|أين|كم|who|what|when|where|why|how|is|are|do|does|can|could|should|would)\b)/iu', $message)) {
+            return $isArabic
+                ? "يرجى كتابة سؤال أكاديمي أو تعليمي لكي أتمكن من مساعدتك."
+                : "Please write an academic or educational question so I can help you.";
+        }
+
         // سؤال عن الكورسات المتوفرة
         if (preg_match('/(كورسات|دورات|برامج|ما هي الكورسات|الكورسات المتاحة|courses|available courses|what courses)/u', $message)) {
             $courses = \App\Models\Course::with('category')
