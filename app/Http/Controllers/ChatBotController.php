@@ -225,90 +225,29 @@ class ChatBotController extends Controller
         $message = trim(mb_strtolower($message, 'UTF-8'));
         $isArabic = preg_match('/[\x{0600}-\x{06FF}]/u', $message);
 
-        // شرط التحية
+        // سؤال من صممه
+        if (preg_match('/(من صنعك|من صممك|من أنشأك|who made you|who created you|who built you|who developed you)/iu', $message)) {
+            return $isArabic
+                ? "تم إنشائي وتطويري بواسطة فريق Nextro."
+                : "I was created and developed by the Nextro team.";
+        }
+
+        // التحية
         if (preg_match('/^(مرحبا|أهلاً|السلام عليكم|hi|hello|hey|good morning|good evening|welcome)/iu', $message)) {
             return $isArabic
-                ? "مرحباً! كيف يمكنني مساعدتك في دراستك؟"
-                : "Hello! How can I help you with your studies?";
+                ? "مرحباً! كيف يمكنني مساعدتك في موضوع علمي أو دراسي؟"
+                : "Hello! How can I help you with a scientific or academic topic?";
         }
 
-        // فقط إذا كانت الرسالة فعلاً غير تعليمية أو غير لائقة
-        if (preg_match('/(سياسة|دين|ترفيه|حياة شخصية|طب|علاقات|مال|شائعات|أخبار|رياضة|فن|مشاهير|سياسي|اقتصاد|اقتصادي|اجتماعي|اجتماعية|حب|زواج|طلاق|عاطفة|جريمة|جنايات|سجن|مخدرات|جنس|جنسية|سيرة ذاتية|شخصية|شخصيات|مشاهير|فنان|فنانة|ممثل|ممثلة|مغني|مغنية|موسيقى|أغاني|أغنية|فيديو|يوتيوب|تيك توك|انستجرام|فيسبوك|تويتر|سناب|واتساب|سيارة|سيارات|سفر|سياحة|طبخ|أكل|مطاعم|ألعاب|لعبة|game|games|sport|celebrity|celebrities|politics|religion|personal|life|love|marriage|divorce|crime|drugs|sex|biography|famous|actor|actress|singer|music|song|video|youtube|tiktok|instagram|facebook|twitter|snap|whatsapp|car|cars|travel|tourism|cooking|food|restaurant|restaurants|game|games)/u', $message)) {
+        // إذا كان السؤال غير علمي أو تعليمي
+        if (preg_match('/(سياسة|دين|ترفيه|حياة شخصية|مال|شائعات|أخبار|رياضة|فن|مشاهير|سياسي|اقتصاد|اقتصادي|اجتماعي|اجتماعية|حب|زواج|طلاق|عاطفة|جريمة|جنايات|سجن|مخدرات|جنس|جنسية|سيرة ذاتية|شخصية|شخصيات|مشاهير|فنان|فنانة|ممثل|ممثلة|مغني|مغنية|موسيقى|أغاني|أغنية|فيديو|يوتيوب|تيك توك|انستجرام|فيسبوك|تويتر|سناب|واتساب|سيارة|سيارات|سفر|سياحة|طبخ|أكل|مطاعم|ألعاب|لعبة|game|games|sport|celebrity|celebrities|politics|religion|personal|life|love|marriage|divorce|crime|drugs|sex|biography|famous|actor|actress|singer|music|song|video|youtube|tiktok|instagram|facebook|twitter|snap|whatsapp|car|cars|travel|tourism|cooking|food|restaurant|restaurants)/u', $message)) {
             return $isArabic
-                ? "عذراً، لا يمكنني مناقشة هذا النوع من الأسئلة. اسألني عن موضوع دراسي أو أكاديمي."
-                : "Sorry, I can't discuss this type of question. Please ask me about an academic or educational topic.";
+                ? "عذراً، لا يمكنني مناقشة هذا النوع من الأسئلة. اسألني عن موضوع علمي أو تعليمي."
+                : "Sorry, I can't discuss this type of question. Please ask me about a scientific or educational topic.";
         }
 
-        // إذا لم تكن الرسالة سؤالاً (لا تحتوي على ؟ أو أداة استفهام)
-        if (!preg_match('/(\?|\b(ما|متى|كيف|لماذا|هل|أين|كم|who|what|when|where|why|how|is|are|do|does|can|could|should|would)\b)/iu', $message)) {
-            return $isArabic
-                ? "يرجى كتابة سؤال أكاديمي أو تعليمي لكي أتمكن من مساعدتك."
-                : "Please write an academic or educational question so I can help you.";
-        }
-
-        // سؤال عن الكورسات المتوفرة
-        if (preg_match('/(كورسات|دورات|برامج|ما هي الكورسات|الكورسات المتاحة|courses|available courses|what courses)/u', $message)) {
-            $courses = \App\Models\Course::with('category')
-                ->where('status', 'active')
-                ->get();
-            if ($courses->count() > 0) {
-                $response = $isArabic ? "الكورسات المتاحة:\n" : "Available courses:\n";
-                foreach ($courses as $course) {
-                    $name = $this->translateCourseName($course, $isArabic);
-                    $response .= $isArabic
-                        ? "• {$name} - {$course->credit_hours} ساعة\n"
-                        : "• {$name} - {$course->credit_hours} hours\n";
-                }
-                return $response;
-            }
-        }
-        // سؤال عن التكلفة أو الرسوم
-        if (preg_match('/(سعر|ثمن|تكلفة|رسوم|كم يكلف|التكلفة|fees|cost|price)/u', $message)) {
-            $courses = \App\Models\Course::with('category')
-                ->where('status', 'active')
-                ->get();
-            if ($courses->count() > 0) {
-                $response = $isArabic ? "رسوم الكورسات:\n" : "Course fees:\n";
-                foreach ($courses as $course) {
-                    $name = $this->translateCourseName($course, $isArabic);
-                    $price = $course->is_free ? ($isArabic ? 'مجاني' : 'Free') : $course->price . ' ' . $course->currency;
-                    $response .= $isArabic
-                        ? "• {$name}: {$price}\n"
-                        : "• {$name}: {$price}\n";
-                }
-                return $response;
-            }
-        }
-        // سؤال عن التسجيل
-        if (preg_match('/(تسجيل|سجل|كيف أسجل|إجراءات|متطلبات|register|registration|how to register|enroll|enrollment)/u', $message)) {
-            return $isArabic
-                ? "للتسجيل في الكورسات: 1. سجل دخولك 2. اختر الكورس 3. ادفع الرسوم 4. ابدأ التعلم. للمساعدة تواصل مع الإدارة."
-                : "To register for courses: 1. Log in 2. Choose the course 3. Pay the fees 4. Start learning. For help, contact the administration.";
-        }
-        // سؤال عن كورس محدد
-        if (preg_match('/(كورس|دورة|course)/u', $message)) {
-            $courses = \App\Models\Course::with('category')
-                ->where('status', 'active')
-                ->get();
-            foreach ($courses as $course) {
-                $name = $this->translateCourseName($course, $isArabic);
-                if (mb_stripos($message, mb_strtolower($name, 'UTF-8')) !== false) {
-                    $price = $course->is_free ? ($isArabic ? 'مجاني' : 'Free') : $course->price . ' ' . $course->currency;
-                    return $isArabic
-                        ? "معلومات عن {$name}: عدد الساعات: {$course->credit_hours}، الرسوم: {$price}."
-                        : "About {$name}: Hours: {$course->credit_hours}, Fees: {$price}.";
-                }
-            }
-            // إذا لم يوجد الكورس المطلوب
-            return $isArabic
-                ? "عذراً، لا يوجد لدينا حالياً كورس بهذا الاسم. الكورسات المتاحة هي:\n" . implode("\n", $courses->map(fn($c) => '• ' . $this->translateCourseName($c, true)))
-                : "Sorry, we currently don't have a course with that name. Available courses are:\n" . implode("\n", $courses->map(fn($c) => '• ' . $this->translateCourseName($c, false)));
-        }
-        // Educational questions - let AI handle these
-        if (preg_match('/(شرح|درس|مفهوم|فهم|حل|تمرين|واجب|بحث|دراسة|تعلم|تعليم|explain|lesson|concept|understand|exercise|assignment|research|study|learn|education)/u', $message)) {
-            return null; // Let AI handle educational questions
-        }
-        return null; // Let AI handle other questions
+        // أي سؤال آخر: يجيب عليه الذكاء الاصطناعي
+        return null;
     }
 
     /**
