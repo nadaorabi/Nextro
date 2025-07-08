@@ -136,12 +136,13 @@
       border-spacing: 0;
     }
     .students-table th {
-      background: #f3f4f6;
+      background: linear-gradient(90deg, #818cf8 0%, #6366f1 100%);
       font-weight: 700;
-      color: #3730a3;
+      color: #fff;
       padding: 16px 18px;
       border-bottom: 2px solid #e0e7ff;
       font-size: 1.01rem;
+      letter-spacing: 0.5px;
     }
     .students-table td {
       padding: 15px 18px;
@@ -269,6 +270,25 @@
       margin: 0.1rem;
       display: inline-block;
     }
+    .badge-status {
+      font-size: 0.98em;
+      padding: 6px 18px;
+      border-radius: 999px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      background: #e0e7ff;
+      color: #6366f1;
+      border: none;
+      display: inline-block;
+    }
+    .badge-status.active {
+      background: linear-gradient(90deg, #2ecc71 0%, #27ae60 100%);
+      color: #fff;
+    }
+    .badge-status.inactive {
+      background: linear-gradient(90deg, #b0b7c3 0%, #636c72 100%);
+      color: #fff;
+    }
     @media (max-width: 900px) {
       .students-table th, .students-table td {
         padding: 10px 8px;
@@ -325,139 +345,105 @@
             </h3>
             <p class="mb-1">
               <i class="fas fa-id-card me-2"></i>
-              رقم الهوية: {{ $teacher->login_id }}
+              ID: {{ $teacher->login_id }}
             </p>
             <p class="mb-1">
               <i class="fas fa-phone me-2"></i>
-              الهاتف: {{ $teacher->mobile ?? 'غير محدد' }}
+              Phone: {{ $teacher->mobile ?? 'Not set' }}
             </p>
             @if($teacher->email)
             <p class="mb-0">
               <i class="fas fa-envelope me-2"></i>
-              البريد الإلكتروني: {{ $teacher->email }}
+              Email: {{ $teacher->email }}
             </p>
             @endif
           </div>
           <div class="col-md-4 text-end">
             <div class="stats-card">
               <h4 class="mb-1">{{ $allStudents->count() }}</h4>
-              <p class="mb-0 text-muted">الطلاب</p>
+              <p class="mb-0 text-muted">Total Students</p>
             </div>
           </div>
         </div>
       </div>
 
-      <div class="filter-bar" id="courseFilterBar">
-        <button type="button" class="filter-pill active" data-course="all">
-          <span class="filter-icon"><i class="fas fa-users"></i></span>
-          جميع الطلاب <span class="count" id="all-count">{{ $allStudents->count() }}</span>
-        </button>
-        <button type="button" class="filter-pill" data-course="direct_courses">
-          <span class="filter-icon"><i class="fas fa-book"></i></span>
-          الكورسات المباشرة <span class="count" id="direct-courses-count">{{ $allStudents->where('enrollment_type', 'course')->count() }}</span>
-        </button>
-        <button type="button" class="filter-pill" data-course="packages">
-          <span class="filter-icon"><i class="fas fa-box"></i></span>
-          البكجات <span class="count" id="packages-count">{{ $allStudents->where('enrollment_type', 'package')->count() }}</span>
-        </button>
-        @foreach($teacherCourses as $courseInstructor)
-        @php $course = $courseInstructor->course; @endphp
-        <button type="button" class="filter-pill" data-course="{{ $course->title }}">
-          <span class="filter-icon"><i class="fas fa-graduation-cap"></i></span>
-          {{ $course->title }} <span class="count" id="{{ Str::slug($course->title) }}-count">{{ $allStudents->filter(function($student) use ($course) { return $student['courses']->where('title', $course->title)->count() > 0; })->count() }}</span>
-        </button>
-        @endforeach
+      <!-- Filter Bar Modern -->
+      <div class="row mb-3">
+        <div class="col-md-4 mb-2">
+          <select class="form-select" id="filterSelect">
+            <option value="all">All Students</option>
+            @foreach($teacherCourses as $courseInstructor)
+              @php $course = $courseInstructor->course; @endphp
+              <option value="course-{{ $course->id }}">Course: {{ $course->title }}</option>
+            @endforeach
+            @foreach($teacherPackages ?? [] as $package)
+              <option value="package-{{ $package->id }}">Package: {{ $package->title }}</option>
+            @endforeach
+          </select>
+        </div>
+        <div class="col-md-4 mb-2">
+          <input type="text" id="studentSearch" class="form-control" placeholder="Search by student name...">
+        </div>
       </div>
-      
-      <div class="glass-search">
-        <span class="search-icon"><i class="fas fa-search"></i></span>
-        <input type="text" id="studentSearch" placeholder="البحث عن طالب بالاسم...">
-      </div>
-      
+
       <div class="students-count-bar" id="studentsCountBar">
-        عرض <span id="current-count">{{ $allStudents->count() }}</span> طالب
+        Showing <span id="current-count">{{ $allStudents->count() }}</span> students
       </div>
-      
-      <div class="students-table">
-        <div class="table-responsive">
-          <table class="table align-items-center mb-0">
-            <thead>
-              <tr>
-                <th>الطالب</th>
-                <th>الكورسات</th>
-                <th>البكجات</th>
-                <th>نوع التسجيل</th>
-                <th>البريد الإلكتروني</th>
-                <th>الهاتف</th>
-                <th>الإجراءات</th>
-              </tr>
-            </thead>
-            <tbody id="studentsList">
-              @forelse($allStudents as $student)
-              <tr style="animation-delay:{{ $loop->index * 0.07 }}s">
-                <td>
-                  <div class="student-info">
-                    <img src="{{ asset($student['avatar'] ?? 'images/default-avatar.png') }}" 
-                         class="student-avatar" alt="{{ $student['name'] }}"
-                         onerror="this.src='{{ asset('images/default-avatar.png') }}'">
-                    <div>
-                      <span class="student-name">{{ $student['name'] }}</span>
-                      <br>
-                      <small class="text-muted">ID: {{ $student['login_id'] }}</small>
-                    </div>
-                  </div>
-                </td>
-                <td>
-                  @foreach($student['courses'] as $course)
-                  <span class="course-badge">
-                    {{ $course['title'] }}
-                    @if($course['type'] == 'package_course')
-                      <small>({{ $course['package_name'] }})</small>
-                    @endif
-                  </span>
-                  @endforeach
-                </td>
-                <td>
-                  @foreach($student['packages'] as $package)
-                  <span class="package-badge">{{ $package['title'] }}</span>
-                  @endforeach
-                </td>
-                <td>
-                  @if($student['enrollment_type'] == 'course')
-                    <span class="enrollment-type-badge">كورس مباشر</span>
-                  @else
-                    <span class="enrollment-type-badge">بكج</span>
-                  @endif
-                </td>
-                <td>
-                  <span class="student-contact">
-                    <i class="fas fa-envelope"></i> 
-                    {{ $student['email'] ?? 'غير محدد' }}
-                  </span>
-                </td>
-                <td>
-                  <span class="student-contact">
-                    <i class="fas fa-phone"></i> 
-                    {{ $student['mobile'] ?? 'غير محدد' }}
-                  </span>
-                </td>
-                <td>
-                  <button class="message-btn" onclick="sendMessage('{{ $student['name'] }}')">
-                    <i class="fas fa-paper-plane"></i>
-                    <span class="btn-text">رسالة</span>
-                  </button>
-                </td>
-              </tr>
-              @empty
-              <tr>
-                <td colspan="7" class="text-center text-muted py-4">
-                  <i class="fas fa-users fa-2x mb-3"></i>
-                  <p class="mb-0">لا يوجد طلاب مسجلين في كورسات أو بكجات هذا المعلم</p>
-                </td>
-              </tr>
-              @endforelse
-            </tbody>
-          </table>
+
+      <div class="card border-0 shadow-sm mt-0">
+        <div class="card-body p-0">
+          <div class="students-table">
+            <div class="table-responsive">
+              <table class="table align-items-center mb-0" id="studentsTable">
+                <thead>
+                  <tr>
+                    <th>Student</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Registration Type</th>
+                    <th>Course/Package</th>
+                    <th>Registration Date</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @forelse($allStudents as $student)
+                  <tr data-course-id="{{ $student['course_id'] ?? '' }}" data-package-id="{{ $student['package_id'] ?? '' }}" data-type="{{ $student['enrollment_type'] }}" data-name="{{ strtolower($student['name']) }}">
+                    <td>
+                      <div class="student-info">
+                        <img src="{{ asset($student['avatar'] ?? 'images/default-avatar.png') }}" class="student-avatar" alt="Avatar">
+                        <span class="student-name">{{ $student['name'] }}</span>
+                      </div>
+                    </td>
+                    <td>{{ $student['email'] ?? '-' }}</td>
+                    <td>{{ $student['mobile'] ?? '-' }}</td>
+                    <td>{{ ucfirst($student['enrollment_type'] ?? '-') }}</td>
+                    <td>
+                      @if(($student['enrollment_type'] ?? '') == 'course')
+                        {{ $student['course_name'] ?? '-' }}
+                      @elseif(($student['enrollment_type'] ?? '') == 'package')
+                        {{ $student['package_name'] ?? '-' }}
+                      @else
+                        -
+                      @endif
+                    </td>
+                    <td>{{ $student['registration_date'] ?? '-' }}</td>
+                    <td>
+                      @php
+                        $status = strtolower($student['status'] ?? 'inactive');
+                      @endphp
+                      <span class="badge-status {{ $status == 'active' || $status == '1' ? 'active' : 'inactive' }}">
+                        {{ ($status == 'active' || $status == '1') ? 'ACTIVE' : 'INACTIVE' }}
+                      </span>
+                    </td>
+                  </tr>
+                  @empty
+                  <tr><td colspan="7" class="text-center text-muted">No students found.</td></tr>
+                  @endforelse
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -614,6 +600,25 @@
 
       // Search input
       document.getElementById('studentSearch').addEventListener('input', renderStudents);
+
+      const filterSelect = document.getElementById('filterSelect');
+      const studentsTable = document.getElementById('studentsTable');
+      filterSelect.addEventListener('change', function() {
+        const value = this.value;
+        Array.from(studentsTable.tBodies[0].rows).forEach(row => {
+          if (value === 'all') {
+            row.style.display = '';
+          } else if (value.startsWith('course-')) {
+            const courseId = value.replace('course-', '');
+            row.style.display = (row.getAttribute('data-type') === 'course' && row.getAttribute('data-course-id') === courseId) ? '' : 'none';
+          } else if (value.startsWith('package-')) {
+            const packageId = value.replace('package-', '');
+            row.style.display = (row.getAttribute('data-type') === 'package' && row.getAttribute('data-package-id') === packageId) ? '' : 'none';
+          } else {
+            row.style.display = 'none';
+          }
+        });
+      });
     });
   </script>
 </body>

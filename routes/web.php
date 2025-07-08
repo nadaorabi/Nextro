@@ -16,6 +16,8 @@ use App\Http\Controllers\Admin\TransactionController;
 use App\Http\Controllers\Admin\CourseScheduleController;
 use App\Http\Controllers\Admin\RoomController;
 use App\Http\Controllers\ChatBotController;
+use App\Http\Controllers\Teacher\MaterialController;
+
 
 use App\Models\Category;
 use App\Models\Course;
@@ -273,6 +275,14 @@ Route::prefix('teacher')->middleware(['isTeacher', 'password.changed'])->name('t
         Route::get('enrollment/{enrollment}', [\App\Http\Controllers\Admin\AttendanceController::class, 'attendanceByEnrollment'])->name('by-enrollment');
         Route::get('/take/{schedule}', [\App\Http\Controllers\Admin\AttendanceController::class, 'take'])->name('take');
     });
+
+    // Teacher Materials
+    Route::get('materials', [MaterialController::class, 'index'])->name('materials.index');
+    Route::post('materials', [MaterialController::class, 'store'])->name('materials.store');
+    Route::post('materials/{id}/update', [MaterialController::class, 'update'])->name('materials.update');
+    Route::post('materials/{id}/delete', [MaterialController::class, 'destroy'])->name('materials.destroy');
+    Route::get('materials/{id}/download', [MaterialController::class, 'download'])->name('materials.download');
+    Route::get('materials/{id}/view', [MaterialController::class, 'view'])->name('materials.view');
 });
 
 

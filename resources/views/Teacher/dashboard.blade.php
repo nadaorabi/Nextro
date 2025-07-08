@@ -8,7 +8,7 @@
   <link rel="icon" type="image/png" href="{{ asset('images/favicon.png') }}">
 
   <title>
-    لوحة تحكم المعلم - {{ $teacher->name }}
+    Teacher Dashboard - {{ $teacher->name }}
   </title>
   <!--     Fonts and icons     -->
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
@@ -78,7 +78,7 @@
   <main class="main-content position-relative border-radius-lg ">
     <!-- Animated Welcome Message -->
     <div class="container mt-4 text-center">
-      <h1 class="welcome-animated">أهلاً وسهلاً بك {{ $teacher->name }} 👋</h1>
+      <h1 class="welcome-animated">Welcome, {{ $teacher->name }} 👋</h1>
     </div>
     <!-- End Animated Welcome Message -->
     
@@ -93,16 +93,16 @@
             </h3>
             <p class="mb-1">
               <i class="fas fa-id-card me-2"></i>
-              رقم الهوية: {{ $teacher->login_id }}
+              ID: {{ $teacher->login_id }}
             </p>
             <p class="mb-1">
               <i class="fas fa-phone me-2"></i>
-              الهاتف: {{ $teacher->mobile ?? 'غير محدد' }}
+              Phone: {{ $teacher->mobile ?? 'Not set' }}
             </p>
             @if($teacher->email)
             <p class="mb-0">
               <i class="fas fa-envelope me-2"></i>
-              البريد الإلكتروني: {{ $teacher->email }}
+              Email: {{ $teacher->email }}
             </p>
             @endif
           </div>
@@ -110,11 +110,11 @@
             <div class="row text-center">
               <div class="col-6">
                 <h4 class="mb-1">{{ $totalCourses }}</h4>
-                <small>الكورسات</small>
+                <small>Courses</small>
               </div>
               <div class="col-6">
                 <h4 class="mb-1">{{ $totalStudents }}</h4>
-                <small>الطلاب</small>
+                <small>Students</small>
               </div>
             </div>
           </div>
@@ -129,11 +129,11 @@
               <div class="row">
                 <div class="col-8">
                   <div class="numbers">
-                    <p class="text-sm mb-0 text-uppercase font-weight-bold">كورساتي الحالية</p>
+                    <p class="text-sm mb-0 text-uppercase font-weight-bold">Current Courses</p>
                     <h5 class="font-weight-bolder">{{ $totalCourses }}</h5>
                     <p class="mb-0">
                       <span class="text-success text-sm font-weight-bolder">+{{ $teacherCourses->count() }}</span>
-                      كورس نشط
+                      Active Courses
                     </p>
                   </div>
                 </div>
@@ -154,11 +154,11 @@
               <div class="row">
                 <div class="col-8">
                   <div class="numbers">
-                    <p class="text-sm mb-0 text-uppercase font-weight-bold">عدد الطلاب</p>
+                    <p class="text-sm mb-0 text-uppercase font-weight-bold">Total Students</p>
                     <h5 class="font-weight-bolder">{{ $totalStudents }}</h5>
                     <p class="mb-0">
                       <span class="text-success text-sm font-weight-bolder">+{{ $totalStudents }}</span>
-                      طالب مسجل
+                      Registered Students
                     </p>
                   </div>
                 </div>
@@ -179,11 +179,11 @@
               <div class="row">
                 <div class="col-8">
                   <div class="numbers">
-                    <p class="text-sm mb-0 text-uppercase font-weight-bold">عدد الحصص</p>
+                    <p class="text-sm mb-0 text-uppercase font-weight-bold">Total Sessions</p>
                     <h5 class="font-weight-bolder">{{ $totalSchedules }}</h5>
                     <p class="mb-0">
                       <span class="text-success text-sm font-weight-bolder">+{{ $totalSchedules }}</span>
-                      حصة مجدولة
+                      Scheduled Sessions
                     </p>
                   </div>
                 </div>
@@ -204,11 +204,11 @@
               <div class="row">
                 <div class="col-8">
                   <div class="numbers">
-                    <p class="text-sm mb-0 text-uppercase font-weight-bold">الأرباح المتوقعة</p>
-                    <h5 class="font-weight-bolder">{{ number_format($totalEarnings, 2) }}</h5>
+                    <p class="text-sm mb-0 text-uppercase font-weight-bold">Total Earnings</p>
+                    <h5 class="font-weight-bolder">${{ number_format($totalEarnings, 2) }}</h5>
                     <p class="mb-0">
-                      <span class="text-success text-sm font-weight-bolder">$</span>
-                      ريال سعودي
+                      <span class="text-success text-sm font-weight-bolder">USD</span>
+                      Earnings
                     </p>
                   </div>
                 </div>
@@ -275,30 +275,38 @@
             <div class="card-header pb-0 p-3">
               <h6 class="mb-0">
                 <i class="fas fa-book me-2"></i>
-                كورساتي
+                My Courses
               </h6>
             </div>
             <div class="card-body p-3">
               @if($teacherCourses->count() > 0)
+                <div class="table-responsive">
+                  <table class="table align-items-center mb-0">
+                    <thead>
+                      <tr>
+                        <th>Course</th>
+                        <th>Category</th>
+                        <th>Students</th>
+                        <th>Earnings %</th>
+                      </tr>
+                    </thead>
+                    <tbody>
                 @foreach($teacherCourses as $courseInstructor)
                 @php $course = $courseInstructor->course; @endphp
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                  <div>
-                    <h6 class="mb-1">{{ $course->title }}</h6>
-                    <p class="mb-0 text-muted">{{ $course->category->name ?? 'غير محدد' }}</p>
-                  </div>
-                  <div class="text-end">
-                    <span class="badge bg-primary">{{ $course->enrollments->count() }} طالب</span>
-                    @if($courseInstructor->percentage > 0)
-                    <span class="badge bg-success">{{ $courseInstructor->percentage }}%</span>
-                    @endif
-                  </div>
+                        <tr>
+                          <td>{{ $course->title }}</td>
+                          <td>{{ $course->category->name ?? 'Not set' }}</td>
+                          <td>{{ $course->enrollments->count() }}</td>
+                          <td>{{ $courseInstructor->percentage }}%</td>
+                        </tr>
+                      @endforeach
+                    </tbody>
+                  </table>
                 </div>
-                @endforeach
               @else
                 <div class="text-center text-muted py-4">
                   <i class="fas fa-book fa-2x mb-3"></i>
-                  <p class="mb-0">لا توجد كورسات مسندة لك</p>
+                  <p class="mb-0">No courses assigned to you</p>
                 </div>
               @endif
             </div>
@@ -306,7 +314,7 @@
         </div>
       </div>
 
-      <!-- آخر المدفوعات -->
+      <!-- Recent Payments -->
       @if($recentPayments->count() > 0)
       <div class="row mt-4">
         <div class="col-12">
@@ -314,7 +322,7 @@
             <div class="card-header pb-0 p-3">
               <h6 class="mb-0">
                 <i class="fas fa-money-bill-wave me-2"></i>
-                آخر المدفوعات
+                Recent Payments
               </h6>
             </div>
             <div class="card-body p-3">
@@ -322,23 +330,17 @@
                 <table class="table align-items-center mb-0">
                   <thead>
                     <tr>
-                      <th>التاريخ</th>
-                      <th>المبلغ</th>
-                      <th>الملاحظات</th>
-                      <th>الحالة</th>
+                      <th>Date</th>
+                      <th>Amount ($)</th>
+                      <th>Notes</th>
                     </tr>
                   </thead>
                   <tbody>
                     @foreach($recentPayments as $payment)
                     <tr>
                       <td>{{ \Carbon\Carbon::parse($payment->payment_date)->format('Y-m-d') }}</td>
-                      <td>{{ number_format($payment->amount, 2) }} ريال</td>
+                      <td>${{ number_format($payment->amount, 2) }}</td>
                       <td>{{ $payment->notes }}</td>
-                      <td>
-                        <span class="badge bg-{{ $payment->status == 'completed' ? 'success' : 'warning' }}">
-                          {{ $payment->status == 'completed' ? 'مكتمل' : 'قيد الانتظار' }}
-                        </span>
-                      </td>
                     </tr>
                     @endforeach
                   </tbody>

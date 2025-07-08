@@ -14,6 +14,8 @@ class Material extends Model
         'uploaded_by', 
         'title', 
         'description',
+        'file_url',
+        'file_type',
         'file_path',
         'url',
         'type', 

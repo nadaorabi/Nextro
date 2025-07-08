@@ -267,90 +267,183 @@
   @include('teacher.parts.sidebar-teacher')
   <main class="main-content position-relative max-height-vh-100 h-100">
     <div class="container-fluid py-4">
-      <div class="materials-header">
-        <div class="materials-title">
-          <i class="fa fa-folder-open text-primary"></i> Study Materials
-        </div>
-        <div class="glassy-search">
-          <span class="search-icon"><i class="fas fa-search"></i></span>
-          <input type="text" id="materialSearch" placeholder="Search by material name...">
-        </div>
-        <select class="subject-filter" id="subjectFilter">
-          <option value="all">All Subjects</option>
-          <option value="Mathematics">Mathematics</option>
-          <option value="Science">Science</option>
-          <option value="English">English</option>
-          <option value="History">History</option>
-        </select>
-        <button class="btn btn-primary add-material-desktop" data-bs-toggle="modal" data-bs-target="#addMaterialModal" style="height:44px;display:inline-flex;align-items:center;gap:7px;font-weight:600;">
-          <i class="fa fa-plus"></i> <span>Add Material</span>
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold text-primary mb-0">Study Materials</h2>
+        <button class="btn btn-success shadow-sm px-4" data-bs-toggle="modal" data-bs-target="#addMaterialModal">
+          <i class="fas fa-plus me-1"></i> Add Material
         </button>
       </div>
-      <div id="materialsLoader" style="display:none;text-align:center; margin: 40px 0;">
-        <div class="spinner-border text-primary" role="status">
-          <span class="visually-hidden">Loading...</span>
+      @if(session('success'))
+        <div class="alert alert-success">{{ session('success') }}</div>
+      @endif
+      @if($errors->any())
+        <div class="alert alert-danger">
+          <ul class="mb-0">
+            @foreach($errors->all() as $error)
+              <li>{{ $error }}</li>
+            @endforeach
+          </ul>
+        </div>
+      @endif
+      <div class="card border-0 shadow-sm">
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <div class="mb-3" style="max-width: 300px;">
+                <form method="GET" action="{{ route('teacher.materials.index') }}">
+                    <select class="form-select" name="course_id" onchange="this.form.submit()">
+                        <option value="">All Courses</option>
+                        @foreach($courses as $course)
+                            <option value="{{ $course->id }}" {{ (isset($courseId) && $courseId == $course->id) ? 'selected' : '' }}>
+                                {{ $course->title ?? $course->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </form>
+            </div>
+            <table class="table table-hover table-striped align-middle mb-0">
+              <thead class="bg-light">
+                <tr>
+                  <th>Title</th>
+                  <th>Type</th>
+                  <th>Course</th>
+                  <th>Date</th>
+                  <th>File</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                @forelse($materials as $material)
+                <tr>
+                  <td>{{ $material->title }}</td>
+                  <td><span class="badge bg-info">{{ ucfirst($material->type) }}</span></td>
+                  <td>{{ $material->course->title ?? $material->course->name ?? '-' }}</td>
+                  <td>{{ $material->upload_date ? date('Y-m-d', strtotime($material->upload_date)) : '-' }}</td>
+                  <td>
+                    @php $fileUrl = asset('storage/' . $material->file_url); @endphp
+                    @if($material->file_type == 'pdf')
+                        <a href="{{ $fileUrl }}" target="_blank" class="btn btn-outline-primary btn-sm">View</a>
+                        <button onclick="printFile('{{ $fileUrl }}', 'pdf')" class="btn btn-outline-secondary btn-sm">Print</button>
+                    @elseif($material->file_type == 'image')
+                        <a href="{{ $fileUrl }}" target="_blank" class="btn btn-outline-primary btn-sm">View</a>
+                        <button onclick="printFile('{{ $fileUrl }}', 'image')" class="btn btn-outline-secondary btn-sm">Print</button>
+                        <br><img src="{{ $fileUrl }}" width="200">
+                    @elseif($material->file_type == 'video')
+                        <a href="{{ $fileUrl }}" target="_blank" class="btn btn-outline-primary btn-sm">View</a>
+                        <video width="200" controls style="display:block;margin-top:5px;">
+                            <source src="{{ $fileUrl }}">
+                            Your browser does not support the video tag.
+                        </video>
+                    @else
+                        <a href="{{ $fileUrl }}" target="_blank" class="btn btn-outline-primary btn-sm">View</a>
+                    @endif
+                  </td>
+                  <td>
+                    <button class="btn btn-outline-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editMaterialModal{{ $material->id }}"><i class="fas fa-edit"></i></button>
+                    <form action="{{ route('teacher.materials.destroy', $material->id) }}" method="POST" class="d-inline-block" onsubmit="return confirm('Are you sure you want to delete this material?');">
+                      @csrf
+                      <button type="submit" class="btn btn-outline-danger btn-sm"><i class="fas fa-trash"></i></button>
+                    </form>
+                  </td>
+                </tr>
+                <!-- Edit Modal -->
+                <div class="modal fade" id="editMaterialModal{{ $material->id }}" tabindex="-1" aria-labelledby="editMaterialModalLabel{{ $material->id }}" aria-hidden="true">
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <form action="{{ route('teacher.materials.update', $material->id) }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="editMaterialModalLabel{{ $material->id }}">Edit Material</h5>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                          <div class="mb-3">
+                            <label class="form-label">Title</label>
+                            <input type="text" name="title" class="form-control" value="{{ $material->title }}" required>
+                          </div>
+                          <div class="mb-3">
+                            <label class="form-label">Type</label>
+                            <select name="type" class="form-select" required>
+                              <option value="lecture" @if($material->type=='lecture') selected @endif>Lecture</option>
+                              <option value="assignment" @if($material->type=='assignment') selected @endif>Assignment</option>
+                              <option value="exam" @if($material->type=='exam') selected @endif>Exam</option>
+                              <option value="notes" @if($material->type=='notes') selected @endif>Notes</option>
+                            </select>
+                          </div>
+                          <div class="mb-3">
+                            <label class="form-label">Course</label>
+                            <select name="course_id" class="form-select" required>
+                              @foreach($courses as $course)
+                                <option value="{{ $course->id }}" @if($material->course_id==$course->id) selected @endif>{{ $course->title }}</option>
+                              @endforeach
+                            </select>
+                          </div>
+                          <div class="mb-3">
+                            <label class="form-label">Replace File (optional)</label>
+                            <input type="file" name="file" class="form-control">
+                            <small class="text-muted">Leave empty to keep current file.</small>
+                          </div>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                          <button type="submit" class="btn btn-primary">Save Changes</button>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+                @empty
+                <tr><td colspan="6" class="text-center text-muted">No materials found.</td></tr>
+                @endforelse
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
-      <div class="materials-table-container">
-        <table class="materials-table">
-          <thead>
-            <tr>
-              <th>Title</th>
-              <th>Subject</th>
-              <th>Subject (EN)</th>
-              <th>Type</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody id="materialsList">
-            <!-- Material rows will be rendered here -->
-          </tbody>
-        </table>
-      </div>
-   
     </div>
   </main>
-  <!-- Modal لإضافة مادة جديدة -->
-  <div class="modal fade" id="addMaterialModal" tabindex="-1" aria-labelledby="addMaterialLabel" aria-hidden="true">
+  <!-- Add Material Modal -->
+  <div class="modal fade" id="addMaterialModal" tabindex="-1" aria-labelledby="addMaterialModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="addMaterialLabel">Add New Material</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <form id="addMaterialForm">
+        <form action="{{ route('teacher.materials.store') }}" method="POST" enctype="multipart/form-data">
+          @csrf
+          <div class="modal-header">
+            <h5 class="modal-title" id="addMaterialModalLabel">Add New Material</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
             <div class="mb-3">
               <label class="form-label">Title</label>
-              <input type="text" class="form-control" id="newMaterialTitle" required>
-            </div>
-            <div class="mb-3">
-              <label class="form-label">Subject</label>
-              <select class="form-select" id="newMaterialSubject" required>
-                <option value="Mathematics">Mathematics</option>
-                <option value="Science">Science</option>
-                <option value="English">English</option>
-                <option value="History">History</option>
-              </select>
+              <input type="text" name="title" class="form-control" required>
             </div>
             <div class="mb-3">
               <label class="form-label">Type</label>
-              <select class="form-select" id="newMaterialType" required>
-                <option value="video">Video</option>
-                <option value="image">Image</option>
-                <option value="pdf">PDF</option>
+              <select name="type" class="form-select" required>
+                <option value="lecture">Lecture</option>
+                <option value="assignment">Assignment</option>
+                <option value="exam">Exam</option>
+                <option value="notes">Notes</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Course</label>
+              <select name="course_id" class="form-select" required>
+                @foreach($courses as $course)
+                  <option value="{{ $course->id }}">{{ $course->title }}</option>
+                @endforeach
               </select>
             </div>
             <div class="mb-3">
               <label class="form-label">File</label>
-              <input type="file" class="form-control" id="newMaterialFile" accept="video/*,image/*,application/pdf" required>
+              <input type="file" name="file" class="form-control" required>
+              <small class="text-muted">Allowed: PDF, Video, Image, Word, ... (max 20MB)</small>
             </div>
-          </form>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-          <button type="button" class="btn btn-primary" id="saveMaterialBtn">Add</button>
-        </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-primary">Add Material</button>
+          </div>
+        </form>
       </div>
     </div>
   </div>
@@ -426,6 +519,17 @@
       modal.hide();
     };
     renderMaterials();
+    function printFile(url, type) {
+        var win = window.open(url, '_blank');
+        if(type === 'pdf') {
+            win.onload = function() { win.print(); };
+        } else if(type === 'image') {
+            win.onload = function() {
+                win.document.body.innerHTML = '<img src="'+url+'" style="max-width:100vw;max-height:100vh;">';
+                win.print();
+            };
+        }
+    }
   </script>
   <script src="{{ asset('js/core/popper.min.js') }}"></script>
   <script src="{{ asset('js/core/bootstrap.min.js') }}"></script>
