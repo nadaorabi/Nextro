@@ -42,15 +42,20 @@
         <div class="row gx-4 align-items-center">
           <div class="col-auto">
             <div class="avatar avatar-xl position-relative" style="display: flex; flex-direction: column; align-items: center; position: relative; width: 100px;">
-              <img id="profileImage" src="https://randomuser.me/api/portraits/women/44.jpg" alt="profile_image" class="w-100 border-radius-lg shadow-sm" style="width:100px;height:100px;object-fit:cover;border-radius:50%;">
-              <input type="file" id="imageInput" accept="image/*" style="display:none">
-              <button type="button" onclick="document.getElementById('imageInput').click();" class="btn btn-primary" style="position:absolute; right:-18px; bottom:-10px; width:38px; height:38px; border-radius:50%; padding:0; display:flex; align-items:center; justify-content:center; box-shadow:0 2px 8px rgba(44,62,80,0.13); font-size:1.1rem; z-index:2;"><i class="fa fa-camera"></i></button>
+              <img id="profileImage" src="{{ Auth::user()->image ? asset('storage/' . Auth::user()->image) : 'https://randomuser.me/api/portraits/women/44.jpg' }}" alt="profile_image" class="w-100 border-radius-lg shadow-sm" style="width:100px;height:100px;object-fit:cover;border-radius:50%;">
+              <form id="profileImageForm" method="POST" action="{{ route('teacher.profile.update') }}" enctype="multipart/form-data" autocomplete="off" style="display:inline;">
+                @csrf
+                @method('PUT')
+                <input type="file" name="image" id="imageInput" accept="image/*" style="display:none">
+                <button type="button" onclick="document.getElementById('imageInput').click();" class="btn btn-primary" style="position:absolute; right:-18px; bottom:-10px; width:38px; height:38px; border-radius:50%; padding:0; display:flex; align-items:center; justify-content:center; box-shadow:0 2px 8px rgba(44,62,80,0.13); font-size:1.1rem; z-index:2;"><i class="fa fa-camera"></i></button>
+                <button type="submit" id="saveImageBtn" class="btn btn-success" style="position:absolute; left:-18px; bottom:-10px; width:38px; height:38px; border-radius:50%; padding:0; display:none; align-items:center; justify-content:center; box-shadow:0 2px 8px rgba(44,62,80,0.13); font-size:1.1rem; z-index:2;"><i class="fa fa-save"></i></button>
+              </form>
             </div>
           </div>
           <div class="col-auto my-auto">
             <div class="h-100">
-              <h5 class="mb-1" id="firstLastName">Sayo Kravits</h5>
-              <p class="mb-0 font-weight-bold text-sm">Public Relations</p>
+              <h5 class="mb-1" id="firstLastName">{{ Auth::user()->name ?? 'غير محدد' }}</h5>
+              <p class="mb-0 font-weight-bold text-sm">{{ Auth::user()->specialization ?? 'أستاذ' }}</p>
             </div>
           </div>
           <!-- <div class="col-lg-4 col-md-6 my-sm-auto ms-sm-auto me-sm-0 mx-auto mt-3">
@@ -86,59 +91,51 @@
           <div class="card">
             <div class="card-header pb-0">
               <div class="d-flex align-items-center">
-                <h5 class="mb-0">Profile</h5>
+                <h5 class="mb-0">الملف الشخصي</h5>
               </div>
             </div>
             <div class="card-body">
-              <form autocomplete="off">
+              <form id="profileImageForm" method="POST" action="{{ route('teacher.profile.update') }}" enctype="multipart/form-data" autocomplete="off">
+                @csrf
+                @method('PUT')
                 <div class="row">
                   <div class="col-md-6">
                     <div class="form-group">
-                      <label>First Name</label>
-                      <input class="form-control" type="text" value="Sayo">
+                      <label>Name</label>
+                      <input class="form-control" type="text" name="name" value="{{ Auth::user()->name ?? '' }}" readonly>
                     </div>
                   </div>
                   <div class="col-md-6">
                     <div class="form-group">
-                      <label>Last Name</label>
-                      <input class="form-control" type="text" value="Kravits">
+                      <label>Mobile</label>
+                      <input class="form-control" type="text" name="mobile" value="{{ Auth::user()->mobile ?? '' }}" readonly>
                     </div>
                   </div>
                   <div class="col-md-6">
                     <div class="form-group">
                       <label>Email</label>
-                      <input class="form-control" type="email" value="sayo@email.com">
+                      <input class="form-control" type="email" name="email" value="{{ Auth::user()->email ?? '' }}" readonly>
                     </div>
                   </div>
                   <div class="col-md-6">
                     <div class="form-group">
-                      <label>Phone Number</label>
-                      <input class="form-control" type="text" value="+1 234 567 8900">
+                      <label>Login ID</label>
+                      <input class="form-control" type="text" name="login_id" value="{{ Auth::user()->login_id ?? '' }}" readonly>
                     </div>
                   </div>
                   <div class="col-md-6">
                     <div class="form-group">
-                      <label>Specialization</label>
-                      <select class="form-control">
-                        <option>Public Relations</option>
-                        <option>Mathematics</option>
-                        <option>Science</option>
-                        <option>English</option>
-                        <option>History</option>
-                        <option>Computer Science</option>
-                        <option>Physics</option>
-                        <option>Chemistry</option>
-                      </select>
+                      <label>Address</label>
+                      <input class="form-control" type="text" name="address" value="{{ Auth::user()->address ?? '' }}" readonly>
                     </div>
                   </div>
-                  <div class="col-md-6">
+                  <div class="col-12">
                     <div class="form-group">
-                      <label>Location</label>
-                      <input class="form-control" type="text" value="New York, USA">
+                      <label>Note</label>
+                      <textarea class="form-control" name="note" rows="3" readonly>{{ Auth::user()->note ?? '' }}</textarea>
                     </div>
                   </div>
                 </div>
-                <button type="submit" class="btn btn-primary mt-3">Save Changes</button>
               </form>
             </div>
           </div>
@@ -263,19 +260,32 @@
   <!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->
   <script src="{{ asset('js/argon-dashboard.min.js') }}"></script>
   <script>
-    document.getElementById('imageInput').addEventListener('change', function(event) {
+    const imageInput = document.getElementById('imageInput');
+    const profileImage = document.getElementById('profileImage');
+    const saveImageBtn = document.getElementById('saveImageBtn');
+    let imageChanged = false;
+
+    imageInput.addEventListener('change', function(event) {
       const file = event.target.files[0];
       if (file) {
         const reader = new FileReader();
         reader.onload = function(e) {
-          document.getElementById('profileImage').src = e.target.result;
+          profileImage.src = e.target.result;
         };
         reader.readAsDataURL(file);
+        saveImageBtn.style.display = 'flex';
+        imageChanged = true;
+      }
+    });
+
+    document.getElementById('profileImageForm').addEventListener('submit', function(e) {
+      if (!imageChanged) {
+        e.preventDefault();
+      } else {
+        saveImageBtn.disabled = true;
       }
     });
   </script>
 </body>
 
-</html>
-</html>
 </html>

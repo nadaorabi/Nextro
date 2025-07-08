@@ -283,6 +283,10 @@ Route::prefix('teacher')->middleware(['isTeacher', 'password.changed'])->name('t
     Route::post('materials/{id}/delete', [MaterialController::class, 'destroy'])->name('materials.destroy');
     Route::get('materials/{id}/download', [MaterialController::class, 'download'])->name('materials.download');
     Route::get('materials/{id}/view', [MaterialController::class, 'view'])->name('materials.view');
+    
+    // Teacher Profile
+    Route::get('profile', [\App\Http\Controllers\Teacher\ProfileController::class, 'index'])->name('profile');
+    Route::put('profile/update', [\App\Http\Controllers\Teacher\ProfileController::class, 'update'])->name('profile.update');
 });
 
 
