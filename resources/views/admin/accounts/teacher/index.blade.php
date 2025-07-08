@@ -422,8 +422,8 @@
                                                 <td>
                                                     <div class="d-flex px-2 py-1">
                                                         <div>
-                                                            <img src="{{ asset($teacher->avatar ?? 'images/default-avatar.png') }}"
-                                                                class="avatar avatar-sm me-3" 
+                                                            <img src="{{ $teacher->image ? asset('storage/' . $teacher->image) : asset('images/default-avatar.png') }}"
+                                                                class="avatar avatar-sm me-3"
                                                                 onerror="this.src='{{ asset('images/default-avatar.png') }}'"
                                                                 alt="{{ $teacher->name }}">
                                                         </div>

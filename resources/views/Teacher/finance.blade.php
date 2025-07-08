@@ -57,7 +57,7 @@
     <div class="container-fluid py-4">
       <div class="d-flex justify-content-end mb-3">
         <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#courseEarningsModal">Course Earnings Report</button>
-      </div>
+                  </div>
       <!-- Modal -->
       <div class="modal fade" id="courseEarningsModal" tabindex="-1" aria-labelledby="courseEarningsModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered">
@@ -65,7 +65,7 @@
             <div class="modal-header bg-primary text-white">
               <h5 class="modal-title" id="courseEarningsModalLabel"><i class="fa fa-chart-bar me-2"></i>Course Earnings Report</h5>
               <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
+                </div>
             <div class="modal-body" style="background: #f8fafc;">
               <div class="table-responsive">
                 <table class="table align-middle table-hover mb-0">
@@ -90,7 +90,7 @@
             </div>
           </div>
         </div>
-      </div>
+                  </div>
       <!-- Statistic Cards -->
       <div class="row mb-4">
         <div class="col-md-4 mb-3">
@@ -100,10 +100,10 @@
                 <div style="font-size: 1.1rem; color: #6c63ff; font-weight: bold;">Total Earnings</div>
                 <div style="font-size: 2rem; color: #6c63ff; font-weight: bold;">${{ number_format($totalEarnings, 2) }}</div>
                 <div style="color: #27ae60; font-size: 0.95rem;">+${{ number_format($totalEarnings, 2) }} this month</div>
-              </div>
+                </div>
               <div style="font-size:2.5rem; color:#6c63ff;"><i class="fa fa-coins"></i></div>
-            </div>
-          </div>
+                  </div>
+                </div>
         </div>
         <div class="col-md-4 mb-3">
           <div class="card text-center" style="background: #fff6f6; border: none; box-shadow: 0 2px 8px #ffe0e0;">
@@ -137,24 +137,24 @@
       @endif
 
       <!-- Transaction Table -->
-      <div class="card mb-4">
-        <div class="card-header pb-0">
+          <div class="card mb-4">
+            <div class="card-header pb-0">
           <h6 class="mb-0">Financial Transactions History</h6>
-        </div>
-        <div class="card-body px-0 pt-0 pb-2">
-          <div class="table-responsive p-0">
-            <table class="table align-items-center mb-0">
-              <thead>
-                <tr>
+            </div>
+            <div class="card-body px-0 pt-0 pb-2">
+              <div class="table-responsive p-0">
+                <table class="table align-items-center mb-0">
+                  <thead>
+                    <tr>
                   <th>Date</th>
                   <th>Transaction Type</th>
                   <th>Student Name</th>
                   <th>Amount</th>
                   <th>Balance After</th>
                   <th>Notes</th>
-                </tr>
-              </thead>
-              <tbody>
+                    </tr>
+                  </thead>
+                  <tbody>
                 @php $balance = 0; @endphp
                 @php
                     function extractStudentName($payment) {
@@ -207,15 +207,15 @@
                         <td>{{ \Carbon\Carbon::parse($payment->payment_date ?? $payment->created_at)->format('Y-m-d H:i') }}</td>
                         <td>
                             <span class="badge {{ $typeLabel == 'Course Share' ? 'bg-success' : ($typeLabel == 'Instructor Payment' ? 'bg-danger' : 'bg-secondary') }}">{{ $typeLabel }}</span>
-                        </td>
+                      </td>
                         <td>{{ $typeLabel == 'Course Share' ? $studentName : '-' }}</td>
                         <td class="text-success">+${{ number_format($amount, 2) }}</td>
                         <td>${{ number_format($balance, 2) }}</td>
                         <td>{{ $typeLabel == 'Course Share' ? ($courseName != '-' ? 'Profit: '.$courseName : '-') : '-' }}</td>
                     </tr>
                 @endforeach
-              </tbody>
-            </table>
+                  </tbody>
+                </table>
           </div>
         </div>
       </div>

@@ -480,11 +480,11 @@ class TeacherController extends Controller
             ]);
         }
         return view('teacher.finance', compact(
-            'teacher',
-            'payments',
-            'teacherCourses',
-            'totalEarnings',
-            'totalPayments',
+            'teacher', 
+            'payments', 
+            'teacherCourses', 
+            'totalEarnings', 
+            'totalPayments', 
             'netBalance',
             'courseStats'
         ));
