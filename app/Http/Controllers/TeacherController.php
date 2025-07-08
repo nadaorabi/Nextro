@@ -448,32 +448,27 @@ class TeacherController extends Controller
     }
     public function finance()
     {
-        // جلب بيانات المعلم المسجل دخوله
         $teacher = auth()->user();
-        
-        // جلب المدفوعات للمعلم
+        // جلب كل العمليات المالية للأستاذ مرتبة من الأقدم للأحدث
         $payments = \App\Models\Payment::where('user_id', $teacher->id)
-            ->orderBy('payment_date', 'desc')
+            ->orderBy('payment_date', 'asc')
             ->get();
-        
+        // إجمالي الأرباح: فقط العمليات من نوع instructor_share
+        $totalEarnings = $payments->where('type', 'instructor_share')->sum('amount');
+        // إجمالي الدفعات: فقط العمليات من نوع instructor_payment
+        $totalPayments = $payments->where('type', 'instructor_payment')->sum('amount');
+        // صافي الرصيد
+        $netBalance = $totalEarnings - $totalPayments;
         // جلب الكورسات التي يدرسها المعلم مع نسبه
         $teacherCourses = \App\Models\CourseInstructor::where('instructor_id', $teacher->id)
             ->with(['course.category', 'course.enrollments'])
             ->get();
-        
-        // حساب الإحصائيات المالية
-        $totalEarnings = $payments->where('type', 'instructor_share')->sum('amount');
-        $totalPayments = $payments->sum('amount');
-        $pendingPayments = $payments->where('type', 'instructor_share')->where('status', 'pending')->sum('amount');
-        $completedPayments = $payments->where('type', 'instructor_share')->where('status', 'completed')->sum('amount');
-        
-        // إحصائيات الكورسات
+        // إحصائيات الكورسات (بدون تغيير)
         $courseStats = collect();
         foreach ($teacherCourses as $courseInstructor) {
             $course = $courseInstructor->course;
             $enrollmentsCount = $course->enrollments->count();
             $courseEarnings = $enrollmentsCount * ($course->price ?? 0) * ($courseInstructor->percentage / 100);
-            
             $courseStats->push([
                 'course_id' => $course->id,
                 'course_title' => $course->title,
@@ -484,15 +479,13 @@ class TeacherController extends Controller
                 'earnings' => $courseEarnings,
             ]);
         }
-        
         return view('teacher.finance', compact(
-            'teacher', 
-            'payments', 
-            'teacherCourses', 
-            'totalEarnings', 
-            'totalPayments', 
-            'pendingPayments', 
-            'completedPayments',
+            'teacher',
+            'payments',
+            'teacherCourses',
+            'totalEarnings',
+            'totalPayments',
+            'netBalance',
             'courseStats'
         ));
     }

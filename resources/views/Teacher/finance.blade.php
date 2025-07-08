@@ -55,232 +55,131 @@
   @include('teacher.parts.sidebar-teacher')
   <div class="main-content position-relative max-height-vh-100 h-100">
     <div class="container-fluid py-4">
-      <div class="row">
-        <!-- Revenue Card -->
-        <div class="col-xl-4 col-sm-6 mb-xl-0 mb-4">
-          <div class="card">
-            <div class="card-body p-3">
-              <div class="row">
-                <div class="col-8">
-                  <div class="numbers">
-                    <p class="text-sm mb-0 text-uppercase font-weight-bold">Total Revenue</p>
-                    <h5 class="font-weight-bolder mb-0">
-                      $4,300
-                      <span class="text-success text-sm font-weight-bolder">+15%</span>
-                    </h5>
-                  </div>
-                </div>
-                <div class="col-4 text-end">
-                  <div class="icon icon-shape bg-gradient-primary shadow-primary text-center rounded-circle">
-                    <i class="ni ni-money-coins text-lg opacity-10" aria-hidden="true"></i>
-                  </div>
-                </div>
+      <!-- Statistic Cards -->
+      <div class="row mb-4">
+        <div class="col-md-4 mb-3">
+          <div class="card text-center" style="background: #f6f8ff; border: none; box-shadow: 0 2px 8px #e0e7ff;">
+            <div class="card-body d-flex align-items-center justify-content-between">
+              <div>
+                <div style="font-size: 1.1rem; color: #6c63ff; font-weight: bold;">Total Earnings</div>
+                <div style="font-size: 2rem; color: #6c63ff; font-weight: bold;">${{ number_format($totalEarnings, 2) }}</div>
+                <div style="color: #27ae60; font-size: 0.95rem;">+${{ number_format($totalEarnings, 2) }} this month</div>
               </div>
+              <div style="font-size:2.5rem; color:#6c63ff;"><i class="fa fa-coins"></i></div>
             </div>
           </div>
         </div>
-
-        <!-- Received Card -->
-        <div class="col-xl-4 col-sm-6 mb-xl-0 mb-4">
-          <div class="card">
-            <div class="card-body p-3">
-              <div class="row">
-                <div class="col-8">
-                  <div class="numbers">
-                    <p class="text-sm mb-0 text-uppercase font-weight-bold">Received Amount</p>
-                    <h5 class="font-weight-bolder mb-0">
-                      $3,800
-                      <span class="text-success text-sm font-weight-bolder">+12%</span>
-                    </h5>
-                  </div>
-                </div>
-                <div class="col-4 text-end">
-                  <div class="icon icon-shape bg-gradient-success shadow-success text-center rounded-circle">
-                    <i class="ni ni-paper-diploma text-lg opacity-10" aria-hidden="true"></i>
-                  </div>
-                </div>
+        <div class="col-md-4 mb-3">
+          <div class="card text-center" style="background: #fff6f6; border: none; box-shadow: 0 2px 8px #ffe0e0;">
+            <div class="card-body d-flex align-items-center justify-content-between">
+              <div>
+                <div style="font-size: 1.1rem; color: #ff3b3b; font-weight: bold;">Total Payments</div>
+                <div style="font-size: 2rem; color: #ff3b3b; font-weight: bold;">${{ number_format($totalPayments, 2) }}</div>
+                <div style="color: #ff3b3b; font-size: 0.95rem;">-${{ number_format($totalPayments, 2) }} this month</div>
               </div>
+              <div style="font-size:2.5rem; color:#ff3b3b;"><i class="fa fa-credit-card"></i></div>
             </div>
           </div>
         </div>
-
-        <!-- Balance Card -->
-        <div class="col-xl-4 col-sm-6">
-          <div class="card">
-            <div class="card-body p-3">
-              <div class="row">
-                <div class="col-8">
-                  <div class="numbers">
-                    <p class="text-sm mb-0 text-uppercase font-weight-bold">Current Balance</p>
-                    <h5 class="font-weight-bolder mb-0">
-                      $500
-                      <span class="text-danger text-sm font-weight-bolder">-3%</span>
-                    </h5>
-                  </div>
-                </div>
-                <div class="col-4 text-end">
-                  <div class="icon icon-shape bg-gradient-warning shadow-warning text-center rounded-circle">
-                    <i class="ni ni-cart text-lg opacity-10" aria-hidden="true"></i>
-                  </div>
-                </div>
+        <div class="col-md-4 mb-3">
+          <div class="card text-center" style="background: #f6fff6; border: none; box-shadow: 0 2px 8px #e0ffe0;">
+            <div class="card-body d-flex align-items-center justify-content-between">
+              <div>
+                <div style="font-size: 1.1rem; color: #27ae60; font-weight: bold;">Net Balance</div>
+                <div style="font-size: 2rem; color: #27ae60; font-weight: bold;">${{ number_format($netBalance, 2) }}</div>
+                <div style="color: #27ae60; font-size: 0.95rem;">Positive Balance</div>
               </div>
+              <div style="font-size:2.5rem; color:#27ae60;"><i class="fa fa-calculator"></i></div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Transaction History -->
-      <div class="row mt-4">
-        <div class="col-12">
-          <div class="card mb-4">
-            <div class="card-header pb-0">
-              <div class="row">
-                <div class="col-6 d-flex align-items-center">
-                  <h6 class="mb-0">Transaction History</h6>
-                </div>
-                <div class="col-6 text-end">
-                  <div class="d-flex justify-content-end gap-2">
-                    <select class="form-select form-select-sm" style="width: auto;" id="yearFilter">
-                      <option value="">All Years</option>
-                      <option value="2024">2024</option>
-                      <option value="2023">2023</option>
-                    </select>
-                    <input type="date" class="form-control form-control-sm" style="width: auto;" id="dateFilter">
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="card-body px-0 pt-0 pb-2">
-              <div class="table-responsive p-0">
-                <table class="table align-items-center mb-0">
-                  <thead>
-                    <tr>
-                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Date</th>
-                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Description</th>
-                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Type</th>
-                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Amount</th>
-                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Status</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <!-- Student Registration -->
-                    <tr>
-                      <td>
-                        <div class="d-flex px-2 py-1">
-                          <div class="d-flex flex-column justify-content-center">
-                            <h6 class="mb-0 text-sm">23/04/2024</h6>
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <p class="text-xs font-weight-bold mb-0">Student Registration - Ahmed Mohamed</p>
-                      </td>
-                      <td class="align-middle text-center text-sm">
-                        <span class="badge badge-sm bg-gradient-success">Income</span>
-                      </td>
-                      <td class="align-middle text-center">
-                        <span class="text-secondary text-xs font-weight-bold">+$1,000</span>
-                      </td>
-                      <td class="align-middle text-center">
-                        <span class="badge badge-sm bg-gradient-success">Completed</span>
-                      </td>
-                    </tr>
+      <!-- Success/Alert Message -->
+      @if(session('success'))
+        <div class="alert alert-success text-center">{{ session('success') }}</div>
+      @endif
 
-                    <!-- Withdrawal -->
+      <!-- Transaction Table -->
+      <div class="card mb-4">
+        <div class="card-header pb-0">
+          <h6 class="mb-0">Financial Transactions History</h6>
+        </div>
+        <div class="card-body px-0 pt-0 pb-2">
+          <div class="table-responsive p-0">
+            <table class="table align-items-center mb-0">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Transaction Type</th>
+                  <th>Student Name</th>
+                  <th>Amount</th>
+                  <th>Balance After</th>
+                  <th>Notes</th>
+                </tr>
+              </thead>
+              <tbody>
+                @php $balance = 0; @endphp
+                @php
+                    function extractStudentName($payment) {
+                        if ($payment->type == 'instructor_share') {
+                            $text = $payment->notes ?? $payment->description ?? '';
+                            // ابحث عن اسم الطالب بعد 'الطالب' وحتى أول كلمة فاصلة أو 'في' أو نهاية الجملة
+                            if (preg_match('/الطالب\s+([\p{L}\s]+?)(?:\s+في|\s+من|\s+على|\s+ب|\s+ل|\s+و|,|\.|$)/u', $text, $matches)) {
+                                return trim($matches[1]);
+                            }
+                            // ابحث عن student: ...
+                            if (preg_match('/student:?\s*([\p{L}\s]+?)(?:\s+in|\s+for|,|\.|$)/ui', $text, $matches)) {
+                                return trim($matches[1]);
+                            }
+                            // ابحث عن name: ...
+                            if (preg_match('/name:?\s*([\p{L}\s]+?)(?:\s+in|\s+for|,|\.|$)/ui', $text, $matches)) {
+                                return trim($matches[1]);
+                            }
+                            // إذا كان النص كله اسم الطالب
+                            if (trim($text) && mb_strlen($text) < 30) return trim($text);
+                        }
+                        return '-';
+                    }
+                    function extractCourseName($payment) {
+                        $text = $payment->notes ?? $payment->description ?? '';
+                        if (preg_match('/course:?\s*([\p{L}\s]+)/ui', $text, $matches)) {
+                            return trim($matches[1]);
+                        } elseif (preg_match('/دورة:?\s*([\p{L}\s]+)/u', $text, $matches)) {
+                            return trim($matches[1]);
+                        } elseif (preg_match('/أرباح:?\s*([\p{L}\s]+)/u', $text, $matches)) {
+                            return trim($matches[1]);
+                        } elseif (preg_match('/في الدورة\s+([\p{L}\s]+)/u', $text, $matches)) {
+                            return trim($matches[1]);
+                        }
+                        return '-';
+                    }
+                @endphp
+                @foreach($payments as $payment)
+                    @php
+                        $typeLabel = $payment->type == 'instructor_share' ? 'Course Share' : ($payment->type == 'instructor_payment' ? 'Instructor Payment' : ucfirst($payment->type));
+                        $studentName = extractStudentName($payment);
+                        $courseName = extractCourseName($payment);
+                        $amount = abs($payment->amount);
+                        if ($payment->type == 'instructor_share') {
+                            $balance += $amount;
+                        } elseif ($payment->type == 'instructor_payment') {
+                            $balance -= $amount;
+                        }
+                    @endphp
                     <tr>
-                      <td>
-                        <div class="d-flex px-2 py-1">
-                          <div class="d-flex flex-column justify-content-center">
-                            <h6 class="mb-0 text-sm">22/04/2024</h6>
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <p class="text-xs font-weight-bold mb-0">Withdrawal to Bank Account</p>
-                      </td>
-                      <td class="align-middle text-center text-sm">
-                        <span class="badge badge-sm bg-gradient-danger">Expense</span>
-                      </td>
-                      <td class="align-middle text-center">
-                        <span class="text-secondary text-xs font-weight-bold">-$500</span>
-                      </td>
-                      <td class="align-middle text-center">
-                        <span class="badge badge-sm bg-gradient-success">Completed</span>
-                      </td>
+                        <td>{{ \Carbon\Carbon::parse($payment->payment_date ?? $payment->created_at)->format('Y-m-d H:i') }}</td>
+                        <td>
+                            <span class="badge {{ $typeLabel == 'Course Share' ? 'bg-success' : ($typeLabel == 'Instructor Payment' ? 'bg-danger' : 'bg-secondary') }}">{{ $typeLabel }}</span>
+                        </td>
+                        <td>{{ $typeLabel == 'Course Share' ? $studentName : '-' }}</td>
+                        <td class="text-success">+${{ number_format($amount, 2) }}</td>
+                        <td>${{ number_format($balance, 2) }}</td>
+                        <td>{{ $typeLabel == 'Course Share' ? ($courseName != '-' ? 'Profit: '.$courseName : '-') : '-' }}</td>
                     </tr>
-
-                    <!-- Student Registration -->
-                    <tr>
-                      <td>
-                        <div class="d-flex px-2 py-1">
-                          <div class="d-flex flex-column justify-content-center">
-                            <h6 class="mb-0 text-sm">21/04/2024</h6>
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <p class="text-xs font-weight-bold mb-0">Student Registration - Sara Ahmed</p>
-                      </td>
-                      <td class="align-middle text-center text-sm">
-                        <span class="badge badge-sm bg-gradient-success">Income</span>
-                      </td>
-                      <td class="align-middle text-center">
-                        <span class="text-secondary text-xs font-weight-bold">+$1,000</span>
-                      </td>
-                      <td class="align-middle text-center">
-                        <span class="badge badge-sm bg-gradient-success">Completed</span>
-                      </td>
-                    </tr>
-
-                    <!-- Student Registration -->
-                    <tr>
-                      <td>
-                        <div class="d-flex px-2 py-1">
-                          <div class="d-flex flex-column justify-content-center">
-                            <h6 class="mb-0 text-sm">20/04/2024</h6>
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <p class="text-xs font-weight-bold mb-0">Student Registration - Mohamed Ali</p>
-                      </td>
-                      <td class="align-middle text-center text-sm">
-                        <span class="badge badge-sm bg-gradient-success">Income</span>
-                      </td>
-                      <td class="align-middle text-center">
-                        <span class="text-secondary text-xs font-weight-bold">+$1,000</span>
-                      </td>
-                      <td class="align-middle text-center">
-                        <span class="badge badge-sm bg-gradient-success">Completed</span>
-                      </td>
-                    </tr>
-
-                    <!-- Student Registration -->
-                    <tr>
-                      <td>
-                        <div class="d-flex px-2 py-1">
-                          <div class="d-flex flex-column justify-content-center">
-                            <h6 class="mb-0 text-sm">19/04/2024</h6>
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <p class="text-xs font-weight-bold mb-0">Student Registration - Fatima Hassan</p>
-                      </td>
-                      <td class="align-middle text-center text-sm">
-                        <span class="badge badge-sm bg-gradient-success">Income</span>
-                      </td>
-                      <td class="align-middle text-center">
-                        <span class="text-secondary text-xs font-weight-bold">+$1,000</span>
-                      </td>
-                      <td class="align-middle text-center">
-                        <span class="badge badge-sm bg-gradient-success">Completed</span>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
+                @endforeach
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
