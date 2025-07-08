@@ -55,6 +55,42 @@
   @include('teacher.parts.sidebar-teacher')
   <div class="main-content position-relative max-height-vh-100 h-100">
     <div class="container-fluid py-4">
+      <div class="d-flex justify-content-end mb-3">
+        <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#courseEarningsModal">Course Earnings Report</button>
+      </div>
+      <!-- Modal -->
+      <div class="modal fade" id="courseEarningsModal" tabindex="-1" aria-labelledby="courseEarningsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+              <h5 class="modal-title" id="courseEarningsModalLabel"><i class="fa fa-chart-bar me-2"></i>Course Earnings Report</h5>
+              <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" style="background: #f8fafc;">
+              <div class="table-responsive">
+                <table class="table align-middle table-hover mb-0">
+                  <thead style="background: linear-gradient(90deg, #4CAF50 0%, #2196F3 100%); color: #fff;">
+                    <tr>
+                      <th><i class="fa fa-book-open me-1"></i>Course Name</th>
+                      <th><i class="fa fa-dollar-sign me-1"></i>Total Earnings</th>
+                      <th><i class="fa fa-users me-1"></i>Number of Students</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @foreach($courseStats as $row)
+                      <tr style="transition: background 0.2s;">
+                        <td><span class="fw-bold text-primary"><i class="fa fa-book me-1"></i>{{ $row['course_title'] }}</span></td>
+                        <td><span class="fw-bold text-success" style="font-size:1.1rem;"><i class="fa fa-arrow-up me-1"></i>${{ number_format($row['earnings'], 2) }}</span></td>
+                        <td><span class="badge bg-info text-dark" style="font-size:1rem;"><i class="fa fa-user-graduate me-1"></i>{{ $row['enrollments_count'] }}</span></td>
+                      </tr>
+                    @endforeach
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
       <!-- Statistic Cards -->
       <div class="row mb-4">
         <div class="col-md-4 mb-3">

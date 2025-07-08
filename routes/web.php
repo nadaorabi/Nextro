@@ -260,6 +260,7 @@ Route::prefix('teacher')->middleware(['isTeacher', 'password.changed'])->name('t
     Route::get('materials', [TeacherController::class, 'materials'])->name('materials');
     Route::get('complaints', [TeacherController::class, 'complaints'])->name('complaints');
     Route::get('finance', [TeacherController::class, 'finance'])->name('finance');
+    Route::get('finance/courses', [TeacherController::class, 'financeCoursesReport'])->name('finance.courses');
     Route::get('profile', [TeacherController::class, 'profile'])->name('profile');
     Route::post('logout', [TeacherController::class, 'logout'])->name('logout');
     

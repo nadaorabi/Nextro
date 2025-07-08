@@ -507,5 +507,38 @@ class TeacherController extends Controller
         
         return view('teacher.QR-scan', compact('teacher', 'teacherCourses'));
     }
-
+    public function financeCoursesReport()
+    {
+        $teacher = auth()->user();
+        // جلب كل العمليات المالية للأستاذ
+        $payments = \App\Models\Payment::where('user_id', $teacher->id)
+            ->where('type', 'instructor_share')
+            ->get();
+        // جلب الكورسات التي يدرسها المعلم
+        $teacherCourses = \App\Models\CourseInstructor::where('instructor_id', $teacher->id)
+            ->with(['course.enrollments'])
+            ->get();
+        // تجميع الأرباح حسب المادة
+        $courseEarnings = [];
+        foreach ($teacherCourses as $courseInstructor) {
+            $course = $courseInstructor->course;
+            $courseName = $course->title;
+            $courseId = $course->id;
+            // أرباح المادة
+            $earnings = 0;
+            foreach ($payments as $payment) {
+                $desc = $payment->notes ?? $payment->description ?? '';
+                // ابحث عن اسم المادة في الوصف
+                if (stripos($desc, $courseName) !== false) {
+                    $earnings += $payment->amount;
+                }
+            }
+            $courseEarnings[] = [
+                'course' => $courseName,
+                'earnings' => $earnings,
+                'students' => $course->enrollments->count(),
+            ];
+        }
+        return view('teacher.finance-courses-report', compact('teacher', 'courseEarnings'));
+    }
 }
