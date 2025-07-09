@@ -288,6 +288,57 @@ Route::prefix('teacher')->middleware(['isTeacher', 'password.changed'])->name('t
     // Teacher Profile
     Route::get('profile', [\App\Http\Controllers\Teacher\ProfileController::class, 'index'])->name('profile');
     Route::put('profile/update', [\App\Http\Controllers\Teacher\ProfileController::class, 'update'])->name('profile.update');
+    
+    // Teacher Assignments
+    Route::prefix('assignments')->name('assignments.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Teacher\AssignmentController::class, 'index'])->name('index');
+        Route::get('/create', [\App\Http\Controllers\Teacher\AssignmentController::class, 'create'])->name('create');
+        Route::post('/', [\App\Http\Controllers\Teacher\AssignmentController::class, 'store'])->name('store');
+        Route::get('/{assignment}', [\App\Http\Controllers\Teacher\AssignmentController::class, 'show'])->name('show');
+        Route::get('/{assignment}/edit', [\App\Http\Controllers\Teacher\AssignmentController::class, 'edit'])->name('edit');
+        Route::put('/{assignment}', [\App\Http\Controllers\Teacher\AssignmentController::class, 'update'])->name('update');
+        Route::delete('/{assignment}', [\App\Http\Controllers\Teacher\AssignmentController::class, 'destroy'])->name('destroy');
+        
+        // Assignment Questions
+        Route::post('/{assignment}/questions', [\App\Http\Controllers\Teacher\AssignmentController::class, 'addQuestion'])->name('questions.add');
+        Route::put('/{assignment}/questions/{question}', [\App\Http\Controllers\Teacher\AssignmentController::class, 'updateQuestion'])->name('questions.update');
+        Route::delete('/{assignment}/questions/{question}', [\App\Http\Controllers\Teacher\AssignmentController::class, 'deleteQuestion'])->name('questions.delete');
+        
+        // Assignment Choices
+        Route::post('/questions/{question}/choices', [\App\Http\Controllers\Teacher\AssignmentController::class, 'addChoice'])->name('choices.add');
+        Route::put('/questions/{question}/choices/{choice}', [\App\Http\Controllers\Teacher\AssignmentController::class, 'updateChoice'])->name('choices.update');
+        Route::delete('/questions/{question}/choices/{choice}', [\App\Http\Controllers\Teacher\AssignmentController::class, 'deleteChoice'])->name('choices.delete');
+    });
+    
+    // Teacher Exams
+    Route::prefix('exams')->name('exams.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Teacher\ExamController::class, 'index'])->name('index');
+        Route::get('/create', [\App\Http\Controllers\Teacher\ExamController::class, 'create'])->name('create');
+        Route::post('/', [\App\Http\Controllers\Teacher\ExamController::class, 'store'])->name('store');
+        Route::get('/{exam}', [\App\Http\Controllers\Teacher\ExamController::class, 'show'])->name('show');
+        Route::get('/{exam}/edit', [\App\Http\Controllers\Teacher\ExamController::class, 'edit'])->name('edit');
+        Route::put('/{exam}', [\App\Http\Controllers\Teacher\ExamController::class, 'update'])->name('update');
+        Route::delete('/{exam}', [\App\Http\Controllers\Teacher\ExamController::class, 'destroy'])->name('destroy');
+        
+        // Exam Questions
+        Route::post('/{exam}/questions', [\App\Http\Controllers\Teacher\ExamController::class, 'addQuestion'])->name('questions.add');
+        Route::put('/{exam}/questions/{question}', [\App\Http\Controllers\Teacher\ExamController::class, 'updateQuestion'])->name('questions.update');
+        Route::delete('/{exam}/questions/{question}', [\App\Http\Controllers\Teacher\ExamController::class, 'deleteQuestion'])->name('questions.delete');
+        
+        // Exam Choices
+        Route::post('/questions/{question}/choices', [\App\Http\Controllers\Teacher\ExamController::class, 'addChoice'])->name('choices.add');
+        Route::put('/questions/{question}/choices/{choice}', [\App\Http\Controllers\Teacher\ExamController::class, 'updateChoice'])->name('choices.update');
+        Route::delete('/questions/{question}/choices/{choice}', [\App\Http\Controllers\Teacher\ExamController::class, 'deleteChoice'])->name('choices.delete');
+    });
+});
+
+Route::prefix('teacher')->middleware(['auth', 'isTeacher', 'password.changed'])->group(function () {
+    Route::get('assignments/{assignment}/questions/bulk-create', [\App\Http\Controllers\Teacher\AssignmentController::class, 'bulkCreateQuestions'])->name('teacher.assignments.questions.bulk-create');
+    Route::post('assignments/{assignment}/questions/bulk-store', [\App\Http\Controllers\Teacher\AssignmentController::class, 'bulkStoreQuestions'])->name('teacher.assignments.questions.bulk-store');
+    Route::get('exams/{exam}/questions/bulk-create', [\App\Http\Controllers\Teacher\ExamController::class, 'bulkCreateQuestions'])->name('teacher.exams.questions.bulk-create');
+    Route::post('exams/{exam}/questions/bulk-store', [\App\Http\Controllers\Teacher\ExamController::class, 'bulkStoreQuestions'])->name('teacher.exams.questions.bulk-store');
+    Route::get('assignments/{assignment}/questions/list', [\App\Http\Controllers\Teacher\AssignmentController::class, 'questionsList'])->name('teacher.assignments.questions.list');
+    Route::get('exams/{exam}/questions/list', [\App\Http\Controllers\Teacher\ExamController::class, 'questionsList'])->name('teacher.exams.questions.list');
 });
 
 
