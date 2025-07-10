@@ -198,7 +198,30 @@ class ExamController extends Controller
             'grade' => $request->grade
         ]);
 
-        return response()->json(['success' => true, 'question' => $question]);
+        // تحديث الخيارات إذا كان السؤال MCQ
+        if ($request->type === 'mcq' && $request->has('choices')) {
+            $choices = $request->input('choices');
+            $correctIndex = $request->input('correct_choice');
+            // حذف الخيارات القديمة
+            $question->choices()->delete();
+            // إضافة الخيارات الجديدة
+            foreach ($choices as $index => $choiceData) {
+                $question->choices()->create([
+                    'choice_text' => $choiceData['text'],
+                    'is_correct' => ($correctIndex == $index) ? 1 : 0,
+                ]);
+            }
+        } else {
+            // إذا لم يكن MCQ، احذف كل الخيارات
+            $question->choices()->delete();
+        }
+
+        // إذا كان الطلب AJAX أعد JSON، وإلا أعد redirect
+        if ($request->expectsJson() || $request->ajax()) {
+            return response()->json(['success' => true, 'question' => $question]);
+        }
+        return redirect()->route('teacher.exams.questions.list', $exam)
+            ->with('success', 'تم تحديث السؤال بنجاح');
     }
 
     /**
@@ -212,7 +235,11 @@ class ExamController extends Controller
 
         $question->delete();
 
-        return response()->json(['success' => true]);
+        if (request()->expectsJson() || request()->ajax()) {
+            return response()->json(['success' => true]);
+        }
+        return redirect()->route('teacher.exams.questions.list', $exam)
+            ->with('success', 'تم حذف السؤال بنجاح');
     }
 
     /**
@@ -299,7 +326,6 @@ class ExamController extends Controller
             'questions.*.grade' => 'required|numeric|min:0',
             'questions.*.choices' => 'array',
             'questions.*.choices.*.choice_text' => 'required_if:questions.*.type,mcq|string|nullable',
-            'questions.*.choices.*.is_correct' => 'boolean|nullable',
         ]);
         foreach ($request->questions as $q) {
             $question = $exam->questions()->create([
@@ -308,15 +334,16 @@ class ExamController extends Controller
                 'grade' => $q['grade'],
             ]);
             if ($q['type'] === 'mcq' && !empty($q['choices'])) {
-                foreach ($q['choices'] as $choice) {
+                $correctIndex = isset($q['correct_choice']) ? $q['correct_choice'] : null;
+                foreach ($q['choices'] as $idx => $choice) {
                     $question->choices()->create([
                         'choice_text' => $choice['choice_text'],
-                        'is_correct' => !empty($choice['is_correct']) ? 1 : 0,
+                        'is_correct' => ($correctIndex !== null && $correctIndex == $idx) ? 1 : 0,
                     ]);
                 }
             }
         }
-        return redirect()->route('teacher.exams.show', $exam)->with('success', 'تم إضافة الأسئلة بنجاح');
+        return redirect()->route('teacher.exams.questions.list', $exam)->with('success', 'تم إضافة الأسئلة بنجاح');
     }
 
     /**
