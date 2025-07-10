@@ -1,207 +1,261 @@
 @extends('layouts.admin')
+
+@section('title', 'Course Schedule Management')
+
+@push('styles')
+<style>
+    .hero-section {
+        background: linear-gradient(135deg, #f8f9fc 0%, #e9ecef 100%);
+        border-radius: 20px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        color: #495057;
+        position: relative;
+        overflow: hidden;
+        border: 1px solid #dee2e6;
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 1;
+    }
+
+    .hero-title {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        color: #495057;
+    }
+
+    .hero-subtitle {
+        font-size: 1.1rem;
+        opacity: 0.8;
+        margin-bottom: 0;
+        color: #6c757d;
+    }
+
+    .hero-btn {
+        background: #007bff;
+        border: 1px solid #007bff;
+        color: #fff;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .hero-btn:hover {
+        background: #0056b3;
+        border-color: #0056b3;
+        color: #fff;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,123,255,0.3);
+    }
+</style>
+@endpush
+
 @section('content')
-<div class="container mt-4">
-    <h2 class="mb-4">جدولة: {{ $course->name ?? $course->title }}</h2>
+<div class="container-fluid mt-4">
+    <!-- Hero Section -->
+    <div class="hero-section">
+        <div class="hero-content">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="hero-title">
+                        Course Schedule: {{ $course->name ?? $course->title }}
+                    </h1>
+                    <p class="hero-subtitle">Manage and view course schedule sessions</p>
+                </div>
+                <div>
+                    <a href="{{ route('admin.schedules.index') }}" class="btn hero-btn">
+                        <i class="fas fa-arrow-left me-2"></i>
+                        Back to Schedule Management
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Schedule Form -->
     <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">Add New Schedule</h5>
+        </div>
         <div class="card-body">
-            <form method="POST" action="{{ route('admin.schedules.store') }}" class="row g-3">
+            <form method="POST" action="{{ route('admin.schedules.store') }}" class="row g-3 align-items-end">
                 @csrf
                 <input type="hidden" name="course_id" value="{{ $course->id }}">
+                
                 <div class="col-md-2">
-                    <label for="start_time" class="form-label">وقت البداية <span class="text-danger">*</span></label>
-                    <input type="time" name="start_time" id="start_time" class="form-control" required placeholder="وقت البداية">
+                    <input type="time" name="start_time" id="start_time" class="form-control" required placeholder="Start Time">
                 </div>
+                
                 <div class="col-md-2">
-                    <label for="end_time" class="form-label">وقت النهاية <span class="text-danger">*</span></label>
-                    <input type="time" name="end_time" id="end_time" class="form-control" required placeholder="وقت النهاية">
+                    <input type="time" name="end_time" id="end_time" class="form-control" required placeholder="End Time">
                 </div>
-                <div class="col-md-2">
-                    <label for="room_id" class="form-label">القاعة <span class="text-danger">*</span></label>
+                
+                <div class="col-md-3">
                     <select name="room_id" id="room_id" class="form-select" required>
-                        <option value="">اختر القاعة</option>
+                        <option value="">Select Room</option>
                         @foreach($rooms as $room)
                             <option value="{{ $room->id }}">{{ $room->room_number }}</option>
                         @endforeach
                     </select>
                 </div>
+                
                 <div class="col-md-3">
-                    <label for="session_date" class="form-label">Session Date <span class="text-danger">*</span></label>
                     <input type="date" name="session_date" id="session_date" class="form-control" required onchange="showDayOfWeek()">
-                    <div id="dayOfWeekDisplay" class="mt-2 text-primary fw-bold"></div>
+                    <div id="dayOfWeekDisplay" class="mt-2 text-primary small" style="display: none;"></div>
                 </div>
-                <div class="col-md-2 d-flex align-items-end">
-                    <button type="submit" class="btn btn-success w-100">إضافة الجدولة</button>
+                
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-success w-100">
+                        <i class="fas fa-plus me-2"></i>Add
+                    </button>
                 </div>
             </form>
-            <!-- Toast Messages -->
-            <div aria-live="polite" aria-atomic="true" class="position-relative">
-                <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 9999;">
-                    @if(session('error'))
-                        <div class="toast align-items-center text-bg-danger border-0 show beautiful-toast" role="alert" aria-live="assertive" aria-atomic="true" id="errorToast">
-                            <div class="d-flex">
-                                <div class="toast-body">
-                                    <i class="fas fa-exclamation-circle me-2"></i>
-                                    {!! session('error') !!}
-                                </div>
-                                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-                            </div>
-                        </div>
-                    @endif
-                    @if(session('success'))
-                        <div class="toast align-items-center text-bg-success border-0 show beautiful-toast" role="alert" aria-live="assertive" aria-atomic="true" id="successToast">
-                            <div class="d-flex">
-                                <div class="toast-body">
-                                    <i class="fas fa-check-circle me-2"></i>
-                                    {{ session('success') }}
-                                </div>
-                                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-                            </div>
-                        </div>
-                    @endif
-                    @if($errors->any())
-                        <div class="toast align-items-center text-bg-danger border-0 show beautiful-toast" role="alert" aria-live="assertive" aria-atomic="true" id="validationToast">
-                            <div class="d-flex">
-                                <div class="toast-body">
-                                    <i class="fas fa-exclamation-triangle me-2"></i>
-                                    {{ $errors->first() }}
-                                </div>
-                                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-                            </div>
-                        </div>
-                    @endif
-                </div>
-            </div>
-            <!-- نهاية التوست -->
         </div>
     </div>
+
+    <!-- Current Schedules -->
     <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">Current Schedules</h5>
+        </div>
         <div class="card-body">
-            <h5>الجدولات الحالية</h5>
-            <table class="table table-bordered table-hover">
-                <thead>
-                    <tr>
-                        <th>اليوم</th>
-                        <th>وقت البداية</th>
-                        <th>وقت النهاية</th>
-                        <th>القاعة</th>
-                        <th>تاريخ الإضافة</th>
-                        <th>Session Date</th>
-                        <th>إجراءات</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($course->schedules as $schedule)
-                        <tr>
-                            <td>{{ __($schedule->day_of_week) }}</td>
-                            <td>{{ \Carbon\Carbon::parse($schedule->start_time)->format('h:i A') }}</td>
-                            <td>{{ \Carbon\Carbon::parse($schedule->end_time)->format('h:i A') }}</td>
-                            <td>{{ $schedule->room ? $schedule->room->room_number : $schedule->room_id }}</td>
-                            <td>{{ $schedule->created_at->format('Y-m-d H:i') }}</td>
-                            <td>{{ $schedule->session_date ? \Carbon\Carbon::parse($schedule->session_date)->format('Y-m-d') : '' }}</td>
-                            <td>
-                                <button class="btn btn-sm btn-warning me-1" data-bs-toggle="modal" data-bs-target="#editModal{{ $schedule->id }}">تعديل</button>
-                                <form action="{{ route('admin.schedules.destroy', $schedule->id) }}" method="POST" style="display:inline-block" onsubmit="return confirm('هل أنت متأكد من حذف الجدولة؟');">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-sm btn-danger">حذف</button>
-                                </form>
-                                <!-- Modal تعديل -->
-                                <div class="modal fade" id="editModal{{ $schedule->id }}" tabindex="-1" aria-labelledby="editModalLabel{{ $schedule->id }}" aria-hidden="true">
-                                  <div class="modal-dialog">
-                                    <div class="modal-content">
-                                      <form method="POST" action="{{ route('admin.schedules.update', $schedule->id) }}">
-                                        @csrf
-                                        @method('PUT')
-                                        <div class="modal-header">
-                                          <h5 class="modal-title" id="editModalLabel{{ $schedule->id }}">تعديل أوقات الجدولة</h5>
-                                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            @if($course->schedules->count() > 0)
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Day</th>
+                                <th>Start Time</th>
+                                <th>End Time</th>
+                                <th>Room</th>
+                                <th>Added On</th>
+                                <th>Session Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($course->schedules as $schedule)
+                                <tr>
+                                    <td>
+                                        <span class="badge bg-primary">{{ ucfirst($schedule->day_of_week) }}</span>
+                                    </td>
+                                    <td>{{ \Carbon\Carbon::parse($schedule->start_time)->format('h:i A') }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($schedule->end_time)->format('h:i A') }}</td>
+                                    <td>
+                                        <span class="badge bg-info">
+                                            {{ $schedule->room ? $schedule->room->room_number : 'Room #' . $schedule->room_id }}
+                                        </span>
+                                    </td>
+                                    <td>{{ $schedule->created_at->format('M d, Y h:i A') }}</td>
+                                    <td>{{ $schedule->session_date ? \Carbon\Carbon::parse($schedule->session_date)->format('M d, Y') : '' }}</td>
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editModal{{ $schedule->id }}">
+                                                <i class="fas fa-edit me-1"></i>
+                                                Edit
+                                            </button>
+                                            <form action="{{ route('admin.schedules.destroy', $schedule->id) }}" method="POST" style="display:inline-block" onsubmit="return confirm('Are you sure you want to delete this schedule?');">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-danger btn-sm">
+                                                    <i class="fas fa-trash me-1"></i>
+                                                    Delete
+                                                </button>
+                                            </form>
                                         </div>
-                                        <div class="modal-body">
-                                          <div class="mb-3">
-                                            <label class="form-label">وقت البداية</label>
-                                            <input type="time" name="start_time" class="form-control" value="{{ \Carbon\Carbon::parse($schedule->start_time)->format('H:i') }}" required>
-                                          </div>
-                                          <div class="mb-3">
-                                            <label class="form-label">وقت النهاية</label>
-                                            <input type="time" name="end_time" class="form-control" value="{{ \Carbon\Carbon::parse($schedule->end_time)->format('H:i') }}" required>
-                                          </div>
+
+                                        <!-- Edit Modal -->
+                                        <div class="modal fade" id="editModal{{ $schedule->id }}" tabindex="-1" aria-labelledby="editModalLabel{{ $schedule->id }}" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <form method="POST" action="{{ route('admin.schedules.update', $schedule->id) }}">
+                                                        @csrf
+                                                        @method('PUT')
+                                                                                                <div class="modal-header">
+                                            <h5 class="modal-title" id="editModalLabel{{ $schedule->id }}">
+                                                Edit Schedule Times
+                                            </h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
-                                        <div class="modal-footer">
-                                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
-                                          <button type="submit" class="btn btn-primary">حفظ التعديل</button>
+                                                        <div class="modal-body">
+                                                                                                        <div class="mb-3">
+                                                <label class="form-label">Start Time</label>
+                                                <input type="time" name="start_time" class="form-control" value="{{ \Carbon\Carbon::parse($schedule->start_time)->format('H:i') }}" required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label">End Time</label>
+                                                <input type="time" name="end_time" class="form-control" value="{{ \Carbon\Carbon::parse($schedule->end_time)->format('H:i') }}" required>
+                                            </div>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
                                         </div>
-                                      </form>
-                                    </div>
-                                  </div>
-                                </div>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="5" class="text-center">لا توجد جدولات بعد.</td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            @else
+                <div class="text-center py-5">
+                    <div class="mb-3">
+                        <i class="fas fa-calendar-times fa-3x text-muted opacity-50"></i>
+                    </div>
+                    <h6 class="text-muted mb-2">No Schedule Sessions Yet</h6>
+                    <p class="text-muted">Add schedule sessions using the form above</p>
+                </div>
+            @endif
         </div>
     </div>
 </div>
+
+<!-- Messages -->
+@if(session('error'))
+    <div class="alert alert-danger alert-dismissible">
+        <i class="fas fa-exclamation-circle me-2"></i>
+        {!! session('error') !!}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+@endif
+
+@if(session('success'))
+    <div class="alert alert-success alert-dismissible">
+        <i class="fas fa-check-circle me-2"></i>
+        {{ session('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+@endif
+
+@if($errors->any())
+    <div class="alert alert-danger alert-dismissible">
+        <i class="fas fa-exclamation-triangle me-2"></i>
+        {{ $errors->first() }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+@endif
+
 <script>
 function showDayOfWeek() {
     const input = document.getElementById('session_date');
     const display = document.getElementById('dayOfWeekDisplay');
-    if (!input.value) { display.textContent = ''; return; }
-    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-    const daysAr = ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
-    const date = new Date(input.value);
-    const dayIndex = date.getDay();
-    // تنسيق التاريخ: YYYY-MM-DD
-    const yyyy = date.getFullYear();
-    const mm = String(date.getMonth() + 1).padStart(2, '0');
-    const dd = String(date.getDate()).padStart(2, '0');
-    const formatted = `${yyyy}-${mm}-${dd}`;
-    display.textContent = `This date is: ${days[dayIndex]} - ${daysAr[dayIndex]} | ${formatted}`;
-}
-
-// إخفاء التوست بعد 3 ثواني تلقائياً
-window.onload = function() {
-    // تشغيل صوت عند ظهور التوست
-    var errorToast = document.getElementById('errorToast');
-    var successToast = document.getElementById('successToast');
-    var validationToast = document.getElementById('validationToast');
-    if (errorToast || successToast || validationToast) {
-        var audio = new Audio('/sounds/notify.mp3');
-        audio.play();
+    
+    if (input.value) {
+        const date = new Date(input.value);
+        const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        const dayName = days[date.getDay()];
+        
+        display.innerHTML = `<i class="fas fa-calendar me-1"></i>Day: ${dayName}`;
+        display.style.display = 'block';
+    } else {
+        display.style.display = 'none';
     }
-    setTimeout(function() {
-        if (errorToast) errorToast.classList.remove('show');
-        if (successToast) successToast.classList.remove('show');
-        if (validationToast) validationToast.classList.remove('show');
-    }, 3000);
 }
 </script>
-<style>
-.beautiful-toast {
-    font-size: 1.15em;
-    box-shadow: 0 4px 24px 0 rgba(0,0,0,0.18), 0 1.5px 4px 0 rgba(0,0,0,0.12);
-    border-radius: 12px;
-    padding: 0.7em 1.2em;
-    min-width: 320px;
-    max-width: 420px;
-    opacity: 0.97;
-    direction: rtl;
-}
-.toast-body i {
-    font-size: 1.3em;
-    vertical-align: middle;
-    color: #fff;
-    margin-left: 0.5em;
-}
-.text-bg-danger {
-    background: linear-gradient(90deg, #e53935 0%, #e35d5b 100%) !important;
-}
-.text-bg-success {
-    background: linear-gradient(90deg, #43cea2 0%, #185a9d 100%) !important;
-}
-</style>
 @endsection 

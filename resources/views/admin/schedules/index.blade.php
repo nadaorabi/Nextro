@@ -1,294 +1,355 @@
 @extends('layouts.admin')
+
+@section('title', 'Schedule Management')
+
+@push('styles')
+<style>
+    .hero-section {
+        background: linear-gradient(135deg, #f8f9fc 0%, #e9ecef 100%);
+        border-radius: 20px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        color: #495057;
+        position: relative;
+        overflow: hidden;
+        border: 1px solid #dee2e6;
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 1;
+    }
+
+    .hero-title {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        color: #495057;
+    }
+
+    .hero-subtitle {
+        font-size: 1.1rem;
+        opacity: 0.8;
+        margin-bottom: 0;
+        color: #6c757d;
+    }
+
+    .hero-btn {
+        background: #007bff;
+        border: 1px solid #007bff;
+        color: #fff;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .hero-btn:hover {
+        background: #0056b3;
+        border-color: #0056b3;
+        color: #fff;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,123,255,0.3);
+    }
+
+    .course-card {
+        border-radius: 16px;
+        border: 1px solid #e9ecef;
+        transition: all 0.3s ease;
+        background: #fff;
+        overflow: hidden;
+    }
+
+    .course-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        border-color: #dee2e6;
+    }
+
+    .course-card .card-body {
+        padding: 1.5rem;
+    }
+
+    .course-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #495057;
+        margin-bottom: 0.75rem;
+        line-height: 1.4;
+    }
+
+    .course-description {
+        font-size: 0.9rem;
+        color: #6c757d;
+        margin-bottom: 1rem;
+        line-height: 1.5;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .course-meta {
+        margin-bottom: 0.75rem;
+    }
+
+    .course-meta .meta-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.5rem;
+        font-size: 0.85rem;
+    }
+
+    .course-meta .meta-label {
+        color: #868e96;
+        font-weight: 500;
+    }
+
+    .badge-soft-info {
+        background-color: #e3f2fd;
+        color: #1976d2;
+        border: 1px solid #bbdefb;
+    }
+
+    .badge-soft-primary {
+        background-color: #e8f4f8;
+        color: #0277bd;
+        border: 1px solid #b3e5fc;
+    }
+
+    .badge-soft-success {
+        background-color: #e8f5e8;
+        color: #2e7d32;
+        border: 1px solid #c8e6c9;
+    }
+
+    .badge-soft-danger {
+        background-color: #ffebee;
+        color: #c62828;
+        border: 1px solid #ffcdd2;
+    }
+
+    .course-actions {
+        padding-top: 1rem;
+        border-top: 1px solid #f1f3f4;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .btn-view-schedule {
+        background: linear-gradient(45deg, #6c5ce7, #a29bfe);
+        border: none;
+        color: white;
+        font-size: 0.85rem;
+        font-weight: 500;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-view-schedule:hover {
+        background: linear-gradient(45deg, #5f4fcf, #9189f7);
+        color: white;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(108, 92, 231, 0.3);
+    }
+</style>
+@endpush
+
 @section('content')
-<div class="container mt-4">
-    <h2 class="mb-4">جدولة الكورسات والمسارات التعليمية</h2>
-    
-    <!-- إحصائيات سريعة -->
-    <div class="row mb-4">
-        <div class="col-12 col-md-3 mb-3 mb-md-0">
-            <div class="card bg-primary text-white">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between">
-                        <div>
-                            <h4 class="mb-0">{{ $courses->count() }}</h4>
-                            <small>إجمالي الكورسات</small>
-                        </div>
-                        <div class="align-self-center">
-                            <i class="fas fa-book fa-2x"></i>
-                        </div>
-                    </div>
+<div class="container-fluid mt-4">
+    <!-- Hero Section -->
+    <div class="hero-section">
+        <div class="hero-content">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="hero-title">Schedule Management</h1>
+                    <p class="hero-subtitle">Manage course and package schedules efficiently</p>
                 </div>
-            </div>
-        </div>
-        <div class="col-12 col-md-3 mb-3 mb-md-0">
-            <div class="card bg-success text-white">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between">
-                        <div>
-                            <h4 class="mb-0">{{ $packages->count() }}</h4>
-                            <small>إجمالي البكجات</small>
-                        </div>
-                        <div class="align-self-center">
-                            <i class="fas fa-box fa-2x"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-12 col-md-3 mb-3 mb-md-0">
-            <div class="card bg-info text-white">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between">
-                        <div>
-                            @php
-                                $totalSchedules = 0;
-                                foreach($courses as $course) {
-                                    $totalSchedules += $course->schedules->count();
-                                }
-                            @endphp
-                            <h4 class="mb-0">{{ $totalSchedules }}</h4>
-                            <small>إجمالي الجدولات</small>
-                        </div>
-                        <div class="align-self-center">
-                            <i class="fas fa-calendar fa-2x"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-12 col-md-3">
-            <div class="card bg-warning text-white">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between">
-                        <div>
-                            @php
-                                $totalPackageSchedules = 0;
-                                foreach($packages as $package) {
-                                    foreach($package->courses as $course) {
-                                        $totalPackageSchedules += $course->schedules->count();
-                                    }
-                                }
-                            @endphp
-                            <h4 class="mb-0">{{ $totalPackageSchedules }}</h4>
-                            <small>جدولات البكجات</small>
-                        </div>
-                        <div class="align-self-center">
-                            <i class="fas fa-calendar-check fa-2x"></i>
-                        </div>
-                    </div>
+                <div>
+                    <a href="{{ route('admin.schedules.board') }}" class="btn hero-btn me-2">
+                        <i class="fas fa-calendar-alt me-2"></i>
+                        Schedule Board
+                    </a>
                 </div>
             </div>
         </div>
     </div>
     
-    <!-- فلترة -->
+    <!-- Simple Filters -->
     <div class="card mb-4">
         <div class="card-body">
-            <form method="GET" action="" class="row g-3">
-                <div class="col-12 col-md-3">
-                    <input type="text" name="search" class="form-control" placeholder="بحث باسم الكورس أو المسار أو البكج..." value="{{ request('search') }}">
+            <form method="GET" action="" class="row g-3 align-items-end">
+                <div class="col-md-5">
+                    <input type="text" name="search" class="form-control" placeholder="Search..." value="{{ request('search') }}">
                 </div>
-                <div class="col-12 col-md-2">
+                <div class="col-md-3">
                     <select name="type" class="form-select">
-                        <option value="">الكل</option>
-                        <option value="course" {{ request('type') === 'course' ? 'selected' : '' }}>كورسات</option>
-                        <option value="package" {{ request('type') === 'package' ? 'selected' : '' }}>بكجات</option>
+                        <option value="">All Types</option>
+                        <option value="course" {{ request('type') === 'course' ? 'selected' : '' }}>Courses</option>
+                        <option value="package" {{ request('type') === 'package' ? 'selected' : '' }}>Packages</option>
                     </select>
                 </div>
-                <div class="col-12 col-md-2">
+                <div class="col-md-2">
                     <select name="status" class="form-select">
-                        <option value="">جميع الحالات</option>
-                        <option value="active" {{ request('status') === 'active' ? 'selected' : '' }}>نشط</option>
-                        <option value="inactive" {{ request('status') === 'inactive' ? 'selected' : '' }}>غير نشط</option>
+                        <option value="">All Status</option>
+                        <option value="active" {{ request('status') === 'active' ? 'selected' : '' }}>Active</option>
+                        <option value="inactive" {{ request('status') === 'inactive' ? 'selected' : '' }}>Inactive</option>
                     </select>
                 </div>
-                <div class="col-12 col-md-2">
+                <div class="col-md-1">
                     <button type="submit" class="btn btn-primary w-100">
-                        <i class="fas fa-search me-2"></i>
-                        فلترة
+                        <i class="fas fa-search"></i>
                     </button>
                 </div>
-                <div class="col-12 col-md-2">
+                <div class="col-md-1">
                     <a href="{{ route('admin.schedules.index') }}" class="btn btn-secondary w-100">
-                        <i class="fas fa-refresh me-2"></i>
-                        إعادة تعيين
+                        <i class="fas fa-times"></i>
                     </a>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- الكورسات -->
-    <div class="card mb-4">
-        <div class="card-header">
-            <h5 class="mb-0">
-                <i class="fas fa-book me-2"></i>
-                الكورسات والمسارات التعليمية
-                @if(request('search') || request('type') || request('status'))
-                    <small class="text-muted">(نتائج الفلترة)</small>
-                @endif
-            </h5>
-        </div>
-        <div class="card-body">
+    <!-- Content Tabs -->
+    <ul class="nav nav-tabs mb-4">
+        <li class="nav-item">
+            <a class="nav-link active" data-bs-toggle="tab" href="#courses">
+                <i class="fas fa-book me-2"></i>Courses ({{ $courses->count() }})
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="tab" href="#packages">
+                <i class="fas fa-box me-2"></i>Packages ({{ $packages->count() }})
+            </a>
+        </li>
+    </ul>
+
+    <!-- Tab Content -->
+    <div class="tab-content">
+        <!-- Courses Tab -->
+        <div class="tab-pane active" id="courses">
             @if($courses->count() > 0)
-                <div class="table-responsive">
-                    <table class="table table-bordered table-hover">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>الاسم</th>
-                                <th>النوع</th>
-                                <th>عدد الجدولات</th>
-                                <th>إجراءات</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($courses as $course)
-                                <tr>
-                                    <td>{{ $course->id }}</td>
-                                    <td>{{ $course->name ?? $course->title }}</td>
-                                    <td>{{ $course->is_track ? 'مسار تعليمي' : 'كورس' }}</td>
-                                    <td>{{ $course->schedules->count() }}</td>
-                                    <td>
-                                        <a href="{{ route('admin.schedules.show', $course->id) }}" class="btn btn-info btn-sm">عرض الجدولة</a>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                <div class="row">
+                    @foreach($courses as $course)
+                        <div class="col-12 col-md-6 col-xl-4 mb-4">
+                            <div class="card course-card h-100">
+                                <div class="card-body">
+                                    <h6 class="course-title">{{ $course->title }}</h6>
+                                    <p class="course-description">{{ $course->description ?: 'No description available' }}</p>
+                                    
+                                    <div class="course-meta">
+                                        <div class="meta-item">
+                                            <span class="meta-label">Category:</span>
+                                            <span class="badge badge-soft-info">{{ $course->category->name ?? 'No Category' }}</span>
+                                        </div>
+                                        <div class="meta-item">
+                                            <span class="meta-label">Schedules:</span>
+                                            <span class="badge badge-soft-primary">{{ $course->schedules->count() }}</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="course-actions">
+                                        <span class="badge badge-soft-{{ $course->status === 'active' ? 'success' : 'danger' }}">
+                                            {{ ucfirst($course->status) }}
+                                        </span>
+                                        <a href="{{ route('admin.schedules.show', $course->id) }}" class="btn btn-view-schedule">
+                                            <i class="fas fa-calendar me-1"></i>
+                                            View Schedule
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
                 </div>
             @else
-                <div class="text-center py-4">
-                    <i class="fas fa-search fa-3x text-muted mb-3"></i>
-                    <h5 class="text-muted">لا توجد كورسات</h5>
-                    @if(request('search') || request('type') || request('status'))
-                        <p class="text-muted">جرب تغيير معايير البحث أو <a href="{{ route('admin.schedules.index') }}">إعادة تعيين الفلاتر</a></p>
-                    @endif
+                <div class="card">
+                    <div class="card-body text-center py-5">
+                        <div class="mb-3">
+                            <i class="fas fa-book fa-3x text-muted opacity-50"></i>
+                        </div>
+                        <h6 class="text-muted mb-2">No Courses Found</h6>
+                        <p class="text-muted mb-0">No courses match your search criteria</p>
+                    </div>
                 </div>
             @endif
         </div>
-    </div>
 
-    <!-- البكجات -->
-    <div class="card">
-        <div class="card-header">
-            <h5 class="mb-0">
-                <i class="fas fa-box me-2"></i>
-                البكجات التعليمية
-                @if(request('search') || request('type') || request('status'))
-                    <small class="text-muted">(نتائج الفلترة)</small>
-                @endif
-            </h5>
-        </div>
-        <div class="card-body">
+        <!-- Packages Tab -->
+        <div class="tab-pane" id="packages">
             @if($packages->count() > 0)
-                <div class="table-responsive">
-                    <table class="table table-bordered table-hover">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>اسم البكج</th>
-                                <th>الفئة</th>
-                                <th>عدد المواد</th>
-                                <th>إجمالي الجدولات</th>
-                                <th>إجراءات</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($packages as $package)
-                                <tr>
-                                    <td>{{ $package->id }}</td>
-                                    <td>{{ $package->name }}</td>
-                                    <td>{{ $package->category ? $package->category->name : 'غير محدد' }}</td>
-                                    <td>{{ $package->courses->count() }}</td>
-                                    <td>
-                                        @php
-                                            $totalSchedules = 0;
-                                            foreach($package->courses as $course) {
-                                                $totalSchedules += $course->schedules->count();
-                                            }
-                                        @endphp
-                                        {{ $totalSchedules }}
-                                    </td>
-                                    <td>
-                                        <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#packageModal{{ $package->id }}">
-                                            <i class="fas fa-eye me-1"></i>
-                                            عرض المواد
-                                        </button>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                <div class="row">
+                    @foreach($packages as $package)
+                        <div class="col-12 col-md-6 col-xl-4 mb-4">
+                            <div class="card course-card h-100">
+                                <div class="card-body">
+                                    <h6 class="course-title">{{ $package->name }}</h6>
+                                    <p class="course-description">{{ $package->description ?: 'No description available' }}</p>
+                                    
+                                    <div class="course-meta">
+                                        <div class="meta-item">
+                                            <span class="meta-label">Category:</span>
+                                            <span class="badge badge-soft-info">{{ $package->category->name ?? 'No Category' }}</span>
+                                        </div>
+                                        <div class="meta-item">
+                                            <span class="meta-label">Courses:</span>
+                                            <span class="badge badge-soft-primary">{{ $package->courses->count() }}</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="course-actions">
+                                        <span class="badge badge-soft-{{ $package->status === 'active' ? 'success' : 'danger' }}">
+                                            {{ ucfirst($package->status) }}
+                                        </span>
+                                        <a href="{{ route('admin.schedules.show-package', $package->id) }}" class="btn btn-view-schedule">
+                                            <i class="fas fa-calendar me-1"></i>
+                                            View Schedule
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
                 </div>
             @else
-                <div class="text-center py-4">
-                    <i class="fas fa-box-open fa-3x text-muted mb-3"></i>
-                    <h5 class="text-muted">لا توجد بكجات</h5>
-                    @if(request('search') || request('type') || request('status'))
-                        <p class="text-muted">جرب تغيير معايير البحث أو <a href="{{ route('admin.schedules.index') }}">إعادة تعيين الفلاتر</a></p>
-                    @endif
+                <div class="card">
+                    <div class="card-body text-center py-5">
+                        <div class="mb-3">
+                            <i class="fas fa-box fa-3x text-muted opacity-50"></i>
+                        </div>
+                        <h6 class="text-muted mb-2">No Packages Found</h6>
+                        <p class="text-muted mb-0">No packages match your search criteria</p>
+                    </div>
                 </div>
             @endif
         </div>
     </div>
 </div>
 
-<!-- Modals للبكجات -->
-@foreach($packages as $package)
-<div class="modal fade" id="packageModal{{ $package->id }}" tabindex="-1" aria-labelledby="packageModalLabel{{ $package->id }}" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="packageModalLabel{{ $package->id }}">
-                    <i class="fas fa-box me-2"></i>
-                    {{ $package->name }} - المواد التعليمية
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                @if($package->courses->count() > 0)
-                    <div class="table-responsive">
-                        <table class="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>اسم المادة</th>
-                                    <th>الفئة</th>
-                                    <th>عدد الجدولات</th>
-                                    <th>إجراءات</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($package->courses as $course)
-                                    <tr>
-                                        <td>{{ $course->id }}</td>
-                                        <td>{{ $course->name ?? $course->title }}</td>
-                                        <td>{{ $course->category ? $course->category->name : 'غير محدد' }}</td>
-                                        <td>{{ $course->schedules->count() }}</td>
-                                        <td>
-                                            <a href="{{ route('admin.schedules.show', $course->id) }}" class="btn btn-info btn-sm">
-                                                <i class="fas fa-calendar me-1"></i>
-                                                جدولة
-                                            </a>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                @else
-                    <div class="text-center py-4">
-                        <i class="fas fa-box-open fa-3x text-muted mb-3"></i>
-                        <p class="text-muted">لا توجد مواد في هذا البكج</p>
-                    </div>
-                @endif
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
-            </div>
-        </div>
+<!-- Messages -->
+@if(session('error'))
+    <div class="alert alert-danger alert-dismissible">
+        <i class="fas fa-exclamation-circle me-2"></i>
+        {!! session('error') !!}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
-</div>
-@endforeach
+@endif
+
+@if(session('success'))
+    <div class="alert alert-success alert-dismissible">
+        <i class="fas fa-check-circle me-2"></i>
+        {{ session('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+@endif
+
+@if($errors->any())
+    <div class="alert alert-danger alert-dismissible">
+        <i class="fas fa-exclamation-triangle me-2"></i>
+        {{ $errors->first() }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+@endif
+
 @endsection 

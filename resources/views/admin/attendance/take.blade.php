@@ -1,177 +1,258 @@
 @extends('layouts.admin')
+
+@section('title', 'Take Attendance')
+
 @section('content')
-<div class="container-fluid py-4">
+<div class="container py-4">
   <div class="row justify-content-center">
-    <div class="col-12 col-lg-10">
-      <div class="modern-card">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-          <div class="modern-title">
-            <i class="fas fa-camera"></i> أخذ الحضور بالكاميرا
-          </div>
-          <div>
-            <a href="{{ route('admin.attendance.qr-codes', $schedule->id) }}" class="btn btn-outline-primary me-2">
-              <i class="fas fa-qrcode me-1"></i> QR Codes
-            </a>
-            <a href="{{ route('admin.attendance.schedule-details', $schedule->id) }}" class="btn btn-outline-secondary">
-              <i class="fas fa-list me-1"></i> التفاصيل
-            </a>
-          </div>
-        </div>
-        
-        <!-- إحصائيات سريعة -->
-        <div class="row mb-4">
-          <div class="col-md-3 col-sm-6 mb-3">
-            <div class="stat-card bg-gradient-primary text-white">
-              <div class="stat-icon">👥</div>
-              <div class="stat-number" id="totalStudents">{{ $studentCount }}</div>
-              <div class="stat-label">إجمالي الطلاب</div>
+    <div class="col-12" style="max-width:1200px;margin:auto;">
+      
+      <!-- Header Card -->
+      <div class="card shadow-sm mb-4">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <h4 class="mb-0"><i class="fas fa-camera me-2"></i>Take Attendance</h4>
+              <p class="text-muted mb-0">{{ $schedule->course->title }} - {{ __(ucfirst($schedule->day_of_week)) }}</p>
             </div>
-          </div>
-          <div class="col-md-3 col-sm-6 mb-3">
-            <div class="stat-card bg-gradient-success text-white">
-              <div class="stat-icon">✅</div>
-              <div class="stat-number" id="currentAttendance">{{ $currentAttendanceCount }}</div>
-              <div class="stat-label">الحضور الحالي</div>
-            </div>
-          </div>
-          <div class="col-md-3 col-sm-6 mb-3">
-            <div class="stat-card bg-gradient-danger text-white">
-              <div class="stat-icon">❌</div>
-              <div class="stat-number" id="currentAbsence">{{ $studentCount - $currentAttendanceCount }}</div>
-              <div class="stat-label">الغياب الحالي</div>
-            </div>
-          </div>
-          <div class="col-md-3 col-sm-6 mb-3">
-            <div class="stat-card bg-gradient-info text-white">
-              <div class="stat-icon">📊</div>
-              <div class="stat-number" id="attendancePercentage">{{ round(($currentAttendanceCount / $studentCount) * 100, 1) }}%</div>
-              <div class="stat-label">نسبة الحضور</div>
+            <div class="d-flex gap-2">
+              <a href="{{ route('admin.attendance.index') }}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Back to Attendance
+              </a>
+              <a href="{{ route('admin.attendance.qr-codes', $schedule->id) }}" class="btn btn-outline-primary">
+                <i class="fas fa-qrcode"></i> QR Codes
+              </a>
+              <a href="{{ route('admin.attendance.schedule-details', $schedule->id) }}" class="btn btn-outline-secondary">
+                <i class="fas fa-list"></i> Details
+              </a>
             </div>
           </div>
         </div>
+      </div>
 
-        <div class="mb-3">
-          <div><strong>المادة:</strong> {{ $schedule->course->title }}</div>
-          <div><strong>اليوم:</strong> {{ __(ucfirst($schedule->day_of_week)) }}</div>
-          <div><strong>الوقت:</strong> {{ substr($schedule->start_time, 0, 5) }} - {{ substr($schedule->end_time, 0, 5) }}</div>
-          <div><strong>القاعة:</strong> {{ $schedule->room ? ($schedule->room->room_number ?? $schedule->room->name) : 'غير محدد' }}</div>
+      <!-- Schedule Info -->
+      <div class="card shadow-sm mb-4">
+        <div class="card-header">
+          <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i>Schedule Information</h5>
         </div>
-        
-        <div class="text-center mt-4">
-          <button class="btn btn-modern btn-lg" id="openScanModal">
-            <i class="fas fa-camera me-2"></i> بدء المسح
-          </button>
-          <button class="btn btn-outline-info ms-2" id="refreshStats">
-            <i class="fas fa-sync-alt me-1"></i> تحديث الإحصائيات
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- قائمة الطلاب الحاضرين -->
-<div class="mt-5" id="presentStudentsSection">
-  <div class="modern-card">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-      <h5 class="mb-0">الطلاب الحاضرون اليوم</h5>
-      <div>
-        <button class="btn btn-sm btn-outline-success" id="exportAttendance">
-          <i class="fas fa-download me-1"></i> تصدير
-        </button>
-        <button class="btn btn-sm btn-outline-primary" id="refreshList">
-          <i class="fas fa-sync-alt me-1"></i> تحديث
-        </button>
-      </div>
-    </div>
-    
-    <!-- فلترة وبحث -->
-    <div class="row mb-3">
-      <div class="col-md-6">
-        <input type="text" class="form-control" id="searchStudent" placeholder="البحث في الطلاب...">
-      </div>
-      <div class="col-md-3">
-        <select class="form-select" id="filterStatus">
-          <option value="">جميع الحالات</option>
-          <option value="present">حاضر</option>
-          <option value="absent">غائب</option>
-        </select>
-      </div>
-      <div class="col-md-3">
-        <button class="btn btn-outline-secondary w-100" id="clearFilters">
-          <i class="fas fa-times me-1"></i> مسح الفلاتر
-        </button>
-      </div>
-    </div>
-    
-    <div class="table-responsive">
-      <table class="table table-bordered table-hover text-center align-middle">
-        <thead class="table-light">
-          <tr>
-            <th>الاسم</th>
-            <th>الرقم الأكاديمي</th>
-            <th>وقت الحضور</th>
-            <th>الحالة</th>
-            <th>الإجراءات</th>
-          </tr>
-        </thead>
-        <tbody id="presentStudentsTable"></tbody>
-      </table>
-    </div>
-  </div>
-</div>
-
-<!-- Modal for QR Code Scanner -->
-<div class="modal fade" id="scanModal" tabindex="-1" aria-labelledby="scanModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-lg">
-    <div class="modal-content" style="border-radius: 15px; overflow: hidden;">
-      <div class="modal-header bg-gradient-primary text-white">
-        <h5 class="modal-title" id="scanModalLabel">
-          <i class="fas fa-qrcode me-2"></i>
-          أخذ الحضور - {{ $schedule->course->title }}
-        </h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body p-4">
-        <div class="row">
-          <div class="col-md-8">
-            <div class="scanner-container position-relative" style="border-radius: 10px; overflow: hidden; background:#000;">
-              <div id="qr-reader" style="width: 100%"></div>
-              <div class="scanner-overlay">
-                <div class="scanner-line"></div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-3">
+              <div>
+                <small class="text-muted">Course:</small><br>
+                <span class="fw-bold">{{ $schedule->course->title }}</span>
               </div>
             </div>
-            <!-- تحكم الكاميرا -->
-            <div class="camera-controls mt-3 text-center">
+            <div class="col-md-2">
+              <div>
+                <small class="text-muted">Day:</small><br>
+                <span class="fw-bold">{{ __(ucfirst($schedule->day_of_week)) }}</span>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div>
+                <small class="text-muted">Time:</small><br>
+                <span class="fw-bold">{{ substr($schedule->start_time, 0, 5) }} - {{ substr($schedule->end_time, 0, 5) }}</span>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div>
+                <small class="text-muted">Room:</small><br>
+                <span class="fw-bold">{{ $schedule->room ? ($schedule->room->room_number ?? $schedule->room->name) : 'Not Assigned' }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Statistics -->
+      <div class="row mb-4">
+        <div class="col-md-3 mb-3">
+          <div class="stats-card stats-card-primary">
+            <div class="stats-card-body">
+              <div class="stats-icon">
+                <i class="fas fa-users"></i>
+              </div>
+              <div class="stats-content">
+                <div class="stats-number" id="totalStudents">{{ $studentCount }}</div>
+                <div class="stats-label">Total Students</div>
+                <div class="stats-description">Enrolled in session</div>
+              </div>
+            </div>
+            <div class="stats-card-decoration"></div>
+          </div>
+        </div>
+        
+        <div class="col-md-3 mb-3">
+          <div class="stats-card stats-card-success">
+            <div class="stats-card-body">
+              <div class="stats-icon">
+                <i class="fas fa-check-circle"></i>
+              </div>
+              <div class="stats-content">
+                <div class="stats-number" id="currentAttendance">{{ $currentAttendanceCount }}</div>
+                <div class="stats-label">Present</div>
+                <div class="stats-description">Students present</div>
+              </div>
+            </div>
+            <div class="stats-card-decoration"></div>
+          </div>
+        </div>
+        
+        <div class="col-md-3 mb-3">
+          <div class="stats-card stats-card-danger">
+            <div class="stats-card-body">
+              <div class="stats-icon">
+                <i class="fas fa-exclamation-circle"></i>
+              </div>
+              <div class="stats-content">
+                <div class="stats-number" id="currentAbsence">{{ $studentCount - $currentAttendanceCount }}</div>
+                <div class="stats-label">Absent</div>
+                <div class="stats-description">Students absent</div>
+              </div>
+            </div>
+            <div class="stats-card-decoration"></div>
+          </div>
+        </div>
+        
+        <div class="col-md-3 mb-3">
+          <div class="stats-card stats-card-info">
+            <div class="stats-card-body">
+              <div class="stats-icon">
+                <i class="fas fa-chart-line"></i>
+              </div>
+              <div class="stats-content">
+                <div class="stats-number" id="attendancePercentage">{{ round(($currentAttendanceCount / $studentCount) * 100, 1) }}%</div>
+                <div class="stats-label">Attendance Rate</div>
+                <div class="stats-description">Current rate</div>
+              </div>
+            </div>
+            <div class="stats-card-decoration"></div>
+          </div>
+        </div>
+      </div>
+        
+      <!-- QR Scanner Card -->
+      <div class="card shadow-sm mb-4">
+        <div class="card-header">
+          <h5 class="mb-0"><i class="fas fa-qrcode me-2"></i>QR Code Scanner</h5>
+        </div>
+        <div class="card-body text-center">
+          <button class="btn btn-primary btn-lg" id="openScanModal">
+            <i class="fas fa-camera me-2"></i> Start Scanning
+          </button>
+          <button class="btn btn-outline-info ms-2" id="refreshStats">
+            <i class="fas fa-sync-alt me-1"></i> Refresh Stats
+          </button>
+        </div>
+      </div>
+
+      <!-- Present Students Table -->
+      <div class="card shadow-sm" id="presentStudentsSection">
+        <div class="card-header">
+          <div class="d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Students Present Today</h5>
+            <div class="d-flex gap-2">
+              <button class="btn btn-sm btn-outline-success" id="exportAttendance">
+                <i class="fas fa-download me-1"></i> Export
+              </button>
+              <button class="btn btn-sm btn-outline-primary" id="refreshList">
+                <i class="fas fa-sync-alt me-1"></i> Refresh
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <!-- Search and Filter -->
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <input type="text" class="form-control" id="searchStudent" placeholder="Search students...">
+            </div>
+            <div class="col-md-3">
+              <select class="form-select" id="filterStatus">
+                <option value="">All Status</option>
+                <option value="present">Present</option>
+                <option value="absent">Absent</option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <button class="btn btn-outline-secondary w-100" id="clearFilters">
+                <i class="fas fa-times me-1"></i> Clear Filters
+              </button>
+            </div>
+          </div>
+          
+          <div class="table-responsive">
+            <table class="table align-middle mb-0">
+              <thead>
+                <tr>
+                  <th>Student Name</th>
+                  <th>Login ID</th>
+                  <th>Check-in Time</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="presentStudentsTable">
+                <!-- Will be populated by JavaScript -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- QR Scanner Modal -->
+<div class="modal fade" id="scanModal" tabindex="-1" aria-labelledby="scanModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="scanModalLabel">
+          <i class="fas fa-qrcode me-2"></i>
+          QR Code Scanner - {{ $schedule->course->title }}
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-8">
+            <div class="scanner-container position-relative bg-dark rounded">
+              <div id="qr-reader" style="width: 100%"></div>
+            </div>
+            <!-- Camera Controls -->
+            <div class="mt-3 text-center">
               <button class="btn btn-sm btn-outline-primary me-2" id="switchCamera">
-                <i class="fas fa-sync-alt me-1"></i> تبديل الكاميرا
+                <i class="fas fa-sync-alt me-1"></i> Switch Camera
               </button>
               <button class="btn btn-sm btn-outline-secondary" id="toggleFlash">
-                <i class="fas fa-lightbulb me-1"></i> الفلاش
+                <i class="fas fa-lightbulb me-1"></i> Flash
               </button>
             </div>
           </div>
           <div class="col-md-4">
-            <div class="attendance-stats p-3 bg-light rounded">
-              <h6 class="text-center mb-3">إحصائيات الحضور</h6>
+            <div class="p-3 bg-light rounded">
+              <h6 class="text-center mb-3">Scan Statistics</h6>
               <div class="d-flex justify-content-between align-items-center mb-2">
-                <span>عدد الطلاب المسجلين:</span>
+                <span>Total Students:</span>
                 <span class="badge bg-info" id="totalStudentCount">{{ $studentCount }}</span>
               </div>
               <div class="d-flex justify-content-between align-items-center mb-2">
-                <span>عدد الحضور الحالي:</span>
+                <span>Present:</span>
                 <span class="badge bg-primary" id="attendanceCount">{{ $currentAttendanceCount }}</span>
               </div>
               <div class="d-flex justify-content-between align-items-center mb-2">
-                <span>نسبة الحضور:</span>
+                <span>Attendance Rate:</span>
                 <span class="badge bg-success" id="attendancePercent">{{ round(($currentAttendanceCount / $studentCount) * 100, 1) }}%</span>
               </div>
               <div class="d-flex justify-content-between align-items-center mb-3">
-                <span>آخر مسح:</span>
+                <span>Last Scan:</span>
                 <span id="lastScanTime">-</span>
               </div>
-              <div class="recent-scans mt-4">
-                <h6 class="mb-2">آخر عمليات المسح</h6>
+              <div class="mt-4">
+                <h6 class="mb-2">Recent Scans</h6>
                 <div id="recentScansList" class="list-group"></div>
               </div>
             </div>
@@ -181,24 +262,24 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-          <i class="fas fa-times me-1"></i> إغلاق
+          <i class="fas fa-times me-1"></i> Close
         </button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- Modal for Export -->
+<!-- Export Modal -->
 <div class="modal fade" id="exportModal" tabindex="-1">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">تصدير بيانات الحضور</h5>
+        <h5 class="modal-title">Export Attendance Data</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body">
         <div class="mb-3">
-          <label class="form-label">نوع التصدير:</label>
+          <label class="form-label">Export Format:</label>
           <select class="form-select" id="exportType">
             <option value="excel">Excel (.xlsx)</option>
             <option value="pdf">PDF</option>
@@ -206,16 +287,16 @@
           </select>
         </div>
         <div class="mb-3">
-          <label class="form-label">نطاق البيانات:</label>
+          <label class="form-label">Data Range:</label>
           <select class="form-select" id="exportRange">
-            <option value="current">المحاضرة الحالية فقط</option>
-            <option value="all">جميع محاضرات المادة</option>
+            <option value="current">Current Session Only</option>
+            <option value="all">All Course Sessions</option>
           </select>
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
-        <button type="button" class="btn btn-primary" id="confirmExport">تصدير</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary" id="confirmExport">Export</button>
       </div>
     </div>
   </div>
@@ -234,19 +315,17 @@ let flashEnabled = false;
 let lastScanId = null;
 let lastScanTime = 0;
 
-// دالة إظهار Toast
+// Show Toast
 function showToast(message, type = 'info') {
   let toast = document.createElement('div');
-  toast.className = `smart-toast show ${type}`;
-  toast.innerHTML = `<span class="toast-icon">${
-    type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️'
-  }</span> ${message}`;
+  toast.className = `alert alert-${type === 'success' ? 'success' : type === 'error' ? 'danger' : 'info'} alert-dismissible fade show position-fixed`;
+  toast.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+  toast.innerHTML = `${message}<button type="button" class="btn-close" data-bs-dismiss="alert"></button>`;
   document.body.appendChild(toast);
-  setTimeout(() => { toast.classList.remove('show'); }, 2500);
-  setTimeout(() => { toast.remove(); }, 3000);
+  setTimeout(() => toast.remove(), 5000);
 }
 
-// تحديث الإحصائيات
+// Update Statistics
 function updateStats() {
   fetch(`{{ route('admin.attendance.get-stats', $schedule->id) }}`)
     .then(res => res.json())
@@ -260,11 +339,11 @@ function updateStats() {
       loadPresentStudents();
     })
     .catch(err => {
-      showToast('خطأ في تحديث الإحصائيات', 'error');
+      showToast('Error updating statistics', 'error');
     });
 }
 
-// تحميل قائمة الطلاب الحاضرين
+// Load Present Students
 function loadPresentStudents() {
   fetch(`{{ route('admin.attendance.get-present-students', $schedule->id) }}`)
     .then(res => res.json())
@@ -272,14 +351,14 @@ function loadPresentStudents() {
       updatePresentStudentsTable(data.students);
     })
     .catch(err => {
-      showToast('خطأ في تحميل قائمة الطلاب', 'error');
+      showToast('Error loading student list', 'error');
     });
 }
 
 function updateRecentScansList() {
   const list = document.getElementById('recentScansList');
   list.innerHTML = recentScans.map(scan => `
-    <div class="list-group-item recent-scan-item d-flex justify-content-between align-items-center">
+    <div class="list-group-item d-flex justify-content-between align-items-center">
       <span>${scan.name ? scan.name + ' - ' : ''}${scan.id}</span>
       <small class="text-muted">${scan.time}</small>
     </div>
@@ -296,23 +375,22 @@ function updatePresentStudentsTable(students) {
         <td>${s.name}</td>
         <td>${s.login_id}</td>
         <td>${s.time}</td>
-        <td><span class="badge bg-success">حاضر</span></td>
+        <td><span class="badge bg-success">Present</span></td>
         <td>
           <button class="btn btn-sm btn-outline-danger" onclick="removeAttendance(${s.id})">
-            <i class="fas fa-times"></i>
+            <i class="fas fa-times"></i> Remove
           </button>
         </td>
       </tr>
     `).join('');
   } else {
-    section.style.display = 'none';
-    table.innerHTML = '';
+    table.innerHTML = '<tr><td colspan="5" class="text-center text-muted">No students present yet</td></tr>';
   }
 }
 
-// حذف حضور طالب
+// Remove Attendance
 function removeAttendance(studentId) {
-  if (confirm('هل أنت متأكد من حذف حضور هذا الطالب؟')) {
+  if (confirm('Are you sure you want to remove this student\'s attendance?')) {
     fetch(`{{ route('admin.attendance.remove') }}`, {
       method: 'POST',
       headers: {
@@ -327,19 +405,19 @@ function removeAttendance(studentId) {
     .then(res => res.json())
     .then(data => {
       if (data.status === 'success') {
-        showToast('تم حذف الحضور بنجاح', 'success');
+        showToast('Attendance removed successfully', 'success');
         updateStats();
       } else {
         showToast(data.message, 'error');
       }
     })
     .catch(err => {
-      showToast('خطأ في حذف الحضور', 'error');
+      showToast('Error removing attendance', 'error');
     });
   }
 }
 
-// فلترة وبحث
+// Filter Students
 function filterStudents() {
   const searchTerm = document.getElementById('searchStudent').value.toLowerCase();
   const filterStatus = document.getElementById('filterStatus').value;
@@ -357,7 +435,7 @@ function filterStudents() {
   });
 }
 
-// تصدير البيانات
+// Export Attendance
 function exportAttendance() {
   const exportType = document.getElementById('exportType').value;
   const exportRange = document.getElementById('exportRange').value;
@@ -367,15 +445,96 @@ function exportAttendance() {
   
   const modal = bootstrap.Modal.getInstance(document.getElementById('exportModal'));
   modal.hide();
-  showToast('جاري تصدير البيانات...', 'info');
+  showToast('Exporting data...', 'info');
+}
+
+// QR Scanner Functions
+function startScanner() {
+  const config = {
+    fps: 10,
+    qrbox: { width: 250, height: 250 },
+    aspectRatio: 1.0,
+    facingMode: currentFacingMode
+  };
+
+  html5QrcodeScanner = new Html5Qrcode("qr-reader");
+  
+  Html5Qrcode.getCameras().then(devices => {
+    if (devices && devices.length) {
+      let cameraId = devices.find(device => 
+        device.label.toLowerCase().includes(currentFacingMode === "environment" ? "back" : "front")
+      )?.id || devices[0].id;
+      
+      html5QrcodeScanner.start(
+        cameraId,
+        config,
+        onScanSuccess,
+        onScanFailure
+      ).catch(err => {
+        showToast('Error starting camera: ' + err, 'error');
+      });
+    }
+  }).catch(err => {
+    showToast('Error accessing cameras: ' + err, 'error');
+  });
+}
+
+function onScanSuccess(decodedText, decodedResult) {
+  const now = Date.now();
+  if (lastScanId === decodedText && (now - lastScanTime) < 2000) {
+    return; // Prevent duplicate scans within 2 seconds
+  }
+  
+  lastScanId = decodedText;
+  lastScanTime = now;
+
+  // Play beep sound
+  document.getElementById('beepSound')?.play().catch(() => {});
+
+  // Send attendance data
+  fetch(`{{ route('admin.attendance.scan') }}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRF-TOKEN': '{{ csrf_token() }}'
+    },
+    body: JSON.stringify({
+      qr: decodedText,
+      schedule_id: {{ $schedule->id }}
+    })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.status === 'success') {
+      showToast(`${data.student_name} marked as present`, 'success');
+      recentScans.unshift({
+        id: decodedText,
+        name: data.student_name,
+        time: new Date().toLocaleTimeString()
+      });
+      if (recentScans.length > 5) recentScans.pop();
+      updateRecentScansList();
+      updateStats();
+      document.getElementById('lastScanTime').textContent = new Date().toLocaleTimeString();
+    } else {
+      showToast(data.message, 'error');
+    }
+  })
+  .catch(err => {
+    showToast('Error processing scan', 'error');
+  });
+}
+
+function onScanFailure(error) {
+  // Ignore scan failures - they're too frequent
 }
 
 // Event Listeners
 document.addEventListener('DOMContentLoaded', function() {
-  // تحديث الإحصائيات عند التحميل
+  // Initial load
   updateStats();
   
-  // أزرار التحكم
+  // Control buttons
   document.getElementById('refreshStats').addEventListener('click', updateStats);
   document.getElementById('refreshList').addEventListener('click', loadPresentStudents);
   document.getElementById('exportAttendance').addEventListener('click', () => {
@@ -383,7 +542,7 @@ document.addEventListener('DOMContentLoaded', function() {
   });
   document.getElementById('confirmExport').addEventListener('click', exportAttendance);
   
-  // فلترة وبحث
+  // Filter and search
   document.getElementById('searchStudent').addEventListener('input', filterStudents);
   document.getElementById('filterStatus').addEventListener('change', filterStudents);
   document.getElementById('clearFilters').addEventListener('click', () => {
@@ -392,427 +551,239 @@ document.addEventListener('DOMContentLoaded', function() {
     filterStudents();
   });
   
-  // تبديل الكاميرا
+  // Scanner controls
+  document.getElementById('openScanModal').addEventListener('click', () => {
+    const modal = new bootstrap.Modal(document.getElementById('scanModal'));
+    modal.show();
+    setTimeout(() => startScanner(), 500);
+  });
+  
   document.getElementById('switchCamera').addEventListener('click', () => {
     currentFacingMode = currentFacingMode === "environment" ? "user" : "environment";
     if (html5QrcodeScanner) {
       html5QrcodeScanner.stop().then(() => {
         startScanner();
-      });
+      }).catch(err => console.error(err));
     }
   });
-  
-  // تبديل الفلاش
-  document.getElementById('toggleFlash').addEventListener('click', () => {
-    flashEnabled = !flashEnabled;
-    const btn = document.getElementById('toggleFlash');
-    btn.innerHTML = `<i class="fas fa-lightbulb me-1"></i> ${flashEnabled ? 'إيقاف' : 'تشغيل'} الفلاش`;
-    // هنا يمكن إضافة كود للتحكم في فلاش الكاميرا
+
+  // Stop scanner when modal closes
+  document.getElementById('scanModal').addEventListener('hidden.bs.modal', function () {
+    if (html5QrcodeScanner) {
+      html5QrcodeScanner.stop().catch(err => console.error(err));
+    }
   });
 });
-
-function startScanner() {
-  html5QrcodeScanner.start(
-    { 
-      facingMode: currentFacingMode,
-      ...(flashEnabled && { torch: true })
-    },
-    { fps: 10, qrbox: 250, aspectRatio: 1.0 },
-    qrCodeMessage => {
-      fetch("{{ route('admin.attendance.scan') }}", {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRF-TOKEN': '{{ csrf_token() }}'
-        },
-        body: JSON.stringify({
-          qr: qrCodeMessage,
-          schedule_id: {{ $schedule->id }}
-        })
-      })
-      .then(res => res.json())
-      .then(data => {
-        const scannerContainer = document.querySelector('.scanner-container');
-        scannerContainer.classList.add('scan-success');
-        setTimeout(() => { scannerContainer.classList.remove('scan-success'); }, 500);
-        
-        const now = new Date();
-        const nowTime = now.getTime();
-        document.getElementById('lastScanTime').textContent = now.toLocaleTimeString();
-        if (data.status === 'success') {
-          if (lastScanId !== qrCodeMessage || nowTime - lastScanTime > 5000) {
-            recentScans.unshift({ id: qrCodeMessage, name: data.student_name || '', time: now.toLocaleTimeString() });
-            if (recentScans.length > 5) recentScans.pop();
-            updateRecentScansList();
-            lastScanId = qrCodeMessage;
-            lastScanTime = nowTime;
-          }
-          showToast(data.message, 'success');
-          updateStats(); // تحديث الإحصائيات بعد كل مسح ناجح
-          const beepSound = document.getElementById('beepSound');
-          beepSound.currentTime = 0;
-          beepSound.play();
-        } else {
-          if (lastScanId !== (data.login_id || qrCodeMessage) || nowTime - lastScanTime > 5000) {
-            recentScans.unshift({ id: data.login_id || qrCodeMessage, name: data.student_name || '', time: now.toLocaleTimeString() });
-            if (recentScans.length > 5) recentScans.pop();
-            updateRecentScansList();
-            lastScanId = data.login_id || qrCodeMessage;
-            lastScanTime = nowTime;
-          }
-          showToast(data.message, 'error');
-        }
-      })
-      .catch(() => {
-        showToast('حدث خطأ أثناء معالجة الرمز الشريطي', 'error');
-      });
-    },
-    errorMessage => {
-      // تجاهل أخطاء عدم وجود كود
-    }
-  );
-}
-
-document.getElementById('openScanModal').onclick = function() {
-  var modal = new bootstrap.Modal(document.getElementById('scanModal'));
-  modal.show();
-  if (!html5QrcodeScanner) {
-    html5QrcodeScanner = new Html5Qrcode("qr-reader");
-  }
-  startScanner();
-};
 </script>
 @endpush
 
 <style>
-/* Modern Card Styles */
-.stat-card {
-    border-radius: 15px;
+.card {
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    border: none;
+}
+
+.badge {
+    font-size: 0.85rem;
+    border-radius: 12px;
+    padding: 0.4em 0.8em;
+}
+
+.table thead th {
+    font-weight: bold;
+    color: #344767;
+    background: #f8f9fa !important;
+    border-bottom: 2px solid #e9ecef;
+}
+
+.table td, .table th {
+    vertical-align: middle;
+    padding: 1rem 0.75rem;
+}
+
+/* Stats Cards */
+.stats-card {
+    position: relative;
+    border-radius: 20px;
     padding: 1.5rem;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border: none;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+}
+
+.stats-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.18);
+}
+
+.stats-card-body {
+    display: flex;
+    align-items: center;
+    position: relative;
+    z-index: 2;
+}
+
+.stats-icon {
+    width: 70px;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 16px;
+    margin-right: 1rem;
+    font-size: 1.8rem;
+    color: white;
     position: relative;
     overflow: hidden;
 }
 
-.stat-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-}
-
-.stat-card::before {
+.stats-icon::before {
     content: '';
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
-    transform: translateX(-100%);
-    transition: transform 0.6s;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 16px;
+    transform: scale(0);
+    transition: transform 0.3s ease;
 }
 
-.stat-card:hover::before {
-    transform: translateX(100%);
+.stats-card:hover .stats-icon::before {
+    transform: scale(1);
 }
 
-.stat-icon {
-    font-size: 2rem;
-    margin-bottom: 1rem;
-    opacity: 0.8;
+.stats-content {
+    flex: 1;
 }
 
-.stat-number {
+.stats-number {
     font-size: 2.5rem;
-    font-weight: bold;
+    font-weight: 700;
+    line-height: 1;
     margin-bottom: 0.5rem;
-    transition: transform 0.2s ease;
+    color: white;
 }
 
-.stat-label {
-    font-size: 0.9rem;
-    opacity: 0.9;
-    margin: 0;
+.stats-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 0.25rem;
 }
 
-/* Schedule Info Card */
-.schedule-info-card {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border-radius: 15px;
-    overflow: hidden;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+.stats-description {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.7);
+    font-weight: 500;
 }
 
-.schedule-header {
+.stats-card-decoration {
+    position: absolute;
+    top: -30px;
+    right: -30px;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
     background: rgba(255, 255, 255, 0.1);
-    padding: 1rem 1.5rem;
-    color: white;
-    font-weight: bold;
+    transition: all 0.4s ease;
 }
 
-.schedule-content {
-    padding: 1.5rem;
-    color: white;
+.stats-card:hover .stats-card-decoration {
+    transform: scale(1.2);
+    background: rgba(255, 255, 255, 0.15);
 }
 
-.info-item {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-}
-
-.info-label {
-    font-size: 0.8rem;
-    opacity: 0.8;
-}
-
-.info-value {
-    font-weight: bold;
-    font-size: 1rem;
-}
-
-/* Camera Section */
-.camera-section {
-    margin-top: 2rem;
-}
-
-.camera-card {
-    background: white;
-    border-radius: 15px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-}
-
-.camera-header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    padding: 1rem 1.5rem;
-}
-
-.camera-body {
-    padding: 2rem;
-}
-
-.camera-controls {
-    text-align: center;
-}
-
-.camera-btn {
-    border-radius: 50px;
-    padding: 0.75rem 2rem;
-    font-weight: bold;
-    transition: all 0.3s ease;
-}
-
-.camera-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-}
-
-/* Scanner Styles */
-.camera-container {
-    display: flex;
-    justify-content: center;
-    margin: 2rem 0;
-}
-
-.scanner-frame {
-    position: relative;
-    border-radius: 15px;
-    overflow: hidden;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-}
-
-.qr-scanner {
-    width: 100%;
-    max-width: 400px;
-    height: 400px;
-}
-
-.scanner-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    pointer-events: none;
-}
-
-.scanner-corner {
-    position: absolute;
-    width: 30px;
-    height: 30px;
-    border: 3px solid #667eea;
-}
-
-.top-left {
-    top: 20px;
-    left: 20px;
-    border-right: none;
-    border-bottom: none;
-}
-
-.top-right {
-    top: 20px;
-    right: 20px;
-    border-left: none;
-    border-bottom: none;
-}
-
-.bottom-left {
-    bottom: 20px;
-    left: 20px;
-    border-right: none;
-    border-top: none;
-}
-
-.bottom-right {
-    bottom: 20px;
-    right: 20px;
-    border-left: none;
-    border-top: none;
-}
-
-.scanner-line {
-    position: absolute;
-    top: 50%;
-    left: 20px;
-    right: 20px;
-    height: 2px;
-    background: linear-gradient(90deg, transparent, #667eea, transparent);
-    animation: scan 2s linear infinite;
-}
-
-@keyframes scan {
-    0% { transform: translateY(-100px); }
-    50% { transform: translateY(100px); }
-    100% { transform: translateY(-100px); }
-}
-
-/* Scan Result */
-.scan-result {
-    margin-top: 1rem;
-}
-
-.scan-alert {
-    border-radius: 10px;
-    border: none;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-}
-
-/* Loading Overlay */
-.loading-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.7);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
-}
-
-.loading-spinner {
-    text-align: center;
-    color: white;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-    .stat-card {
-        padding: 1rem;
-    }
-    
-    .stat-number {
-        font-size: 2rem;
-    }
-    
-    .camera-body {
-        padding: 1rem;
-    }
-    
-    .qr-scanner {
-        height: 300px;
-    }
-    
-    .scanner-corner {
-        width: 20px;
-        height: 20px;
-        border-width: 2px;
-    }
-    
-    .top-left, .top-right, .bottom-left, .bottom-right {
-        top: 10px;
-        left: 10px;
-        right: 10px;
-        bottom: 10px;
-    }
-}
-
-@media (max-width: 576px) {
-    .stat-card {
-        margin-bottom: 1rem;
-    }
-    
-    .camera-btn {
-        width: 100%;
-        margin-bottom: 0.5rem;
-    }
-    
-    .qr-scanner {
-        height: 250px;
-    }
-}
-
-/* Gradient Backgrounds */
-.bg-gradient-primary {
+/* Color Variants */
+.stats-card-primary {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
 
-.bg-gradient-success {
-    background: linear-gradient(135deg, #56ab2f 0%, #a8e6cf 100%);
+.stats-card-primary .stats-icon {
+    background: rgba(255, 255, 255, 0.15);
 }
 
-.bg-gradient-danger {
-    background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%);
+.stats-card-success {
+    background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
 }
 
-.bg-gradient-info {
+.stats-card-success .stats-icon {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.stats-card-info {
     background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
 }
 
-.smart-toast {
-    position: fixed;
-    bottom: 32px;
-    left: 50%;
-    transform: translateX(-50%);
-    min-width: 260px;
-    max-width: 90vw;
-    z-index: 99999;
-    background: #fff;
-    border-radius: 12px;
-    box-shadow: 0 4px 24px rgba(0,0,0,0.13);
-    padding: 1rem 1.5rem;
+.stats-card-info .stats-icon {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.stats-card-danger {
+    background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%);
+}
+
+.stats-card-danger .stats-icon {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.stats-card-warning {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.stats-card-warning .stats-icon {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+/* Animation */
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.stats-card {
+    animation: slideInUp 0.6s ease-out;
+}
+
+.stats-card:nth-child(2) {
+    animation-delay: 0.1s;
+}
+
+.stats-card:nth-child(3) {
+    animation-delay: 0.2s;
+}
+
+.stats-card:nth-child(4) {
+    animation-delay: 0.3s;
+}
+
+.scanner-container {
+    min-height: 300px;
     display: flex;
     align-items: center;
-    gap: 0.75rem;
-    font-size: 1.08rem;
-    font-weight: 500;
-    border-right: 6px solid #5f5aad;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s, bottom 0.3s;
+    justify-content: center;
 }
-.smart-toast.show {
-    opacity: 1;
-    pointer-events: auto;
-    bottom: 48px;
+
+@media (max-width: 768px) {
+    .table-responsive {
+        font-size: 0.875rem;
+    }
+    
+    .btn-sm {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.75rem;
+    }
 }
-.smart-toast.success { border-right-color: #28a745; }
-.smart-toast.error { border-right-color: #dc3545; }
-.smart-toast.info { border-right-color: #5f5aad; }
-.smart-toast .toast-icon { font-size: 1.3em; }
 </style>
 @endsection 

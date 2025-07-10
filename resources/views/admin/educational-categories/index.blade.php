@@ -173,6 +173,45 @@
             border-color: #667eea !important;
             background-color: rgba(102, 126, 234, 0.05) !important;
         }
+
+        /* Custom file input styling for English */
+        input[type="file"] {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+            color: #495057 !important;
+        }
+
+        input[type="file"]::-webkit-file-upload-button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 0.375rem 0.75rem;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            margin-right: 10px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+            font-size: 0.875rem;
+        }
+
+        input[type="file"]::-webkit-file-upload-button:hover {
+            background: #0056b3;
+        }
+
+        /* For Firefox */
+        input[type="file"]::file-selector-button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 0.375rem 0.75rem;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            margin-right: 10px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+            font-size: 0.875rem;
+        }
+
+        input[type="file"]::file-selector-button:hover {
+            background: #0056b3;
+        }
         
         @media (max-width: 991px) {
             .stat-card {
@@ -189,6 +228,47 @@
             
             .stat-card .stat-value {
                 font-size: 2rem;
+            }
+
+            .modal-dialog.modal-lg {
+                max-width: 95%;
+                margin: 0.5rem auto;
+            }
+
+            .modal-body .row {
+                flex-direction: column;
+            }
+
+            .modal-body .col-md-8,
+            .modal-body .col-md-4 {
+                max-width: 100%;
+                flex: 0 0 100%;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .modal-dialog.modal-lg {
+                max-width: 98%;
+                margin: 0.25rem auto;
+            }
+
+            .modal-body {
+                padding: 1rem !important;
+            }
+
+            .form-control-lg,
+            .form-select-lg {
+                font-size: 1rem;
+                padding: 0.5rem 0.75rem;
+            }
+
+            .btn-lg {
+                padding: 0.5rem 1rem;
+                font-size: 1rem;
+            }
+
+            .table-responsive {
+                font-size: 0.875rem;
             }
         }
     </style>
@@ -501,7 +581,7 @@
                                         <i class="fas fa-image me-2"></i>Category Image
                                     </label>
                                     <div class="border-2 border-dashed border-light rounded-3 p-3 text-center bg-light">
-                                        <input type="file" name="image" class="form-control @error('image') is-invalid @enderror" accept="image/*">
+                                        <input type="file" name="image" class="form-control @error('image') is-invalid @enderror" accept="image/*" lang="en">
                                         <small class="text-muted d-block mt-2">Upload new image (optional)</small>
                                     </div>
                                     @error('image')
@@ -544,6 +624,9 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
+        // Set page language to English to ensure file input displays English text
+        document.documentElement.lang = 'en';
+        
         function confirmCategoryDelete(categoryId, categoryName) {
             const form = document.getElementById('deleteCategoryForm');
             const namePlaceholder = document.getElementById('categoryNamePlaceholder');
@@ -552,6 +635,13 @@
         }
 
         document.addEventListener('DOMContentLoaded', function () {
+            // Force English for all file inputs
+            const fileInputs = document.querySelectorAll('input[type="file"]');
+            fileInputs.forEach(input => {
+                input.setAttribute('lang', 'en');
+                input.style.fontFamily = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+            });
+
             const searchInput = document.getElementById('search-input');
             const statusFilter = document.getElementById('status-filter');
             const tableRows = document.querySelectorAll('table tbody tr');

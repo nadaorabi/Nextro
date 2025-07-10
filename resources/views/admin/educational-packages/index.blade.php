@@ -1,946 +1,660 @@
 @extends('layouts.admin')
 
-@section('title', 'Educational Packages')
+@section('title', 'Educational Packages List')
 
 @push('styles')
     <style>
-        .card {
-            border-radius: 15px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.08);
-            margin-bottom: 30px;
-            border: none;
-        }
-        .card-body {
-            padding: 2rem 2.5rem;
-        }
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border: none;
-            border-radius: 25px;
-            padding: 10px 25px;
-            font-weight: 600;
+        .stat-card {
+            min-height: 140px;
+            border-radius: 16px;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
+            padding: 24px;
+            background: #fff;
             transition: all 0.3s ease;
-        }
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
-        }
-        .status-badge {
-            font-size: 0.75rem;
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            font-weight: 600;
-        }
-        .package-card {
-            transition: all 0.3s ease;
-            border: 1px solid #e9ecef;
-            border-radius: 15px;
-            overflow: hidden;
+            border: 1px solid rgba(0, 0, 0, 0.04);
+            text-align: center;
             position: relative;
+            overflow: hidden;
         }
-        .package-card::before {
+        
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.12);
+        }
+        
+        .stat-card::before {
             content: '';
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
             height: 4px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            transform: scaleX(0);
-            transition: transform 0.3s ease;
+            background: var(--card-color, #5e72e4);
         }
-        .package-card:hover::before {
-            transform: scaleX(1);
-        }
-        .package-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-            border-color: #667eea;
-        }
-        .search-box {
-            border-radius: 0 25px 25px 0;
-            border: 2px solid #e9ecef;
-            border-left: none;
-            padding: 12px 20px;
-            transition: all 0.3s ease;
-        }
-        .search-box:focus {
-            border-color: #667eea;
-            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
-        }
-        .search-box:focus + .input-group-text {
-            border-color: #667eea;
-        }
-        .filter-section {
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-            border-radius: 15px;
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-        }
-        .form-select {
-            border-radius: 25px;
-            border: 2px solid #e9ecef;
-            padding: 10px 15px;
-            transition: all 0.3s ease;
-        }
-        .form-select:focus {
-            border-color: #667eea;
-            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
-        }
-        .btn-outline-secondary {
-            border-radius: 25px;
-            border: 2px solid #6c757d;
-            padding: 10px 20px;
-            transition: all 0.3s ease;
-        }
-        .btn-outline-secondary:hover {
-            background-color: #6c757d;
-            border-color: #6c757d;
-            transform: translateY(-2px);
-        }
-        .stats-card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border-radius: 15px;
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-        .stats-card::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-            transform: rotate(45deg);
-            transition: all 0.6s ease;
-        }
-        .stats-card:hover::before {
-            transform: rotate(45deg) translate(50%, 50%);
-        }
-        .stats-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
-        }
-        .package-image {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-            border-radius: 10px;
-            transition: all 0.3s ease;
-        }
-        .package-image:hover {
-            transform: scale(1.05);
-        }
-        .package-image-placeholder {
-            width: 100%;
-            height: 200px;
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-            border-radius: 10px;
+        
+        .stat-card.primary::before { background: #5e72e4; }
+        .stat-card.success::before { background: #2dce89; }
+        .stat-card.info::before { background: #11cdef; }
+        .stat-card.warning::before { background: #fb6340; }
+        
+        .stat-card .stat-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #6c757d;
-            font-size: 3rem;
-            transition: all 0.3s ease;
-        }
-        .package-image-placeholder:hover {
-            background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
-            transform: scale(1.02);
-        }
-        .price-tag {
-            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            margin: 0 auto 16px auto;
+            font-size: 24px;
             color: white;
-            padding: 8px 15px;
-            border-radius: 20px;
+        }
+        
+        .stat-card .stat-icon.primary { background: linear-gradient(45deg, #5e72e4, #825ee4); }
+        .stat-card .stat-icon.success { background: linear-gradient(45deg, #2dce89, #2dcecc); }
+        .stat-card .stat-icon.info { background: linear-gradient(45deg, #11cdef, #1171ef); }
+        .stat-card .stat-icon.warning { background: linear-gradient(45deg, #fb6340, #fbb140); }
+        
+        .stat-card .stat-title {
+            font-size: 0.75rem;
             font-weight: 600;
-            font-size: 1.1rem;
-            box-shadow: 0 2px 10px rgba(40, 167, 69, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #8898aa;
+            margin-bottom: 8px;
+            line-height: 1.2;
         }
-        .price-container {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
+        
+        .stat-card .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #32325d;
+            margin-bottom: 4px;
+            line-height: 1;
         }
-        .original-price {
-            color: #6c757d;
-            text-decoration: line-through;
-            font-size: 0.9rem;
-            margin-top: 2px;
+        
+        .stat-card .stat-description {
+            font-size: 0.875rem;
+            color: #8898aa;
+            margin: 0;
+            line-height: 1.3;
         }
-        .discount-badge {
-            background: linear-gradient(135deg, #dc3545 0%, #fd7e14 100%);
-            color: white;
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 0.7rem;
+        
+        .stat-card .stat-description .highlight {
             font-weight: 600;
-            margin-top: 4px;
         }
-        .category-badge {
-            background: linear-gradient(135deg, #17a2b8 0%, #20c997 100%);
-            color: white;
-            padding: 5px 12px;
-            border-radius: 15px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            box-shadow: 0 2px 8px rgba(23, 162, 184, 0.3);
-        }
-        .action-buttons {
-            display: flex;
-            gap: 8px;
-            margin-top: 1rem;
-        }
-        .action-btn {
-            flex: 1;
-            border-radius: 20px;
-            padding: 8px 12px;
-            font-size: 0.9rem;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-        .action-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: left 0.5s ease;
-        }
-        .action-btn:hover::before {
-            left: 100%;
-        }
-        .action-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-        }
-        .loading-spinner {
-            display: none;
-            text-align: center;
-            padding: 2rem;
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 15px;
-            margin: 2rem 0;
-        }
-        .no-results {
-            text-align: center;
-            padding: 3rem;
-            color: #6c757d;
-            background: #f8f9fa;
-            border-radius: 15px;
-            margin: 2rem 0;
-        }
-        .filter-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 1rem;
-        }
-        .filter-tag {
-            background: #667eea;
-            color: white;
-            padding: 5px 12px;
-            border-radius: 15px;
-            font-size: 0.8rem;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            transition: all 0.3s ease;
-        }
-        .filter-tag:hover {
-            background: #5a6fd8;
-            transform: translateY(-1px);
-        }
-        .filter-tag .remove {
-            cursor: pointer;
+        
+        .stat-card .stat-description .success { color: #2dce89; }
+        .stat-card .stat-description .info { color: #11cdef; }
+        .stat-card .stat-description .warning { color: #fb6340; }
+
+        .welcome-animated {
+            font-size: 2.5rem;
             font-weight: bold;
-            padding: 2px 6px;
-            border-radius: 50%;
+            color: #007bff;
+            animation: bounce 1.5s infinite alternate, gradientMove 3s linear infinite;
+            letter-spacing: 2px;
+            margin-top: 20px;
+            background: linear-gradient(90deg, #007bff, #00c6ff, #007bff);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        @keyframes bounce {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-20px); }
+        }
+
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
+        }
+
+        .table th, .table td {
+            vertical-align: middle;
+            text-align: center;
+        }
+
+        .modal-content {
+            border-radius: 15px;
+            overflow: hidden;
+            background-color: #ffffff;
+        }
+
+        .modal-header {
+            background-color: #ffffff;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+
+        .border-dashed {
+            border-style: dashed !important;
+        }
+
+        .bg-light-warning {
+            background-color: rgba(255, 193, 7, 0.1) !important;
+        }
+
+        .bg-light-danger {
+            background-color: rgba(220, 53, 69, 0.1) !important;
+        }
+
+        .btn-lg {
+            border-radius: 10px;
+            font-weight: 600;
+        }
+
+        .alert {
+            border-radius: 10px;
+        }
+
+        .modal.fade .modal-dialog {
+            transition: transform 0.3s ease-out;
+            transform: translate(0, -50px);
+        }
+
+        .modal.show .modal-dialog {
+            transform: none;
+        }
+
+        .icon-shape {
             transition: all 0.3s ease;
         }
-        .filter-tag .remove:hover {
-            background: rgba(255, 255, 255, 0.2);
+
+        .icon-shape:hover {
+            transform: scale(1.1);
         }
-        @media (max-width: 768px) {
-            .card-body {
-                padding: 1rem;
+
+        .border-dashed:hover {
+            border-color: #667eea !important;
+            background-color: rgba(102, 126, 234, 0.05) !important;
+        }
+
+        /* Custom file input styling for English */
+        input[type="file"] {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+            color: #495057 !important;
+        }
+
+        input[type="file"]::-webkit-file-upload-button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 0.375rem 0.75rem;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            margin-right: 10px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+            font-size: 0.875rem;
+        }
+
+        input[type="file"]::-webkit-file-upload-button:hover {
+            background: #0056b3;
+        }
+
+        /* For Firefox */
+        input[type="file"]::file-selector-button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 0.375rem 0.75rem;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            margin-right: 10px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+            font-size: 0.875rem;
+        }
+
+        input[type="file"]::file-selector-button:hover {
+            background: #0056b3;
+        }
+        
+        @media (max-width: 991px) {
+            .stat-card {
+                min-height: 120px;
+                padding: 20px;
             }
-            .filter-section {
-                padding: 1rem;
+            
+            .stat-card .stat-icon {
+                width: 48px;
+                height: 48px;
+                font-size: 20px;
+                margin-bottom: 12px;
             }
-            .action-buttons {
+            
+            .stat-card .stat-value {
+            font-size: 2rem;
+            }
+
+            .modal-dialog.modal-lg {
+                max-width: 95%;
+                margin: 0.5rem auto;
+            }
+
+            .modal-body .row {
                 flex-direction: column;
             }
-            .stats-card {
-                margin-bottom: 1rem;
+
+            .modal-body .col-md-8,
+            .modal-body .col-md-4 {
+                max-width: 100%;
+                flex: 0 0 100%;
             }
-            .package-image, .package-image-placeholder {
-                height: 150px;
+        }
+
+        @media (max-width: 576px) {
+            .modal-dialog.modal-lg {
+                max-width: 98%;
+                margin: 0.25rem auto;
+            }
+
+            .modal-body {
+                padding: 1rem !important;
+            }
+
+            .form-control-lg,
+            .form-select-lg {
+                font-size: 1rem;
+                padding: 0.5rem 0.75rem;
+            }
+
+            .btn-lg {
+                padding: 0.5rem 1rem;
+                font-size: 1rem;
+            }
+
+            .table-responsive {
+                font-size: 0.875rem;
             }
         }
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 @endpush
 
 @section('content')
-    <div class="container py-4">
+
+    <!-- Welcome Card -->
+    <div class="card mb-4">
+        <div class="card-body p-3">
         <div class="row">
-            <div class="col-12">
-                <!-- Header Section -->
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <div>
-                        <h2 class="mb-1 fw-bold text-primary">
-                            <i class="fas fa-box me-2"></i>
-                            Educational Packages
-                        </h2>
-                        <p class="text-muted mb-0">Manage and organize your educational packages</p>
-                    </div>
-                    <a href="{{ route('admin.educational-packages.create') }}" class="btn btn-primary">
-                        <i class="fas fa-plus me-2"></i>
-                        Create New Package
-                    </a>
-                </div>
-
-                <!-- Statistics Cards -->
-                <div class="row mb-4">
-                    <div class="col-md-3">
-                        <div class="stats-card text-center">
-                            <i class="fas fa-box fa-2x mb-2"></i>
-                            <h4 class="mb-1">{{ $packages->total() }}</h4>
-                            <p class="mb-0">Total Packages</p>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="stats-card text-center">
-                            <i class="fas fa-check-circle fa-2x mb-2"></i>
-                            <h4 class="mb-1">{{ $packages->where('status', 'active')->count() }}</h4>
-                            <p class="mb-0">Active Packages</p>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="stats-card text-center">
-                            <i class="fas fa-book fa-2x mb-2"></i>
-                            <h4 class="mb-1">{{ $packages->sum('courses_count') }}</h4>
-                            <p class="mb-0">Total Courses</p>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="stats-card text-center">
-                            <i class="fas fa-users fa-2x mb-2"></i>
-                            <h4 class="mb-1">{{ $packages->sum('students_count') }}</h4>
-                            <p class="mb-0">Total Students</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Filter Section -->
-                <div class="card shadow-sm">
-                    <div class="card-body">
-                        <h5 class="mb-3 fw-bold">
-                            <i class="fas fa-filter me-2"></i>
-                            Search & Filters
-                        </h5>
-                        
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="input-group">
-                                    <span class="input-group-text bg-white border-end-0">
-                                        <i class="fas fa-search text-muted"></i>
-                                    </span>
-                                    <input type="text" class="form-control search-box border-start-0" 
-                                           placeholder="Search packages..." id="searchInput">
-                                </div>
+                <div class="col-lg-6">
+                    <h1 class="text-gradient text-primary">Educational Packages Management</h1>
+                    <p class="mb-0">Manage, add, and edit educational packages and course bundles</p>
                             </div>
-                            <div class="col-md-3">
-                                <select class="form-select" id="categoryFilter">
-                                    <option value="">All Categories</option>
-                                    @if(isset($categories) && $categories->count() > 0)
-                                        @foreach($categories as $category)
-                                            <option value="{{ $category->name }}">{{ $category->name }}</option>
-                                        @endforeach
-                                    @endif
-                                </select>
-                            </div>
-                            <div class="col-md-2">
-                                <select class="form-select" id="statusFilter">
-                                    <option value="">All Status</option>
-                                    <option value="active">Active</option>
-                                    <option value="inactive">Inactive</option>
-                                </select>
-                            </div>
-                            <div class="col-md-2">
-                                <select class="form-select" id="priceFilter">
-                                    <option value="">All Prices</option>
-                                    <option value="0-100">$0 - $100</option>
-                                    <option value="100-500">$100 - $500</option>
-                                    <option value="500-1000">$500 - $1000</option>
-                                    <option value="1000+">$1000+</option>
-                                </select>
-                            </div>
-                            <div class="col-md-1">
-                                <div class="d-flex gap-2">
-                                    <button class="btn btn-outline-secondary flex-fill" id="exportBtn">
-                                        <i class="fas fa-download me-2"></i>
-                                        Export
-                                    </button>
-                                    <button class="btn btn-outline-info" id="cleanupBtn" title="Cleanup discount percentages">
-                                        <i class="fas fa-broom"></i>
-                                    </button>
-                                    <button class="btn btn-outline-danger" id="clearFiltersBtn">
-                                        <i class="fas fa-times"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Active Filters Tags -->
-                        <div class="filter-tags" id="filterTags"></div>
-                        
-                        <!-- Results Count -->
-                        <div class="mt-3 d-flex justify-content-between align-items-center">
-                            <small class="text-muted">
-                                Showing <span id="resultsCount">{{ $packages->count() }}</span> of {{ $packages->total() }} packages
-                            </small>
-                            <div class="d-flex align-items-center gap-2">
-                                <small class="text-muted">Sort by:</small>
-                                <select class="form-select form-select-sm" id="sortFilter" style="width: auto;">
-                                    <option value="newest">Newest First</option>
-                                    <option value="oldest">Oldest First</option>
-                                    <option value="name-asc">Name A-Z</option>
-                                    <option value="name-desc">Name Z-A</option>
-                                    <option value="price-low">Price Low to High</option>
-                                    <option value="price-high">Price High to Low</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Loading Spinner -->
-                <div class="loading-spinner" id="loadingSpinner">
-                    <div class="spinner-border text-primary" role="status">
-                        <span class="visually-hidden">Loading...</span>
-                    </div>
-                    <p class="mt-2 text-muted">Filtering packages...</p>
-                </div>
-
-                <!-- Packages Grid -->
-                <div class="row" id="packagesGrid">
-                    @forelse($packages as $package)
-                        <div class="col-lg-4 col-md-6 mb-4 package-item" 
-                             data-name="{{ strtolower($package->name ?? '') }}"
-                             data-description="{{ strtolower($package->description ?? '') }}"
-                             data-category="{{ strtolower($package->category->name ?? 'no category') }}"
-                             data-status="{{ strtolower($package->status ?? 'inactive') }}"
-                             data-price="{{ $package->price ?? 0 }}"
-                             data-date="{{ $package->created_at ? $package->created_at->format('Y-m-d') : '' }}">
-                            <div class="card package-card h-100">
-                                <div class="card-body">
-                                    <!-- Package Image -->
-                                    @if($package->image)
-                                        <img src="{{ asset('storage/' . $package->image) }}" 
-                                             alt="Package Image" class="package-image mb-3">
-                                    @else
-                                        <div class="package-image-placeholder mb-3">
-                                            <i class="fas fa-image"></i>
-                                        </div>
-                                    @endif
-
-                                    <!-- Package Header -->
-                                    <div class="d-flex justify-content-between align-items-start mb-3">
-                                        <h6 class="card-title mb-0 fw-bold text-truncate" style="max-width: 70%;">
-                                            {{ $package->name ?? 'Unnamed Package' }}
-                                        </h6>
-                                        <span class="badge {{ $package->status == 'active' ? 'bg-success' : 'bg-secondary' }} status-badge">
-                                            {{ ucfirst($package->status ?? 'inactive') }}
-                                        </span>
-                                    </div>
-                                    
-                                    <!-- Description -->
-                                    <p class="card-text text-muted small mb-3">
-                                        {{ Str::limit($package->description ?? 'No description available', 80) }}
-                                    </p>
-                                    
-                                    <!-- Category -->
-                                    <div class="mb-3">
-                                        <span class="category-badge">
-                                            {{ $package->category && $package->category->name ? $package->category->name : 'No Category' }}
-                                        </span>
-                                    </div>
-                                    
-                                    <!-- Statistics -->
-                                    <div class="row text-center mb-3">
-                                        <div class="col-6">
-                                            <div class="text-primary fw-bold fs-5">{{ $package->courses_count ?? 0 }}</div>
-                                            <div class="text-muted small">Courses</div>
-                                        </div>
-                                        <div class="col-6">
-                                            <div class="text-success fw-bold fs-5">{{ $package->students_count ?? 0 }}</div>
-                                            <div class="text-muted small">Students</div>
-                                        </div>
-                                    </div>
-                                    
-                                    <!-- Price and Date -->
-                                    <div class="d-flex justify-content-between align-items-center mb-3">
-                                        <div class="price-container">
-                                            @if($package->discounted_price && $package->discounted_price < $package->original_price)
-                                                <div class="price-tag">
-                                                    {{ number_format($package->discounted_price, 2) }} {{ $package->currency ?? 'USD' }}
-                                                </div>
-                                                <small class="original-price">
-                                                    {{ number_format($package->original_price, 2) }} {{ $package->currency ?? 'USD' }}
-                                                </small>
-                                                @if($package->discount_percentage > 0)
-                                                    <span class="discount-badge">
-                                                        {{ $package->discount_percentage }}% off
-                                                    </span>
-                                                @endif
-                                            @else
-                                                <div class="price-tag">
-                                                    {{ number_format($package->original_price ?? 0, 2) }} {{ $package->currency ?? 'USD' }}
-                                                </div>
-                                            @endif
-                                        </div>
-                                        <small class="text-muted">
-                                            {{ $package->created_at ? $package->created_at->format('M d, Y') : 'Unknown' }}
-                                        </small>
-                                    </div>
-                                    
-                                    <!-- Action Buttons -->
-                                    <div class="action-buttons">
-                                        <a href="{{ route('admin.educational-packages.show', $package) }}" 
-                                           class="btn btn-outline-primary action-btn" title="View Details">
-                                            <i class="fas fa-eye"></i>
-                                        </a>
-                                        <a href="{{ route('admin.educational-packages.edit', $package) }}" 
-                                           class="btn btn-outline-warning action-btn" title="Edit Package">
-                                            <i class="fas fa-edit"></i>
-                                        </a>
-                                        <button type="button" class="btn btn-outline-danger action-btn" 
-                                                onclick="deletePackage({{ $package->id }})" title="Delete Package">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    @empty
-                        <div class="col-12">
-                            <div class="no-results">
-                                <i class="fas fa-box fa-4x text-muted mb-3"></i>
-                                <h5 class="text-muted">No packages found</h5>
-                                <p class="text-muted">Create your first educational package to get started.</p>
-                                <a href="{{ route('admin.educational-packages.create') }}" class="btn btn-primary">
-                                    <i class="fas fa-plus me-2"></i>
-                                    Create Package
+                <div class="col-lg-6 text-end">
+                    <a href="{{ route('admin.educational-packages.create') }}" class="btn btn-primary mb-0">
+                        <i class="fas fa-plus"></i>&nbsp;&nbsp;Add New Package
                                 </a>
                             </div>
                         </div>
-                    @endforelse
+                    </div>
                 </div>
 
-                <!-- No Results Message -->
-                <div class="no-results" id="noResults" style="display: none;">
-                    <i class="fas fa-search fa-4x text-muted mb-3"></i>
-                    <h5 class="text-muted">No packages match your filters</h5>
-                    <p class="text-muted">Try adjusting your search criteria or clear all filters.</p>
-                    <button class="btn btn-outline-primary" onclick="clearAllFilters()">
-                        <i class="fas fa-times me-2"></i>
-                        Clear All Filters
-                    </button>
-                </div>
-
-                <!-- Pagination -->
-                @if($packages->hasPages())
-                    <div class="d-flex justify-content-center mt-4">
-                        {{ $packages->links() }}
+                <!-- Success/Error Messages -->
+                @if (session('success'))
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <i class="fas fa-check-circle me-2"></i>
+                        {{ session('success') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                     </div>
                 @endif
+
+                @if (session('error'))
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="fas fa-exclamation-circle me-2"></i>
+                        {{ session('error') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                @endif
+
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+        <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+            <div class="card stat-card primary">
+                <div class="stat-icon primary">
+                    <i class="fas fa-box"></i>
+                </div>
+                <div class="stat-title">Total Packages</div>
+                        <div class="stat-value">{{ $packages->total() }}</div>
+                <div class="stat-description">
+                    <span class="highlight success">+{{ $packages->count() }}</span> on this page
+                </div>
             </div>
         </div>
+
+        <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+            <div class="card stat-card success">
+                <div class="stat-icon success">
+                    <i class="fas fa-check-circle"></i>
+                    </div>
+                <div class="stat-title">Active Packages</div>
+                        <div class="stat-value">{{ $packages->where('status', 'active')->count() }}</div>
+                <div class="stat-description">
+                    <span class="highlight success">{{ $packages->count() > 0 ? round(($packages->where('status', 'active')->count() / $packages->count()) * 100) : 0 }}%</span> are active
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+            <div class="card stat-card info">
+                <div class="stat-icon info">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <div class="stat-title">Total Courses</div>
+                <div class="stat-value">{{ $packages->sum('courses_count') }}</div>
+                <div class="stat-description">
+                    <span class="highlight info">{{ $packages->where('courses_count', '>', 0)->count() }}</span> packages with courses
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-sm-6">
+            <div class="card stat-card warning">
+                <div class="stat-icon warning">
+                    <i class="fas fa-dollar-sign"></i>
+                </div>
+                <div class="stat-title">Average Price</div>
+                <div class="stat-value">${{ $packages->count() > 0 ? number_format($packages->avg('original_price'), 0) : 0 }}</div>
+                <div class="stat-description">
+                    <span class="highlight warning">{{ $packages->whereNotNull('discounted_price')->where('discounted_price', '!=', 'original_price')->count() }}</span> with discounts
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="card mb-4">
+        <div class="card-body p-3">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="form-label">Status Filter</label>
+                        <select id="status-filter" class="form-select">
+                            <option value="">All Statuses</option>
+                            <option value="Active">Active</option>
+                            <option value="Inactive">Inactive</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="form-label">Search Packages</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-search"></i></span>
+                            <input id="search-input" type="text" class="form-control" placeholder="Search by package name...">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="form-label">Price Range</label>
+                        <select id="price-filter" class="form-select">
+                            <option value="">All Prices</option>
+                            <option value="low">$0 - $50</option>
+                            <option value="medium">$50 - $200</option>
+                            <option value="high">$200+</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+                    </div>
+                </div>
+
+                <!-- Packages Table -->
+    <div class="card">
+        <div class="card-header pb-0">
+            <h6 class="text-primary fw-bold">Educational Packages</h6>
+                        </div>
+        <div class="card-body px-0 pt-0 pb-2">
+                        @if($packages->count() > 0)
+                <div class="table-responsive p-0">
+                    <table class="table align-items-center mb-0">
+                                    <thead>
+                                        <tr>
+                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                    Package Details</th>
+                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                    Package ID</th>
+                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                    Category</th>
+                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                    Courses</th>
+                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                    Price</th>
+                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                    Status</th>
+                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                    Created Date</th>
+                                <th class="text-secondary opacity-7">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                            @foreach ($packages as $package)
+                                            <tr>
+                                                <td>
+                                        <div class="d-flex px-2 py-1">
+                                                                                    <div>
+                                                    @if($package->image)
+                                                        <img src="{{ asset('storage/' . $package->image) }}" 
+                                                    class="avatar avatar-sm me-3" alt="package">
+                                                    @else
+                                                <div class="avatar avatar-sm me-3 bg-gradient-primary d-flex align-items-center justify-content-center">
+                                                    <i class="fas fa-box text-white text-sm"></i>
+                                                        </div>
+                                                    @endif
+                                        </div>
+                                            <div class="d-flex flex-column justify-content-center">
+                                                <h6 class="mb-0 text-sm">{{ $package->name }}</h6>
+                                                <p class="text-xs text-secondary mb-0">
+                                                    {{ $package->description ? \Illuminate\Support\Str::limit($package->description, 50) : 'No description available' }}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <p class="text-xs font-weight-bold mb-0">
+                                            PKG-{{ str_pad($package->id, 3, '0', STR_PAD_LEFT) }}</p>
+                                    </td>
+                                    <td>
+                                        <span class="badge badge-sm bg-gradient-info">{{ $package->category->name ?? 'No Category' }}</span>
+                                    </td>
+                                    <td>
+                                        <span class="badge badge-sm bg-gradient-primary">{{ $package->courses->count() }} courses</span>
+                                                </td>
+                                                <td>
+                                        <div class="d-flex flex-column">
+                                            <div class="fw-bold">${{ $package->discounted_price ?? $package->original_price }}</div>
+                                            @if($package->discounted_price && $package->discounted_price != $package->original_price)
+                                                <small class="text-muted text-decoration-line-through">${{ $package->original_price }}</small>
+                                                        @endif
+                                                    </div>
+                                                </td>
+                                                <td>
+                                        @if($package->status === 'active')
+                                            <span class="badge badge-sm bg-gradient-success">Active</span>
+                                        @else
+                                            <span class="badge badge-sm bg-gradient-warning">Inactive</span>
+                                                    @endif
+                                                </td>
+                                                <td>
+                                        <p class="text-xs font-weight-bold mb-0">
+                                            {{ $package->created_at->format('Y-m-d') }}
+                                        </p>
+                                                </td>
+                                                                        <td class="align-middle">
+                                        <div class="d-flex align-items-center gap-2">
+                                            <a href="{{ route('admin.educational-packages.edit', $package->id) }}"
+                                                class="btn btn-link text-info p-2"
+                                                title="Edit Package">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+
+                                            <a href="{{ route('admin.educational-packages.show', $package->id) }}"
+                                                class="btn btn-link text-primary p-2"
+                                                title="View Package Details">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+
+                                            <button class="btn btn-link text-danger p-2" data-bs-toggle="modal"
+                                                data-bs-target="#deletePackageModal"
+                                                onclick="confirmPackageDelete({{ $package->id }}, '{{ $package->name }}')"
+                                                title="Delete Package">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Pagination -->
+                <div class="d-flex justify-content-between align-items-center p-3">
+                    <p class="text-sm mb-0">Showing
+                        {{ $packages->firstItem() }}-{{ $packages->lastItem() }} of
+                        {{ $packages->total() }} packages
+                    </p>
+                    {{ $packages->appends(request()->query())->links('pagination::bootstrap-5') }}
+                            </div>
+                        @else
+                            <div class="text-center py-5">
+                                <i class="fas fa-box fa-3x text-muted mb-3"></i>
+                                <h6 class="text-muted">No packages found</h6>
+                                <p class="text-muted">Start by creating your first educational package.</p>
+                                <a href="{{ route('admin.educational-packages.create') }}" class="btn btn-primary">
+                                    <i class="fas fa-plus me-2"></i>
+                                    Create First Package
+                                </a>
+                            </div>
+                        @endif
+                    </div>
     </div>
 
     <!-- Delete Confirmation Modal -->
-    <div class="modal fade" id="deleteModal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Confirm Delete</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    Are you sure you want to delete this package? This action cannot be undone.
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <form id="deleteForm" method="POST" style="display: inline;">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-danger">Delete</button>
-                    </form>
+    <div class="modal fade" id="deletePackageModal" tabindex="-1" aria-labelledby="deletePackageModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <form method="POST" id="deletePackageForm">
+                @csrf
+                @method('DELETE')
+                <div class="modal-content border-0 shadow-lg">
+                    <div class="modal-header bg-white text-dark border-bottom">
+                        <h5 class="modal-title fw-bold" id="deletePackageModalLabel">
+                            <i class="fas fa-exclamation-triangle me-2 text-danger"></i>Confirm Deletion
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body p-4 text-center bg-white">
+                        <div class="mb-4">
+                            <div class="icon icon-shape bg-gradient-danger shadow-danger text-center rounded-circle mx-auto mb-3" style="width: 80px; height: 80px;">
+                                <i class="fas fa-trash-alt text-white text-lg opacity-10" style="font-size: 2rem; line-height: 80px;"></i>
+                            </div>
+                            <h4 class="text-danger fw-bold mb-3">Are you sure?</h4>
+                            <p class="text-muted mb-2">You are about to delete the package:</p>
+                            <div class="alert alert-warning border-0 bg-light-warning">
+                                <strong class="text-warning" id="packageNamePlaceholder"></strong>
+                            </div>
+                            <div class="alert alert-danger border-0 bg-light-danger">
+                                <i class="fas fa-exclamation-circle me-2"></i>
+                                <strong>This action cannot be undone!</strong>
+                                <br>
+                                <small>All associated data will be permanently removed.</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer bg-white border-top justify-content-center">
+                        <button type="button" class="btn btn-secondary btn-lg px-4 me-3" data-bs-dismiss="modal">
+                            <i class="fas fa-times me-2"></i>Cancel
+                        </button>
+                        <button type="submit" class="btn btn-danger btn-lg px-4">
+                            <i class="fas fa-trash-alt me-2"></i>Delete Package
+                        </button>
                 </div>
             </div>
+            </form>
         </div>
     </div>
+
+    
 @endsection
 
 @push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
     <script>
-        // Global variables for filters
-        let activeFilters = {
-            search: '',
-            category: '',
-            status: '',
-            price: ''
-        };
-
-        // Debounce function for search
-        function debounce(func, wait) {
-            let timeout;
-            return function executedFunction(...args) {
-                const later = () => {
-                    clearTimeout(timeout);
-                    func(...args);
-                };
-                clearTimeout(timeout);
-                timeout = setTimeout(later, wait);
-            };
-        }
-
-        // Show loading spinner
-        function showLoading() {
-            document.getElementById('loadingSpinner').style.display = 'block';
-            document.getElementById('packagesGrid').style.display = 'none';
-        }
-
-        // Hide loading spinner
-        function hideLoading() {
-            document.getElementById('loadingSpinner').style.display = 'none';
-            document.getElementById('packagesGrid').style.display = 'block';
-        }
-
-        // Update filter tags
-        function updateFilterTags() {
-            const filterTags = document.getElementById('filterTags');
-            filterTags.innerHTML = '';
-
-            Object.entries(activeFilters).forEach(([key, value]) => {
-                if (value && value.trim() !== '') {
-                    const tag = document.createElement('div');
-                    tag.className = 'filter-tag';
-                    tag.innerHTML = `
-                        <span>${key.charAt(0).toUpperCase() + key.slice(1)}: ${value}</span>
-                        <span class="remove" onclick="removeFilter('${key}')">&times;</span>
-                    `;
-                    filterTags.appendChild(tag);
-                }
-            });
-        }
-
-        // Remove specific filter
-        function removeFilter(filterType) {
-            activeFilters[filterType] = '';
-            
-            switch(filterType) {
-                case 'search':
-                    document.getElementById('searchInput').value = '';
-                    break;
-                case 'category':
-                    document.getElementById('categoryFilter').value = '';
-                    break;
-                case 'status':
-                    document.getElementById('statusFilter').value = '';
-                    break;
-                case 'price':
-                    document.getElementById('priceFilter').value = '';
-                    break;
-            }
-            
-            updateFilterTags();
-            applyFilters();
-        }
-
-        // Clear all filters
-        function clearAllFilters() {
-            activeFilters = {
-                search: '',
-                category: '',
-                status: '',
-                price: ''
-            };
-            
-            document.getElementById('searchInput').value = '';
-            document.getElementById('categoryFilter').value = '';
-            document.getElementById('statusFilter').value = '';
-            document.getElementById('priceFilter').value = '';
-            document.getElementById('filterTags').innerHTML = '';
-            
-            updateFilterTags();
-            applyFilters();
-        }
-
-        // Apply all filters
-        function applyFilters() {
-            showLoading();
-            
-            setTimeout(() => {
-                const packages = document.querySelectorAll('.package-item');
-                let visibleCount = 0;
-                
-                packages.forEach(package => {
-                    const name = package.dataset.name || '';
-                    const description = package.dataset.description || '';
-                    const category = package.dataset.category || '';
-                    const status = package.dataset.status || '';
-                    const price = parseFloat(package.dataset.price || 0);
-                    
-                    let isVisible = true;
-                    
-                    // Search filter
-                    if (activeFilters.search) {
-                        const searchTerm = activeFilters.search.toLowerCase();
-                        const matchesSearch = name.includes(searchTerm) || 
-                                            description.includes(searchTerm) || 
-                                            category.includes(searchTerm);
-                        if (!matchesSearch) isVisible = false;
-                    }
-                    
-                    // Category filter
-                    if (activeFilters.category && isVisible) {
-                        const categoryTerm = activeFilters.category.toLowerCase();
-                        if (category !== categoryTerm && category !== 'no category') {
-                            isVisible = false;
-                        }
-                    }
-                    
-                    // Status filter
-                    if (activeFilters.status && isVisible) {
-                        const statusTerm = activeFilters.status.toLowerCase();
-                        if (status !== statusTerm) {
-                            isVisible = false;
-                        }
-                    }
-                    
-                    // Price filter
-                    if (activeFilters.price && isVisible) {
-                        const priceRange = activeFilters.price;
-                        let isInRange = false;
-                        
-                        if (priceRange === '0-100') {
-                            isInRange = price >= 0 && price <= 100;
-                        } else if (priceRange === '100-500') {
-                            isInRange = price >= 100 && price <= 500;
-                        } else if (priceRange === '500-1000') {
-                            isInRange = price >= 500 && price <= 1000;
-                        } else if (priceRange === '1000+') {
-                            isInRange = price >= 1000;
-                        }
-                        
-                        if (!isInRange) {
-                            isVisible = false;
-                        }
-                    }
-                    
-                    // Show/hide package
-                    package.style.display = isVisible ? 'block' : 'none';
-                    if (isVisible) visibleCount++;
-                });
-                
-                // Show/hide no results message
-                const noResults = document.getElementById('noResults');
-                const packagesGrid = document.getElementById('packagesGrid');
-                
-                if (visibleCount === 0) {
-                    noResults.style.display = 'block';
-                    packagesGrid.style.display = 'none';
-                } else {
-                    noResults.style.display = 'none';
-                    packagesGrid.style.display = 'block';
-                }
-                
-                // Update results count
-                document.getElementById('resultsCount').textContent = visibleCount;
-                
-                hideLoading();
-                
-                // Add animation to visible packages
-                const visiblePackages = document.querySelectorAll('.package-item[style*="block"]');
-                visiblePackages.forEach((package, index) => {
-                    package.style.animation = `fadeInUp 0.5s ease ${index * 0.1}s both`;
-                });
-                
-            }, 300);
-        }
-
-        // Search functionality with debounce
-        const debouncedSearch = debounce(function() {
-            activeFilters.search = this.value;
-            updateFilterTags();
-            applyFilters();
-        }, 300);
-
-        document.getElementById('searchInput').addEventListener('input', debouncedSearch);
-
-        // Category filter
-        document.getElementById('categoryFilter').addEventListener('change', function() {
-            activeFilters.category = this.value;
-            updateFilterTags();
-            applyFilters();
-        });
-
-        // Status filter
-        document.getElementById('statusFilter').addEventListener('change', function() {
-            activeFilters.status = this.value;
-            updateFilterTags();
-            applyFilters();
-        });
-
-        // Price filter
-        document.getElementById('priceFilter').addEventListener('change', function() {
-            activeFilters.price = this.value;
-            updateFilterTags();
-            applyFilters();
-        });
-
-        // Sort filter
-        document.getElementById('sortFilter').addEventListener('change', function() {
-            sortPackages(this.value);
-        });
-
-        // Sort packages function
-        function sortPackages(sortType) {
-            const packagesGrid = document.getElementById('packagesGrid');
-            const packages = Array.from(document.querySelectorAll('.package-item[style*="block"]'));
-            
-            packages.sort((a, b) => {
-                const nameA = a.dataset.name || '';
-                const nameB = b.dataset.name || '';
-                const priceA = parseFloat(a.dataset.price || 0);
-                const priceB = parseFloat(b.dataset.price || 0);
-                const dateA = new Date(a.dataset.date || '');
-                const dateB = new Date(b.dataset.date || '');
-                
-                switch(sortType) {
-                    case 'newest':
-                        return dateB - dateA;
-                    case 'oldest':
-                        return dateA - dateB;
-                    case 'name-asc':
-                        return nameA.localeCompare(nameB);
-                    case 'name-desc':
-                        return nameB.localeCompare(nameA);
-                    case 'price-low':
-                        return priceA - priceB;
-                    case 'price-high':
-                        return priceB - priceA;
-                    default:
-                        return 0;
-                }
-            });
-            
-            // Reorder packages in DOM
-            packages.forEach(package => {
-                packagesGrid.appendChild(package);
-            });
-            
-            // Add animation to reordered packages
-            packages.forEach((package, index) => {
-                package.style.animation = `fadeInUp 0.3s ease ${index * 0.05}s both`;
-            });
-        }
-
-        // Clear filters button
-        document.getElementById('clearFiltersBtn').addEventListener('click', clearAllFilters);
-
-        // Delete package
-        function deletePackage(packageId) {
-            const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
-            const form = document.getElementById('deleteForm');
+        // Set page language to English to ensure file input displays English text
+        document.documentElement.lang = 'en';
+        
+        function confirmPackageDelete(packageId, packageName) {
+            const form = document.getElementById('deletePackageForm');
+            const namePlaceholder = document.getElementById('packageNamePlaceholder');
+            namePlaceholder.textContent = `"${packageName}"`;
             form.action = `/admin/educational-packages/${packageId}`;
-            modal.show();
         }
 
-        // Export functionality
-        document.getElementById('exportBtn').addEventListener('click', function() {
-            this.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Exporting...';
-            this.disabled = true;
-            
-            setTimeout(() => {
-                window.location.href = '{{ route("admin.educational-packages.export") }}';
-                
-                setTimeout(() => {
-                    this.innerHTML = '<i class="fas fa-download me-2"></i>Export';
-                    this.disabled = false;
-                }, 2000);
-            }, 500);
-        });
+        document.addEventListener('DOMContentLoaded', function () {
+            // Force English for all file inputs
+            const fileInputs = document.querySelectorAll('input[type="file"]');
+            fileInputs.forEach(input => {
+                input.setAttribute('lang', 'en');
+                input.style.fontFamily = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+            });
 
-        // Cleanup discount percentages functionality
-        document.getElementById('cleanupBtn').addEventListener('click', function() {
-            if (confirm('This will update discount percentages for all packages. Continue?')) {
-                this.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-                this.disabled = true;
-                
-                fetch('{{ route("admin.educational-packages.cleanup-discount-percentages") }}', {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                        'Content-Type': 'application/json',
+            const searchInput = document.getElementById('search-input');
+            const statusFilter = document.getElementById('status-filter');
+            const priceFilter = document.getElementById('price-filter');
+            const tableRows = document.querySelectorAll('table tbody tr');
+
+            function filterPackages() {
+                const searchText = searchInput.value.toLowerCase();
+                const selectedStatus = statusFilter.value;
+                const selectedPriceRange = priceFilter.value;
+
+                tableRows.forEach(row => {
+                    const name = row.querySelector('h6').textContent.toLowerCase();
+                    const description = row.querySelector('p.text-secondary').textContent.toLowerCase();
+                    const statusCell = row.cells[5];
+                    const priceCell = row.cells[4];
+                    
+                    if (!statusCell || !priceCell) return;
+                    
+                    const status = statusCell.textContent.trim();
+                    const priceText = priceCell.querySelector('.fw-bold').textContent.replace('$', '');
+                    const price = parseFloat(priceText) || 0;
+
+                    const matchesSearch = name.includes(searchText) || description.includes(searchText);
+                    const matchesStatus = selectedStatus === '' || status === selectedStatus;
+                    
+                    let matchesPrice = true;
+                    if (selectedPriceRange === 'low') {
+                        matchesPrice = price >= 0 && price <= 50;
+                    } else if (selectedPriceRange === 'medium') {
+                        matchesPrice = price > 50 && price <= 200;
+                    } else if (selectedPriceRange === 'high') {
+                        matchesPrice = price > 200;
                     }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        alert(data.message);
-                        location.reload(); // Reload page to show updated data
-                    } else {
-                        alert('Error: ' + data.message);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('An error occurred while cleaning up discount percentages.');
-                })
-                .finally(() => {
-                    this.innerHTML = '<i class="fas fa-broom"></i>';
-                    this.disabled = false;
+
+                    row.style.display = (matchesSearch && matchesStatus && matchesPrice) ? '' : 'none';
                 });
             }
-        });
 
-        // Add CSS animation
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes fadeInUp {
-                from {
-                    opacity: 0;
-                    transform: translateY(20px);
-                }
-                to {
-                    opacity: 1;
-                    transform: translateY(0);
-                }
-            }
-            
-            .package-item {
-                animation: fadeInUp 0.5s ease both;
-            }
-            
-            .filter-tag {
-                animation: fadeInUp 0.3s ease both;
-            }
-        `;
-        document.head.appendChild(style);
+            searchInput.addEventListener('input', filterPackages);
+            statusFilter.addEventListener('change', filterPackages);
+            priceFilter.addEventListener('change', filterPackages);
 
-        // Initialize filters
-        document.addEventListener('DOMContentLoaded', function() {
-            updateFilterTags();
+        // Auto-hide alerts after 5 seconds
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(function(alert) {
+                setTimeout(function() {
+                    const bsAlert = new bootstrap.Alert(alert);
+                    bsAlert.close();
+                }, 5000);
+            });
         });
     </script>
 @endpush

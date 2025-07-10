@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Edit Package')
+@section('title', 'Edit Educational Package')
 
 @push('styles')
     <style>
@@ -9,27 +9,86 @@
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.08);
             margin-bottom: 30px;
         }
+
         .card-body {
             padding: 2rem 2.5rem;
         }
+
         .form-label {
             font-weight: 600;
+            color: #344767;
         }
+
+        .form-control, .form-select {
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+            padding: 12px 15px;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+
         .btn-primary {
-            background-color: #007bff;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border: none;
+            border-radius: 10px;
+            padding: 12px 30px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(45deg, #5a67d8, #6b46c1);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            border: none;
+            border-radius: 10px;
+            padding: 12px 30px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+        }
+
+        .alert {
+            border-radius: 10px;
             border: none;
         }
-        .btn-primary:hover {
-            background-color: #0056b3;
+
+        .form-section {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
         }
+
+        .section-title {
+            color: #667eea;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e9ecef;
+        }
+
         .current-image {
-            max-width: 200px;
+            max-width: 150px;
             border-radius: 10px;
             margin-top: 10px;
         }
+
         @media (max-width: 600px) {
             .card-body {
-                padding: 1rem 0.5rem;
+                padding: 1rem;
             }
         }
     </style>
@@ -37,200 +96,275 @@
 @endpush
 
 @section('content')
-    <div class="container py-4">
+    <div class="container-fluid py-4">
         <div class="row justify-content-center">
-            <div class="col-12" style="max-width:900px;margin:auto;">
+            <div class="col-12" style="max-width:900px;">
+                
+                <!-- Header Card -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h4 class="mb-0">Edit Educational Package</h4>
+                                <p class="text-muted mb-0">Update package information and settings</p>
+                            </div>
+                            <div>
+                                <a href="{{ route('admin.educational-packages.index') }}" class="btn btn-secondary">
+                                    <i class="fas fa-arrow-left"></i> Back to Packages
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Success/Error Messages -->
+                @if (session('success'))
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <i class="fas fa-check-circle me-2"></i>
+                        {{ session('success') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                @endif
+
+                @if ($errors->any())
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="fas fa-exclamation-circle me-2"></i>
+                        <strong>Please fix the following errors:</strong>
+                        <ul class="mb-0 mt-2">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                @endif
+
                 <div class="card shadow-sm">
                     <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center mb-4">
-                            <h4 class="mb-0 fw-bold text-primary">
-                                <i class="fas fa-edit me-2"></i>
-                                Edit Package
-                            </h4>
-                            <a href="{{ route('admin.educational-packages.show', $package) }}" class="btn btn-outline-secondary">
-                                <i class="fas fa-eye me-2"></i>
-                                View Package
-                            </a>
-                        </div>
-
-                        <form action="{{ route('admin.educational-packages.update', $package) }}" method="POST" enctype="multipart/form-data">
+                        <form action="{{ route('admin.educational-packages.update', $package) }}" method="POST"
+                            enctype="multipart/form-data">
                             @csrf
                             @method('PUT')
 
-                            <div class="mb-3">
-                                <label class="form-label">Name</label>
-                                <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" 
-                                       required value="{{ old('name', $package->name) }}">
-                                @error('name')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            <div class="mb-3">
-                                <label class="form-label">Description</label>
-                                <textarea name="description" rows="4" class="form-control @error('description') is-invalid @enderror">{{ old('description', $package->description) }}</textarea>
-                                @error('description')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            <div class="mb-3">
-                                <label class="form-label">Category</label>
-                                <select name="category_id" class="form-select @error('category_id') is-invalid @enderror" required>
-                                    <option value="">Select Category</option>
-                                    @foreach ($categories as $category)
-                                        <option value="{{ $category->id }}" 
-                                                {{ old('category_id', $package->category_id) == $category->id ? 'selected' : '' }}>
-                                            {{ $category->name }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                                @error('category_id')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            <div class="mb-3">
-                                <label class="form-label">Currency</label>
-                                <select name="currency" class="form-select @error('currency') is-invalid @enderror">
-                                    <option value="USD" {{ old('currency', $package->currency) == 'USD' ? 'selected' : '' }}>USD</option>
-                                    <option value="SAR" {{ old('currency', $package->currency) == 'SAR' ? 'selected' : '' }}>SAR</option>
-                                    <option value="AED" {{ old('currency', $package->currency) == 'AED' ? 'selected' : '' }}>AED</option>
-                                </select>
-                                @error('currency')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            <div class="mb-3">
-                                <label class="form-label">Status</label>
-                                <select name="status" class="form-select @error('status') is-invalid @enderror" required>
-                                    <option value="active" {{ old('status', $package->status) == 'active' ? 'selected' : '' }}>Active</option>
-                                    <option value="inactive" {{ old('status', $package->status) == 'inactive' ? 'selected' : '' }}>Inactive</option>
-                                </select>
-                                @error('status')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            <div class="mb-3">
-                                <label class="form-label">Image</label>
-                                <input type="file" name="image" class="form-control @error('image') is-invalid @enderror">
-                                @error('image')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
+                            <!-- Basic Information Section -->
+                            <div class="form-section">
+                                <h5 class="section-title">
+                                    <i class="fas fa-info-circle me-2"></i>Basic Information
+                                </h5>
                                 
-                                @if($package->image)
-                                    <div class="mt-2">
-                                        <label class="form-label">Current Image:</label>
-                                        <img src="{{ asset('storage/' . $package->image) }}" 
-                                             alt="Current Package Image" class="current-image">
-                                    </div>
-                                @endif
-                            </div>
-
-                            <div class="mb-3">
-                                <label class="form-label">Courses</label>
-                                <select name="courses[]" id="coursesSelect" class="form-select select2-multi @error('courses') is-invalid @enderror" multiple>
-                                    @foreach ($courses as $course)
-                                        <option value="{{ $course->id }}" 
-                                                data-price="{{ $course->price }}" 
-                                                data-category="{{ $course->category_id }}"
-                                                {{ in_array($course->id, old('courses', $package->courses->pluck('id')->toArray())) ? 'selected' : '' }}>
-                                            {{ $course->title }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                                @error('courses')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                                <small class="text-muted">يمكنك اختيار الكورسات بالنقر فقط دون الحاجة للضغط على Ctrl أو Command.</small>
-                            </div>
-
-                            <div class="mb-4 p-3 bg-light rounded border">
-                                <h5 class="fw-bold mb-3 text-primary"><i class="fas fa-money-bill-wave me-2"></i>Package Pricing</h5>
-                                <div class="row g-3">
-                                    <div class="col-md-4">
-                                        <label class="form-label">Original Price (مجموع أسعار الكورسات)</label>
-                                        <input type="text" id="originalPriceInput" class="form-control" value="{{ $package->original_price }} {{ $package->currency ?? 'USD' }}" readonly>
-                                    </div>
+                                <div class="row">
                                     <div class="col-md-8">
-                                        <div class="mb-3">
-                                            <label class="form-label">Discount Type</label>
-                                            <div class="d-flex gap-3">
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="radio" name="discount_type" id="discount_percent_radio" value="percent" 
-                                                           {{ old('discount_type', 'percent') == 'percent' ? 'checked' : '' }}>
-                                                    <label class="form-check-label" for="discount_percent_radio">خصم نسبة مئوية</label>
+                                        <div class="mb-4">
+                                            <label for="name" class="form-label">
+                                                <i class="fas fa-box me-2"></i>Package Name *
+                                            </label>
+                                            <input type="text" name="name" id="name" 
+                                                class="form-control @error('name') is-invalid @enderror" 
+                                                value="{{ old('name', $package->name) }}" 
+                                                placeholder="Enter package name (e.g., Complete Web Development, Data Science Bundle)"
+                                                required>
+                                            @error('name')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+
+                                        <div class="mb-4">
+                                            <label for="description" class="form-label">
+                                                <i class="fas fa-align-left me-2"></i>Description
+                                            </label>
+                                            <textarea name="description" id="description" 
+                                                class="form-control @error('description') is-invalid @enderror" 
+                                                rows="4" 
+                                                placeholder="Provide a detailed description of this package...">{{ old('description', $package->description) }}</textarea>
+                                            @error('description')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="mb-4">
+                                                    <label for="category_id" class="form-label">
+                                                        <i class="fas fa-tag me-2"></i>Category *
+                                                    </label>
+                                                    <select name="category_id" id="category_id" class="form-select @error('category_id') is-invalid @enderror" required>
+                                                        <option value="">Select Category</option>
+                                                        @foreach ($categories as $category)
+                                                            <option value="{{ $category->id }}" {{ old('category_id', $package->category_id) == $category->id ? 'selected' : '' }}>
+                                                                {{ $category->name }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                    @error('category_id')
+                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                    @enderror
                                                 </div>
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="radio" name="discount_type" id="discount_price_radio" value="price"
-                                                           {{ old('discount_type', 'percent') == 'price' ? 'checked' : '' }}>
-                                                    <label class="form-check-label" for="discount_price_radio">سعر نهائي يدوي</label>
-                                                </div>
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="radio" name="discount_type" id="no_discount_radio" value="none"
-                                                           {{ old('discount_type', 'percent') == 'none' ? 'checked' : '' }}>
-                                                    <label class="form-check-label" for="no_discount_radio">بدون خصم</label>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="mb-4">
+                                                    <label for="status" class="form-label">
+                                                        <i class="fas fa-toggle-on me-2"></i>Package Status
+                                                    </label>
+                                                    <select name="status" id="status" class="form-select @error('status') is-invalid @enderror">
+                                                        <option value="active" {{ old('status', $package->status) === 'active' ? 'selected' : '' }}>
+                                                            Active - Visible to users
+                                                        </option>
+                                                        <option value="inactive" {{ old('status', $package->status) === 'inactive' ? 'selected' : '' }}>
+                                                            Inactive - Hidden from users
+                                                        </option>
+                                                    </select>
+                                                    @error('status')
+                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                    @enderror
                                                 </div>
                                             </div>
                                         </div>
-                                        
-                                        <div id="percent_input_wrap" class="mb-3" style="display: none;">
-                                            <label class="form-label">Discount Percentage</label>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="mb-4">
+                                            <label for="image" class="form-label">
+                                                <i class="fas fa-image me-2"></i>Package Image
+                                            </label>
+                                            <div class="border-2 border-dashed rounded-3 p-4 text-center bg-light">
+                                                <input type="file" name="image" id="image" 
+                                                    class="form-control @error('image') is-invalid @enderror" 
+                                                    accept="image/*"
+                                                    onchange="previewImage(event)">
+                                                <small class="text-muted d-block mt-2">
+                                                    Upload a new image (optional)<br>
+                                                    <span class="text-primary">Supported: JPG, PNG, GIF (Max: 2MB)</span>
+                                                </small>
+                                                
+                                                <!-- Current Image Display -->
+                                                @if($package->image)
+                                                    <div class="mt-3">
+                                                        <label class="form-label text-muted">Current Image:</label>
+                                                        <img src="{{ asset('storage/' . $package->image) }}" 
+                                                             alt="Current Package Image" class="current-image d-block mx-auto">
+                                                    </div>
+                                                @endif
+                                                
+                                                <!-- Image Preview -->
+                                                <div id="imagePreview" class="mt-3" style="display: none;">
+                                                    <img id="preview" src="" class="img-thumbnail" width="150" alt="Preview">
+                                                    <div class="mt-2">
+                                                        <button type="button" class="btn btn-sm btn-outline-danger" onclick="removeImage()">
+                                                            <i class="fas fa-trash"></i> Remove
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            @error('image')
+                                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Courses Section -->
+                            <div class="form-section">
+                                <h5 class="section-title">
+                                    <i class="fas fa-book me-2"></i>Course Selection
+                                </h5>
+                                
+                                <div class="mb-4">
+                                    <label for="coursesSelect" class="form-label">
+                                        <i class="fas fa-list me-2"></i>Select Courses *
+                                    </label>
+                                    <select name="courses[]" id="coursesSelect" class="form-select select2-multi @error('courses') is-invalid @enderror" multiple>
+                                        @foreach ($courses as $course)
+                                            <option value="{{ $course->id }}" 
+                                                    data-price="{{ $course->price }}" 
+                                                    data-category="{{ $course->category_id }}"
+                                                    {{ in_array($course->id, old('courses', $package->courses->pluck('id')->toArray())) ? 'selected' : '' }}>
+                                                {{ $course->title }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    @error('courses')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                    <small class="text-muted">Select the courses to include in this package. Courses will be filtered based on selected category.</small>
+                                </div>
+                            </div>
+
+                            <!-- Pricing Section -->
+                            <div class="form-section">
+                                <h5 class="section-title">
+                                    <i class="fas fa-dollar-sign me-2"></i>Package Pricing
+                                </h5>
+                                
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="mb-4">
+                                            <label class="form-label">
+                                                <i class="fas fa-calculator me-2"></i>Original Price (From Courses)
+                                            </label>
+                                            <input type="text" id="originalPriceInput" class="form-control" value="{{ $package->original_price ?? '0.00' }} {{ $package->currency ?? 'USD' }}" readonly>
+                                            <small class="text-muted">Calculated automatically from selected courses</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="mb-4">
+                                            <label for="currency" class="form-label">
+                                                <i class="fas fa-coins me-2"></i>Currency
+                                            </label>
+                                            <select name="currency" id="currency" class="form-select @error('currency') is-invalid @enderror">
+                                                <option value="USD" {{ old('currency', $package->currency) == 'USD' ? 'selected' : '' }}>USD - US Dollar</option>
+                                                <option value="SAR" {{ old('currency', $package->currency) == 'SAR' ? 'selected' : '' }}>SAR - Saudi Riyal</option>
+                                                <option value="AED" {{ old('currency', $package->currency) == 'AED' ? 'selected' : '' }}>AED - UAE Dirham</option>
+                                                <option value="EUR" {{ old('currency', $package->currency) == 'EUR' ? 'selected' : '' }}>EUR - Euro</option>
+                                            </select>
+                                            @error('currency')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="mb-4">
+                                            <label for="discount_percentage" class="form-label">
+                                                <i class="fas fa-percent me-2"></i>Discount Percentage
+                                            </label>
                                             <div class="input-group">
-                                                <input type="number" name="package_discount_percentage" class="form-control" min="0" max="100" step="0.01" 
-                                                       placeholder="نسبة الخصم %" value="{{ old('package_discount_percentage', 0) }}">
+                                                <input type="number" name="discount_percentage" id="discount_percentage" class="form-control @error('discount_percentage') is-invalid @enderror" step="0.01" min="0" max="100" value="{{ old('discount_percentage', $package->discount_percentage ?? 0) }}">
                                                 <span class="input-group-text">%</span>
                                             </div>
-                                            <div id="percent_preview" class="mt-2 text-success fw-bold"></div>
-                                        </div>
-                                        
-                                        <div id="price_input_wrap" class="mb-3" style="display: none;">
-                                            <label class="form-label">Final Price</label>
-                                            <div class="input-group">
-                                                <input type="number" name="package_discounted_price" class="form-control" min="0" step="0.01" 
-                                                       placeholder="السعر النهائي بعد الخصم" value="{{ old('package_discounted_price', $package->discounted_price) }}">
-                                                <span class="input-group-text">{{ $package->currency ?? 'USD' }}</span>
-                                            </div>
-                                            <div id="price_preview" class="mt-2 text-info fw-bold"></div>
-                                        </div>
-                                        
-                                        <div id="no_discount_preview" class="mb-3" style="display: none;">
-                                            <div class="alert alert-info">
-                                                <i class="fas fa-info-circle me-2"></i>
-                                                سيتم عرض السعر الأصلي بدون خصم
-                                            </div>
+                                            <small class="text-muted">Enter 0 for no discount</small>
+                                            @error('discount_percentage')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
                                         </div>
                                     </div>
                                 </div>
                                 
-                                <!-- Final Price Display -->
-                                <div class="row mt-3">
-                                    <div class="col-12">
-                                        <div id="finalPriceDisplay" class="p-3 bg-success text-white rounded" style="display: none;">
-                                            <h6 class="mb-2"><i class="fas fa-tag me-2"></i>Final Package Price</h6>
-                                            <div id="finalPriceValue" class="fs-4 fw-bold"></div>
-                                            <div id="finalPriceDetails" class="small mt-1"></div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="mb-4">
+                                            <label class="form-label">
+                                                <i class="fas fa-money-bill-wave me-2"></i>Final Package Price
+                                            </label>
+                                            <div class="alert alert-info">
+                                                <div class="form-control-plaintext fw-bold fs-4 text-success mb-0" id="finalPrice">
+                                                    ${{ $package->discounted_price ?? $package->original_price ?? '0.00' }}
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <div id="discountedPricePreview" class="mt-2 text-success fw-bold" style="display:none"></div>
-
+                            <!-- Form Actions -->
                             <div class="d-flex justify-content-between">
-                                <a href="{{ route('admin.educational-packages.show', $package) }}" class="btn btn-secondary">
-                                    <i class="fas fa-arrow-left me-2"></i>
-                                    Cancel
+                                <a href="{{ route('admin.educational-packages.index') }}" class="btn btn-secondary">
+                                    <i class="fas fa-times"></i> Cancel
                                 </a>
                                 <button type="submit" class="btn btn-primary">
-                                    <i class="fas fa-save me-2"></i>
-                                    Update Package
+                                    <i class="fas fa-save"></i> Update Package
                                 </button>
                             </div>
                         </form>
-
                     </div>
                 </div>
             </div>
@@ -242,219 +376,152 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script>
-        // Preview image before upload
-        document.querySelector('input[name="image"]').addEventListener('change', function(e) {
-            const file = e.target.files[0];
+        function previewImage(event) {
+            const file = event.target.files[0];
             if (file) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    const preview = document.createElement('img');
-                    preview.src = e.target.result;
-                    preview.className = 'current-image mt-2';
-                    preview.alt = 'Preview';
-                    
-                    const container = document.querySelector('input[name="image"]').parentNode;
-                    const existingPreview = container.querySelector('.current-image');
-                    if (existingPreview) {
-                        existingPreview.remove();
-                    }
-                    container.appendChild(preview);
-                }
+                    document.getElementById('preview').src = e.target.result;
+                    document.getElementById('imagePreview').style.display = 'block';
+                };
                 reader.readAsDataURL(file);
-            }
-        });
-
-        // منطق إظهار/إخفاء حقول الخصم
-        document.getElementById('discount_percent_radio').addEventListener('change', function() {
-            showDiscountInput('percent');
-            updateFinalPrice();
-        });
-        document.getElementById('discount_price_radio').addEventListener('change', function() {
-            showDiscountInput('price');
-            updateFinalPrice();
-        });
-        document.getElementById('no_discount_radio').addEventListener('change', function() {
-            showDiscountInput('none');
-            updateFinalPrice();
-        });
-
-        // دالة إظهار/إخفاء حقول الخصم
-        function showDiscountInput(type) {
-            document.getElementById('percent_input_wrap').style.display = 'none';
-            document.getElementById('price_input_wrap').style.display = 'none';
-            document.getElementById('no_discount_preview').style.display = 'none';
-            
-            if (type === 'percent') {
-                document.getElementById('percent_input_wrap').style.display = 'block';
-            } else if (type === 'price') {
-                document.getElementById('price_input_wrap').style.display = 'block';
-            } else if (type === 'none') {
-                document.getElementById('no_discount_preview').style.display = 'block';
             }
         }
 
-        // إظهار/إخفاء الحقول المناسبة عند تحميل الصفحة
-        document.addEventListener('DOMContentLoaded', function() {
-            const percentRadio = document.getElementById('discount_percent_radio');
-            const priceRadio = document.getElementById('discount_price_radio');
-            const noDiscountRadio = document.getElementById('no_discount_radio');
-            
-            if (!percentRadio.checked && !priceRadio.checked && !noDiscountRadio.checked) {
-                noDiscountRadio.checked = true;
-            }
-            
-            if (percentRadio.checked) {
-                showDiscountInput('percent');
-            } else if (priceRadio.checked) {
-                showDiscountInput('price');
-            } else if (noDiscountRadio.checked) {
-                showDiscountInput('none');
-            }
-            
-            updateFinalPrice();
-        });
+        function removeImage() {
+            document.getElementById('image').value = '';
+            document.getElementById('imagePreview').style.display = 'none';
+        }
 
         function updateOriginalPrice() {
             let total = 0;
             $('#coursesSelect option:selected').each(function() {
                 total += parseFloat($(this).data('price')) || 0;
             });
-            document.getElementById('originalPriceInput').value = total.toFixed(2) + ' ' + (document.querySelector('select[name="currency"]').value || 'USD');
+            
+            const currency = document.querySelector('select[name="currency"]').value || 'USD';
+            document.getElementById('originalPriceInput').value = total.toFixed(2) + ' ' + currency;
             updateFinalPrice();
         }
 
-        // دالة تحديث السعر النهائي
+        // Calculate final price
         function updateFinalPrice() {
             const originalInput = document.getElementById('originalPriceInput');
-            const finalPriceDisplay = document.getElementById('finalPriceDisplay');
-            const finalPriceValue = document.getElementById('finalPriceValue');
-            const finalPriceDetails = document.getElementById('finalPriceDetails');
-            
             const originalPrice = parseFloat(originalInput.value) || 0;
+            const discount = parseFloat(document.querySelector('input[name="discount_percentage"]').value) || 0;
             const currency = document.querySelector('select[name="currency"]').value || 'USD';
             
             let finalPrice = originalPrice;
-            let discountPercentage = 0;
-            let discountAmount = 0;
-            let details = '';
             
-            if (document.getElementById('discount_percent_radio').checked) {
-                const percentInput = document.querySelector('input[name="package_discount_percentage"]');
-                const percent = parseFloat(percentInput.value) || 0;
-                
-                if (percent > 0 && originalPrice > 0) {
-                    discountPercentage = percent;
-                    discountAmount = originalPrice * (percent / 100);
-                    finalPrice = originalPrice - discountAmount;
+            if (discount > 0 && originalPrice > 0) {
+                const discountAmount = (originalPrice * discount) / 100;
+                finalPrice = originalPrice - discountAmount;
+            }
                     
-                    const percentPreview = document.getElementById('percent_preview');
-                    percentPreview.innerHTML = `السعر بعد الخصم: <span class="text-success">${finalPrice.toFixed(2)} ${currency}</span>`;
-                    
-                    details = `خصم ${percent}% (${discountAmount.toFixed(2)} ${currency})`;
-                } else {
-                    const percentPreview = document.getElementById('percent_preview');
-                    percentPreview.innerHTML = '';
-                }
-            } else if (document.getElementById('discount_price_radio').checked) {
-                const priceInput = document.querySelector('input[name="package_discounted_price"]');
-                const discountedPrice = parseFloat(priceInput.value) || 0;
-                
-                if (discountedPrice > 0 && originalPrice > 0) {
-                    finalPrice = discountedPrice;
-                    discountAmount = originalPrice - discountedPrice;
-                    discountPercentage = (discountAmount / originalPrice) * 100;
-                    
-                    const pricePreview = document.getElementById('price_preview');
-                    if (discountPercentage > 0) {
-                        pricePreview.innerHTML = `نسبة الخصم: <span class="text-info">${discountPercentage.toFixed(2)}%</span>`;
-                        details = `خصم ${discountPercentage.toFixed(2)}% (${discountAmount.toFixed(2)} ${currency})`;
-                    } else {
-                        pricePreview.innerHTML = '';
-                        details = 'بدون خصم';
-                    }
-                } else {
-                    const pricePreview = document.getElementById('price_preview');
-                    pricePreview.innerHTML = '';
-                }
-            } else {
-                details = 'بدون خصم';
+            const finalPriceElement = document.getElementById('finalPrice');
+            let symbol = '$';
+            
+            switch(currency) {
+                case 'SAR':
+                    symbol = 'SAR';
+                    break;
+                case 'AED':
+                    symbol = 'AED';
+                    break;
+                case 'EUR':
+                    symbol = '€';
+                    break;
+                default:
+                    symbol = '$';
             }
             
-            if (originalPrice > 0) {
-                finalPriceValue.innerHTML = `${finalPrice.toFixed(2)} ${currency}`;
-                finalPriceDetails.innerHTML = details;
-                finalPriceDisplay.style.display = 'block';
-            } else {
-                finalPriceDisplay.style.display = 'none';
+            finalPriceElement.textContent = `${symbol}${finalPrice.toFixed(2)}`;
+            
+            if (discount > 0) {
+                finalPriceElement.innerHTML += ` <small class="text-muted">(<span class="text-danger">${discount}% off</span>)</small>`;
             }
         }
 
         $(document).ready(function() {
+            // Store all courses in JavaScript variable
+            var allCourses = [];
+            $('#coursesSelect option').each(function() {
+                allCourses.push({
+                    id: $(this).val(),
+                    text: $(this).text(),
+                    category: $(this).data('category'),
+                    price: $(this).data('price')
+                });
+            });
+
+            function filterCoursesByCategory(categoryId) {
+                var coursesSelect = $('#coursesSelect');
+                var selectedCourses = coursesSelect.val() || [];
+                
+                // Remove all options
+                coursesSelect.empty();
+                // Add only courses from selected category
+                var filtered = allCourses.filter(function(course) {
+                    return categoryId ? course.category == categoryId : true;
+                });
+                filtered.forEach(function(course) {
+                    coursesSelect.append(
+                        $('<option>', {
+                            value: course.id,
+                            text: course.text,
+                            'data-category': course.category,
+                            'data-price': course.price,
+                            selected: selectedCourses.includes(course.id)
+                        })
+                    );
+                });
+                // Reinitialize Select2
+                coursesSelect.trigger('change');
+            }
+
             $('#coursesSelect').select2({
-                placeholder: 'اختر الكورسات...',
+                placeholder: 'Select courses for this package...',
                 width: '100%',
-                dir: 'rtl',
                 closeOnSelect: false,
                 allowClear: true,
                 language: {
-                    noResults: function() { return 'لا توجد نتائج'; },
-                    searching: function() { return 'جاري البحث...'; }
+                    noResults: function() { return 'No courses found'; },
+                    searching: function() { return 'Searching...'; }
                 }
             });
+            
             $('#coursesSelect').on('change', updateOriginalPrice);
             
-            // تصفية الكورسات حسب الفئة المختارة
+            // Filter courses by selected category
             $('select[name="category_id"]').on('change', function() {
                 const selectedCategoryId = $(this).val();
-                const coursesSelect = $('#coursesSelect');
-                
-                if (selectedCategoryId) {
-                    // إزالة جميع الكورسات المختارة أولاً
-                    coursesSelect.val(null).trigger('change');
-                    
-                    // إخفاء جميع الخيارات
-                    coursesSelect.find('option').prop('disabled', true);
-                    
-                    // إظهار الكورسات من الفئة المختارة فقط
-                    coursesSelect.find(`option[data-category="${selectedCategoryId}"]`).prop('disabled', false);
-                    
-                    // تحديث Select2
-                    coursesSelect.trigger('change');
-                } else {
-                    // إظهار جميع الكورسات إذا لم يتم اختيار فئة
-                    coursesSelect.find('option').prop('disabled', false);
-                }
-                
+                filterCoursesByCategory(selectedCategoryId);
                 updateOriginalPrice();
             });
             
-            // تطبيق التصفية عند تحميل الصفحة إذا كانت هناك فئة مختارة مسبقاً
+            // Apply filter on page load if there's a pre-selected category
             const initialCategory = $('select[name="category_id"]').val();
             if (initialCategory) {
-                $('select[name="category_id"]').trigger('change');
+                filterCoursesByCategory(initialCategory);
             }
+
+            // Add event listeners to update final price
+            document.querySelector('input[name="discount_percentage"]').addEventListener('input', updateFinalPrice);
+            document.querySelector('select[name="currency"]').addEventListener('change', function() {
+                updateOriginalPrice(); // This will call updateFinalPrice internally
+            });
+            
+            // Initialize prices on page load
+            updateOriginalPrice();
+
+            // Auto-hide alerts after 5 seconds
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(function(alert) {
+                setTimeout(function() {
+                    const bsAlert = new bootstrap.Alert(alert);
+                    bsAlert.close();
+                }, 5000);
+            });
         });
-
-        window.onload = function() {
-            if (window.jQuery && $('#coursesSelect').length) {
-                $('#coursesSelect').select2({
-                    placeholder: 'اختر الكورسات...',
-                    width: '100%',
-                    dir: 'rtl',
-                    closeOnSelect: false,
-                    allowClear: true,
-                    language: {
-                        noResults: function() { return 'لا توجد نتائج'; },
-                        searching: function() { return 'جاري البحث...'; }
-                    }
-                });
-                $('#coursesSelect').on('change', updateOriginalPrice);
-            }
-        }
-
-        // إضافة مستمعي الأحداث لتحديث السعر النهائي
-        document.querySelector('input[name="package_discount_percentage"]').addEventListener('input', updateFinalPrice);
-        document.querySelector('input[name="package_discounted_price"]').addEventListener('input', updateFinalPrice);
-        document.querySelector('select[name="currency"]').addEventListener('change', updateFinalPrice);
     </script>
 @endpush 
