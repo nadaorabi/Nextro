@@ -20,10 +20,13 @@
 
   /* Active Link Styling */
   .sidenav .nav-item .nav-link.active {
-    background: linear-gradient(90deg, rgba(58, 116, 254, 0.9), rgba(58, 116, 254, 0.8));
-    color: #fff;
+    background: #e7f0fd !important;
+    color: #2563eb !important;
     font-weight: 600;
-    box-shadow: 0 4px 8px -2px rgba(58, 116, 254, 0.4);
+    box-shadow: none !important;
+  }
+  .sidenav .nav-item .nav-link.active i {
+    color: #2563eb !important;
   }
 
   /* Disabled Navigation Items */
@@ -396,482 +399,228 @@
       </div>
     </a>
   </div>
-  <hr class="horizontal dark mt-0">
   <div class="collapse navbar-collapse  w-auto " id="sidenav-collapse-main">
     <ul class="navbar-nav" id="sidebarAccordion">
+      <!-- Dashboard -->
       <li class="nav-item">
-        <a class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}"
-          href="{{ route('admin.dashboard') }}">
-          <div
-            class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-            <i class="fas fa-tachometer-alt text-dark text-sm opacity-10"></i>
-          </div>
+        <a class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}" href="{{ route('admin.dashboard') }}">
+          <i class="fas fa-home text-dark text-sm opacity-10"></i>
           <span class="nav-link-text ms-1">Dashboard</span>
         </a>
       </li>
-
-      <!-- Account Management -->
+      <!-- Accounts (User Management) -->
       <li class="nav-item">
-        <a class="nav-link {{ request()->routeIs('admin.accounts.*') ? 'active' : '' }}" href="#" id="accountsDropdown"
-          data-bs-toggle="collapse" data-bs-target="#accountsSubmenu"
-          aria-expanded="{{ request()->routeIs('admin.accounts.*') ? 'true' : 'false' }}">
-          <div
-            class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-            <i class="fas fa-users-cog text-dark text-sm opacity-10"></i>
-          </div>
-          <span class="nav-link-text ms-1">Account Management</span>
+        <a class="nav-link {{ request()->routeIs('admin.accounts.*') ? 'active' : '' }}" href="#" data-bs-toggle="collapse" data-bs-target="#accountsSubmenu" aria-expanded="{{ request()->routeIs('admin.accounts.*') ? 'true' : 'false' }}">
+          <i class="fas fa-users text-dark text-sm opacity-10"></i>
+          <span class="nav-link-text ms-1">Accounts</span>
         </a>
-        <ul class="nav flex-column collapse {{ request()->routeIs('admin.accounts.*') ? 'show' : '' }}"
-          id="accountsSubmenu" data-bs-parent="#sidebarAccordion">
-          <!-- Students -->
+        <ul class="nav flex-column collapse {{ request()->routeIs('admin.accounts.*') ? 'show' : '' }}" id="accountsSubmenu" data-bs-parent="#sidebarAccordion">
           <li class="nav-item">
-            <a class="nav-link {{ request()->routeIs('admin.accounts.students.*') ? 'active' : '' }}" href="#"
-              id="studentsDropdown" data-bs-toggle="collapse" data-bs-target="#studentsSubmenu"
-              aria-expanded="{{ request()->routeIs('admin.accounts.students.*') ? 'true' : 'false' }}">
-              <div
-                class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                <i class="fas fa-user-graduate text-dark text-sm opacity-10"></i>
-              </div>
+            <a class="nav-link {{ request()->routeIs('admin.accounts.students.*') ? 'active' : '' }}" href="#" data-bs-toggle="collapse" data-bs-target="#studentsSubmenu" aria-expanded="{{ request()->routeIs('admin.accounts.students.*') ? 'true' : 'false' }}">
+              <i class="fas fa-user-graduate text-dark text-sm opacity-10"></i>
               <span class="nav-link-text ms-1">Students</span>
             </a>
-            <ul class="nav flex-column collapse {{ request()->routeIs('admin.accounts.students.*') ? 'show' : '' }}"
-              id="studentsSubmenu">
+            <ul class="nav flex-column collapse {{ request()->routeIs('admin.accounts.students.*') ? 'show' : '' }}" id="studentsSubmenu">
               <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('admin.accounts.students.create') ? 'active' : '' }}"
-                  href="{{ route('admin.accounts.students.create') }}">
-                  <i class="fas fa-user-plus me-2"></i>
-                  Add Student
+                <a class="nav-link {{ request()->routeIs('admin.accounts.students.create') ? 'active' : '' }}" href="{{ route('admin.accounts.students.create') }}">
+                  <i class="fas fa-user-plus text-dark text-sm opacity-10"></i>
+                  <span class="nav-link-text ms-1">Add Student</span>
                 </a>
               </li>
               <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('admin.accounts.students.list') ? 'active' : '' }}"
-                  href="{{ route('admin.accounts.students.list') }}">
-                  <i class="fas fa-list me-2"></i>
-                  View Students
+                <a class="nav-link {{ request()->routeIs('admin.accounts.students.list') ? 'active' : '' }}" href="{{ route('admin.accounts.students.list') }}">
+                  <i class="fas fa-list text-dark text-sm opacity-10"></i>
+                  <span class="nav-link-text ms-1">View Students</span>
                 </a>
               </li>
             </ul>
           </li>
-          <!-- Teachers -->
           <li class="nav-item">
-            <a class="nav-link {{ request()->routeIs('admin.accounts.teachers.*') ? 'active' : '' }}" href="#"
-              id="teachersDropdown" data-bs-toggle="collapse" data-bs-target="#teachersSubmenu"
-              aria-expanded="{{ request()->routeIs('admin.accounts.teachers.*') ? 'true' : 'false' }}">
-              <div
-                class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                <i class="fas fa-chalkboard-teacher text-dark text-sm opacity-10"></i>
-              </div>
+            <a class="nav-link {{ request()->routeIs('admin.accounts.teachers.*') ? 'active' : '' }}" href="#" data-bs-toggle="collapse" data-bs-target="#teachersSubmenu" aria-expanded="{{ request()->routeIs('admin.accounts.teachers.*') ? 'true' : 'false' }}">
+              <i class="fas fa-chalkboard-teacher text-dark text-sm opacity-10"></i>
               <span class="nav-link-text ms-1">Teachers</span>
             </a>
-            <ul class="nav flex-column collapse {{ request()->routeIs('admin.accounts.teachers.*') ? 'show' : '' }}"
-              id="teachersSubmenu">
+            <ul class="nav flex-column collapse {{ request()->routeIs('admin.accounts.teachers.*') ? 'show' : '' }}" id="teachersSubmenu">
               <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('admin.accounts.teachers.create') ? 'active' : '' }}"
-                  href="{{ route('admin.accounts.teachers.create') }}">
-                  <i class="fas fa-user-plus me-2"></i>
-                  Add Teacher>
+                <a class="nav-link {{ request()->routeIs('admin.accounts.teachers.create') ? 'active' : '' }}" href="{{ route('admin.accounts.teachers.create') }}">
+                  <i class="fas fa-user-plus text-dark text-sm opacity-10"></i>
+                  <span class="nav-link-text ms-1">Add Teacher</span>
                 </a>
               </li>
               <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('admin.accounts.teachers.list') ? 'active' : '' }}"
-                  href="{{ route('admin.accounts.teachers.list') }}">
-                  <i class="fas fa-list me-2"></i>
-                  View Teachers
+                <a class="nav-link {{ request()->routeIs('admin.accounts.teachers.list') ? 'active' : '' }}" href="{{ route('admin.accounts.teachers.list') }}">
+                  <i class="fas fa-list text-dark text-sm opacity-10"></i>
+                  <span class="nav-link-text ms-1">View Teachers</span>
                 </a>
               </li>
             </ul>
           </li>
-          <!-- Admins -->
           <li class="nav-item">
-            <a class="nav-link {{ request()->routeIs('admin.accounts.admins.*') ? 'active' : '' }}" href="#"
-              id="adminsDropdown" data-bs-toggle="collapse" data-bs-target="#adminsSubmenu"
-              aria-expanded="{{ request()->routeIs('admin.accounts.admins.*') ? 'true' : 'false' }}">
-              <div
-                class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                <i class="fas fa-user-shield text-dark text-sm opacity-10"></i>
-              </div>
+            <a class="nav-link {{ request()->routeIs('admin.accounts.admins.*') ? 'active' : '' }}" href="#" data-bs-toggle="collapse" data-bs-target="#adminsSubmenu" aria-expanded="{{ request()->routeIs('admin.accounts.admins.*') ? 'true' : 'false' }}">
+              <i class="fas fa-user-shield text-dark text-sm opacity-10"></i>
               <span class="nav-link-text ms-1">Admins</span>
             </a>
-            <ul class="nav flex-column collapse {{ request()->routeIs('admin.accounts.admins.*') ? 'show' : '' }}"
-              id="adminsSubmenu">
+            <ul class="nav flex-column collapse {{ request()->routeIs('admin.accounts.admins.*') ? 'show' : '' }}" id="adminsSubmenu">
               <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('admin.accounts.admins.create') ? 'active' : '' }}"
-                  href="{{ route('admin.accounts.admins.create') }}">
-                  <i class="fas fa-user-plus me-2"></i>
-                  Add Admin
+                <a class="nav-link {{ request()->routeIs('admin.accounts.admins.create') ? 'active' : '' }}" href="{{ route('admin.accounts.admins.create') }}">
+                  <i class="fas fa-user-plus text-dark text-sm opacity-10"></i>
+                  <span class="nav-link-text ms-1">Add Admin</span>
                 </a>
               </li>
               <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('admin.accounts.admins.list') ? 'active' : '' }}"
-                  href="{{ route('admin.accounts.admins.list') }}">
-                  <i class="fas fa-list me-2"></i>
-                  View Admins
+                <a class="nav-link {{ request()->routeIs('admin.accounts.admins.list') ? 'active' : '' }}" href="{{ route('admin.accounts.admins.list') }}">
+                  <i class="fas fa-list text-dark text-sm opacity-10"></i>
+                  <span class="nav-link-text ms-1">View Admins</span>
                 </a>
               </li>
             </ul>
           </li>
         </ul>
       </li>
-
-      <!-- Educational Management -->
-      <li class="nav-item mt-3">
-        <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">Educational Management</h6>
-      </li>
+      <!-- Materials (Education) -->
       <li class="nav-item">
-        <a class="nav-link {{ request()->routeIs('admin.educational-categories.*') || request()->routeIs('admin.educational-courses.*') || request()->routeIs('admin.educational-packages.*') ? 'active' : '' }}"
-          href="#" id="materialsDropdown" data-bs-toggle="collapse" data-bs-target="#materialsSubmenu"
-          aria-expanded="{{ request()->routeIs('admin.educational-categories.*') || request()->routeIs('admin.educational-courses.*') || request()->routeIs('admin.educational-packages.*') ? 'true' : 'false' }}">
-          <div
-            class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-            <i class="fas fa-book-open text-dark text-sm opacity-10"></i>
-          </div>
-          <span class="nav-link-text ms-1">Educational Materials</span>
+        <a class="nav-link {{ request()->routeIs('admin.educational-categories.*') || request()->routeIs('admin.educational-courses.*') || request()->routeIs('admin.educational-packages.*') ? 'active' : '' }}" href="#" data-bs-toggle="collapse" data-bs-target="#educationSubmenu" aria-expanded="{{ request()->routeIs('admin.educational-categories.*') || request()->routeIs('admin.educational-courses.*') || request()->routeIs('admin.educational-packages.*') ? 'true' : 'false' }}">
+          <i class="fas fa-book text-dark text-sm opacity-10"></i>
+          <span class="nav-link-text ms-1">Materials</span>
         </a>
-
-        <ul
-          class="nav flex-column collapse {{ request()->routeIs('admin.educational-categories.*') || request()->routeIs('admin.educational-courses.*') || request()->routeIs('admin.educational-packages.*') ? 'show' : '' }}"
-          id="materialsSubmenu">
-
-          {{-- Category Management--}}
+        <ul class="nav flex-column collapse {{ request()->routeIs('admin.educational-categories.*') || request()->routeIs('admin.educational-courses.*') || request()->routeIs('admin.educational-packages.*') ? 'show' : '' }}" id="educationSubmenu">
           <li class="nav-item">
-            <a class="nav-link {{ request()->routeIs('admin.educational-categories.*') ? 'active' : '' }}"
-              data-bs-toggle="collapse" href="#categoriesSubmenu"
-              aria-expanded="{{ request()->routeIs('admin.educational-categories.*') ? 'true' : 'false' }}">
-              <i class="fas fa-sitemap me-2 text-dark text-sm opacity-10"></i>
-              Categories
+            <a class="nav-link {{ request()->routeIs('admin.educational-categories.*') ? 'active' : '' }}" href="#" data-bs-toggle="collapse" data-bs-target="#categoriesSubmenu" aria-expanded="{{ request()->routeIs('admin.educational-categories.*') ? 'true' : 'false' }}">
+              <i class="fas fa-sitemap text-dark text-sm opacity-10"></i>
+              <span class="nav-link-text ms-1">Categories</span>
             </a>
-            <ul
-              class="nav flex-column collapse {{ request()->routeIs('admin.educational-categories.*') ? 'show' : '' }}"
-              id="categoriesSubmenu">
+            <ul class="nav flex-column collapse {{ request()->routeIs('admin.educational-categories.*') ? 'show' : '' }}" id="categoriesSubmenu">
               <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('admin.educational-categories.create') ? 'active' : '' }}"
-                  href="{{ route('admin.educational-categories.create') }}">
-                  <i class="fas fa-plus me-2 text-dark text-sm opacity-10"></i>Create Category
+                <a class="nav-link {{ request()->routeIs('admin.educational-categories.create') ? 'active' : '' }}" href="{{ route('admin.educational-categories.create') }}">
+                  <i class="fas fa-plus text-dark text-sm opacity-10"></i>
+                  <span class="nav-link-text ms-1">Create Category</span>
                 </a>
               </li>
               <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('admin.educational-categories.index') ? 'active' : '' }}"
-                  href="{{ route('admin.educational-categories.index') }}">
-                  <i class="fas fa-list me-2 text-dark text-sm opacity-10"></i>View Categories
+                <a class="nav-link {{ request()->routeIs('admin.educational-categories.index') ? 'active' : '' }}" href="{{ route('admin.educational-categories.index') }}">
+                  <i class="fas fa-list text-dark text-sm opacity-10"></i>
+                  <span class="nav-link-text ms-1">View Categories</span>
                 </a>
               </li>
             </ul>
           </li>
-
-          {{-- Courses Management --}}
           <li class="nav-item">
-            <a class="nav-link {{ request()->routeIs('admin.educational-courses.*') ? 'active' : '' }}"
-              data-bs-toggle="collapse" href="#materialsInnerSubmenu"
-              aria-expanded="{{ request()->routeIs('admin.educational-courses.*') ? 'true' : 'false' }}">
-              <i class="fas fa-graduation-cap me-2 text-dark text-sm opacity-10"></i>
-              Courses
+            <a class="nav-link {{ request()->routeIs('admin.educational-courses.*') ? 'active' : '' }}" href="#" data-bs-toggle="collapse" data-bs-target="#coursesSubmenu" aria-expanded="{{ request()->routeIs('admin.educational-courses.*') ? 'true' : 'false' }}">
+              <i class="fas fa-graduation-cap text-dark text-sm opacity-10"></i>
+              <span class="nav-link-text ms-1">Courses</span>
             </a>
-            <ul
-              class="nav flex-column collapse {{ request()->routeIs('admin.educational-courses.*') ? 'show' : '' }}"
-              id="materialsInnerSubmenu">
+            <ul class="nav flex-column collapse {{ request()->routeIs('admin.educational-courses.*') ? 'show' : '' }}" id="coursesSubmenu">
               <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('admin.educational-courses.create') ? 'active' : '' }}"
-                  href="{{ route('admin.educational-courses.create') }}">
-                  <i class="fas fa-plus me-2 text-dark text-sm opacity-10"></i>Create Course
+                <a class="nav-link {{ request()->routeIs('admin.educational-courses.create') ? 'active' : '' }}" href="{{ route('admin.educational-courses.create') }}">
+                  <i class="fas fa-plus text-dark text-sm opacity-10"></i>
+                  <span class="nav-link-text ms-1">Create Course</span>
                 </a>
               </li>
               <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('admin.educational-courses.index') ? 'active' : '' }}"
-                  href="{{ route('admin.educational-courses.index') }}">
-                  <i class="fas fa-list me-2 text-dark text-sm opacity-10"></i>View Courses
+                <a class="nav-link {{ request()->routeIs('admin.educational-courses.index') ? 'active' : '' }}" href="{{ route('admin.educational-courses.index') }}">
+                  <i class="fas fa-list text-dark text-sm opacity-10"></i>
+                  <span class="nav-link-text ms-1">View Courses</span>
                 </a>
               </li>
             </ul>
           </li>
-
-          {{-- Package management--}}
           <li class="nav-item">
-            <a class="nav-link {{ request()->routeIs('admin.educational-packages.*') ? 'active' : '' }}"
-              data-bs-toggle="collapse" href="#packagesSubmenu"
-              aria-expanded="{{ request()->routeIs('admin.educational-packages.*') ? 'true' : 'false' }}">
-              <i class="fas fa-box-archive me-2 text-dark text-sm opacity-10"></i>
-              Packages
+            <a class="nav-link {{ request()->routeIs('admin.educational-packages.*') ? 'active' : '' }}" href="#" data-bs-toggle="collapse" data-bs-target="#packagesSubmenu" aria-expanded="{{ request()->routeIs('admin.educational-packages.*') ? 'true' : 'false' }}">
+              <i class="fas fa-box text-dark text-sm opacity-10"></i>
+              <span class="nav-link-text ms-1">Packages</span>
             </a>
-            <ul class="nav flex-column collapse {{ request()->routeIs('admin.educational-packages.*') ? 'show' : '' }}"
-              id="packagesSubmenu">
+            <ul class="nav flex-column collapse {{ request()->routeIs('admin.educational-packages.*') ? 'show' : '' }}" id="packagesSubmenu">
               <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('admin.educational-packages.create') ? 'active' : '' }}"
-                  href="{{ route('admin.educational-packages.create') }}">
-                  <i class="fas fa-plus me-2 text-dark text-sm opacity-10"></i>Create Package
+                <a class="nav-link {{ request()->routeIs('admin.educational-packages.create') ? 'active' : '' }}" href="{{ route('admin.educational-packages.create') }}">
+                  <i class="fas fa-plus text-dark text-sm opacity-10"></i>
+                  <span class="nav-link-text ms-1">Create Package</span>
                 </a>
               </li>
               <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('admin.educational-packages.index') ? 'active' : '' }}"
-                  href="{{ route('admin.educational-packages.index') }}">
-                  <i class="fas fa-list me-2 text-dark text-sm opacity-10"></i>View Packages
+                <a class="nav-link {{ request()->routeIs('admin.educational-packages.index') ? 'active' : '' }}" href="{{ route('admin.educational-packages.index') }}">
+                  <i class="fas fa-list text-dark text-sm opacity-10"></i>
+                  <span class="nav-link-text ms-1">View Packages</span>
                 </a>
               </li>
             </ul>
           </li>
-
-          <!-- جدولة الكورسات والمسارات -->
-          <li class="nav-item">
-            <a class="nav-link {{ request()->routeIs('admin.schedules.*') ? 'active' : '' }}" href="{{ route('admin.schedules.index') }}">
-              <i class="fas fa-calendar-alt me-2 text-dark text-sm opacity-10"></i>
-              Course scheduling
-            </a>
-          </li>
-
-          <li class="nav-item">
-            <a class="nav-link {{ request()->routeIs('admin.schedules.board') ? 'active' : '' }}" href="{{ route('admin.schedules.board') }}">
-              <i class="fas fa-table me-2 text-dark text-sm opacity-10"></i>
-              Management tables
-            </a>
-          </li>
-
         </ul>
       </li>
+      <!-- Facilities -->
       <li class="nav-item">
-        <a class="nav-link {{ request()->routeIs('admin.finance.*') ? 'active' : '' }}" 
-          href="#" id="financeDropdown" data-bs-toggle="collapse" data-bs-target="#financeSubmenu"
-          aria-expanded="{{ request()->routeIs('admin.finance.*') ? 'true' : 'false' }}">
-          <div
-            class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-            <i class="fas fa-wallet text-dark text-sm opacity-10"></i>
-          </div>
-          <span class="nav-link-text ms-1">Financial Management</span>
+        <a class="nav-link {{ request()->routeIs('admin.facilities.*') ? 'active' : '' }}" href="#" data-bs-toggle="collapse" data-bs-target="#facilitiesSubmenu" aria-expanded="{{ request()->routeIs('admin.facilities.*') ? 'true' : 'false' }}">
+          <i class="fas fa-building text-dark text-sm opacity-10"></i>
+          <span class="nav-link-text ms-1">Facilities</span>
         </a>
-        <ul class="nav flex-column collapse {{ request()->routeIs('admin.finance.*') ? 'show' : '' }}"
-          id="financeSubmenu" data-bs-parent="#sidebarAccordion">
-          <li class="nav-item">
-            <a class="nav-link {{ request()->routeIs('admin.finance.payments') ? 'active' : '' }}" href="{{ route('admin.finance.payments') }}">
-              <i class="fas fa-money-check-alt me-2"></i>All financial transactions
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/admin/transactions">
-              <i class="fas fa-chart-line me-2"></i> Transaction management
-            </a>
-          </li>
-          <!-- <li class="nav-item">
-            <a class="nav-link" href="{{ route('admin.accounts.students.list') }}">
-              <i class="fas fa-user-graduate me-2"></i>حسابات الطلاب
-            </a>
-          </li> -->
-          <!-- <li class="nav-item">
-            <a class="nav-link" href="{{ route('admin.accounts.teachers.list') }}">
-              <i class="fas fa-chalkboard-teacher me-2"></i>حسابات الأساتذة
-            </a>
-          </li> -->
-        </ul>
-      </li>
-
-       <!-- Facilities Management -->
-       <li class="nav-item">
-        <a class="nav-link {{ request()->routeIs('admin.facilities.*') ? 'active' : '' }}" href="#"
-          id="facilitiesDropdown" data-bs-toggle="collapse" data-bs-target="#facilitiesSubmenu"
-          aria-expanded="{{ request()->routeIs('admin.facilities.*') ? 'true' : 'false' }}">
-          <div
-            class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-            <i class="fas fa-building-user text-dark text-sm opacity-10"></i>
-          </div>
-          <span class="nav-link-text ms-1">Facilities Management</span>
-        </a>
-        <ul class="nav flex-column collapse {{ request()->routeIs('admin.facilities.*') ? 'show' : '' }}"
-          id="facilitiesSubmenu" data-bs-parent="#sidebarAccordion">
+        <ul class="nav flex-column collapse {{ request()->routeIs('admin.facilities.*') ? 'show' : '' }}" id="facilitiesSubmenu" data-bs-parent="#sidebarAccordion">
           <li class="nav-item">
             <a class="nav-link {{ request()->routeIs('admin.facilities.rooms.*') ? 'active' : '' }}" href="{{ route('admin.facilities.rooms.index') }}">
-              <i class="fas fa-door-open me-2 text-dark text-sm opacity-10"></i>
-              Manage Rooms
-            </a>
-          </li>
-          <!-- يمكنك إضافة خيارات أخرى هنا مثل halls أو availability ... -->
-        </ul>
-      </li>
-      <li class="nav-item mt-3">
-        <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">Attendance Management</h6>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link {{ request()->routeIs('admin.attendance.*') ? 'active' : '' }}" href="{{ route('admin.attendance.index') }}">
-          <i class="fas fa-user-check me-2 text-dark text-sm opacity-10"></i>
-          Attendance & Absence
-        </a>
-      </li>
-      <!-- Monitoring and Supervision -->
-      <li class="nav-item disabled">
-        <a class="nav-link {{ request()->routeIs('admin.supervision.*') ? 'active' : '' }}" href="#"
-          id="monitoringDropdown" data-bs-toggle="collapse" data-bs-target="#monitoringSubmenu"
-          aria-expanded="{{ request()->routeIs('admin.supervision.*') ? 'true' : 'false' }}">
-          <div
-            class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-            <i class="fas fa-desktop text-dark text-sm opacity-10"></i>
-          </div>
-          <span class="nav-link-text ms-1">Monitoring & Supervision</span>
-        </a>
-        <ul class="nav flex-column collapse {{ request()->routeIs('admin.supervision.*') ? 'show' : '' }}"
-          id="monitoringSubmenu" data-bs-parent="#sidebarAccordion">
-          <li class="nav-item">
-            <a class="nav-link {{ request()->routeIs('admin.supervision.attendance') ? 'active' : '' }}"
-              href="{{ route('admin.supervision.attendance') }}">
-              <i class="fas fa-user-check me-2"></i>
-              <span class="nav-link-text">Attendance</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link {{ request()->routeIs('admin.supervision.complaints') ? 'active' : '' }}"
-              href="{{ route('admin.supervision.complaints') }}">
-              <i class="fas fa-comment-dots me-2"></i>
-              <span class="nav-link-text">Complaints</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link {{ request()->routeIs('admin.supervision.qr') ? 'active' : '' }}"
-              href="{{ route('admin.supervision.qr') }}">
-              <i class="fas fa-qrcode me-2"></i>
-              <span class="nav-link-text">QR by Course</span>
+              <i class="fas fa-door-open text-dark text-sm opacity-10"></i>
+              <span class="nav-link-text ms-1">Rooms</span>
             </a>
           </li>
         </ul>
       </li>
-
       <!-- Schedules -->
-      <li class="nav-item disabled">
-        <a class="nav-link {{ request()->routeIs('admin.tables.*') ? 'active' : '' }}" href="#" id="scheduleDropdown"
-          data-bs-toggle="collapse" data-bs-target="#scheduleSubmenu"
-          aria-expanded="{{ request()->routeIs('admin.tables.*') ? 'true' : 'false' }}">
-          <div
-            class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-            <i class="fas fa-calendar-alt text-dark text-sm opacity-10"></i>
-          </div>
+      <li class="nav-item">
+        <a class="nav-link {{ request()->routeIs('admin.schedules.*') ? 'active' : '' }}" href="#" data-bs-toggle="collapse" data-bs-target="#schedulesSubmenu" aria-expanded="{{ request()->routeIs('admin.schedules.*') ? 'true' : 'false' }}">
+          <i class="fas fa-calendar-alt text-dark text-sm opacity-10"></i>
           <span class="nav-link-text ms-1">Schedules</span>
         </a>
-        <ul class="nav flex-column collapse {{ request()->routeIs('admin.tables.*') ? 'show' : '' }}"
-          id="scheduleSubmenu" data-bs-parent="#sidebarAccordion">
+        <ul class="nav flex-column collapse {{ request()->routeIs('admin.schedules.*') ? 'show' : '' }}" id="schedulesSubmenu">
           <li class="nav-item">
-            <a class="nav-link {{ request()->routeIs('admin.tables.create') ? 'active' : '' }}" href="{{ route('admin.tables.create') }}">
-              <div
-                class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                <i class="fas fa-plus text-dark text-sm opacity-10"></i>
-              </div>
-              <span class="nav-link-text ms-1">Create Schedule</span>
+            <a class="nav-link {{ request()->routeIs('admin.schedules.index') ? 'active' : '' }}" href="{{ route('admin.schedules.index') }}">
+              <i class="fas fa-calendar-day text-dark text-sm opacity-10"></i>
+              <span class="nav-link-text ms-1">Course Scheduling</span>
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link {{ request()->routeIs('admin.tables.edit') ? 'active' : '' }}" href="{{ route('admin.tables.edit') }}">
-              <div
-                class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                <i class="fas fa-edit text-dark text-sm opacity-10"></i>
-              </div>
-              <span class="nav-link-text ms-1">Edit Schedule</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link {{ request()->routeIs('admin.tables.list') ? 'active' : '' }}" href="{{ route('admin.tables.list') }}">
-              <div
-                class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                <i class="fas fa-list text-dark text-sm opacity-10"></i>
-              </div>
-              <span class="nav-link-text ms-1">View Schedules</span>
+            <a class="nav-link {{ request()->routeIs('admin.schedules.board') ? 'active' : '' }}" href="{{ route('admin.schedules.board') }}">
+              <i class="fas fa-table text-dark text-sm opacity-10"></i>
+              <span class="nav-link-text ms-1">Management Tables</span>
             </a>
           </li>
         </ul>
       </li>
-
-      <!-- Financial -->
-   
-
-   
-      <!-- Exams Management -->
-      <li class="nav-item disabled">
-        <a class="nav-link {{ request()->routeIs('admin.exams.*') ? 'active' : '' }}" href="#" id="examsDropdown"
-          data-bs-toggle="collapse" data-bs-target="#examsSubmenu"
-          aria-expanded="{{ request()->routeIs('admin.exams.*') ? 'true' : 'false' }}">
-          <div
-            class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-            <i class="fas fa-pencil-ruler text-dark text-sm opacity-10"></i>
-          </div>
-          <span class="nav-link-text ms-1">Exams Management</span>
+      <!-- Attendance -->
+      <li class="nav-item">
+        <a class="nav-link {{ request()->routeIs('admin.attendance.*') ? 'active' : '' }}" href="#" data-bs-toggle="collapse" data-bs-target="#attendanceSubmenu" aria-expanded="{{ request()->routeIs('admin.attendance.*') ? 'true' : 'false' }}">
+          <i class="fas fa-user-check text-dark text-sm opacity-10"></i>
+          <span class="nav-link-text ms-1">Attendance</span>
         </a>
-        <ul class="nav flex-column collapse {{ request()->routeIs('admin.exams.*') ? 'show' : '' }}"
-          id="examsSubmenu" data-bs-parent="#sidebarAccordion">
+        <ul class="nav flex-column collapse {{ request()->routeIs('admin.attendance.*') ? 'show' : '' }}" id="attendanceSubmenu">
           <li class="nav-item">
-            <a class="nav-link {{ request()->routeIs('admin.exams.questions') ? 'active' : '' }}" href="#">
-              <i class="fas fa-question-circle me-2"></i> Question Bank
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link {{ request()->routeIs('admin.exams.list') ? 'active' : '' }}" href="#">
-              <i class="fas fa-list-alt me-2"></i> Manage Exams
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link {{ request()->routeIs('admin.exams.results') ? 'active' : '' }}" href="#">
-              <i class="fas fa-poll-h me-2"></i> View Results
+            <a class="nav-link {{ request()->routeIs('admin.attendance.index') ? 'active' : '' }}" href="{{ route('admin.attendance.index') }}">
+              <i class="fas fa-calendar-check text-dark text-sm opacity-10"></i>
+              <span class="nav-link-text ms-1">Attendance & Absence</span>
             </a>
           </li>
         </ul>
       </li>
-
-      <!-- Reports & Analytics -->
-      <li class="nav-item disabled">
-        <a class="nav-link {{ request()->routeIs('admin.reports.*') ? 'active' : '' }}" href="#"
-          id="reportsDropdown" data-bs-toggle="collapse" data-bs-target="#reportsSubmenu"
-          aria-expanded="{{ request()->routeIs('admin.reports.*') ? 'true' : 'false' }}">
-          <div
-            class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-            <i class="fas fa-chart-pie text-dark text-sm opacity-10"></i>
-          </div>
-          <span class="nav-link-text ms-1">Reports & Analytics</span>
+      <!-- Finance -->
+      <li class="nav-item">
+        <a class="nav-link {{ request()->routeIs('admin.finance.*') ? 'active' : '' }}" href="#" data-bs-toggle="collapse" data-bs-target="#financeSubmenu" aria-expanded="{{ request()->routeIs('admin.finance.*') ? 'true' : 'false' }}">
+          <i class="fas fa-wallet text-dark text-sm opacity-10"></i>
+          <span class="nav-link-text ms-1">Finance</span>
         </a>
-        <ul class="nav flex-column collapse {{ request()->routeIs('admin.reports.*') ? 'show' : '' }}"
-          id="reportsSubmenu" data-bs-parent="#sidebarAccordion">
+        <ul class="nav flex-column collapse {{ request()->routeIs('admin.finance.*') ? 'show' : '' }}" id="financeSubmenu" data-bs-parent="#sidebarAccordion">
           <li class="nav-item">
-            <a class="nav-link {{ request()->routeIs('admin.reports.enrollment') ? 'active' : '' }}" href="#">
-              <i class="fas fa-users me-2"></i> Enrollment Reports
+            <a class="nav-link {{ request()->routeIs('admin.finance.payments') ? 'active' : '' }}" href="{{ route('admin.finance.payments') }}">
+              <i class="fas fa-money-check-alt text-dark text-sm opacity-10"></i>
+              <span class="nav-link-text ms-1">Payments</span>
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link {{ request()->routeIs('admin.reports.financial') ? 'active' : '' }}" href="#">
-              <i class="fas fa-file-invoice-dollar me-2"></i> Financial Reports
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link {{ request()->routeIs('admin.reports.activity') ? 'active' : '' }}" href="#">
-              <i class="fas fa-history me-2"></i> Activity Log
+            <a class="nav-link {{ request()->routeIs('admin.transactions.*') ? 'active' : '' }}" href="/admin/transactions">
+              <i class="fas fa-chart-line text-dark text-sm opacity-10"></i>
+              <span class="nav-link-text ms-1">Transactions</span>
             </a>
           </li>
         </ul>
       </li>
-
-      <!-- Website Management -->
-      <li class="nav-item disabled">
-        <a class="nav-link {{ request()->routeIs('admin.site.*') ? 'active' : '' }}" href="#" id="siteDropdown"
-          data-bs-toggle="collapse" data-bs-target="#siteSubmenu"
-          aria-expanded="{{ request()->routeIs('admin.site.*') ? 'true' : 'false' }}">
-          <div
-            class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-            <i class="fas fa-cogs text-dark text-sm opacity-10"></i>
-          </div>
-          <span class="nav-link-text ms-1">Website Management</span>
-        </a>
-        <ul class="nav flex-column collapse {{ request()->routeIs('admin.site.*') ? 'show' : '' }}"
-          id="siteSubmenu" data-bs-parent="#sidebarAccordion">
-          <li class="nav-item">
-            <a class="nav-link {{ request()->routeIs('admin.site.pages') ? 'active' : '' }}" href="#">
-              <i class="fas fa-file-alt me-2"></i> Manage Pages
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link {{ request()->routeIs('admin.site.announcements') ? 'active' : '' }}" href="#">
-              <i class="fas fa-bullhorn me-2"></i> Announcements
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link {{ request()->routeIs('admin.site.settings') ? 'active' : '' }}" href="#">
-              <i class="fas fa-sliders-h me-2"></i> General Settings
-            </a>
-          </li>
         </ul>
-      </li>
 
-      <!-- Attendance Management -->
-   
-    </ul>
+        
   </div>
 
 </aside>
