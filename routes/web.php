@@ -42,7 +42,7 @@ Route::get('user/News', [HomeController::class, 'ShowNewsPage'])->name('news_pag
 Route::get('user/Staff', [HomeController::class, 'ShowStaffPage'])->name('Staff_page');
 Route::get('user/Elements', [HomeController::class, 'ShowElementsPage'])->name('elements_page');
 Route::get('user/Contact', [HomeController::class, 'ShowContactPage'])->name('Contact_page');
-Route::get('user/Profile', [HomeController::class, 'ShowProfilePage'])->name('profile_page');
+Route::get('user/Profile', [HomeController::class, 'ShowProfilePage'])->middleware('auth')->name('profile_page');
 
 // ChatBot Routes
 Route::get('user/chatbot', [ChatBotController::class, 'showChat'])->name('chatbot');

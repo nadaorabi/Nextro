@@ -69,7 +69,7 @@
   width: 110px;
   height: 110px;
   border-radius: 50%;
-  object-fit: cover; /* ✅ يجعل الصورة تملأ الدائرة تمامًا */
+  object-fit: cover; /* ✅ Makes the image fill the circle completely */
   object-position: center center;
   display: block;
   margin: 0 auto;
@@ -92,14 +92,19 @@
 </style>
 
 <div class="container py-4 d-flex justify-content-center">
-  <div class="w-100 mx-auto" style="max-width: 700px;">
+  <div class="w-100 mx-auto" style="max-width: 800px;">
     
     <div class="text-center mb-4">
-      <img src="{{ asset('images/staff_1.jpg') }}" alt="Profile Picture" class="rounded-circle">
+      @if(Auth::user()->image)
+        <img src="{{ asset(Auth::user()->image) }}" alt="Profile Picture" class="rounded-circle">
+      @else
+        <img src="{{ asset('images/staff_1.jpg') }}" alt="Profile Picture" class="rounded-circle">
+      @endif
     
       @auth
         <h4 class="mt-3 mb-1 fw-semibold">{{ Auth::user()->name }}</h4>
         <p class="text-muted mb-0">{{ Auth::user()->email }}</p>
+        <p class="text-muted mb-0">Student ID: {{ Auth::user()->login_id }}</p>
       @else
         <h4 class="mt-3 mb-1 fw-semibold">Student Name</h4>
         <p class="text-muted mb-0">email@example.com</p>
@@ -109,26 +114,120 @@
   
     <form id="studentProfileForm" class="bg-white p-4 shadow-sm rounded-4">
       <div class="row gy-3">
+        <!-- Personal Information -->
         <div class="col-12">
-          <label for="firstName" class="form-label">First Name</label>
-          <input type="text" id="firstName" class="form-control" value="Kenneth" readonly>
+          <h5 class="mb-3 text-primary border-bottom pb-2">Personal Information</h5>
         </div>
+        
+        <div class="col-md-6">
+          <label class="form-label">Full Name</label>
+          <input type="text" class="form-control" value="{{ Auth::user()->name ?? '---' }}" readonly>
+        </div>
+        
+
+        
+        <div class="col-md-6">
+          <label class="form-label">Father's Name</label>
+          <input type="text" class="form-control" value="{{ Auth::user()->father_name ?? '---' }}" readonly>
+        </div>
+        
+        <div class="col-md-6">
+          <label class="form-label">Mother's Name</label>
+          <input type="text" class="form-control" value="{{ Auth::user()->mother_name ?? '---' }}" readonly>
+        </div>
+        
+        <div class="col-md-6">
+          <label class="form-label">National ID</label>
+          <input type="text" class="form-control" value="{{ Auth::user()->national_id ?? '---' }}" readonly>
+        </div>
+        
+        <div class="col-md-6">
+          <label class="form-label">Date of Birth</label>
+          <input type="text" class="form-control" value="{{ Auth::user()->birth_date ? \Carbon\Carbon::parse(Auth::user()->birth_date)->format('Y-m-d') : '---' }}" readonly>
+        </div>
+        
         <div class="col-12">
-          <label for="lastName" class="form-label">Last Name</label>
-          <input type="text" id="lastName" class="form-control" value="Valdez" readonly>
+          <label class="form-label">Address</label>
+          <input type="text" class="form-control" value="{{ Auth::user()->address ?? '---' }}" readonly>
         </div>
+        
+        <!-- Contact Information -->
         <div class="col-12">
-          <label for="email" class="form-label">Email</label>
-          <input type="email" id="email" class="form-control" value="kenneth@example.com" readonly>
+          <h5 class="mb-3 text-primary border-bottom pb-2 mt-4">Contact Information</h5>
         </div>
+        
+        <div class="col-md-6">
+          <label class="form-label">Email Address</label>
+          <input type="email" class="form-control" value="{{ Auth::user()->email ?? '---' }}" readonly>
+        </div>
+        
+        <div class="col-md-6">
+          <label class="form-label">Primary Mobile Number</label>
+          <input type="text" class="form-control" value="{{ Auth::user()->mobile ?? '---' }}" readonly>
+        </div>
+        
+        <div class="col-md-6">
+          <label class="form-label">Alternative Mobile Number</label>
+          <input type="text" class="form-control" value="{{ Auth::user()->alt_mobile ?? '---' }}" readonly>
+        </div>
+        
+        <!-- Account Information -->
         <div class="col-12">
-          <label for="phone" class="form-label">Phone Number</label>
-          <input type="text" id="phone" class="form-control" value="+1234567890" readonly>
+          <h5 class="mb-3 text-primary border-bottom pb-2 mt-4">Account Information</h5>
         </div>
+        
+        <div class="col-md-6">
+          <label class="form-label">Student ID (Login ID)</label>
+          <input type="text" class="form-control" value="{{ Auth::user()->login_id ?? '---' }}" readonly>
+        </div>
+        
+        <div class="col-md-6">
+          <label class="form-label">Account Type</label>
+          <input type="text" class="form-control" value="{{ Auth::user()->role == 'student' ? 'Student' : (Auth::user()->role == 'teacher' ? 'Teacher' : (Auth::user()->role == 'admin' ? 'Admin' : '---')) }}" readonly>
+        </div>
+        
+        <div class="col-md-6">
+          <label class="form-label">Account Status</label>
+          <input type="text" class="form-control" value="{{ Auth::user()->is_active == 1 ? 'Active' : 'Inactive' }}" readonly>
+        </div>
+        
+        <div class="col-md-6">
+          <label class="form-label">Registration Date</label>
+          <input type="text" class="form-control" value="{{ Auth::user()->created_at ? Auth::user()->created_at->format('Y-m-d') : '---' }}" readonly>
+        </div>
+        
+        <div class="col-md-6">
+          <label class="form-label">Last Updated</label>
+          <input type="text" class="form-control" value="{{ Auth::user()->updated_at ? Auth::user()->updated_at->format('Y-m-d') : '---' }}" readonly>
+        </div>
+        
+        @if(Auth::user()->specialization)
+        <div class="col-md-6">
+          <label class="form-label">Specialization</label>
+          <input type="text" class="form-control" value="{{ Auth::user()->specialization ?? '---' }}" readonly>
+        </div>
+        @endif
+        
+        <!-- Notes -->
+        @if(Auth::user()->notes || Auth::user()->note)
         <div class="col-12">
-          <label for="address" class="form-label">Address</label>
-          <input type="text" id="address" class="form-control" value="Bay Area, San Francisco, CA" readonly>
+          <h5 class="mb-3 text-primary border-bottom pb-2 mt-4">Notes</h5>
         </div>
+        
+        @if(Auth::user()->notes)
+        <div class="col-12">
+          <label class="form-label">General Notes</label>
+          <textarea class="form-control" rows="3" readonly>{{ Auth::user()->notes ?? '---' }}</textarea>
+        </div>
+        @endif
+        
+        @if(Auth::user()->note)
+        <div class="col-12">
+          <label class="form-label">Additional Notes</label>
+          <textarea class="form-control" rows="3" readonly>{{ Auth::user()->note ?? '---' }}</textarea>
+        </div>
+        @endif
+        @endif
       </div>
     </form>
   </div>
