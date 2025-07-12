@@ -7,7 +7,7 @@
   <link rel="apple-touch-icon" sizes="76x76" href="{{ asset('images/apple-icon.png') }}">
   <link rel="icon" type="image/png" href="{{ asset('images/favicon.png') }}">
   <title>
-    جداول المعلم - {{ $teacher->name }}
+    Teacher Schedules - {{ $teacher->name }}
   </title>
   <!--     Fonts and icons     -->
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
@@ -19,82 +19,165 @@
   <!-- CSS Files -->
   <link id="pagestyle" href="{{ asset('css/argon-dashboard.css') }}" rel="stylesheet" />
   <style>
+    .page-header {
+      background: linear-gradient(135deg,rgb(255, 255, 255) 0%,rgb(255, 255, 255) 100%);
+      color: rgb(123, 105, 172);
+      border-radius: 15px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+    
     .schedule-card {
-      transition: all 0.3s ease;
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 2px 15px rgba(0,0,0,0.08);
       border: none;
-      box-shadow: 0 0 2rem 0 rgba(136, 152, 170, .15);
+      transition: all 0.3s ease;
     }
+    
     .schedule-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 0.5rem 2rem 0 rgba(136, 152, 170, .2);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 25px rgba(0,0,0,0.12);
     }
+    
+    .table-header {
+      background: linear-gradient(135deg,rgb(255, 255, 255) 0%,rgb(255, 255, 255) 100%) !important;
+      color: rgb(123, 105, 172) !important;
+      border-bottom: 2px solid #e9ecef;
+    }
+    
+    .table-header th {
+      color: rgb(123, 105, 172) !important;
+      font-weight: 600 !important;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      letter-spacing: 0.5px;
+    }
+    
     .table-row {
       transition: all 0.2s ease;
+      border-bottom: 1px solid #f8f9fa;
     }
+    
     .table-row:hover {
-      background-color: #f8f9fe !important;
+      background: linear-gradient(135deg, rgba(0, 123, 255, 0.05) 0%, rgba(0, 86, 179, 0.05) 100%) !important;
       transform: scale(1.01);
     }
+    
     .time-badge {
-      background: linear-gradient(45deg, #5e72e4, #825ee4);
+      background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
       color: white;
-      padding: 0.5rem 1rem;
-      border-radius: 50px;
-      font-size: 0.875rem;
+      padding: 0.4rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      display: inline-block;
+      box-shadow: 0 2px 8px rgba(108, 117, 125, 0.3);
     }
+    
     .room-badge {
-      background: linear-gradient(45deg, #11cdef, #1171ef);
+      background: linear-gradient(135deg, #495057 0%, #343a40 100%);
       color: white;
-      padding: 0.5rem 1rem;
-      border-radius: 50px;
-      font-size: 0.875rem;
+      padding: 0.4rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      display: inline-block;
+      box-shadow: 0 2px 8px rgba(73, 80, 87, 0.3);
     }
+    
     .subject-badge {
-      background: linear-gradient(45deg, #fb6340, #fbb140);
+      background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%);
       color: white;
-      padding: 0.5rem 1rem;
-      border-radius: 50px;
-      font-size: 0.875rem;
+      padding: 0.4rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      display: inline-block;
+      box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
     }
+    
     .category-badge {
-      background: linear-gradient(45deg, #2dce89, #2dcecc);
+      background: linear-gradient(135deg, #20c997 0%, #1ea085 100%);
       color: white;
-      padding: 0.5rem 1rem;
-      border-radius: 50px;
-      font-size: 0.875rem;
+      padding: 0.4rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      display: inline-block;
+      box-shadow: 0 2px 8px rgba(32, 201, 151, 0.3);
     }
-    .table-header {
-      background: linear-gradient(45deg, #5e72e4, #825ee4) !important;
-    }
-    .table-container {
-      border-radius: 1rem;
-      overflow: hidden;
-      box-shadow: 0 0 2rem 0 rgba(136, 152, 170, .15);
-    }
-    .schedule-title {
-      font-size: 1.5rem;
-      font-weight: 600;
-      color: #344767;
-      margin-bottom: 1rem;
-    }
-    .schedule-subtitle {
-      color: #67748e;
-      font-size: 1rem;
-      margin-bottom: 2rem;
-    }
-    .teacher-info-card {
-      background: linear-gradient(45deg, #5e72e4, #825ee4);
-      color: white;
-      border-radius: 1rem;
-      padding: 1.5rem;
-      margin-bottom: 2rem;
-    }
+    
     .stats-card {
       background: white;
-      border-radius: 1rem;
+      border-radius: 15px;
       padding: 1.5rem;
-      box-shadow: 0 0 2rem 0 rgba(136, 152, 170, .15);
+      box-shadow: 0 2px 15px rgba(0,0,0,0.08);
       margin-bottom: 1rem;
+      border: 1px solid #e9ecef;
+      transition: all 0.3s ease;
+    }
+    
+    .stats-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 25px rgba(0,0,0,0.12);
+    }
+    
+    .stats-number {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: rgb(123, 105, 172);
+    }
+    
+    .stats-label {
+      color: #6c757d;
+      font-size: 0.875rem;
+    }
+    
+    .card-header {
+      background: linear-gradient(135deg,rgb(245, 247, 249) 0%,rgb(255, 255, 255) 100%);
+      color: rgb(123, 105, 172);
+      border-radius: 15px 15px 0 0;
+      border: none;
+    }
+    
+    .card-header h5, .card-header h6 {
+      color: rgb(123, 105, 172) !important;
+      font-weight: 600;
+    }
+    
+    .card-header i {
+      color: rgb(123, 105, 172) !important;
+    }
+    
+    .course-statistics-header h6 {
+      color: rgb(123, 105, 172) !important;
+    }
+    
+    .course-statistics-header i {
+      color: rgb(123, 105, 172) !important;
+    }
+    
+    .table {
+      margin-bottom: 0;
+    }
+    
+    .table td {
+      vertical-align: middle;
+      padding: 1rem 0.75rem;
+    }
+    
+    .table th {
+      padding: 1rem 0.75rem;
+      border-top: none;
+    }
+    
+    .empty-state {
+      background: linear-gradient(135deg, rgba(0, 123, 255, 0.05) 0%, rgba(0, 86, 179, 0.05) 100%);
+      border-radius: 15px;
+      padding: 3rem 2rem;
+    }
+    
+    .empty-state i {
+      color: rgb(123, 105, 172);
+      opacity: 0.8;
     }
   </style>
 </head>
@@ -107,36 +190,18 @@
   
     <!-- End Navbar -->
     <div class="container-fluid py-4">
-      <div class="row">
+      
+      <!-- Page Header -->
+      <div class="row mb-4">
         <div class="col-12">
-          <!-- معلومات المعلم -->
-          <div class="teacher-info-card">
-            <div class="row align-items-center">
-              <div class="col-md-8">
-                <h3 class="mb-2">
-                  <i class="fas fa-chalkboard-teacher me-2"></i>
-                  {{ $teacher->name }}
-                </h3>
-                <p class="mb-1">
-                  <i class="fas fa-id-card me-2"></i>
-                  رقم الهوية: {{ $teacher->login_id }}
-                </p>
-                <p class="mb-1">
-                  <i class="fas fa-phone me-2"></i>
-                  الهاتف: {{ $teacher->mobile ?? 'غير محدد' }}
-                </p>
-                @if($teacher->email)
-                <p class="mb-0">
-                  <i class="fas fa-envelope me-2"></i>
-                  البريد الإلكتروني: {{ $teacher->email }}
-                </p>
-                @endif
+          <div class="page-header">
+            <div class="d-flex align-items-center">
+              <div class="me-3">
+                <i class="fas fa-calendar-alt fa-2x"></i>
               </div>
-              <div class="col-md-4 text-end">
-                <div class="stats-card">
-                  <h4 class="mb-1">{{ $teacherCourses->count() }}</h4>
-                  <p class="mb-0 text-muted">الكورسات</p>
-                </div>
+              <div>
+                <h2 class="mb-1">Teacher Schedules</h2>
+                <p class="mb-0 opacity-75">View all schedules and courses for {{ $teacher->name }}</p>
               </div>
             </div>
           </div>
@@ -145,89 +210,84 @@
      
       <div class="row">
         <div class="col-12">
-          <div class="schedule-card card mb-4">
+          <div class="schedule-card card">
             <div class="card-header pb-0">
               <div class="d-flex align-items-center">
-                <i class="fa fa-calendar-alt text-primary me-2" style="font-size:1.5rem;"></i>
-                <div>
-                  <h5 class="schedule-title mb-0">جداول المعلم</h5>
-                  <p class="schedule-subtitle mb-0">جميع الجداول والكورسات الخاصة بالمعلم</p>
-                </div>
+                <i class="fas fa-table text-muted me-2"></i>
+                <h5 class="mb-0">Schedule Details</h5>
               </div>
             </div>
             <div class="card-body px-0 pt-0 pb-2">
               <div class="table-responsive p-0">
-                <div class="table-container">
-                  <table class="table align-items-center mb-0">
-                    <thead class="table-header">
-                      <tr>
-                        <th class="text-uppercase text-white text-xxs font-weight-bolder opacity-8 ps-4">التاريخ</th>
-                        <th class="text-uppercase text-white text-xxs font-weight-bolder opacity-8">اليوم</th>
-                        <th class="text-uppercase text-white text-xxs font-weight-bolder opacity-8">الوقت</th>
-                        <th class="text-uppercase text-white text-xxs font-weight-bolder opacity-8">القاعة</th>
-                        <th class="text-uppercase text-white text-xxs font-weight-bolder opacity-8">المادة</th>
-                        <th class="text-uppercase text-white text-xxs font-weight-bolder opacity-8">المسار</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      @forelse($allSchedules as $schedule)
-                      <tr class="table-row">
-                        <td class="ps-4">
-                          <span class="text-secondary text-xs font-weight-bold">
-                            {{ \Carbon\Carbon::parse($schedule['session_date'])->format('Y-m-d') }}
-                          </span>
-                        </td>
-                        <td>
-                          <span class="text-secondary text-xs font-weight-bold">
-                            {{ __(ucfirst($schedule['day_of_week'])) }}
-                          </span>
-                        </td>
-                        <td>
-                          <span class="time-badge">
-                            <i class="fa fa-clock me-1"></i>
-                            {{ substr($schedule['start_time'], 0, 5) }} - {{ substr($schedule['end_time'], 0, 5) }}
-                          </span>
-                        </td>
-                        <td>
-                          <span class="room-badge">
-                            <i class="fa fa-door-open me-1"></i>
-                            {{ $schedule['room'] ?: 'غير محدد' }}
-                          </span>
-                        </td>
-                        <td>
-                          <span class="subject-badge">{{ $schedule['course'] }}</span>
-                        </td>
-                        <td>
-                          <span class="category-badge">{{ $schedule['category'] }}</span>
-                        </td>
-                      </tr>
-                      @empty
-                      <tr>
-                        <td colspan="6" class="text-center text-muted py-4">
-                          <i class="fas fa-calendar-times fa-2x mb-3"></i>
-                          <p class="mb-0">لا توجد جداول لهذا المعلم حالياً</p>
-                        </td>
-                      </tr>
-                      @endforelse
-                    </tbody>
-                  </table>
-                </div>
+                <table class="table align-items-center mb-0">
+                  <thead class="table-header">
+                    <tr>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-4">Date</th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Day</th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Time</th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Room</th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Subject</th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Category</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @forelse($allSchedules as $schedule)
+                    <tr class="table-row">
+                      <td class="ps-4">
+                        <span class="text-secondary text-xs font-weight-bold">
+                          {{ \Carbon\Carbon::parse($schedule['session_date'])->format('Y-m-d') }}
+                        </span>
+                      </td>
+                      <td>
+                        <span class="text-secondary text-xs font-weight-bold">
+                          {{ __(ucfirst($schedule['day_of_week'])) }}
+                        </span>
+                      </td>
+                      <td>
+                        <span class="time-badge">
+                          <i class="fas fa-clock me-1"></i>
+                          {{ substr($schedule['start_time'], 0, 5) }} - {{ substr($schedule['end_time'], 0, 5) }}
+                        </span>
+                      </td>
+                      <td>
+                        <span class="room-badge">
+                          <i class="fas fa-door-open me-1"></i>
+                          {{ $schedule['room'] ?: 'Not specified' }}
+                        </span>
+                      </td>
+                      <td>
+                        <span class="subject-badge">{{ $schedule['course'] }}</span>
+                      </td>
+                      <td>
+                        <span class="category-badge">{{ $schedule['category'] }}</span>
+                      </td>
+                    </tr>
+                    @empty
+                    <tr>
+                      <td colspan="6" class="text-center text-muted py-4 empty-state">
+                        <i class="fas fa-calendar-times fa-2x mb-3 d-block"></i>
+                        <p class="mb-0">No schedules found for this teacher</p>
+                      </td>
+                    </tr>
+                    @endforelse
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- إحصائيات إضافية -->
+      <!-- Course Statistics -->
       @if($teacherCourses->count() > 0)
       <div class="row mt-4">
         <div class="col-12">
-          <div class="card">
+          <div class="schedule-card card">
             <div class="card-header pb-0">
-              <h6 class="mb-0">
+              <div class="d-flex align-items-center course-statistics-header">
                 <i class="fas fa-chart-bar me-2"></i>
-                إحصائيات الكورسات
-              </h6>
+                <h6 class="mb-0">Course Statistics</h6>
+              </div>
             </div>
             <div class="card-body">
               <div class="row">
@@ -235,19 +295,19 @@
                 @php $course = $courseInstructor->course; @endphp
                 <div class="col-md-4 mb-3">
                   <div class="stats-card">
-                    <h6 class="mb-2">{{ $course->title }}</h6>
+                    <h6 class="mb-3 text-dark">{{ $course->title }}</h6>
                     <div class="row text-center">
                       <div class="col-6">
-                        <h5 class="text-primary mb-1">{{ $course->enrollments->count() }}</h5>
-                        <small class="text-muted">الطلاب</small>
+                        <div class="stats-number">{{ $course->enrollments->count() }}</div>
+                        <div class="stats-label">Students</div>
                       </div>
                       <div class="col-6">
-                        <h5 class="text-success mb-1">{{ $course->schedules->count() }}</h5>
-                        <small class="text-muted">الحصص</small>
+                        <div class="stats-number">{{ $course->schedules->count() }}</div>
+                        <div class="stats-label">Sessions</div>
                       </div>
                     </div>
-                    <div class="mt-2">
-                      <span class="badge bg-info">{{ $course->category->name ?? 'غير محدد' }}</span>
+                    <div class="mt-3">
+                      <span class="badge bg-secondary me-1">{{ $course->category->name ?? 'Not specified' }}</span>
                       @if($courseInstructor->percentage > 0)
                       <span class="badge bg-warning">{{ $courseInstructor->percentage }}%</span>
                       @endif
@@ -308,84 +368,3 @@
         </div>
         <div class="float-end mt-4">
           <button class="btn btn-link text-dark p-0 fixed-plugin-close-button">
-            <i class="fa fa-close"></i>
-          </button>
-        </div>
-        <!-- End Toggle Button -->
-      </div>
-      <hr class="horizontal dark my-1">
-      <div class="card-body pt-sm-3 pt-0 overflow-auto">
-        <!-- Sidebar Backgrounds -->
-        <div>
-          <h6 class="mb-0">Sidebar Colors</h6>
-        </div>
-        <a href="javascript:void(0)" class="switch-trigger background-color">
-          <div class="badge-colors my-2 text-start">
-            <span class="badge filter bg-gradient-primary active" data-color="primary" onclick="sidebarColor(this)"></span>
-            <span class="badge filter bg-gradient-dark" data-color="dark" onclick="sidebarColor(this)"></span>
-            <span class="badge filter bg-gradient-info" data-color="info" onclick="sidebarColor(this)"></span>
-            <span class="badge filter bg-gradient-success" data-color="success" onclick="sidebarColor(this)"></span>
-            <span class="badge filter bg-gradient-warning" data-color="warning" onclick="sidebarColor(this)"></span>
-            <span class="badge filter bg-gradient-danger" data-color="danger" onclick="sidebarColor(this)"></span>
-          </div>
-        </a>
-        <!-- Sidenav Type -->
-        <div class="mt-3">
-          <h6 class="mb-0">Sidenav Type</h6>
-          <p class="text-sm">Choose between 2 different sidenav types.</p>
-        </div>
-        <div class="d-flex">
-          <button class="btn bg-gradient-primary w-100 px-3 mb-2 active me-2" data-class="bg-white" onclick="sidebarType(this)">White</button>
-          <button class="btn bg-gradient-primary w-100 px-3 mb-2" data-class="bg-default" onclick="sidebarType(this)">Dark</button>
-        </div>
-        <p class="text-sm d-xl-none d-block mt-2">You can change the sidenav type just on desktop view.</p>
-        <!-- Navbar Fixed -->
-        <div class="d-flex my-3">
-          <h6 class="mb-0">Navbar Fixed</h6>
-          <div class="form-check form-switch ps-0 ms-auto my-auto">
-            <input class="form-check-input mt-1 ms-auto" type="checkbox" id="navbarFixed" onclick="navbarFixed(this)">
-          </div>
-        </div>
-        <hr class="horizontal dark my-sm-4">
-        <div class="mt-2 mb-5 d-flex">
-          <h6 class="mb-0">Light / Dark</h6>
-          <div class="form-check form-switch ps-0 ms-auto my-auto">
-            <input class="form-check-input mt-1 ms-auto" type="checkbox" id="dark-version" onclick="darkMode(this)">
-          </div>
-        </div>
-        <a class="btn bg-gradient-dark w-100" href="https://www.creative-tim.com/product/argon-dashboard">Free Download</a>
-        <a class="btn btn-outline-dark w-100" href="https://www.creative-tim.com/learning-lab/bootstrap/license/argon-dashboard">View documentation</a>
-        <div class="w-100 text-center">
-          <a class="github-button" href="https://github.com/creativetimofficial/argon-dashboard" data-icon="octicon-star" data-size="large" data-show-count="true" aria-label="Star creativetimofficial/argon-dashboard on GitHub">Star</a>
-          <h6 class="mt-3">Thank you for sharing!</h6>
-          <a href="https://twitter.com/intent/tweet?text=Check%20Argon%20Dashboard%20made%20by%20%40CreativeTim%20%23webdesign%20%23dashboard%20%23bootstrap5&amp;url=https%3A%2F%2Fwww.creative-tim.com%2Fproduct%2Fargon-dashboard" class="btn btn-dark mb-0 me-2" target="_blank">
-            <i class="fab fa-twitter me-1" aria-hidden="true"></i> Tweet
-          </a>
-          <a href="https://www.facebook.com/sharer/sharer.php?u=https://www.creative-tim.com/product/argon-dashboard" class="btn btn-dark mb-0 me-2" target="_blank">
-            <i class="fab fa-facebook-square me-1" aria-hidden="true"></i> Share
-          </a>
-        </div>
-      </div>
-    </div>
-  </div>
-  <!--   Core JS Files   -->
-  <script src="{{ asset('js/core/popper.min.js') }}"></script>
-  <script src="{{ asset('js/core/bootstrap.min.js') }}"></script>
-  <script src="{{ asset('js/plugins/perfect-scrollbar.min.js') }}"></script>
-  <script src="{{ asset('js/plugins/smooth-scrollbar.min.js') }}"></script>
-  <script>
-    var win = navigator.platform.indexOf('Win') > -1;
-    if (win && document.querySelector('#sidenav-scrollbar')) {
-      var options = {
-        damping: '0.5'
-      }
-      Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
-    }
-  </script>
-  <!-- Github buttons -->
-  <script async defer src="https://buttons.github.io/buttons.js"></script>
-  <!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->
-  <script src="{{ asset('js/argon-dashboard.min.js') }}"></script>
-</body>
-
-</html>

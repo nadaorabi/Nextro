@@ -1,89 +1,89 @@
-{{-- تم توحيد نظام الحضور مع الإدارة --}}
+{{-- Unified attendance system with admin --}}
 @extends('layouts.teacher')
 @section('content')
 <div class="container-fluid mt-4">
     <div class="row justify-content-center">
         <div class="col-12 col-lg-11">
-            <!-- Header -->
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <div>
-                    <h2 class="mb-1 fw-bold" style="color:#5f5aad">
-                        <i class="fas fa-clipboard-check text-primary me-2"></i>
-                        إدارة الحضور والغياب
-                    </h2>
-                    <div class="text-muted small">اختر المادة والمحاضرة لأخذ الحضور أو عرض التفاصيل</div>
-                </div>
-                <div>
-                    <a href="{{ route('teacher.attendance.details') }}" class="btn btn-outline-primary me-2">
-                        <i class="fas fa-list me-1"></i> تفاصيل الحضور
-                    </a>
-                    <a href="{{ route('teacher.attendance.export') }}" class="btn btn-outline-success">
-                        <i class="fas fa-download me-1"></i> تصدير البيانات
-                    </a>
+            <!-- Header Card -->
+            <div class="card shadow-sm border-0 mb-4" style="border-radius: 20px; background: #fff; box-shadow: 0 4px 24px 0 rgba(123, 169, 255, 0.15);">
+                <div class="card-body py-4 px-5">
+                    <div class="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between">
+                        <div>
+                            <h2 class="mb-1 fw-bold" style="color:#374a67; font-size:2.1rem;">
+                                <i class="fas fa-clipboard-check me-2" style="color:#7b69ac;"></i>
+                                Attendance Management
+                            </h2>
+                            <div class="small" style="color:#7b69ac;">Select a course and session to take attendance or view details</div>
+                        </div>
+                        <div class="mt-3 mt-md-0">
+                            <a href="{{ route('teacher.attendance.details') }}" class="btn btn-outline-primary me-2">
+                                <i class="fas fa-list me-1"></i> Attendance Details
+                            </a>
+                            <a href="{{ route('teacher.attendance.export') }}" class="btn btn-outline-success">
+                                <i class="fas fa-download me-1"></i> Export Data
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
-
             <!-- Courses List -->
             @forelse($teacherCourses as $courseInstructor)
             @php $course = $courseInstructor->course; @endphp
-            <div class="card mb-4 shadow-sm border-0">
+            <div class="card mb-4 shadow-sm border-0" style="border-radius: 20px; background: #fff; box-shadow: 0 4px 24px 0 rgba(80, 120, 200, 0.10);">
                 <div class="card-body">
                     <div class="d-flex flex-wrap align-items-center justify-content-between mb-2">
-                        <div class="fw-bold" style="color:#5f5aad;font-size:1.1rem">
-                            <i class="fas fa-book me-2"></i>{{ $course->title }}
+                        <div class="fw-bold" style="color:#374a67;font-size:1.1rem">
+                            <i class="fas fa-book me-2" style="color:#3db6f5;"></i>{{ $course->title }}
                         </div>
                         <div class="d-flex align-items-center gap-3">
                             <div class="text-muted small">
-                                <i class="fas fa-users me-1"></i>{{ $course->enrollments->count() }} طالب
+                                <i class="fas fa-users me-1"></i>{{ $course->enrollments->count() }} Students
                             </div>
                             <div>
-                                <span class="badge bg-light text-dark me-1">
+                                <span class="badge bg-light text-dark me-1" style="border:1px solid #e3eafc; background:#f5faff; color:#3db6f5;">
                                     <i class="fas fa-chalkboard-teacher me-1"></i>{{ $courseInstructor->instructor->name }}
                                 </span>
                             </div>
                         </div>
                     </div>
-                    
-                    <!-- معلومات المسار والباكج -->
+                    <!-- Track and Package Info -->
                     <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
                         @if($course->category)
-                            <span class="badge bg-primary">
+                            <span class="badge" style="background:#e3eafc; color:#3db6f5;">
                                 <i class="fas fa-folder me-1"></i>{{ $course->category->name }}
                             </span>
                         @endif
                         @if($course->packages && $course->packages->count() > 0)
-                            <span class="badge bg-success">
-                                <i class="fas fa-box me-1"></i>باكج ({{ $course->packages->count() }})
+                            <span class="badge" style="background:#d1f7e8; color:#1bc98e;">
+                                <i class="fas fa-box me-1"></i>Package ({{ $course->packages->count() }})
                             </span>
                         @endif
                         @if($course->is_free)
-                            <span class="badge bg-warning text-dark">
-                                <i class="fas fa-gift me-1"></i>مجاني
+                            <span class="badge" style="background:#fff3cd; color:#856404;">
+                                <i class="fas fa-gift me-1"></i>Free
                             </span>
                         @else
-                            <span class="badge bg-info">
-                                <i class="fas fa-dollar-sign me-1"></i>{{ $course->price ?? 0 }} {{ $course->currency ?? 'ر.س' }}
+                            <span class="badge" style="background:#e3eafc; color:#3db6f5;">
+                                <i class="fas fa-dollar-sign me-1"></i>{{ $course->price ?? 0 }} {{ $course->currency ?? 'SAR' }}
                             </span>
                         @endif
                     </div>
-                    
-                    <!-- تفاصيل الباكجات المرتبطة -->
+                    <!-- Linked Packages Details -->
                     @if($course->packages && $course->packages->count() > 0)
                         <div class="mb-3">
                             <small class="text-muted fw-bold">
-                                <i class="fas fa-boxes me-1"></i>الباكجات المرتبطة:
+                                <i class="fas fa-boxes me-1"></i>Linked Packages:
                             </small>
                             <div class="d-flex flex-wrap gap-1 mt-1">
                                 @foreach($course->packages as $package)
-                                    <span class="badge bg-light text-dark border">
+                                    <span class="badge bg-light text-dark border" style="background:#f5faff; color:#3db6f5; border:1px solid #e3eafc;">
                                         <i class="fas fa-box me-1"></i>{{ $package->name }}
                                     </span>
                                 @endforeach
                             </div>
                         </div>
                     @endif
-                    
-                    <!-- وصف الكورس -->
+                    <!-- Course Description -->
                     @if($course->description)
                         <div class="mb-3">
                             <small class="text-muted">
@@ -92,71 +92,46 @@
                         </div>
                     @endif
                     <div class="table-responsive">
-                        <table class="table align-middle mb-0">
-                            <thead class="bg-light">
-                                <tr>
-                                    <th>التاريخ</th>
-                                    <th>اليوم</th>
-                                    <th>الوقت</th>
-                                    <th>القاعة</th>
-                                    <th>الكلي / الحضور</th>
-                                    <th class="text-center">إجراءات</th>
+                        <table class="table align-middle mb-0" style="background:#fff; border-radius:16px; overflow:hidden;">
+                            <thead>
+                                <tr style="background:#fff;">
+                                    <th style="color:rgb(123, 105, 172); font-weight:bold; text-transform:uppercase;">DATE</th>
+                                    <th style="color:rgb(123, 105, 172); font-weight:bold; text-transform:uppercase;">DAY</th>
+                                    <th style="color:rgb(123, 105, 172); font-weight:bold; text-transform:uppercase;">TIME</th>
+                                    <th style="color:rgb(123, 105, 172); font-weight:bold; text-transform:uppercase;">ROOM</th>
+                                    <th style="color:rgb(123, 105, 172); font-weight:bold; text-transform:uppercase;">SUBJECT</th>
+                                    <th style="color:rgb(123, 105, 172); font-weight:bold; text-transform:uppercase;">CATEGORY</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @forelse($course->schedules as $schedule)
-                                @php
-                                    $today = now()->format('Y-m-d');
-                                    $scheduleDate = $schedule->session_date;
-                                    $status = '';
-                                    $statusClass = '';
-                                    
-                                    if ($scheduleDate < $today) {
-                                        $status = 'منتهية';
-                                        $statusClass = 'text-muted';
-                                    } elseif ($scheduleDate == $today) {
-                                        $status = 'اليوم';
-                                        $statusClass = 'text-success fw-bold';
-                                    } else {
-                                        $status = 'قادمة';
-                                        $statusClass = 'text-warning';
-                                    }
-                                    
-                                    // حساب إحصائيات الحضور
-                                    $totalStudents = \App\Models\Enrollment::where('course_id', $course->id)->count();
-                                    $presentStudents = \App\Models\Attendance::where('schedule_id', $schedule->id)
-                                        
-                                        ->where('status', 'present')
-                                        ->count();
-                                @endphp
-                                <tr>
-                                    <td>
-                                        <span class="{{ $statusClass }}">{{ \Carbon\Carbon::parse($schedule->session_date)->format('Y-m-d') }}</span>
-                                        <br><small class="text-muted">{{ $status }}</small>
+                                <tr style="border-bottom:1px solid #f0f0f5;">
+                                    <td style="vertical-align:middle;">{{ \Carbon\Carbon::parse($schedule->session_date)->format('Y-m-d') }}</td>
+                                    <td style="vertical-align:middle;">{{ __(ucfirst($schedule->day_of_week)) }}</td>
+                                    <td style="vertical-align:middle;">
+                                        <span style="background:#545b6b; color:#fff; border-radius:20px; padding:0.3em 1.2em; font-weight:600; display:inline-flex; align-items:center; gap:6px; font-size:1em;">
+                                            <i class="fas fa-clock"></i> {{ substr($schedule->start_time, 0, 5) }} - {{ substr($schedule->end_time, 0, 5) }}
+                                        </span>
                                     </td>
-                                    <td>{{ __(ucfirst($schedule->day_of_week)) }}</td>
-                                    <td>{{ substr($schedule->start_time, 0, 5) }} - {{ substr($schedule->end_time, 0, 5) }}</td>
-                                    <td>{{ $schedule->room ? ($schedule->room->room_number ?? $schedule->room->name) : 'غير محدد' }}</td>
-                                    <td class="text-center">
-                                        <span style="color:#5f5aad;font-weight:bold;font-size:1.15em">{{ $totalStudents }}</span>
-                                        <span style="color:#888;font-size:1.1em">/</span>
-                                        <span style="color:#28a745;font-weight:bold;font-size:1.15em">{{ $presentStudents }}</span>
+                                    <td style="vertical-align:middle;">
+                                        <span style="background:#545b6b; color:#fff; border-radius:20px; padding:0.3em 1.2em; font-weight:600; display:inline-flex; align-items:center; gap:6px; font-size:1em;">
+                                            <i class="fas fa-door-open"></i> {{ $schedule->room ? ($schedule->room->room_number ?? $schedule->room->name) : '-' }}
+                                        </span>
                                     </td>
-                                    <td class="text-center">
-                                        <button class="btn btn-outline-primary btn-sm me-1" onclick="openAttendanceModal('{{ $course->title }}', {{ $schedule->id }})">
-                                            <i class="fas fa-camera me-1"></i> أخذ الحضور
-                                        </button>
-                                        <a href="{{ route('teacher.attendance.qr-codes', $schedule->id) }}" class="btn btn-outline-info btn-sm me-1">
-                                            <i class="fas fa-qrcode me-1"></i> QR Codes
-                                        </a>
-                                        <a href="{{ route('teacher.attendance.schedule-details', $schedule->id) }}" class="btn btn-outline-secondary btn-sm">
-                                            <i class="fas fa-list me-1"></i> التفاصيل
-                                        </a>
+                                    <td style="vertical-align:middle;">
+                                        <span style="background:#1bc98e; color:#fff; border-radius:20px; padding:0.3em 1.2em; font-weight:600; display:inline-block; font-size:1em;">
+                                            {{ $course->title }}
+                                        </span>
+                                    </td>
+                                    <td style="vertical-align:middle;">
+                                        <span style="background:linear-gradient(90deg,#1bc98e 0%,#17c3b2 100%); color:#fff; border-radius:20px; padding:0.3em 1.2em; font-weight:600; display:inline-block; font-size:1em;">
+                                            {{ $course->category ? $course->category->name : '-' }}
+                                        </span>
                                     </td>
                                 </tr>
                                 @empty
                                 <tr>
-                                    <td colspan="6" class="text-muted text-center">لا توجد محاضرات مجدولة لهذه المادة</td>
+                                    <td colspan="6" class="text-muted text-center">No scheduled sessions for this course</td>
                                 </tr>
                                 @endforelse
                             </tbody>
@@ -168,8 +143,8 @@
             <div class="card shadow-sm border-0">
                 <div class="card-body text-center py-5">
                     <i class="fas fa-book-open text-muted mb-3" style="font-size: 4rem;"></i>
-                    <h4 class="text-muted">لا توجد مواد دراسية</h4>
-                    <p class="text-muted">لم يتم تعيين أي مواد دراسية لك بعد</p>
+                    <h4 class="text-muted">No courses assigned</h4>
+                    <p class="text-muted">No courses have been assigned to you yet</p>
                 </div>
             </div>
             @endforelse
@@ -184,7 +159,7 @@
             <div class="modal-header bg-gradient-primary text-white">
                 <h5 class="modal-title" id="attendanceModalLabel">
                     <i class="fas fa-qrcode me-2"></i>
-                    أخذ الحضور - <span id="subjectName"></span>
+                    Take Attendance - <span id="subjectName"></span>
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -200,17 +175,17 @@
                     </div>
                     <div class="col-md-4">
                         <div class="attendance-stats p-3 bg-light rounded">
-                            <h6 class="text-center mb-3">إحصائيات الحضور</h6>
+                            <h6 class="text-center mb-3">Attendance Statistics</h6>
                             <div class="d-flex justify-content-between align-items-center mb-3">
-                                <span>عدد الحاضرين:</span>
+                                <span>Number of Attendees:</span>
                                 <span class="badge bg-primary" id="attendanceCount">0</span>
                             </div>
                             <div class="d-flex justify-content-between align-items-center mb-3">
-                                <span>آخر مسح:</span>
+                                <span>Last Scan:</span>
                                 <span id="lastScanTime">-</span>
                             </div>
                             <div class="recent-scans mt-4">
-                                <h6 class="mb-2">آخر المسح</h6>
+                                <h6 class="mb-2">Recent Scans</h6>
                                 <div id="recentScansList" class="list-group">
                                     <!-- Recent scans will be added here -->
                                 </div>
@@ -222,7 +197,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                    <i class="fas fa-times me-1"></i> إغلاق
+                    <i class="fas fa-times me-1"></i> Close
                 </button>
             </div>
         </div>
@@ -264,15 +239,83 @@
     border: 1px solid #dee2e6 !important;
 }
 
+/* Updated Table Styles */
 .table thead th {
-    font-weight: bold;
-    color: #5f5aad;
-    background: #f8f9fb !important;
+    background: linear-gradient(135deg, rgb(123, 105, 172) 0%, rgb(156, 139, 186) 100%) !important;
+    color: white !important;
+    font-weight: 600 !important;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.5px;
     border-bottom: 2px solid #e9ecef;
+    padding: 1rem 0.75rem;
 }
 
-.table td, .table th {
+.table tbody tr {
+    transition: all 0.2s ease;
+    border-bottom: 1px solid #f8f9fa;
+}
+
+.table tbody tr:hover {
+    background: linear-gradient(135deg, rgba(123, 105, 172, 0.05) 0%, rgba(156, 139, 186, 0.05) 100%) !important;
+    transform: scale(1.01);
+}
+
+.table td {
     vertical-align: middle;
+    padding: 1rem 0.75rem;
+}
+
+.table {
+    margin-bottom: 0;
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+/* Status Badges */
+.status-badge {
+    background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+    color: white;
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    display: inline-block;
+    box-shadow: 0 2px 8px rgba(108, 117, 125, 0.3);
+}
+
+.status-today {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
+}
+
+.status-past {
+    background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+    box-shadow: 0 2px 8px rgba(108, 117, 125, 0.3);
+}
+
+.status-future {
+    background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%);
+    box-shadow: 0 2px 8px rgba(255, 193, 7, 0.3);
+}
+
+/* Attendance Count Styling */
+.attendance-count {
+    background: linear-gradient(135deg, rgba(123, 105, 172, 0.1) 0%, rgba(156, 139, 186, 0.1) 100%);
+    border-radius: 15px;
+    padding: 0.5rem 1rem;
+    border: 2px solid rgba(123, 105, 172, 0.2);
+}
+
+.attendance-total {
+    color: rgb(123, 105, 172);
+    font-weight: bold;
+    font-size: 1.15em;
+}
+
+.attendance-present {
+    color: #28a745;
+    font-weight: bold;
+    font-size: 1.15em;
 }
 
 /* QR Scanner Styles */
@@ -335,6 +378,32 @@
     background: #f6f9ff;
     border-radius: 1rem;
     box-shadow: 0 2px 8px 0 rgba(80, 120, 200, 0.07);
+}
+
+/* Card Header Styling */
+.card-header {
+    background: linear-gradient(135deg, rgb(123, 105, 172) 0%, rgb(156, 139, 186) 100%);
+    color: white;
+    border-radius: 16px 16px 0 0;
+    border: none;
+}
+
+.card-header h5, .card-header h6 {
+    color: white !important;
+    font-weight: 600;
+}
+
+.card-header i {
+    color: rgba(255, 255, 255, 0.8) !important;
+}
+
+.table thead tr, .table thead th {
+    background: #fff !important;
+    background-color: #fff !important;
+    color: rgb(123, 105, 172) !important;
+    font-weight: bold !important;
+    border-top-left-radius: 18px;
+    border-top-right-radius: 18px;
 }
 </style>
 
@@ -406,7 +475,7 @@
             resultsDiv.innerHTML = `
                 <div class="alert alert-warning alert-dismissible fade show" role="alert">
                     <i class="fas fa-exclamation-triangle me-2"></i>
-                    تم مسح هذا الطالب مسبقاً: ${decodedText}
+                    Student already scanned: ${decodedText}
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             `;
@@ -450,7 +519,7 @@
         resultsDiv.innerHTML = `
             <div class="alert alert-success alert-dismissible fade show" role="alert">
                 <i class="fas fa-check-circle me-2"></i>
-                تم تسجيل حضور الطالب: ${decodedText}
+                Attendance recorded for student: ${decodedText}
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         `;
@@ -505,7 +574,7 @@
                 resultsDiv.innerHTML = `
                     <div class="alert alert-success alert-dismissible fade show" role="alert">
                         <i class="fas fa-check-circle me-2"></i>
-                        تم تسجيل الحضور بنجاح للطالب: ${studentId}
+                        Attendance recorded successfully for student: ${studentId}
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 `;
@@ -521,7 +590,7 @@
             resultsDiv.innerHTML = `
                 <div class="alert alert-danger alert-dismissible fade show" role="alert">
                     <i class="fas fa-exclamation-triangle me-2"></i>
-                    حدث خطأ في تسجيل الحضور. يرجى المحاولة مرة أخرى.
+                    An error occurred while recording attendance. Please try again.
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             `;

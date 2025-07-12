@@ -28,7 +28,7 @@
         animation: bounce 1.5s infinite alternate, gradientMove 3s linear infinite;
         letter-spacing: 2px;
         margin-top: 20px;
-        background: linear-gradient(90deg, #007bff, #00c6ff, #007bff);
+        background: linear-gradient(90deg,rgb(129, 121, 240),rgb(100, 131, 219),rgb(205, 126, 231));
         background-size: 200% 200%;
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
@@ -42,8 +42,8 @@
         100% { background-position: 100% 50%; }
     }
     .teacher-info-card {
-      background: linear-gradient(45deg, #5e72e4, #825ee4);
-      color: white;
+      background: linear-gradient(45deg,rgb(255, 255, 255),rgb(255, 255, 255));
+      color:rgb(123, 105, 172);
       border-radius: 1rem;
       padding: 1.5rem;
       margin-bottom: 2rem;
@@ -68,6 +68,12 @@
       margin: 0.2rem;
       display: inline-block;
     }
+    .main-purple {
+      color: rgb(123, 105, 172) !important;
+    }
+    .icon-strong-purple {
+      color: #6C2EB7 !important;
+    }
   </style>
 </head>
 
@@ -78,7 +84,7 @@
   <main class="main-content position-relative border-radius-lg ">
     <!-- Animated Welcome Message -->
     <div class="container mt-4 text-center">
-      <h1 class="welcome-animated">Welcome, {{ $teacher->name }} 👋</h1>
+      <h1 class="welcome-animated">Welcome, {{ $teacher->name }}</h1>
     </div>
     <!-- End Animated Welcome Message -->
     
@@ -229,8 +235,8 @@
         <div class="col-lg-7 mb-lg-0 mb-4">
           <div class="card">
             <div class="card-header pb-0 p-3">
-              <h6 class="mb-0">
-                <i class="fas fa-calendar-alt me-2"></i>
+              <h6 class="mb-0 main-purple">
+                <i class="fas fa-calendar-alt me-2 main-purple"></i>
                 الجداول القادمة
               </h6>
             </div>
@@ -242,14 +248,16 @@
                     <div class="col-md-8">
                       <h6 class="mb-1">{{ $schedule['course'] }}</h6>
                       <p class="mb-1 text-muted">
-                        <i class="fas fa-calendar me-1"></i>
+                        <i class="fas fa-calendar me-1 icon-strong-purple"></i>
                         {{ \Carbon\Carbon::parse($schedule['session_date'])->format('Y-m-d') }}
                         ({{ __(ucfirst($schedule['day_of_week'])) }})
                       </p>
                       <p class="mb-0 text-muted">
-                        <i class="fas fa-clock me-1"></i>
+                        <i class="fas fa-clock me-1 icon-strong-purple"></i>
                         {{ substr($schedule['start_time'], 0, 5) }} - {{ substr($schedule['end_time'], 0, 5) }}
-                        <i class="fas fa-door-open ms-2 me-1"></i>
+                      </p>
+                      <p class="mb-0 text-muted">
+                        <i class="fas fa-door-open me-1 icon-strong-purple"></i>
                         {{ $schedule['room'] ?: 'غير محدد' }}
                       </p>
                     </div>
@@ -273,8 +281,8 @@
         <div class="col-lg-5">
           <div class="card">
             <div class="card-header pb-0 p-3">
-              <h6 class="mb-0">
-                <i class="fas fa-book me-2"></i>
+              <h6 class="mb-0 main-purple">
+                <i class="fas fa-book me-2 main-purple"></i>
                 My Courses
               </h6>
             </div>
@@ -320,8 +328,8 @@
         <div class="col-12">
           <div class="card">
             <div class="card-header pb-0 p-3">
-              <h6 class="mb-0">
-                <i class="fas fa-money-bill-wave me-2"></i>
+              <h6 class="mb-0 main-purple">
+                <i class="fas fa-money-bill-wave me-2 main-purple"></i>
                 Recent Payments
               </h6>
             </div>
