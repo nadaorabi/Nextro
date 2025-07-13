@@ -81,5 +81,8 @@
   @if(Auth::check() && Auth::user()->role === 'student')
   <script src="{{ asset('js/floating-chatbot.js') }}?v={{ time() }}"></script>
   @endif
+
+  <!-- Bootstrap 5 Bundle (Modal Fix) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -704,7 +704,14 @@
                                 </div>
                                 <div class="attendance-info">
                                     <h5>{{ $attendance->enrollment->course->title ?? 'Unknown Course' }}</h5>
-                                    <p>{{ \Carbon\Carbon::parse($attendance->date)->format('l, F d, Y') }}</p>
+                                    <p>
+                                        {{ \Carbon\Carbon::parse($attendance->date)->format('l, F d, Y') }}
+                                        @if($attendance->schedule)
+                                            <span style="color:#4f8cff;font-size:0.98em;">
+                                                | {{ \Carbon\Carbon::parse($attendance->schedule->start_time)->format('H:i') }} - {{ \Carbon\Carbon::parse($attendance->schedule->end_time)->format('H:i') }}
+                                            </span>
+                                        @endif
+                                    </p>
                                 </div>
                                 <div class="attendance-status">
                                     @if($attendance->status == 'present')
@@ -829,41 +836,97 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title" id="profileModalLabel"><i class="uil uil-user-edit"></i> Edit Profile</h5>
+                <h5 class="modal-title" id="profileModalLabel"><i class="uil uil-user"></i> Student Profile</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="profileForm" enctype="multipart/form-data">
+                <form id="profileForm" enctype="multipart/form-data" autocomplete="off">
                     @csrf
-                    <div class="row align-items-center mb-3">
+                    <div class="row g-4 align-items-center mb-4">
                         <div class="col-md-3 text-center">
                             <div style="position:relative;display:inline-block;">
-                                <img id="profileImagePreview" src="{{ Auth::user()->image ? asset('storage/'.Auth::user()->image) : asset('images/default-avatar.png') }}" class="rounded-circle" style="width:90px;height:90px;object-fit:cover;border:3px solid #eaf2ff;">
-                                <label for="image" class="avatar-edit-btn" style="position:absolute;bottom:0;right:0;cursor:pointer;background:#4f8cff;color:#fff;width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:50%;border:2px solid #fff;">
+                                <img id="profileImagePreview" src="{{ Auth::user()->image ? asset('storage/'.Auth::user()->image) : asset('images/default-avatar.png') }}" class="rounded-circle border border-3 border-primary-subtle" style="width:100px;height:100px;object-fit:cover;">
+                                <label for="image" class="avatar-edit-btn" style="position:absolute;bottom:0;right:0;cursor:pointer;background:#4f8cff;color:#fff;width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:50%;border:2px solid #fff;">
                                     <i class="uil uil-camera"></i>
                                 </label>
                                 <input type="file" id="image" name="image" accept="image/*" style="display:none;">
                             </div>
+                            <p class="text-muted mt-2" style="font-size: 0.9rem;">Click camera to update photo</p>
                         </div>
                         <div class="col-md-9">
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
+                            <div class="row g-3">
+                                <div class="col-md-6">
                                     <label for="name" class="form-label">Full Name</label>
-                                    <input type="text" class="form-control" id="name" name="name" value="{{ Auth::user()->name }}" required>
+                                    <input type="text" class="form-control" id="name" name="name" value="{{ Auth::user()->name }}" readonly>
+                                    <small class="text-muted">Name cannot be edited</small>
                                 </div>
-                                <div class="col-md-6 mb-3">
+                                <div class="col-md-6">
+                                    <label for="login_id" class="form-label">Student ID</label>
+                                    <input type="text" class="form-control" id="login_id" name="login_id" value="{{ Auth::user()->login_id }}" readonly>
+                                    <small class="text-muted">Student ID cannot be edited</small>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="mobile" class="form-label">Mobile Number</label>
+                                    <input type="text" class="form-control" id="mobile" name="mobile" value="{{ Auth::user()->mobile }}" readonly>
+                                    <small class="text-muted">Mobile cannot be edited</small>
+                                </div>
+                                <div class="col-md-6">
                                     <label for="email" class="form-label">Email</label>
                                     <input type="email" class="form-control" id="email" name="email" value="{{ Auth::user()->email }}">
                                 </div>
-                                <div class="col-md-6 mb-3">
-                                    <label for="mobile" class="form-label">Mobile</label>
-                                    <input type="text" class="form-control" id="mobile" name="mobile" value="{{ Auth::user()->mobile }}" required>
+                                <div class="col-md-6">
+                                    <label for="address" class="form-label">Address</label>
+                                    <input type="text" class="form-control" id="address" name="address" value="{{ Auth::user()->address ?? '' }}">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="birth_date" class="form-label">Birth Date</label>
+                                    <input type="date" class="form-control" id="birth_date" name="birth_date" value="{{ Auth::user()->birth_date ?? '' }}">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="gender" class="form-label">Gender</label>
+                                    <select class="form-control" id="gender" name="gender">
+                                        <option value="">Select Gender</option>
+                                        <option value="male" {{ Auth::user()->gender == 'male' ? 'selected' : '' }}>Male</option>
+                                        <option value="female" {{ Auth::user()->gender == 'female' ? 'selected' : '' }}>Female</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="nationality" class="form-label">Nationality</label>
+                                    <input type="text" class="form-control" id="nationality" name="nationality" value="{{ Auth::user()->nationality ?? '' }}">
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="text-center">
-                        <button type="submit" class="btn btn-primary px-4">Update Profile</button>
+                    <div class="row g-3 mb-4">
+                        <div class="col-12">
+                            <h6 class="text-primary mb-3"><i class="uil uil-info-circle"></i> Additional Information</h6>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label for="emergency_contact" class="form-label">Emergency Contact</label>
+                                    <input type="text" class="form-control" id="emergency_contact" name="emergency_contact" value="{{ Auth::user()->emergency_contact ?? '' }}">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="parent_name" class="form-label">Parent/Guardian Name</label>
+                                    <input type="text" class="form-control" id="parent_name" name="parent_name" value="{{ Auth::user()->parent_name ?? '' }}">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="parent_mobile" class="form-label">Parent/Guardian Mobile</label>
+                                    <input type="text" class="form-control" id="parent_mobile" name="parent_mobile" value="{{ Auth::user()->parent_mobile ?? '' }}">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="medical_conditions" class="form-label">Medical Conditions</label>
+                                    <textarea class="form-control" id="medical_conditions" name="medical_conditions" rows="2">{{ Auth::user()->medical_conditions ?? '' }}</textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center mt-3">
+                        <button type="submit" class="btn btn-primary px-4" id="updateProfileBtn">
+                            <i class="uil uil-save"></i> Update Profile
+                        </button>
+                        <button type="button" class="btn btn-secondary px-4 ms-2" data-bs-dismiss="modal">
+                            <i class="uil uil-times"></i> Close
+                        </button>
                     </div>
                 </form>
             </div>
@@ -935,8 +998,87 @@
     </div>
 </div>
 
+<!-- Financial Status Modal -->
+<div class="modal fade" id="financialStatusModal" tabindex="-1" aria-labelledby="financialStatusModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="financialStatusModalLabel"><i class="uil uil-usd-circle"></i> Financial Status</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="financialStatusContent">
+                <style>
+                    #financialStatusContent { background: #f8f9fa; border-radius: 12px; padding: 18px 10px; }
+                    #financialStatusContent .summary-item { background: #fff; border-radius: 10px; box-shadow: 0 1px 6px #4f8cff11; margin-bottom: 10px; padding: 12px 16px; border-left: 4px solid #4f8cff; }
+                    #financialStatusContent h6 { color: #4f8cff; font-weight: bold; margin-top: 18px; }
+                    #financialStatusContent table { background: #fff; border-radius: 8px; overflow: hidden; }
+                    #financialStatusContent th, #financialStatusContent td { vertical-align: middle; }
+                </style>
+                <div class="mb-3">
+                    <strong>Student:</strong> {{ Auth::user()->name }}<br>
+                    <strong>Student ID:</strong> {{ Auth::user()->login_id }}
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <div class="summary-item">
+                            <span class="meta-item"><i class="uil uil-file-invoice-dollar"></i> Total Fees Due:</span> 
+                            <b>${{ number_format($totalDue ?? 0, 0) }}</b>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="summary-item">
+                            <span class="meta-item"><i class="uil uil-arrow-up"></i> Total Paid:</span> 
+                            <b style="color: #2ecc40;">${{ number_format($totalPaid ?? 0, 0) }}</b>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="summary-item">
+                            <span class="meta-item"><i class="uil uil-arrow-down"></i> Outstanding Balance:</span> 
+                            <b style="color: {{ ($outstandingBalance ?? 0) > 0 ? '#ff4757' : '#2ecc40' }};">${{ number_format($outstandingBalance ?? 0, 0) }}</b>
+                        </div>
+                    </div>
+                </div>
+                <h6 class="mb-2 mt-4"><i class="uil uil-transaction"></i> Financial Transactions</h6>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Date</th>
+                                <th>Type</th>
+                                <th>Notes</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse(($recentTransactions ?? collect()) as $transaction)
+                                <tr>
+                                    <td>{{ \Carbon\Carbon::parse($transaction->payment_date)->format('M d, Y') }}</td>
+                                    <td>{{ ucfirst(str_replace('_', ' ', $transaction->type)) }}</td>
+                                    <td>{{ $transaction->notes ?: '-' }}</td>
+                                    <td class="{{ $transaction->amount >= 0 ? 'text-success' : 'text-danger' }}">
+                                        {{ $transaction->amount >= 0 ? '+' : '' }}${{ number_format($transaction->amount, 0) }}
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr><td colspan="4" class="text-center">No transactions found.</td></tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="printFinancialStatus()"><i class="uil uil-print"></i> Print</button>
+                <button type="button" class="btn btn-danger" onclick="downloadFinancialStatusPDF()"><i class="uil uil-file-pdf"></i> Download PDF</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Include QR Code Library -->
 <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 <script>
 // QR Code Functions
@@ -971,6 +1113,11 @@ function showProfileModal() {
     const modal = new bootstrap.Modal(document.getElementById('profileModal'));
     modal.show();
 }
+// إغلاق المودال يدويًا
+function closeProfileModal() {
+    const modal = bootstrap.Modal.getInstance(document.getElementById('profileModal'));
+    if (modal) modal.hide();
+}
 document.getElementById('image').addEventListener('change', function(e) {
     const file = e.target.files[0];
     if (file) {
@@ -981,36 +1128,51 @@ document.getElementById('image').addEventListener('change', function(e) {
         reader.readAsDataURL(file);
     }
 });
-document.getElementById('profileForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    const formData = new FormData(this);
-    fetch('{{ route("student.profile.update") }}', {
-        method: 'POST',
-        body: formData,
-        headers: {
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            showToast('Profile updated successfully!', true);
-            // تحديث الاسم والصورة في الداشبورد مباشرة
-            document.getElementById('studentName').textContent = data.user.name;
-            if (data.user.image) {
-                const imgUrl = '/storage/' + data.user.image;
-                document.getElementById('studentAvatar').src = imgUrl;
-                document.getElementById('profileImagePreview').src = imgUrl;
+// إرسال النموذج وتحديث الصفحة بعد النجاح
+if(document.getElementById('profileForm')) {
+    document.getElementById('profileForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+        const updateBtn = document.getElementById('updateProfileBtn');
+        const originalText = updateBtn.innerHTML;
+        updateBtn.disabled = true;
+        updateBtn.innerHTML = '<i class="uil uil-spinner"></i> Updating...';
+        fetch('{{ route("student.profile.update") }}', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
             }
-            setTimeout(() => { bootstrap.Modal.getInstance(document.getElementById('profileModal')).hide(); }, 1200);
-        } else {
+        })
+        .then(async response => {
+            let data;
+            try {
+                data = await response.json();
+            } catch (e) {
+                data = { success: false, message: 'Unknown error' };
+            }
+            if (response.ok && data.success) {
+                showToast('Profile updated successfully!', true);
+                setTimeout(() => { window.location.reload(); }, 1200);
+            } else {
+                // إذا كان هناك أخطاء فاليديشن من السيرفر
+                if (data.errors) {
+                    let msg = Object.values(data.errors).join(' | ');
+                    showToast(msg, false);
+                } else {
+                    showToast(data.message || 'Error updating profile', false);
+                }
+            }
+        })
+        .catch(error => {
             showToast('Error updating profile', false);
-        }
-    })
-    .catch(error => {
-        showToast('Error updating profile', false);
+        })
+        .finally(() => {
+            updateBtn.disabled = false;
+            updateBtn.innerHTML = originalText;
+        });
     });
-});
+}
 // Password Functions
 function showPasswordModal() {
     const modal = new bootstrap.Modal(document.getElementById('passwordModal'));
@@ -1074,5 +1236,102 @@ document.addEventListener('DOMContentLoaded', function() {
     quickActions[3].addEventListener('click', contactSupport); // Contact Support
     // زر تغيير كلمة السر موجود بالفعل
 });
+// إصلاح أزرار الإغلاق في جميع المودالات (زر X أو زر Close)
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.modal .btn-close, .modal [data-bs-dismiss="modal"]').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            const modalEl = btn.closest('.modal');
+            if (modalEl) {
+                const modal = bootstrap.Modal.getInstance(modalEl);
+                if (modal) modal.hide();
+            }
+        });
+    });
+});
+// تغيير كلمة السر (كود وحيد وفعال مع console.log واختبار showToast)
+if(document.getElementById('passwordForm')) {
+    document.getElementById('passwordForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        console.log('Password form submitted'); // اختبار التنفيذ
+        showToast('تم الضغط على زر تغيير كلمة السر (اختبار)', false); // اختبار ظهور الرسالة
+        const formData = new FormData(this);
+        const submitBtn = this.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="uil uil-spinner"></i> Saving...';
+        fetch('{{ route("student.password.change") }}', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            }
+        })
+        .then(async response => {
+            let data;
+            try {
+                data = await response.json();
+            } catch (e) {
+                data = { success: false, message: 'Unknown error' };
+            }
+            if (response.ok && data.success) {
+                showToast('Password changed successfully!', true);
+                setTimeout(() => { bootstrap.Modal.getInstance(document.getElementById('passwordModal')).hide(); }, 1200);
+                document.getElementById('passwordForm').reset();
+            } else {
+                if (data.errors) {
+                    let msg = Object.values(data.errors).join(' | ');
+                    showToast(msg, false);
+                } else {
+                    showToast(data.message || 'Error changing password', false);
+                }
+            }
+        })
+        .catch(error => {
+            showToast('Error changing password', false);
+        })
+        .finally(() => {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalText;
+        });
+    });
+}
+// فتح مودال الحالة المالية
+function showFinancialStatusModal() {
+    const modal = new bootstrap.Modal(document.getElementById('financialStatusModal'));
+    modal.show();
+}
+// تفعيل زر Financial Status
+const financialBtn = document.querySelectorAll('.sd-quick-action .qa-title');
+if (financialBtn && financialBtn.length > 0) {
+    financialBtn.forEach(function(el) {
+        if (el.textContent.trim() === 'Financial Status') {
+            el.closest('.sd-quick-action').onclick = showFinancialStatusModal;
+        }
+    });
+}
+// طباعة الحالة المالية
+function printFinancialStatus() {
+    const printContents = document.getElementById('financialStatusContent').innerHTML;
+    const win = window.open('', '', 'height=700,width=900');
+    win.document.write('<html><head><title>Financial Status</title>');
+    win.document.write('<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">');
+    win.document.write('</head><body>');
+    win.document.write(printContents);
+    win.document.write('</body></html>');
+    win.document.close();
+    win.print();
+}
+// تحميل PDF باستخدام html2pdf.js
+function downloadFinancialStatusPDF() {
+    const element = document.getElementById('financialStatusContent');
+    const opt = {
+        margin:       0.2,
+        filename:     'financial_status.pdf',
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2 },
+        jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
+    };
+    html2pdf().set(opt).from(element).save();
+}
 </script>
 @endsection
