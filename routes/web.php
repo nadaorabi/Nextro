@@ -44,6 +44,15 @@ Route::get('user/Elements', [HomeController::class, 'ShowElementsPage'])->name('
 Route::get('user/Contact', [HomeController::class, 'ShowContactPage'])->name('Contact_page');
 Route::get('user/Profile', [HomeController::class, 'ShowProfilePage'])->middleware('auth')->name('profile_page');
 
+// Student Dashboard Routes
+Route::prefix('student')->middleware('auth')->name('student.')->group(function () {
+    Route::get('qr-code', [App\Http\Controllers\StudentDashboardController::class, 'generateQRCode'])->name('qr-code');
+    Route::get('qr-code/download', [App\Http\Controllers\StudentDashboardController::class, 'downloadQRCode'])->name('qr-code.download');
+    Route::post('profile/update', [App\Http\Controllers\StudentDashboardController::class, 'updateProfile'])->name('profile.update');
+    Route::post('password/change', [App\Http\Controllers\StudentDashboardController::class, 'changePassword'])->name('password.change');
+    Route::get('contact-support', [App\Http\Controllers\StudentDashboardController::class, 'contactSupport'])->name('contact-support');
+});
+
 // ChatBot Routes
 Route::get('user/chatbot', [ChatBotController::class, 'showChat'])->name('chatbot');
 Route::post('user/chatbot/send', [ChatBotController::class, 'sendMessage'])->name('chatbot.send');

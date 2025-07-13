@@ -49,8 +49,15 @@
             border: 4px solid #fff3;
             background: #fff;
             display: flex; align-items: center; justify-content: center;
+            position: relative;
         }
         .sd-header-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .sd-header-avatar .avatar-preview {
+            width: 100%; height: 100%; object-fit: cover; border-radius: 50%;
+        }
+        .sd-header-avatar .avatar-edit-btn {
+            position: absolute; bottom: 0; right: 0; background: #4f8cff; color: #fff; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border: 2px solid #fff; cursor: pointer; font-size: 1.1rem;
+        }
         .sd-header-info h2 { font-size: 1.6rem; font-weight: 700; margin: 0; }
         .sd-header-info .student-id { font-size: 1.05rem; opacity: 0.85; }
         .sd-header-info .status-badge {
@@ -420,6 +427,17 @@
             font-size: 0.93rem;
             color: #888;
         }
+        /* Special styling for the 5th button */
+        .sd-quick-action:nth-child(5) {
+            grid-column: 1 / -1;
+            background: linear-gradient(120deg, #fff5f5 60%, #ffe8e8 100%);
+        }
+        .sd-quick-action:nth-child(5):hover {
+            background: linear-gradient(120deg, #ffe8e8 60%, #fff5f5 100%);
+        }
+        .sd-quick-action:nth-child(5) .qa-icon {
+            color: #ff4757;
+        }
         /* Empty State */
         .sd-empty-state {
             text-align: center;
@@ -455,22 +473,20 @@
     <!-- Header -->
     <div class="sd-header">
         <div class="sd-header-user">
-            <div class="sd-header-avatar">
-                @if(Auth::user()->image)
-                    <img src="{{ asset(Auth::user()->image) }}" alt="Profile Picture">
-                @else
-                    <i class="uil uil-user"></i>
-                @endif
+            <div class="sd-header-avatar" id="studentAvatarBox">
+                <img id="studentAvatar" src="{{ Auth::user()->image ? asset('storage/'.Auth::user()->image) : asset('images/default-avatar.png') }}" alt="Profile Picture" class="avatar-preview">
+                <span class="avatar-edit-btn" onclick="showProfileModal()" title="Edit Profile"><i class="uil uil-edit"></i></span>
             </div>
             <div class="sd-header-info">
-                <h2>{{ Auth::user()->name }}</h2>
-                <div class="student-id">Student ID: {{ Auth::user()->login_id }}</div>
+                <h2 id="studentName">{{ Auth::user()->name }}</h2>
+                <div class="student-id">Student ID: <span id="studentIdText">{{ Auth::user()->login_id }}</span></div>
                 <div class="status-badge">{{ Auth::user()->is_active == 1 ? 'Active Student' : 'Inactive' }}</div>
             </div>
         </div>
         <div class="sd-header-actions">
-            <button class="sd-btn-action"><i class="uil uil-qrcode-scan"></i>SCAN QR</button>
-            <button class="sd-btn-action"><i class="uil uil-envelope"></i>CONTACT SUPPORT</button>
+            <button class="sd-btn-action" onclick="showQRModal()"><i class="uil uil-qrcode-scan"></i>SHOW QR</button>
+            <button class="sd-btn-action" onclick="contactSupport()"><i class="uil uil-envelope"></i>CONTACT SUPPORT</button>
+            <button class="sd-btn-action" onclick="showProfileModal()"><i class="uil uil-user-edit"></i>EDIT PROFILE</button>
         </div>
     </div>
     <!-- Stats Cards -->
@@ -776,9 +792,287 @@
                     <button class="sd-quick-action"><span class="qa-icon"><i class="uil uil-chart-line"></i></span><span class="qa-title">View Grades</span><span class="qa-desc">Check your progress</span></button>
                     <button class="sd-quick-action"><span class="qa-icon"><i class="uil uil-usd-circle"></i></span><span class="qa-title">Financial Status</span><span class="qa-desc">Payment history</span></button>
                     <button class="sd-quick-action"><span class="qa-icon"><i class="uil uil-envelope"></i></span><span class="qa-title">Contact Support</span><span class="qa-desc">Get help</span></button>
+                    <button class="sd-quick-action" onclick="showPasswordModal()"><span class="qa-icon"><i class="uil uil-lock"></i></span><span class="qa-title">Change Password</span><span class="qa-desc">Update your password</span></button>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<!-- QR Code Modal -->
+<div class="modal fade" id="qrModal" tabindex="-1" aria-labelledby="qrModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="qrModalLabel">Student QR Code</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <div id="qrCodeContainer">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <p class="text-muted">Scan this QR code to mark your attendance</p>
+                    <button class="btn btn-primary" onclick="downloadQRCode()">
+                        <i class="uil uil-download-alt"></i> Download QR Code
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Profile Edit Modal -->
+<div class="modal fade" id="profileModal" tabindex="-1" aria-labelledby="profileModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="profileModalLabel"><i class="uil uil-user-edit"></i> Edit Profile</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="profileForm" enctype="multipart/form-data">
+                    @csrf
+                    <div class="row align-items-center mb-3">
+                        <div class="col-md-3 text-center">
+                            <div style="position:relative;display:inline-block;">
+                                <img id="profileImagePreview" src="{{ Auth::user()->image ? asset('storage/'.Auth::user()->image) : asset('images/default-avatar.png') }}" class="rounded-circle" style="width:90px;height:90px;object-fit:cover;border:3px solid #eaf2ff;">
+                                <label for="image" class="avatar-edit-btn" style="position:absolute;bottom:0;right:0;cursor:pointer;background:#4f8cff;color:#fff;width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:50%;border:2px solid #fff;">
+                                    <i class="uil uil-camera"></i>
+                                </label>
+                                <input type="file" id="image" name="image" accept="image/*" style="display:none;">
+                            </div>
+                        </div>
+                        <div class="col-md-9">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="name" class="form-label">Full Name</label>
+                                    <input type="text" class="form-control" id="name" name="name" value="{{ Auth::user()->name }}" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="email" class="form-label">Email</label>
+                                    <input type="email" class="form-control" id="email" name="email" value="{{ Auth::user()->email }}">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="mobile" class="form-label">Mobile</label>
+                                    <input type="text" class="form-control" id="mobile" name="mobile" value="{{ Auth::user()->mobile }}" required>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary px-4">Update Profile</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Change Password Modal -->
+<div class="modal fade" id="passwordModal" tabindex="-1" aria-labelledby="passwordModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="passwordModalLabel"><i class="uil uil-lock"></i> Change Password</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="passwordForm">
+                    @csrf
+                    <div class="mb-3">
+                        <label for="current_password" class="form-label">Current Password</label>
+                        <input type="password" class="form-control" id="current_password" name="current_password" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="new_password" class="form-label">New Password</label>
+                        <input type="password" class="form-control" id="new_password" name="new_password" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="new_password_confirmation" class="form-label">Confirm New Password</label>
+                        <input type="password" class="form-control" id="new_password_confirmation" name="new_password_confirmation" required>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary px-4">Change Password</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Toast Notification -->
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 9999">
+    <div id="toastMsg" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body" id="toastBody">Success!</div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+
+<!-- Contact Support Modal -->
+<div class="modal fade" id="contactModal" tabindex="-1" aria-labelledby="contactModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="contactModalLabel">Contact Support</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <div class="mb-4">
+                    <i class="uil uil-whatsapp" style="font-size: 3rem; color: #25D366;"></i>
+                    <h4 class="mt-3">Contact via WhatsApp</h4>
+                    <p class="text-muted">Get instant support from our team</p>
+                </div>
+                <a href="#" id="whatsappLink" class="btn btn-success btn-lg" target="_blank">
+                    <i class="uil uil-whatsapp"></i> Open WhatsApp
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Include QR Code Library -->
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+
+<script>
+// QR Code Functions
+function showQRModal() {
+    const modal = new bootstrap.Modal(document.getElementById('qrModal'));
+    modal.show();
+    const studentId = document.getElementById('studentIdText').textContent.trim();
+    const container = document.getElementById('qrCodeContainer');
+    container.innerHTML = '';
+    QRCode.toCanvas(container, studentId, {
+        width: 300,
+        margin: 2,
+        color: { dark: '#000000', light: '#FFFFFF' }
+    }, function (error) {
+        if (error) {
+            container.innerHTML = '<p class="text-danger">Error generating QR code</p>';
+        }
+    });
+}
+function downloadQRCode() {
+    const studentId = document.getElementById('studentIdText').textContent.trim();
+    const canvas = document.querySelector('#qrCodeContainer canvas');
+    if (canvas) {
+        const link = document.createElement('a');
+        link.download = 'student_qr_' + studentId + '.png';
+        link.href = canvas.toDataURL();
+        link.click();
+    }
+}
+// Profile Functions
+function showProfileModal() {
+    const modal = new bootstrap.Modal(document.getElementById('profileModal'));
+    modal.show();
+}
+document.getElementById('image').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+            document.getElementById('profileImagePreview').src = evt.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+});
+document.getElementById('profileForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const formData = new FormData(this);
+    fetch('{{ route("student.profile.update") }}', {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showToast('Profile updated successfully!', true);
+            // تحديث الاسم والصورة في الداشبورد مباشرة
+            document.getElementById('studentName').textContent = data.user.name;
+            if (data.user.image) {
+                const imgUrl = '/storage/' + data.user.image;
+                document.getElementById('studentAvatar').src = imgUrl;
+                document.getElementById('profileImagePreview').src = imgUrl;
+            }
+            setTimeout(() => { bootstrap.Modal.getInstance(document.getElementById('profileModal')).hide(); }, 1200);
+        } else {
+            showToast('Error updating profile', false);
+        }
+    })
+    .catch(error => {
+        showToast('Error updating profile', false);
+    });
+});
+// Password Functions
+function showPasswordModal() {
+    const modal = new bootstrap.Modal(document.getElementById('passwordModal'));
+    modal.show();
+}
+document.getElementById('passwordForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const formData = new FormData(this);
+    fetch('{{ route("student.password.change") }}', {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showToast('Password changed successfully!', true);
+            setTimeout(() => { bootstrap.Modal.getInstance(document.getElementById('passwordModal')).hide(); }, 1200);
+            this.reset();
+        } else {
+            showToast(data.message || 'Error changing password', false);
+        }
+    })
+    .catch(error => {
+        showToast('Error changing password', false);
+    });
+});
+// Toast Function
+function showToast(msg, success = true) {
+    const toast = document.getElementById('toastMsg');
+    const body = document.getElementById('toastBody');
+    body.textContent = msg;
+    toast.classList.remove('bg-success', 'bg-danger');
+    toast.classList.add(success ? 'bg-success' : 'bg-danger');
+    const bsToast = new bootstrap.Toast(toast);
+    bsToast.show();
+}
+// Contact Support Functions
+function contactSupport() {
+    fetch('{{ route("student.contact-support") }}')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                document.getElementById('whatsappLink').href = data.whatsapp_url;
+                const modal = new bootstrap.Modal(document.getElementById('contactModal'));
+                modal.show();
+            }
+        })
+        .catch(error => {
+            showToast('Error loading contact support', false);
+        });
+}
+// Update Quick Actions
+document.addEventListener('DOMContentLoaded', function() {
+    const quickActions = document.querySelectorAll('.sd-quick-action');
+    quickActions[0].addEventListener('click', showQRModal); // Scan QR
+    quickActions[1].addEventListener('click', function() { showToast('Grades feature coming soon!', true); });
+    quickActions[2].addEventListener('click', function() { showToast('Financial status feature coming soon!', true); });
+    quickActions[3].addEventListener('click', contactSupport); // Contact Support
+    // زر تغيير كلمة السر موجود بالفعل
+});
+</script>
 @endsection
