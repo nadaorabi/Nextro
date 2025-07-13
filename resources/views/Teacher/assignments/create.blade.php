@@ -8,7 +8,7 @@
   <link rel="icon" type="image/png" href="{{ asset('images/favicon.png') }}">
 
   <title>
-    إضافة واجب جديد - {{ Auth::user()->name }}
+    Add New Assignment - {{ Auth::user()->name }}
   </title>
   <!--     Fonts and icons     -->
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
@@ -31,11 +31,11 @@
       <div class="container-fluid py-1 px-3">
         <nav aria-label="breadcrumb">
           <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
-            <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="{{ route('teacher.dashboard') }}">الرئيسية</a></li>
-            <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="{{ route('teacher.assignments.index') }}">الواجبات</a></li>
-            <li class="breadcrumb-item text-sm text-dark active" aria-current="page">إضافة واجب جديد</li>
+            <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="{{ route('teacher.dashboard') }}">Dashboard</a></li>
+            <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="{{ route('teacher.assignments.index') }}">Assignments</a></li>
+            <li class="breadcrumb-item text-sm text-dark active" aria-current="page">Add New Assignment</li>
           </ol>
-          <h6 class="font-weight-bolder mb-0">إضافة واجب جديد</h6>
+          <h6 class="font-weight-bolder mb-0">Add New Assignment</h6>
         </nav>
       </div>
     </nav>
@@ -47,20 +47,20 @@
           <div class="card">
             <div class="card-header pb-0">
               <div class="d-flex justify-content-between align-items-center">
-                <h6 class="mb-0">إضافة واجب جديد</h6>
+                <h6 class="mb-0">Add New Assignment</h6>
                 <a href="{{ route('teacher.assignments.index') }}" class="btn btn-secondary btn-sm">
-                  <i class="fas fa-arrow-right"></i> رجوع
+                  <i class="fas fa-arrow-right"></i> Back
                 </a>
               </div>
             </div>
             <div class="card-body">
-              <form action="{{ route('teacher.assignments.store') }}" method="POST">
+              <form action="{{ route('teacher.assignments.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 
                 <div class="row">
                   <div class="col-md-6">
                     <div class="form-group">
-                      <label for="title" class="form-control-label">عنوان الواجب</label>
+                      <label for="title" class="form-control-label">Assignment Title</label>
                       <input type="text" class="form-control @error('title') is-invalid @enderror" 
                              id="title" name="title" value="{{ old('title') }}" required>
                       @error('title')
@@ -71,10 +71,10 @@
                   
                   <div class="col-md-6">
                     <div class="form-group">
-                      <label for="course_id" class="form-control-label">الدورة</label>
+                      <label for="course_id" class="form-control-label">Course</label>
                       <select class="form-control @error('course_id') is-invalid @enderror" 
                               id="course_id" name="course_id" required>
-                        <option value="">اختر الدورة</option>
+                        <option value="">Select Course</option>
                         @foreach($courses as $course)
                             <option value="{{ $course->id }}" {{ old('course_id') == $course->id ? 'selected' : '' }}>
                                 {{ $course->title }}
@@ -89,7 +89,7 @@
                 </div>
                 
                 <div class="form-group">
-                  <label for="description" class="form-control-label">وصف الواجب</label>
+                  <label for="description" class="form-control-label">Assignment Description</label>
                   <textarea class="form-control @error('description') is-invalid @enderror" 
                             id="description" name="description" rows="3">{{ old('description') }}</textarea>
                   @error('description')
@@ -100,12 +100,12 @@
                 <div class="row">
                   <div class="col-md-4">
                     <div class="form-group">
-                      <label for="type" class="form-control-label">نوع الواجب</label>
+                      <label for="type" class="form-control-label">Assignment Type</label>
                       <select class="form-control @error('type') is-invalid @enderror" 
                               id="type" name="type" required>
-                        <option value="">اختر النوع</option>
-                        <option value="manual" {{ old('type') == 'manual' ? 'selected' : '' }}>يدوي (تصحيح المعلم)</option>
-                        <option value="auto" {{ old('type') == 'auto' ? 'selected' : '' }}>آلي (تصحيح تلقائي)</option>
+                        <option value="">Select Type</option>
+                        <option value="manual" {{ old('type') == 'manual' ? 'selected' : '' }}>Manual (Teacher Graded)</option>
+                        <option value="auto" {{ old('type') == 'auto' ? 'selected' : '' }}>Auto (Auto Graded)</option>
                       </select>
                       @error('type')
                           <div class="invalid-feedback">{{ $message }}</div>
@@ -115,7 +115,35 @@
                   
                   <div class="col-md-4">
                     <div class="form-group">
-                      <label for="start_at" class="form-control-label">تاريخ البداية</label>
+                      <label for="delivery_type" class="form-control-label">Delivery Method</label>
+                      <select class="form-control @error('delivery_type') is-invalid @enderror" 
+                              id="delivery_type" name="delivery_type" required onchange="toggleDeliveryMethod()">
+                        <option value="">Select Method</option>
+                        <option value="online" {{ old('delivery_type') == 'online' ? 'selected' : '' }}>Online (Questions on website)</option>
+                        <option value="file" {{ old('delivery_type') == 'file' ? 'selected' : '' }}>File Upload (Student downloads file)</option>
+                      </select>
+                      @error('delivery_type')
+                          <div class="invalid-feedback">{{ $message }}</div>
+                      @enderror
+                    </div>
+                  </div>
+                  
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label for="total_grade" class="form-control-label">Total Grade</label>
+                      <input type="number" step="0.01" class="form-control @error('total_grade') is-invalid @enderror" 
+                             id="total_grade" name="total_grade" value="{{ old('total_grade', 100) }}" required>
+                      @error('total_grade')
+                          <div class="invalid-feedback">{{ $message }}</div>
+                      @enderror
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="start_at" class="form-control-label">Start Date</label>
                       <input type="datetime-local" class="form-control @error('start_at') is-invalid @enderror" 
                              id="start_at" name="start_at" value="{{ old('start_at') }}">
                       @error('start_at')
@@ -124,9 +152,9 @@
                     </div>
                   </div>
                   
-                  <div class="col-md-4">
+                  <div class="col-md-6">
                     <div class="form-group">
-                      <label for="end_at" class="form-control-label">تاريخ الانتهاء</label>
+                      <label for="end_at" class="form-control-label">End Date</label>
                       <input type="datetime-local" class="form-control @error('end_at') is-invalid @enderror" 
                              id="end_at" name="end_at" value="{{ old('end_at') }}">
                       @error('end_at')
@@ -136,18 +164,20 @@
                   </div>
                 </div>
                 
-                <div class="form-group">
-                  <label for="total_grade" class="form-control-label">الدرجة الكلية</label>
-                  <input type="number" step="0.01" class="form-control @error('total_grade') is-invalid @enderror" 
-                         id="total_grade" name="total_grade" value="{{ old('total_grade', 100) }}" required>
-                  @error('total_grade')
+                <!-- File Upload Section (hidden by default) -->
+                <div id="fileUploadSection" class="form-group" style="display: none;">
+                  <label for="assignment_file" class="form-control-label">Assignment File</label>
+                  <input type="file" class="form-control @error('assignment_file') is-invalid @enderror" 
+                         id="assignment_file" name="assignment_file" accept=".pdf,.doc,.docx,.txt">
+                  <small class="form-text text-muted">Supported formats: PDF, DOC, DOCX, TXT (Max size: 10MB)</small>
+                  @error('assignment_file')
                       <div class="invalid-feedback">{{ $message }}</div>
                   @enderror
                 </div>
                 
                 <div class="d-flex justify-content-end">
                   <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-save"></i> حفظ الواجب
+                    <i class="fas fa-save"></i> Save Assignment
                   </button>
                 </div>
               </form>
@@ -163,6 +193,37 @@
   <script src="{{ asset('js/core/bootstrap.min.js') }}"></script>
   <script src="{{ asset('js/plugins/perfect-scrollbar.min.js') }}"></script>
   <script src="{{ asset('js/plugins/smooth-scrollbar.min.js') }}"></script>
+  <script>
+    var win = navigator.platform.indexOf('Win') > -1;
+    if (win && document.querySelector('#sidenav-scrollbar')) {
+      var options = {
+        damping: '0.5'
+      }
+      Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
+    }
+    
+    function toggleDeliveryMethod() {
+      const deliveryType = document.getElementById('delivery_type').value;
+      const fileSection = document.getElementById('fileUploadSection');
+      const fileInput = document.getElementById('assignment_file');
+      
+      if (deliveryType === 'file') {
+        fileSection.style.display = 'block';
+        fileInput.required = true;
+      } else {
+        fileSection.style.display = 'none';
+        fileInput.required = false;
+      }
+    }
+    
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      toggleDeliveryMethod();
+    });
+  </script>
+  <!-- Github buttons -->
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+  <!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->
   <script src="{{ asset('js/argon-dashboard.js?v=2.1.0') }}"></script>
 </body>
 

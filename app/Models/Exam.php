@@ -15,6 +15,8 @@ class Exam extends Model
         'title', 
         'description',
         'type',
+        'delivery_type',
+        'file_path',
         'start_at',
         'end_at',
         'total_grade',
@@ -48,5 +50,10 @@ class Exam extends Model
     public function questions()
     {
         return $this->hasMany(Question::class);
+    }
+
+    public function submissions()
+    {
+        return $this->hasMany(ExamSubmission::class);
     }
 }

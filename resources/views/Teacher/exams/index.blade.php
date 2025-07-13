@@ -8,7 +8,7 @@
   <link rel="icon" type="image/png" href="{{ asset('images/favicon.png') }}">
 
   <title>
-    الامتحانات - {{ Auth::user()->name }}
+    Exams - {{ Auth::user()->name }}
   </title>
   <!--     Fonts and icons     -->
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
@@ -31,10 +31,10 @@
       <div class="container-fluid py-1 px-3">
         <nav aria-label="breadcrumb">
           <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
-            <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="{{ route('teacher.dashboard') }}">الرئيسية</a></li>
-            <li class="breadcrumb-item text-sm text-dark active" aria-current="page">الامتحانات</li>
+            <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="{{ route('teacher.dashboard') }}">Dashboard</a></li>
+            <li class="breadcrumb-item text-sm text-dark active" aria-current="page">Exams</li>
           </ol>
-          <h6 class="font-weight-bolder mb-0">الامتحانات</h6>
+          <h6 class="font-weight-bolder mb-0">Exams</h6>
         </nav>
       </div>
     </nav>
@@ -46,9 +46,9 @@
           <div class="card">
             <div class="card-header pb-0">
               <div class="d-flex justify-content-between align-items-center">
-                <h6 class="mb-0">الامتحانات</h6>
+                <h6 class="mb-0">Exams</h6>
                 <a href="{{ route('teacher.exams.create') }}" class="btn btn-primary btn-sm">
-                  <i class="fas fa-plus"></i> إضافة امتحان جديد
+                  <i class="fas fa-plus"></i> Add New Exam
                 </a>
               </div>
             </div>
@@ -57,14 +57,15 @@
                 <table class="table align-items-center mb-0">
                   <thead>
                     <tr>
-                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">الامتحان</th>
-                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">الدورة</th>
-                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">النوع</th>
-                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">الدرجة الكلية</th>
-                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">المدة (دقائق)</th>
-                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">تاريخ البداية</th>
-                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">تاريخ الانتهاء</th>
-                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">الإجراءات</th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Exam</th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Course</th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Type</th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Delivery</th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Total Grade</th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Duration (minutes)</th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Start Date</th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">End Date</th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -79,12 +80,25 @@
                         </div>
                       </td>
                       <td>
-                        <p class="text-xs font-weight-bold mb-0">{{ $exam->course->title ?? 'غير محدد' }}</p>
+                        <p class="text-xs font-weight-bold mb-0">{{ $exam->course->title ?? 'Not specified' }}</p>
                       </td>
                       <td>
                         <span class="badge badge-sm bg-gradient-{{ $exam->type == 'auto' ? 'success' : 'info' }}">
-                          {{ $exam->type == 'auto' ? 'آلي' : 'يدوي' }}
+                          {{ $exam->type == 'auto' ? 'Auto' : 'Manual' }}
                         </span>
+                      </td>
+                      <td>
+                        <div class="d-flex flex-column">
+                          <span class="badge badge-sm bg-gradient-{{ ($exam->delivery_type ?? 'online') == 'online' ? 'primary' : 'warning' }}">
+                            {{ ($exam->delivery_type ?? 'online') == 'online' ? 'Online' : 'File' }}
+                          </span>
+                          @if(($exam->delivery_type ?? 'online') == 'file' && $exam->file_path)
+                            <a href="{{ asset('storage/' . $exam->file_path) }}" target="_blank" 
+                               class="text-xs text-primary mt-1">
+                              <i class="fas fa-download"></i> Download
+                            </a>
+                          @endif
+                        </div>
                       </td>
                       <td>
                         <p class="text-xs font-weight-bold mb-0">{{ $exam->total_grade }}</p>
@@ -94,43 +108,45 @@
                       </td>
                       <td>
                         <p class="text-xs font-weight-bold mb-0">
-                          {{ $exam->start_at ? $exam->start_at->format('Y-m-d H:i') : 'غير محدد' }}
+                          {{ $exam->start_at ? $exam->start_at->format('Y-m-d H:i') : 'Not specified' }}
                         </p>
                       </td>
                       <td>
                         <p class="text-xs font-weight-bold mb-0">
-                          {{ $exam->end_at ? $exam->end_at->format('Y-m-d H:i') : 'غير محدد' }}
+                          {{ $exam->end_at ? $exam->end_at->format('Y-m-d H:i') : 'Not specified' }}
                         </p>
                       </td>
                       <td>
                         <div class="btn-group" role="group">
                           <a href="{{ route('teacher.exams.show', $exam) }}" 
                              class="btn btn-link text-secondary px-3 mb-0">
-                            <i class="fas fa-eye text-primary me-1"></i>عرض
+                            <i class="fas fa-eye text-primary me-1"></i>View
                           </a>
                           <a href="{{ route('teacher.exams.edit', $exam) }}" 
                              class="btn btn-link text-secondary px-3 mb-0">
-                            <i class="fas fa-edit text-warning me-1"></i>تعديل
+                            <i class="fas fa-edit text-warning me-1"></i>Edit
                           </a>
                           <form action="{{ route('teacher.exams.destroy', $exam) }}" 
                                 method="POST" class="d-inline">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="btn btn-link text-secondary px-3 mb-0"
-                                    onclick="return confirm('هل أنت متأكد من حذف هذا الامتحان؟')">
-                              <i class="fas fa-trash text-danger me-1"></i>حذف
+                                    onclick="return confirm('Are you sure you want to delete this exam?')">
+                              <i class="fas fa-trash text-danger me-1"></i>Delete
                             </button>
                           </form>
-                          <a href="{{ route('teacher.exams.questions.list', $exam) }}" class="btn btn-link text-info px-3 mb-0">
-                            <i class="fas fa-question-circle me-1"></i>الأسئلة
-                          </a>
+                          @if(($exam->delivery_type ?? 'online') == 'online')
+                            <a href="{{ route('teacher.exams.questions.list', $exam) }}" class="btn btn-link text-info px-3 mb-0">
+                              <i class="fas fa-question-circle me-1"></i>Questions
+                            </a>
+                          @endif
                         </div>
                       </td>
                     </tr>
                     @empty
                     <tr>
-                      <td colspan="8" class="text-center py-4">
-                        <p class="text-sm text-secondary mb-0">لا توجد امتحانات حتى الآن</p>
+                      <td colspan="9" class="text-center py-4">
+                        <p class="text-sm text-secondary mb-0">No exams available yet</p>
                       </td>
                     </tr>
                     @endforelse
@@ -142,6 +158,7 @@
         </div>
       </div>
     </div>
+
   </main>
 
   <!--   Core JS Files   -->
@@ -149,78 +166,19 @@
   <script src="{{ asset('js/core/bootstrap.min.js') }}"></script>
   <script src="{{ asset('js/plugins/perfect-scrollbar.min.js') }}"></script>
   <script src="{{ asset('js/plugins/smooth-scrollbar.min.js') }}"></script>
-  <script src="{{ asset('js/argon-dashboard.js?v=2.1.0') }}"></script>
-  @foreach($exams as $exam)
-  <!-- Modal for adding question -->
-  <div class="modal fade" id="addQuestionModal-{{ $exam->id }}" tabindex="-1" aria-labelledby="addQuestionModalLabel-{{ $exam->id }}" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="addQuestionModalLabel-{{ $exam->id }}">إضافة سؤال جديد للامتحان: {{ $exam->title }}</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="إغلاق"></button>
-        </div>
-        <form method="POST" action="{{ route('teacher.exams.questions.add', $exam) }}">
-          @csrf
-          <div class="modal-body">
-            <div class="mb-3">
-              <label for="question_text-{{ $exam->id }}" class="form-label">نص السؤال</label>
-              <textarea class="form-control" id="question_text-{{ $exam->id }}" name="question_text" required></textarea>
-            </div>
-            <div class="mb-3">
-              <label for="type-{{ $exam->id }}" class="form-label">نوع السؤال</label>
-              <select class="form-select" id="type-{{ $exam->id }}" name="type" required onchange="toggleChoicesSection{{ $exam->id }}()">
-                <option value="">اختر النوع</option>
-                <option value="mcq">اختيار من متعدد</option>
-                <option value="short_answer">إجابة قصيرة</option>
-                <option value="long_answer">إجابة طويلة</option>
-              </select>
-            </div>
-            <div class="mb-3">
-              <label for="grade-{{ $exam->id }}" class="form-label">الدرجة</label>
-              <input type="number" class="form-control" id="grade-{{ $exam->id }}" name="grade" min="0" required>
-            </div>
-            <div class="mb-3" id="choicesSection-{{ $exam->id }}" style="display:none;">
-              <label class="form-label">الخيارات (اختيار من متعدد)</label>
-              <div id="choicesContainer-{{ $exam->id }}">
-                <div class="input-group mb-2">
-                  <input type="text" class="form-control" name="choices[]" placeholder="الخيار الأول">
-                  <div class="input-group-text">
-                    <input type="radio" name="correct_choice" value="0"> صحيح
-                  </div>
-                </div>
-              </div>
-              <button type="button" class="btn btn-sm btn-outline-primary" onclick="addChoice{{ $exam->id }}()">
-                <i class="fas fa-plus"></i> إضافة خيار
-              </button>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
-            <button type="submit" class="btn btn-primary">حفظ السؤال</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
   <script>
-    function toggleChoicesSection{{ $exam->id }}() {
-      var type = document.getElementById('type-{{ $exam->id }}').value;
-      document.getElementById('choicesSection-{{ $exam->id }}').style.display = (type === 'mcq') ? 'block' : 'none';
-    }
-    function addChoice{{ $exam->id }}() {
-      var container = document.getElementById('choicesContainer-{{ $exam->id }}');
-      var index = container.children.length;
-      var div = document.createElement('div');
-      div.className = 'input-group mb-2';
-      div.innerHTML = `<input type=\"text\" class=\"form-control\" name=\"choices[]\" placeholder=\"الخيار الجديد\">
-        <div class=\"input-group-text\">
-          <input type=\"radio\" name=\"correct_choice\" value=\"${index}\"> صحيح
-        </div>
-        <button type=\"button\" class=\"btn btn-outline-danger btn-sm\" onclick=\"this.parentNode.remove()\"><i class=\"fas fa-trash\"></i></button>`;
-      container.appendChild(div);
+    var win = navigator.platform.indexOf('Win') > -1;
+    if (win && document.querySelector('#sidenav-scrollbar')) {
+      var options = {
+        damping: '0.5'
+      }
+      Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
     }
   </script>
-  @endforeach
+  <!-- Github buttons -->
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+  <!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->
+  <script src="{{ asset('js/argon-dashboard.js?v=2.1.0') }}"></script>
 </body>
 
 </html> 

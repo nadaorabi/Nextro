@@ -15,6 +15,8 @@ class Assignment extends Model
         'title',
         'description',
         'type',
+        'delivery_type',
+        'file_path',
         'start_at',
         'end_at',
         'total_grade'
@@ -40,5 +42,10 @@ class Assignment extends Model
     public function questions()
     {
         return $this->hasMany(Question::class);
+    }
+
+    public function submissions()
+    {
+        return $this->hasMany(AssignmentSubmission::class);
     }
 }

@@ -47,24 +47,47 @@ class AssignmentController extends Controller
             'description' => 'nullable|string',
             'course_id' => 'required|exists:courses,id',
             'type' => 'required|in:manual,auto',
+            'delivery_type' => 'required|in:online,file',
             'start_at' => 'nullable|date',
             'end_at' => 'nullable|date|after:start_at',
-            'total_grade' => 'required|numeric|min:0'
+            'total_grade' => 'required|numeric|min:0',
+            'assignment_file' => 'nullable|file|mimes:pdf,doc,docx,txt|max:10240' // 10MB max
+        ], [
+            'delivery_type.required' => __('assignments.validation.delivery_type_required'),
+            'assignment_file.required' => __('assignments.validation.file_required_for_file_type'),
+            'assignment_file.max' => __('assignments.validation.file_size'),
+            'assignment_file.mimes' => __('assignments.validation.file_type'),
         ]);
 
-        $assignment = Assignment::create([
+        // Additional validation for file upload
+        if ($request->delivery_type === 'file' && !$request->hasFile('assignment_file')) {
+            return back()->withErrors(['assignment_file' => __('assignments.validation.file_required_for_file_type')]);
+        }
+
+        $data = [
             'teacher_id' => Auth::id(),
             'title' => $request->title,
             'description' => $request->description,
             'course_id' => $request->course_id,
             'type' => $request->type,
+            'delivery_type' => $request->delivery_type,
             'start_at' => $request->start_at,
             'end_at' => $request->end_at,
             'total_grade' => $request->total_grade
-        ]);
+        ];
+
+        // Handle file upload if delivery type is file
+        if ($request->delivery_type === 'file' && $request->hasFile('assignment_file')) {
+            $file = $request->file('assignment_file');
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            $filePath = $file->storeAs('assignments', $fileName, 'public');
+            $data['file_path'] = $filePath;
+        }
+
+        $assignment = Assignment::create($data);
 
         return redirect()->route('teacher.assignments.index')
-            ->with('success', 'تم إنشاء الواجب بنجاح');
+            ->with('success', __('assignments.created'));
     }
 
     /**
@@ -77,9 +100,30 @@ class AssignmentController extends Controller
             abort(403);
         }
 
-        $assignment->load(['course', 'questions.choices']);
+        $assignment->load(['course', 'questions.choices', 'submissions.student']);
         
-        return view('Teacher.assignments.show', compact('assignment'));
+        // Get students enrolled in this course
+        $enrolledStudents = \App\Models\Enrollment::where('course_id', $assignment->course_id)
+            ->with('student')
+            ->get()
+            ->pluck('student');
+        
+        // Get submission statistics
+        $totalStudents = $enrolledStudents->count();
+        $submittedCount = $assignment->submissions->where('status', 'submitted')->count();
+        $gradedCount = $assignment->submissions->where('status', 'graded')->count();
+        $lateCount = $assignment->submissions->where('status', 'late')->count();
+        $averageScore = $assignment->submissions->where('status', 'graded')->avg('score') ?? 0;
+        
+        return view('Teacher.assignments.show', compact(
+            'assignment', 
+            'enrolledStudents', 
+            'totalStudents', 
+            'submittedCount', 
+            'gradedCount', 
+            'lateCount', 
+            'averageScore'
+        ));
     }
 
     /**
@@ -114,23 +158,43 @@ class AssignmentController extends Controller
             'description' => 'nullable|string',
             'course_id' => 'required|exists:courses,id',
             'type' => 'required|in:manual,auto',
+            'delivery_type' => 'required|in:online,file',
             'start_at' => 'nullable|date',
             'end_at' => 'nullable|date|after:start_at',
-            'total_grade' => 'required|numeric|min:0'
+            'total_grade' => 'required|numeric|min:0',
+            'assignment_file' => 'nullable|file|mimes:pdf,doc,docx,txt|max:10240' // 10MB max
+        ], [
+            'delivery_type.required' => __('assignments.validation.delivery_type_required'),
+            'assignment_file.max' => __('assignments.validation.file_size'),
+            'assignment_file.mimes' => __('assignments.validation.file_type'),
         ]);
 
-        $assignment->update([
+        $data = [
             'title' => $request->title,
             'description' => $request->description,
             'course_id' => $request->course_id,
             'type' => $request->type,
+            'delivery_type' => $request->delivery_type,
             'start_at' => $request->start_at,
             'end_at' => $request->end_at,
             'total_grade' => $request->total_grade
-        ]);
+        ];
+
+        // Handle file upload if delivery type is file and new file is uploaded
+        if ($request->delivery_type === 'file' && $request->hasFile('assignment_file')) {
+            $file = $request->file('assignment_file');
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            $filePath = $file->storeAs('assignments', $fileName, 'public');
+            $data['file_path'] = $filePath;
+        } elseif ($request->delivery_type === 'online') {
+            // If changing to online, remove file path
+            $data['file_path'] = null;
+        }
+
+        $assignment->update($data);
 
         return redirect()->route('teacher.assignments.index')
-            ->with('success', 'تم تحديث الواجب بنجاح');
+            ->with('success', __('assignments.updated'));
     }
 
     /**
@@ -146,7 +210,7 @@ class AssignmentController extends Controller
         $assignment->delete();
 
         return redirect()->route('teacher.assignments.index')
-            ->with('success', 'تم حذف الواجب بنجاح');
+            ->with('success', __('assignments.deleted'));
     }
 
     /**

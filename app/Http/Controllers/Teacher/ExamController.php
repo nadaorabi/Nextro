@@ -47,28 +47,51 @@ class ExamController extends Controller
             'description' => 'nullable|string',
             'course_id' => 'required|exists:courses,id',
             'type' => 'required|in:manual,auto',
+            'delivery_type' => 'required|in:online,file',
             'start_at' => 'nullable|date',
             'end_at' => 'nullable|date|after:start_at',
             'total_grade' => 'required|numeric|min:0',
             'duration' => 'required|integer|min:1',
+            'exam_file' => 'nullable|file|mimes:pdf,doc,docx,txt|max:10240' // 10MB max
+        ], [
+            'delivery_type.required' => __('exams.validation.delivery_type_required'),
+            'exam_file.required' => __('exams.validation.file_required_for_file_type'),
+            'exam_file.max' => __('exams.validation.file_size'),
+            'exam_file.mimes' => __('exams.validation.file_type'),
         ]);
 
-        $exam = Exam::create([
+        // Additional validation for file upload
+        if ($request->delivery_type === 'file' && !$request->hasFile('exam_file')) {
+            return back()->withErrors(['exam_file' => __('exams.validation.file_required_for_file_type')]);
+        }
+
+        $data = [
             'teacher_id' => Auth::id(),
             'title' => $request->title,
             'description' => $request->description,
             'course_id' => $request->course_id,
             'type' => $request->type,
+            'delivery_type' => $request->delivery_type,
             'start_at' => $request->start_at,
             'end_at' => $request->end_at,
             'total_grade' => $request->total_grade,
             'created_by' => Auth::id(),
             'exam_date' => $request->start_at ?? now(),
             'duration' => $request->duration,
-        ]);
+        ];
+
+        // Handle file upload if delivery type is file
+        if ($request->delivery_type === 'file' && $request->hasFile('exam_file')) {
+            $file = $request->file('exam_file');
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            $filePath = $file->storeAs('exams', $fileName, 'public');
+            $data['file_path'] = $filePath;
+        }
+
+        $exam = Exam::create($data);
 
         return redirect()->route('teacher.exams.index')
-            ->with('success', 'تم إنشاء الامتحان بنجاح');
+            ->with('success', __('exams.created'));
     }
 
     /**
@@ -81,9 +104,32 @@ class ExamController extends Controller
             abort(403);
         }
 
-        $exam->load(['course', 'questions.choices']);
+        $exam->load(['course', 'questions.choices', 'submissions.student']);
         
-        return view('Teacher.exams.show', compact('exam'));
+        // Get students enrolled in this course
+        $enrolledStudents = \App\Models\Enrollment::where('course_id', $exam->course_id)
+            ->with('student')
+            ->get()
+            ->pluck('student');
+        
+        // Get submission statistics
+        $totalStudents = $enrolledStudents->count();
+        $startedCount = $exam->submissions->where('status', 'started')->count();
+        $submittedCount = $exam->submissions->where('status', 'submitted')->count();
+        $gradedCount = $exam->submissions->where('status', 'graded')->count();
+        $lateCount = $exam->submissions->where('status', 'late')->count();
+        $averageScore = $exam->submissions->where('status', 'graded')->avg('score') ?? 0;
+        
+        return view('Teacher.exams.show', compact(
+            'exam', 
+            'enrolledStudents', 
+            'totalStudents', 
+            'startedCount', 
+            'submittedCount', 
+            'gradedCount', 
+            'lateCount', 
+            'averageScore'
+        ));
     }
 
     /**
@@ -118,23 +164,43 @@ class ExamController extends Controller
             'description' => 'nullable|string',
             'course_id' => 'required|exists:courses,id',
             'type' => 'required|in:manual,auto',
+            'delivery_type' => 'required|in:online,file',
             'start_at' => 'nullable|date',
             'end_at' => 'nullable|date|after:start_at',
-            'total_grade' => 'required|numeric|min:0'
+            'total_grade' => 'required|numeric|min:0',
+            'exam_file' => 'nullable|file|mimes:pdf,doc,docx,txt|max:10240' // 10MB max
+        ], [
+            'delivery_type.required' => __('exams.validation.delivery_type_required'),
+            'exam_file.max' => __('exams.validation.file_size'),
+            'exam_file.mimes' => __('exams.validation.file_type'),
         ]);
 
-        $exam->update([
+        $data = [
             'title' => $request->title,
             'description' => $request->description,
             'course_id' => $request->course_id,
             'type' => $request->type,
+            'delivery_type' => $request->delivery_type,
             'start_at' => $request->start_at,
             'end_at' => $request->end_at,
             'total_grade' => $request->total_grade
-        ]);
+        ];
+
+        // Handle file upload if delivery type is file and new file is uploaded
+        if ($request->delivery_type === 'file' && $request->hasFile('exam_file')) {
+            $file = $request->file('exam_file');
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            $filePath = $file->storeAs('exams', $fileName, 'public');
+            $data['file_path'] = $filePath;
+        } elseif ($request->delivery_type === 'online') {
+            // If changing to online, remove file path
+            $data['file_path'] = null;
+        }
+
+        $exam->update($data);
 
         return redirect()->route('teacher.exams.index')
-            ->with('success', 'تم تحديث الامتحان بنجاح');
+            ->with('success', __('exams.updated'));
     }
 
     /**
@@ -150,7 +216,7 @@ class ExamController extends Controller
         $exam->delete();
 
         return redirect()->route('teacher.exams.index')
-            ->with('success', 'تم حذف الامتحان بنجاح');
+            ->with('success', __('exams.deleted'));
     }
 
     /**

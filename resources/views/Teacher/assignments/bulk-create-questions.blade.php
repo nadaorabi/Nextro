@@ -6,7 +6,7 @@
   <link rel="apple-touch-icon" sizes="76x76" href="{{ asset('images/apple-icon.png') }}">
   <link rel="icon" type="image/png" href="{{ asset('images/favicon.png') }}">
   <title>
-    الواجبات - {{ Auth::user()->name }}
+    Assignments - {{ Auth::user()->name }}
   </title>
   <!--     Fonts and icons     -->
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
@@ -25,12 +25,12 @@
     <div class="container-fluid py-1 px-3">
       <nav aria-label="breadcrumb">
         <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
-          <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="{{ route('teacher.dashboard') }}">الرئيسية</a></li>
-          <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="{{ route('teacher.assignments.index') }}">الواجبات</a></li>
-          <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="{{ route('teacher.assignments.questions.list', $assignment) }}">أسئلة الواجب</a></li>
-          <li class="breadcrumb-item text-sm text-dark active" aria-current="page">إضافة أسئلة جماعية</li>
+          <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="{{ route('teacher.dashboard') }}">Dashboard</a></li>
+          <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="{{ route('teacher.assignments.index') }}">Assignments</a></li>
+          <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="{{ route('teacher.assignments.questions.list', $assignment) }}">Assignment Questions</a></li>
+          <li class="breadcrumb-item text-sm text-dark active" aria-current="page">Bulk Add Questions</li>
         </ol>
-        <h6 class="font-weight-bolder mb-0">إضافة أسئلة جماعية للواجب: {{ $assignment->title }}</h6>
+        <h6 class="font-weight-bolder mb-0">Bulk Add Questions for Assignment: {{ $assignment->title }}</h6>
       </nav>
     </div>
   </nav>
@@ -41,11 +41,11 @@
         <div class="card mb-4">
           <div class="card-header pb-0 d-flex justify-content-between align-items-center">
             <div>
-              <h6 class="mb-0">إضافة أسئلة جماعية للواجب</h6>
+              <h6 class="mb-0">Bulk Add Questions for Assignment</h6>
               <p class="text-sm mb-0 text-secondary">{{ $assignment->title }}</p>
             </div>
             <a href="{{ route('teacher.assignments.questions.list', $assignment) }}" class="btn btn-secondary btn-sm">
-              <i class="fas fa-arrow-right me-2"></i>العودة للأسئلة
+              <i class="fas fa-arrow-right me-2"></i>Back to Questions
             </a>
           </div>
           <div class="card-body">
@@ -53,20 +53,20 @@
               <div class="row mb-4">
                 <div class="col-md-4">
                   <div class="form-group">
-                    <label class="form-control-label">عدد الأسئلة</label>
+                    <label class="form-control-label">Number of Questions</label>
                     <input type="number" min="1" max="50" class="form-control" id="questionsCount" required>
                   </div>
                 </div>
                 <div class="col-md-4">
                   <div class="form-group">
-                    <label class="form-control-label">عدد الخيارات لكل سؤال</label>
+                    <label class="form-control-label">Number of Choices per Question</label>
                     <input type="number" min="2" max="10" class="form-control" id="choicesCount" value="4" required>
-                    <small class="text-muted">للأسئلة من نوع اختيار من متعدد</small>
+                    <small class="text-muted">For multiple choice questions</small>
                   </div>
                 </div>
                 <div class="col-md-4 d-flex align-items-end">
                   <button type="submit" class="btn btn-primary w-100">
-                    <i class="fas fa-magic me-2"></i>توليد الخانات
+                    <i class="fas fa-magic me-2"></i>Generate Fields
                   </button>
                 </div>
               </div>
@@ -76,7 +76,7 @@
               <div id="questionsContainer"></div>
               <div class="d-flex justify-content-end mt-4">
                 <button type="submit" class="btn btn-success">
-                  <i class="fas fa-save me-2"></i>حفظ جميع الأسئلة
+                  <i class="fas fa-save me-2"></i>Save All Questions
                 </button>
               </div>
             </form>
@@ -98,25 +98,25 @@ function generateQuestions() {
         <div class='card-header pb-0'>
           <h6 class='mb-0'>
             <i class="fas fa-question-circle text-primary me-2"></i>
-            السؤال رقم ${i+1}
+            Question ${i+1}
           </h6>
         </div>
         <div class='card-body'>
           <div class='row'>
             <div class='col-md-8'>
               <div class='form-group'>
-                <label class='form-control-label'>نص السؤال</label>
+                <label class='form-control-label'>Question Text</label>
                 <input type='text' name='questions[${i}][question_text]' class='form-control' required>
               </div>
             </div>
             <div class='col-md-4'>
               <div class='form-group'>
-                <label class='form-control-label'>نوع السؤال</label>
+                <label class='form-control-label'>Question Type</label>
                 <select name='questions[${i}][type]' class='form-control' onchange='toggleChoicesSection(this,${i})' required>
-                  <option value=''>اختر النوع</option>
-                  <option value='mcq'>اختيار من متعدد</option>
-                  <option value='short_answer'>إجابة قصيرة</option>
-                  <option value='long_answer'>إجابة طويلة</option>
+                  <option value=''>Choose Type</option>
+                  <option value='mcq'>Multiple Choice</option>
+                  <option value='short_answer'>Short Answer</option>
+                  <option value='long_answer'>Long Answer</option>
                 </select>
               </div>
             </div>
@@ -124,22 +124,22 @@ function generateQuestions() {
           <div class='row mt-3'>
             <div class='col-md-4'>
               <div class='form-group'>
-                <label class='form-control-label'>الدرجة</label>
+                <label class='form-control-label'>Grade</label>
                 <input type='number' name='questions[${i}][grade]' class='form-control' min='0' required>
               </div>
             </div>
           </div>
           <div class='choices-section mt-3' id='choices-section-${i}' style='display:none;'>
             <div class='form-group'>
-              <label class='form-control-label'>الخيارات</label>
+              <label class='form-control-label'>Choices</label>
               <div class='row'>`;
     for (let j = 0; j < choicesCount; j++) {
       qHtml += `
                 <div class='col-md-6 mb-2'>
                   <div class='input-group'>
-                    <input type='text' name='questions[${i}][choices][${j}][choice_text]' class='form-control' placeholder='الخيار رقم ${j+1}'>
+                    <input type='text' name='questions[${i}][choices][${j}][choice_text]' class='form-control' placeholder='Choice ${j+1}'>
                     <div class='input-group-text'>
-                      <input type='radio' name='questions[${i}][correct_choice]' value='${j}'> صحيح
+                      <input type='radio' name='questions[${i}][correct_choice]' value='${j}'> Correct
                     </div>
                   </div>
                 </div>`;

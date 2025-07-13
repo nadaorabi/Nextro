@@ -8,7 +8,7 @@
   <link rel="icon" type="image/png" href="{{ asset('images/favicon.png') }}">
 
   <title>
-    الامتحانات - {{ Auth::user()->name }}
+    Exams - {{ Auth::user()->name }}
   </title>
   <!--     Fonts and icons     -->
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
@@ -30,11 +30,11 @@
     <div class="container-fluid py-1 px-3">
       <nav aria-label="breadcrumb">
         <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
-          <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="{{ route('teacher.dashboard') }}">الرئيسية</a></li>
-          <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="{{ route('teacher.exams.index') }}">الامتحانات</a></li>
-          <li class="breadcrumb-item text-sm text-dark active" aria-current="page">أسئلة الامتحان</li>
+          <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="{{ route('teacher.dashboard') }}">Dashboard</a></li>
+          <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="{{ route('teacher.exams.index') }}">Exams</a></li>
+          <li class="breadcrumb-item text-sm text-dark active" aria-current="page">Exam Questions</li>
         </ol>
-        <h6 class="font-weight-bolder mb-0">أسئلة الامتحان: {{ $exam->title }}</h6>
+        <h6 class="font-weight-bolder mb-0">Exam Questions: {{ $exam->title }}</h6>
       </nav>
     </div>
   </nav>
@@ -46,14 +46,14 @@
         <div class="card mb-4">
           <div class="card-header pb-0 d-flex justify-content-between align-items-center">
             <div>
-              <h6 class="mb-0">عدد الأسئلة: {{ $exam->questions->count() }}</h6>
+              <h6 class="mb-0">Total Questions: {{ $exam->questions->count() }}</h6>
             </div>
             <div class="d-flex gap-2">
               <a href="{{ route('teacher.exams.questions.bulk-create', $exam) }}" class="btn btn-primary btn-sm">
-                <i class="fas fa-plus me-2"></i>إضافة أسئلة
+                <i class="fas fa-plus me-2"></i>Add Questions
               </a>
               <a href="{{ route('teacher.exams.edit', $exam) }}" class="btn btn-info btn-sm">
-                <i class="fas fa-edit me-2"></i>تعديل الامتحان
+                <i class="fas fa-edit me-2"></i>Edit Exam
               </a>
             </div>
           </div>
@@ -63,12 +63,12 @@
                 <table class="table align-items-center mb-0">
                   <thead>
                     <tr>
-                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-3">رقم السؤال</th>
-                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">نص السؤال</th>
-                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">النوع</th>
-                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">الدرجة</th>
-                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">الخيارات/الإجابة</th>
-                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">الإجراءات</th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-3">#</th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Question Text</th>
+                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Type</th>
+                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Grade</th>
+                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Choices/Answer</th>
+                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -85,26 +85,26 @@
                           <div class="d-flex flex-column">
                             <p class="text-xs font-weight-bold mb-0">{{ Str::limit($q->question_text, 80) }}</p>
                             @if(strlen($q->question_text) > 80)
-                              <small class="text-muted">اضغط للتوسيع</small>
+                              <small class="text-muted">Click to expand</small>
                             @endif
                           </div>
                         </td>
                         <td class="align-middle text-center text-sm">
                           @if($q->type == 'mcq')
-                            <span class="badge badge-sm bg-gradient-success">اختيار من متعدد</span>
+                            <span class="badge badge-sm bg-gradient-success">Multiple Choice</span>
                           @elseif($q->type == 'short_answer')
-                            <span class="badge badge-sm bg-gradient-info">إجابة قصيرة</span>
+                            <span class="badge badge-sm bg-gradient-info">Short Answer</span>
                           @else
-                            <span class="badge badge-sm bg-gradient-warning">إجابة طويلة</span>
+                            <span class="badge badge-sm bg-gradient-warning">Long Answer</span>
                           @endif
                         </td>
                         <td class="align-middle text-center">
-                          <span class="text-secondary text-xs font-weight-bold">{{ $q->grade }} درجة</span>
+                          <span class="text-secondary text-xs font-weight-bold">{{ $q->grade }}</span>
                         </td>
                         <td class="align-middle text-center">
                           @if($q->type == 'mcq' && $q->choices->count())
                             <div class="d-flex flex-column align-items-center">
-                              <span class="text-secondary text-xs font-weight-bold mb-1">{{ $q->choices->count() }} خيارات</span>
+                              <span class="text-secondary text-xs font-weight-bold mb-1">{{ $q->choices->count() }} Choices</span>
                               @php
                                 $correctChoices = $q->choices->where('is_correct', true);
                               @endphp
@@ -125,11 +125,11 @@
                         <td class="align-middle text-center">
                           <div class="btn-group" role="group">
                             <!-- Edit Button -->
-                            <button type="button" class="btn btn-link text-secondary p-0" data-bs-toggle="modal" data-bs-target="#editQuestionModal{{ $q->id }}" title="تعديل السؤال">
+                            <button type="button" class="btn btn-link text-secondary p-0" data-bs-toggle="modal" data-bs-target="#editQuestionModal{{ $q->id }}" title="Edit Question">
                               <i class="fas fa-edit text-xs"></i>
                             </button>
                             <!-- Delete Button -->
-                            <button type="button" class="btn btn-link text-danger p-0" data-bs-toggle="modal" data-bs-target="#deleteQuestionModal{{ $q->id }}" title="حذف السؤال">
+                            <button type="button" class="btn btn-link text-danger p-0" data-bs-toggle="modal" data-bs-target="#deleteQuestionModal{{ $q->id }}" title="Delete Question">
                               <i class="fas fa-trash text-xs"></i>
                             </button>
                           </div>
@@ -145,7 +145,7 @@
                   <div class="modal-dialog">
                     <div class="modal-content">
                       <div class="modal-header">
-                        <h5 class="modal-title" id="editQuestionModalLabel{{ $q->id }}">تعديل السؤال</h5>
+                        <h5 class="modal-title" id="editQuestionModalLabel{{ $q->id }}">Edit Question</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                       </div>
                       <form action="{{ route('teacher.exams.questions.update', ['exam' => $exam, 'question' => $q]) }}" method="POST">
@@ -153,29 +153,29 @@
                         @method('PUT')
                         <div class="modal-body">
                           <div class="mb-3">
-                            <label class="form-label">نص السؤال</label>
+                            <label class="form-label">Question Text</label>
                             <textarea class="form-control" name="question_text" required>{{ $q->question_text }}</textarea>
                           </div>
                           <div class="mb-3">
-                            <label class="form-label">الدرجة</label>
+                            <label class="form-label">Grade</label>
                             <input type="number" class="form-control" name="grade" min="0" value="{{ $q->grade }}" required>
                           </div>
                           <div class="mb-3">
-                            <label class="form-label">نوع السؤال</label>
+                            <label class="form-label">Question Type</label>
                             <select class="form-select question-type-select" name="type" data-question-id="{{ $q->id }}" required>
-                              <option value="mcq" @if($q->type == 'mcq') selected @endif>اختيار من متعدد</option>
-                              <option value="short_answer" @if($q->type == 'short_answer') selected @endif>إجابة قصيرة</option>
-                              <option value="long_answer" @if($q->type == 'long_answer') selected @endif>إجابة طويلة</option>
+                              <option value="mcq" @if($q->type == 'mcq') selected @endif>Multiple Choice</option>
+                              <option value="short_answer" @if($q->type == 'short_answer') selected @endif>Short Answer</option>
+                              <option value="long_answer" @if($q->type == 'long_answer') selected @endif>Long Answer</option>
                             </select>
                           </div>
                           <div class="mb-3 choices-section" id="choicesSection-{{ $q->id }}" style="display: {{ $q->type == 'mcq' ? 'block' : 'none' }};">
-                            <label class="form-label">الخيارات (اختيار من متعدد)</label>
+                            <label class="form-label">Choices (Multiple Choice)</label>
                             <div id="choicesContainer-{{ $q->id }}">
                               @foreach($q->choices as $index => $choice)
                                 <div class="input-group mb-2">
-                                  <input type="text" class="form-control" name="choices[{{ $index }}][text]" value="{{ $choice->choice_text }}" placeholder="الخيار" required>
+                                  <input type="text" class="form-control" name="choices[{{ $index }}][text]" value="{{ $choice->choice_text }}" placeholder="Choice" required>
                                   <div class="input-group-text">
-                                    <input type="radio" name="correct_choice" value="{{ $index }}" @if($choice->is_correct) checked @endif> صحيح
+                                    <input type="radio" name="correct_choice" value="{{ $index }}" @if($choice->is_correct) checked @endif> Correct
                                   </div>
                                 </div>
                               @endforeach
@@ -183,8 +183,8 @@
                           </div>
                         </div>
                         <div class="modal-footer">
-                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
-                          <button type="submit" class="btn btn-primary">حفظ التعديلات</button>
+                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                          <button type="submit" class="btn btn-primary">Save Changes</button>
                         </div>
                       </form>
                     </div>
@@ -197,40 +197,27 @@
                   <div class="modal-dialog">
                     <div class="modal-content">
                       <div class="modal-header">
-                        <h5 class="modal-title" id="deleteQuestionModalLabel{{ $q->id }}">تأكيد الحذف</h5>
+                        <h5 class="modal-title" id="deleteQuestionModalLabel{{ $q->id }}">Confirm Delete</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                       </div>
-                      <div class="modal-body">
-                        <p>هل أنت متأكد من حذف هذا السؤال؟</p>
-                        <p class="text-muted">{{ Str::limit($q->question_text, 100) }}</p>
-                      </div>
-                      <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
-                        <form action="{{ route('teacher.exams.questions.delete', ['exam' => $exam, 'question' => $q]) }}" method="POST" class="d-inline">
-                          @csrf
-                          @method('DELETE')
-                          <button type="submit" class="btn btn-danger">حذف</button>
-                        </form>
-                      </div>
+                      <form action="{{ route('teacher.exams.questions.delete', ['exam' => $exam, 'question' => $q]) }}" method="POST">
+                        @csrf
+                        @method('DELETE')
+                        <div class="modal-body">
+                          <p>Are you sure you want to delete this question?</p>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                          <button type="submit" class="btn btn-danger">Delete</button>
+                        </div>
+                      </form>
                     </div>
                   </div>
                 </div>
               @endforeach
             @else
-              <div class="text-center py-5">
-                <div class="icon icon-shape icon-lg bg-gradient-primary shadow text-center border-radius-lg mx-auto">
-                  <i class="fas fa-question text-white opacity-10"></i>
-                </div>
-                <h5 class="mt-4 mb-2">لا توجد أسئلة بعد</h5>
-                <p class="text-muted">لم يتم إضافة أي أسئلة لهذا الامتحان بعد.</p>
-                <div class="d-flex justify-content-center gap-2">
-                  <a href="{{ route('teacher.exams.questions.bulk-create', $exam) }}" class="btn btn-primary">
-                    <i class="fas fa-plus me-2"></i>إضافة أسئلة
-                  </a>
-                  <a href="{{ route('teacher.exams.edit', $exam) }}" class="btn btn-outline-secondary">
-                    <i class="fas fa-edit me-2"></i>تعديل الامتحان
-                  </a>
-                </div>
+              <div class="text-center py-4">
+                <p class="text-sm text-secondary mb-0">No questions added yet.</p>
               </div>
             @endif
           </div>
@@ -239,29 +226,23 @@
     </div>
   </div>
 </main>
-
+<!--   Core JS Files   -->
+<script src="{{ asset('js/core/popper.min.js') }}"></script>
+<script src="{{ asset('js/core/bootstrap.min.js') }}"></script>
+<script src="{{ asset('js/plugins/perfect-scrollbar.min.js') }}"></script>
+<script src="{{ asset('js/plugins/smooth-scrollbar.min.js') }}"></script>
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-  // Initialize tooltips
-  var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-  var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-    return new bootstrap.Tooltip(tooltipTriggerEl)
-  });
-
-  // Show/hide choices section based on type
-  document.querySelectorAll('.question-type-select').forEach(function(select) {
-    select.addEventListener('change', function() {
-      var qid = this.getAttribute('data-question-id');
-      var section = document.getElementById('choicesSection-' + qid);
-      if (this.value === 'mcq') {
-        section.style.display = 'block';
-      } else {
-        section.style.display = 'none';
-      }
-    });
-  });
-});
+  var win = navigator.platform.indexOf('Win') > -1;
+  if (win && document.querySelector('#sidenav-scrollbar')) {
+    var options = {
+      damping: '0.5'
+    }
+    Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
+  }
 </script>
-<script src="{{ asset('js/core/bootstrap.bundle.min.js') }}"></script>
+<!-- Github buttons -->
+<script async defer src="https://buttons.github.io/buttons.js"></script>
+<!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->
+<script src="{{ asset('js/argon-dashboard.js?v=2.1.0') }}"></script>
 </body>
 </html>

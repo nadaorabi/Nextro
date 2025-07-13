@@ -8,7 +8,7 @@
   <link rel="icon" type="image/png" href="{{ asset('images/favicon.png') }}">
 
   <title>
-    الواجبات - {{ Auth::user()->name }}
+    Assignments - {{ Auth::user()->name }}
   </title>
   <!--     Fonts and icons     -->
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
@@ -31,10 +31,10 @@
       <div class="container-fluid py-1 px-3">
         <nav aria-label="breadcrumb">
           <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
-            <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="{{ route('teacher.dashboard') }}">الرئيسية</a></li>
-            <li class="breadcrumb-item text-sm text-dark active" aria-current="page">الواجبات</li>
+            <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="{{ route('teacher.dashboard') }}">Dashboard</a></li>
+            <li class="breadcrumb-item text-sm text-dark active" aria-current="page">Assignments</li>
           </ol>
-          <h6 class="font-weight-bolder mb-0">الواجبات</h6>
+          <h6 class="font-weight-bolder mb-0">Assignments</h6>
         </nav>
       </div>
     </nav>
@@ -46,9 +46,9 @@
           <div class="card">
             <div class="card-header pb-0">
               <div class="d-flex justify-content-between align-items-center">
-                <h6 class="mb-0">الواجبات</h6>
+                <h6 class="mb-0">Assignments</h6>
                 <a href="{{ route('teacher.assignments.create') }}" class="btn btn-primary btn-sm">
-                  <i class="fas fa-plus"></i> إضافة واجب جديد
+                  <i class="fas fa-plus"></i> Add New Assignment
                 </a>
               </div>
             </div>
@@ -57,13 +57,14 @@
                 <table class="table align-items-center mb-0">
                   <thead>
                     <tr>
-                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">الواجب</th>
-                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">الدورة</th>
-                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">النوع</th>
-                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">الدرجة الكلية</th>
-                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">تاريخ البداية</th>
-                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">تاريخ الانتهاء</th>
-                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">الإجراءات</th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Assignment</th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Course</th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Type</th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Delivery</th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Total Grade</th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Start Date</th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">End Date</th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -78,55 +79,68 @@
                         </div>
                       </td>
                       <td>
-                        <p class="text-xs font-weight-bold mb-0">{{ $assignment->course->title ?? 'غير محدد' }}</p>
+                        <p class="text-xs font-weight-bold mb-0">{{ $assignment->course->title ?? 'Not specified' }}</p>
                       </td>
                       <td>
                         <span class="badge badge-sm bg-gradient-{{ $assignment->type == 'auto' ? 'success' : 'info' }}">
-                          {{ $assignment->type == 'auto' ? 'آلي' : 'يدوي' }}
+                          {{ $assignment->type == 'auto' ? 'Auto' : 'Manual' }}
                         </span>
+                      </td>
+                      <td>
+                        <span class="badge badge-sm bg-gradient-{{ $assignment->delivery_type == 'online' ? 'primary' : 'warning' }}">
+                          {{ $assignment->delivery_type == 'online' ? 'Online' : 'File' }}
+                        </span>
+                        @if($assignment->delivery_type == 'file' && $assignment->file_path)
+                          <br><small class="text-xs text-muted">
+                            <i class="fas fa-download"></i> 
+                            <a href="{{ asset('storage/' . $assignment->file_path) }}" target="_blank" class="text-primary">Download</a>
+                          </small>
+                        @endif
                       </td>
                       <td>
                         <p class="text-xs font-weight-bold mb-0">{{ $assignment->total_grade }}</p>
                       </td>
                       <td>
                         <p class="text-xs font-weight-bold mb-0">
-                          {{ $assignment->start_at ? $assignment->start_at->format('Y-m-d H:i') : 'غير محدد' }}
+                          {{ $assignment->start_at ? $assignment->start_at->format('Y-m-d H:i') : 'Not specified' }}
                         </p>
                       </td>
                       <td>
                         <p class="text-xs font-weight-bold mb-0">
-                          {{ $assignment->end_at ? $assignment->end_at->format('Y-m-d H:i') : 'غير محدد' }}
+                          {{ $assignment->end_at ? $assignment->end_at->format('Y-m-d H:i') : 'Not specified' }}
                         </p>
                       </td>
                       <td>
                         <div class="btn-group" role="group">
                           <a href="{{ route('teacher.assignments.show', $assignment) }}" 
                              class="btn btn-link text-secondary px-3 mb-0">
-                            <i class="fas fa-eye text-primary me-1"></i>عرض
+                            <i class="fas fa-eye text-primary me-1"></i>View
                           </a>
                           <a href="{{ route('teacher.assignments.edit', $assignment) }}" 
                              class="btn btn-link text-secondary px-3 mb-0">
-                            <i class="fas fa-edit text-warning me-1"></i>تعديل
+                            <i class="fas fa-edit text-warning me-1"></i>Edit
                           </a>
                           <form action="{{ route('teacher.assignments.destroy', $assignment) }}" 
                                 method="POST" class="d-inline">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="btn btn-link text-secondary px-3 mb-0"
-                                    onclick="return confirm('هل أنت متأكد من حذف هذا الواجب؟')">
-                              <i class="fas fa-trash text-danger me-1"></i>حذف
+                                    onclick="return confirm('Are you sure you want to delete this assignment?')">
+                              <i class="fas fa-trash text-danger me-1"></i>Delete
                             </button>
                           </form>
-                          <a href="{{ route('teacher.assignments.questions.list', $assignment) }}" class="btn btn-link text-info px-3 mb-0">
-                            <i class="fas fa-question-circle me-1"></i>الأسئلة
-                          </a>
+                          @if($assignment->delivery_type == 'online')
+                            <a href="{{ route('teacher.assignments.questions.list', $assignment) }}" class="btn btn-link text-info px-3 mb-0">
+                              <i class="fas fa-question-circle me-1"></i>Questions
+                            </a>
+                          @endif
                         </div>
                       </td>
                     </tr>
                     @empty
                     <tr>
-                      <td colspan="7" class="text-center py-4">
-                        <p class="text-sm text-secondary mb-0">لا توجد واجبات حتى الآن</p>
+                      <td colspan="8" class="text-center py-4">
+                        <p class="text-sm text-secondary mb-0">No assignments available yet</p>
                       </td>
                     </tr>
                     @endforelse
@@ -145,78 +159,19 @@
   <script src="{{ asset('js/core/bootstrap.min.js') }}"></script>
   <script src="{{ asset('js/plugins/perfect-scrollbar.min.js') }}"></script>
   <script src="{{ asset('js/plugins/smooth-scrollbar.min.js') }}"></script>
-  <script src="{{ asset('js/argon-dashboard.js?v=2.1.0') }}"></script>
-  @foreach($assignments as $assignment)
-  <!-- Modal for adding question -->
-  <div class="modal fade" id="addQuestionModal-{{ $assignment->id }}" tabindex="-1" aria-labelledby="addQuestionModalLabel-{{ $assignment->id }}" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="addQuestionModalLabel-{{ $assignment->id }}">إضافة سؤال جديد للواجب: {{ $assignment->title }}</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="إغلاق"></button>
-        </div>
-        <form method="POST" action="{{ route('teacher.assignments.questions.add', $assignment) }}">
-          @csrf
-          <div class="modal-body">
-            <div class="mb-3">
-              <label for="question_text-{{ $assignment->id }}" class="form-label">نص السؤال</label>
-              <textarea class="form-control" id="question_text-{{ $assignment->id }}" name="question_text" required></textarea>
-            </div>
-            <div class="mb-3">
-              <label for="type-{{ $assignment->id }}" class="form-label">نوع السؤال</label>
-              <select class="form-select" id="type-{{ $assignment->id }}" name="type" required onchange="toggleChoicesSection{{ $assignment->id }}()">
-                <option value="">اختر النوع</option>
-                <option value="mcq">اختيار من متعدد</option>
-                <option value="short_answer">إجابة قصيرة</option>
-                <option value="long_answer">إجابة طويلة</option>
-              </select>
-            </div>
-            <div class="mb-3">
-              <label for="grade-{{ $assignment->id }}" class="form-label">الدرجة</label>
-              <input type="number" class="form-control" id="grade-{{ $assignment->id }}" name="grade" min="0" required>
-            </div>
-            <div class="mb-3" id="choicesSection-{{ $assignment->id }}" style="display:none;">
-              <label class="form-label">الخيارات (اختيار من متعدد)</label>
-              <div id="choicesContainer-{{ $assignment->id }}">
-                <div class="input-group mb-2">
-                  <input type="text" class="form-control" name="choices[]" placeholder="الخيار الأول">
-                  <div class="input-group-text">
-                    <input type="radio" name="correct_choice" value="0"> صحيح
-                  </div>
-                </div>
-              </div>
-              <button type="button" class="btn btn-sm btn-outline-primary" onclick="addChoice{{ $assignment->id }}()">
-                <i class="fas fa-plus"></i> إضافة خيار
-              </button>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
-            <button type="submit" class="btn btn-primary">حفظ السؤال</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
   <script>
-    function toggleChoicesSection{{ $assignment->id }}() {
-      var type = document.getElementById('type-{{ $assignment->id }}').value;
-      document.getElementById('choicesSection-{{ $assignment->id }}').style.display = (type === 'mcq') ? 'block' : 'none';
-    }
-    function addChoice{{ $assignment->id }}() {
-      var container = document.getElementById('choicesContainer-{{ $assignment->id }}');
-      var index = container.children.length;
-      var div = document.createElement('div');
-      div.className = 'input-group mb-2';
-      div.innerHTML = `<input type=\"text\" class=\"form-control\" name=\"choices[]\" placeholder=\"الخيار الجديد\">
-        <div class=\"input-group-text\">
-          <input type=\"radio\" name=\"correct_choice\" value=\"${index}\"> صحيح
-        </div>
-        <button type=\"button\" class=\"btn btn-outline-danger btn-sm\" onclick=\"this.parentNode.remove()\"><i class=\"fas fa-trash\"></i></button>`;
-      container.appendChild(div);
+    var win = navigator.platform.indexOf('Win') > -1;
+    if (win && document.querySelector('#sidenav-scrollbar')) {
+      var options = {
+        damping: '0.5'
+      }
+      Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
     }
   </script>
-  @endforeach
+  <!-- Github buttons -->
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+  <!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->
+  <script src="{{ asset('js/argon-dashboard.js?v=2.1.0') }}"></script>
 </body>
 
 </html> 
