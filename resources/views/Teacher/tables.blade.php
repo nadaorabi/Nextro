@@ -23,8 +23,8 @@
       background: linear-gradient(135deg,rgb(255, 255, 255) 0%,rgb(255, 255, 255) 100%);
       color: rgb(123, 105, 172);
       border-radius: 15px;
-      padding: 2rem;
-      margin-bottom: 2rem;
+      padding: 1.2rem;
+      margin-bottom: 1rem;
       box-shadow: 0 4px 20px rgba(0,0,0,0.1);
     }
     
@@ -192,7 +192,7 @@
     <div class="container-fluid py-4">
       
       <!-- Page Header -->
-      <div class="row mb-4">
+      <div class="row mb-2">
         <div class="col-12">
           <div class="page-header">
             <div class="d-flex align-items-center">
