@@ -11,6 +11,7 @@ use App\Models\StudentPackage;
 use App\Models\Attendance;
 use App\Models\Grade;
 use App\Models\Payment;
+use App\Models\Schedule;
 use Carbon\Carbon;
 
 class HomeController extends Controller
@@ -101,6 +102,93 @@ class HomeController extends Controller
         // صافي المدفوعات = المدفوعات + الاستردادات (كلاهما قيم موجبة)
         $netPayment = $totalPaid + $totalRefunded;
 
+        // حساب الرسوم المستحقة
+        $totalCoursesDue = $enrollments->sum(function($enrollment) {
+            return $enrollment->course ? $enrollment->course->final_price : 0;
+        });
+        $totalPackagesDue = $studentPackages->sum(function($sp) {
+            return $sp->package ? ($sp->package->discounted_price ?? $sp->package->price) : 0;
+        });
+        $totalDiscount = $payments->where('type', 'discount')->sum('amount');
+        $totalDue = $totalCoursesDue + $totalPackagesDue - $totalDiscount;
+        $outstandingBalance = $totalDue - $totalPaid + $totalRefunded;
+
+        // جلب الجداول الزمنية للطالب
+        $courseSchedules = collect();
+        foreach ($enrollments as $enrollment) {
+            if ($enrollment->course && $enrollment->course->schedules) {
+                foreach ($enrollment->course->schedules as $schedule) {
+                    // البحث عن سجل الحضور لهذا الطالب في هذه الحصة
+                    $attendance = Attendance::where('enrollment_id', $enrollment->id)
+                        ->where('schedule_id', $schedule->id)
+                        ->where('date', $schedule->session_date)
+                        ->first();
+                    
+                    $attendanceStatus = 'pending'; // الحالة الافتراضية
+                    if ($attendance) {
+                        $attendanceStatus = $attendance->status;
+                    }
+                    
+                    $courseSchedules->push([
+                        'type' => 'course',
+                        'name' => $enrollment->course->title,
+                        'category' => $enrollment->course->category->name ?? '',
+                        'session_date' => $schedule->session_date,
+                        'day_of_week' => $schedule->day_of_week,
+                        'start_time' => $schedule->start_time,
+                        'end_time' => $schedule->end_time,
+                        'room' => $schedule->room ? ($schedule->room->room_number ?? $schedule->room->name ?? '') : '',
+                        'attendance_status' => $attendanceStatus,
+                        'instructor' => $enrollment->course->courseInstructors->first()->instructor->name ?? 'No Instructor',
+                    ]);
+                }
+            }
+        }
+
+        // جميع جداول الكورسات ضمن البكجات
+        $packageSchedules = collect();
+        foreach ($studentPackages as $sp) {
+            if ($sp->package && $sp->package->packageCourses) {
+                foreach ($sp->package->packageCourses as $pc) {
+                    $course = $pc->course;
+                    if ($course && $course->schedules) {
+                        foreach ($course->schedules as $schedule) {
+                            // البحث عن سجل الحضور لهذا الطالب في هذه الحصة
+                            $attendance = Attendance::where('enrollment_id', $enrollment->id)
+                                ->where('schedule_id', $schedule->id)
+                                ->where('date', $schedule->session_date)
+                                ->first();
+                            
+                            $attendanceStatus = 'pending'; // الحالة الافتراضية
+                            if ($attendance) {
+                                $attendanceStatus = $attendance->status;
+                            }
+                            
+                            $packageSchedules->push([
+                                'type' => 'package',
+                                'package_name' => $sp->package->name,
+                                'name' => $course->title,
+                                'category' => $course->category->name ?? '',
+                                'session_date' => $schedule->session_date,
+                                'day_of_week' => $schedule->day_of_week,
+                                'start_time' => $schedule->start_time,
+                                'end_time' => $schedule->end_time,
+                                'room' => $schedule->room ? ($schedule->room->room_number ?? $schedule->room->name ?? '') : '',
+                                'attendance_status' => $attendanceStatus,
+                                'instructor' => $course->courseInstructors->first()->instructor->name ?? 'No Instructor',
+                            ]);
+                        }
+                    }
+                }
+            }
+        }
+
+        // دمج وترتيب كل الجداول حسب التاريخ والوقت
+        $allSchedules = $courseSchedules->merge($packageSchedules)->sortBy([['session_date', 'asc'], ['start_time', 'asc']])->values();
+
+        // جلب المعاملات المالية الأخيرة
+        $recentTransactions = $payments->take(10);
+
         return view('User/profile', compact(
             'user',
             'enrollments',
@@ -119,7 +207,11 @@ class HomeController extends Controller
             'lowestGrade',
             'totalPaid',
             'totalRefunded',
-            'netPayment'
+            'netPayment',
+            'totalDue',
+            'outstandingBalance',
+            'allSchedules',
+            'recentTransactions'
         ));
     }
     public function ShowCoursesPage()
