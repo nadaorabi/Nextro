@@ -186,68 +186,129 @@
                     </div>
                   </div>
                   
-                  <!-- Student Submissions Section -->
-                  <div class="card mt-3">
-                    <div class="card-header pb-0">
-                      <h6 class="mb-0">Student Submissions ({{ $assignment->submissions->count() }}/{{ $totalStudents }})</h6>
-                    </div>
-                    <div class="card-body">
-                      @if($assignment->submissions->count() > 0)
-                        <div class="table-responsive">
-                          <table class="table table-sm">
-                            <thead>
-                              <tr>
-                                <th class="text-xs">Student</th>
-                                <th class="text-xs">Status</th>
-                                <th class="text-xs">Score</th>
-                                <th class="text-xs">Submitted</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              @foreach($assignment->submissions as $submission)
-                              <tr>
-                                <td>
-                                  <div class="d-flex align-items-center">
-                                    <div class="avatar avatar-xs me-2">
-                                      <span class="avatar-initial rounded-circle bg-gradient-secondary">
-                                        {{ substr($submission->student->name, 0, 1) }}
-                                      </span>
-                                    </div>
-                                    <div>
-                                      <h6 class="mb-0 text-sm">{{ $submission->student->name }}</h6>
-                                      <small class="text-muted">{{ $submission->student->email }}</small>
-                                    </div>
-                                  </div>
-                                </td>
-                                <td>
-                                  @if($submission->status == 'submitted')
-                                    <span class="badge badge-sm bg-gradient-warning">Submitted</span>
-                                  @elseif($submission->status == 'graded')
-                                    <span class="badge badge-sm bg-gradient-success">Graded</span>
-                                  @elseif($submission->status == 'late')
-                                    <span class="badge badge-sm bg-gradient-danger">Late</span>
-                                  @endif
-                                </td>
-                                <td>
-                                  @if($submission->score !== null)
-                                    <span class="text-sm font-weight-bold">{{ $submission->score }}/{{ $assignment->total_grade }}</span>
-                                  @else
-                                    <span class="text-sm text-muted">-</span>
-                                  @endif
-                                </td>
-                                <td>
-                                  <small class="text-muted">{{ $submission->submitted_at ? $submission->submitted_at->format('M d, H:i') : '-' }}</small>
-                                </td>
-                              </tr>
-                              @endforeach
-                            </tbody>
-                          </table>
-                        </div>
-                      @else
-                        <p class="text-sm text-muted text-center mb-0">No submissions yet</p>
-                      @endif
-                    </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Student Submissions Section - Main Section -->
+      <div class="row mt-4">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-header pb-0">
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <h5 class="mb-0">
+                    <i class="fas fa-users me-2"></i>
+                    Student Submissions
+                  </h5>
+                  <p class="text-sm text-muted mb-0">
+                    {{ $assignment->submissions->count() }} out of {{ $totalStudents }} students have submitted
+                  </p>
+                </div>
+                <div class="d-flex align-items-center">
+                  <div class="me-3">
+                    <span class="badge bg-gradient-success">{{ $submittedCount }} Submitted</span>
                   </div>
+                  <div class="me-3">
+                    <span class="badge bg-gradient-warning">{{ $gradedCount }} Graded</span>
+                  </div>
+                  <div>
+                    <span class="badge bg-gradient-info">{{ $totalStudents - $assignment->submissions->count() }} Pending</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="card-body">
+              @if($assignment->submissions->count() > 0)
+                <div class="table-responsive">
+                  <table class="table align-items-center mb-0">
+                    <thead>
+                      <tr>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Student</th>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Status</th>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Score</th>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Submitted At</th>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      @foreach($assignment->submissions as $submission)
+                      <tr>
+                        <td>
+                          <div class="d-flex px-2 py-1">
+                            <div>
+                              <img src="{{ asset('images/default-avatar.png') }}" class="avatar avatar-sm rounded-circle me-3" alt="Avatar">
+                            </div>
+                            <div class="d-flex flex-column justify-content-center">
+                              <h6 class="mb-0 text-sm">{{ $submission->student->name }}</h6>
+                              <p class="text-xs text-secondary mb-0">{{ $submission->student->email }}</p>
+                              <p class="text-xs text-secondary mb-0">ID: {{ $submission->student->login_id ?? 'N/A' }}</p>
+                            </div>
+                          </div>
+                        </td>
+                        <td>
+                          @if($submission->status == 'submitted')
+                            <span class="badge badge-sm bg-gradient-warning">Submitted</span>
+                          @elseif($submission->status == 'graded')
+                            <span class="badge badge-sm bg-gradient-success">Graded</span>
+                          @elseif($submission->status == 'late')
+                            <span class="badge badge-sm bg-gradient-danger">Late</span>
+                          @else
+                            <span class="badge badge-sm bg-gradient-secondary">Pending</span>
+                          @endif
+                        </td>
+                        <td>
+                          @if($submission->score !== null)
+                            <span class="text-sm font-weight-bold text-success">{{ $submission->score }}/{{ $assignment->total_grade }}</span>
+                          @else
+                            <span class="text-sm text-muted">Not graded yet</span>
+                          @endif
+                        </td>
+                        <td>
+                          @if($submission->submitted_at)
+                            <span class="text-sm font-weight-bold">{{ $submission->submitted_at->format('M d, Y') }}</span>
+                            <br>
+                            <small class="text-muted">{{ $submission->submitted_at->format('H:i A') }}</small>
+                          @else
+                            <span class="text-sm text-muted">-</span>
+                          @endif
+                        </td>
+                        <td>
+                          <div class="d-flex align-items-center">
+                            <a href="#" class="btn btn-link text-secondary px-3 mb-0" title="View Details">
+                              <i class="fas fa-eye text-xs"></i>
+                            </a>
+                            @if($submission->status != 'graded')
+                            <a href="#" class="btn btn-link text-warning px-3 mb-0" title="Grade">
+                              <i class="fas fa-star text-xs"></i>
+                            </a>
+                            @endif
+                            <a href="#" class="btn btn-link text-danger px-3 mb-0" title="Download">
+                              <i class="fas fa-download text-xs"></i>
+                            </a>
+                          </div>
+                        </td>
+                      </tr>
+                      @endforeach
+                    </tbody>
+                  </table>
+                </div>
+              @else
+                <div class="text-center py-5">
+                  <div class="mb-3">
+                    <i class="fas fa-users fa-3x text-muted"></i>
+                  </div>
+                  <h6 class="text-muted">No submissions yet</h6>
+                  <p class="text-sm text-muted">Students haven't submitted their assignments yet.</p>
+                </div>
+              @endif
+            </div>
+          </div>
+        </div>
+      </div>
                   
                   @if($assignment->delivery_type == 'online' && $assignment->questions->count() > 0)
                   <div class="card mt-3">
