@@ -190,7 +190,7 @@ class AttendanceController extends Controller
             if (!$courseInstructor) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'غير مسموح لك بأخذ الحضور لهذا الكورس!'
+                    'message' => 'You are not allowed to take attendance for this course!'
                 ], 403);
             }
         }
@@ -202,7 +202,7 @@ class AttendanceController extends Controller
         if (!$student) {
             return response()->json([
                 'success' => false,
-                'message' => 'الطالب غير موجود (QR غير صحيح)!'
+                'message' => 'Student not found (invalid QR)!'
             ]);
         }
 
@@ -214,7 +214,7 @@ class AttendanceController extends Controller
         if (!$enrollment) {
             return response()->json([
                 'success' => false,
-                'message' => 'الطالب غير مسجل في هذا المقرر!'
+                'message' => 'Student is not enrolled in this course!'
             ]);
         }
 
@@ -227,14 +227,14 @@ class AttendanceController extends Controller
             if ($existingAttendance->status === 'present') {
                 return response()->json([
                     'success' => false,
-                    'message' => 'تم تسجيل حضور الطالب (' . $student->name . ') مسبقًا اليوم.',
+                    'message' => 'Attendance for student (' . $student->name . ') has already been recorded today.',
                     'student_name' => $student->name,
                     'login_id' => $student->login_id,
                 ]);
             } elseif ($existingAttendance->status === 'absent') {
                 return response()->json([
                     'success' => false,
-                    'message' => 'الطالب (' . $student->name . ') محدد كغائب لهذا اليوم.',
+                    'message' => 'Student (' . $student->name . ') is marked as absent for today.',
                     'student_name' => $student->name,
                     'login_id' => $student->login_id,
                 ]);
@@ -275,7 +275,7 @@ class AttendanceController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'تم تسجيل الحضور بنجاح!',
+            'message' => 'Attendance recorded successfully!',
             'present_students' => $presentStudents
         ]);
     }
@@ -607,7 +607,7 @@ class AttendanceController extends Controller
         if (!$enrollment) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'الطالب غير مسجل في هذا المقرر'
+                'message' => 'Student is not enrolled in this course.'
             ]);
         }
         
@@ -620,12 +620,12 @@ class AttendanceController extends Controller
         if ($deleted) {
             return response()->json([
                 'status' => 'success',
-                'message' => 'تم حذف الحضور بنجاح'
+                'message' => 'Attendance deleted successfully.'
             ]);
         } else {
             return response()->json([
                 'status' => 'error',
-                'message' => 'لم يتم العثور على سجل الحضور'
+                'message' => 'Attendance record not found.'
             ]);
         }
     }

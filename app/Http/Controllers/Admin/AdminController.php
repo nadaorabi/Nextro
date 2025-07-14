@@ -279,7 +279,7 @@ class AdminController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'تم حفظ الدفعة بنجاح',
+            'message' => 'Payment saved successfully',
             'payment' => $payment,
             'receipt' => $receipt ?? null
         ]);
@@ -315,7 +315,7 @@ class AdminController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'تم تحديث الدفعة بنجاح',
+            'message' => 'Payment updated successfully',
             'payment' => $payment
         ]);
     }
@@ -336,7 +336,7 @@ class AdminController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'تم حذف الدفعة بنجاح'
+            'message' => 'Payment deleted successfully'
         ]);
     }
 

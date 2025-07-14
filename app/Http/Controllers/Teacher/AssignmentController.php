@@ -281,7 +281,7 @@ class AssignmentController extends Controller
             return response()->json(['success' => true, 'question' => $question]);
         }
         return redirect()->route('teacher.assignments.questions.list', $assignment)
-            ->with('success', 'تم تحديث السؤال بنجاح');
+            ->with('success', 'Question updated successfully');
     }
 
     /**
@@ -299,7 +299,7 @@ class AssignmentController extends Controller
             return response()->json(['success' => true]);
         }
         return redirect()->route('teacher.assignments.questions.list', $assignment)
-            ->with('success', 'تم حذف السؤال بنجاح');
+            ->with('success', 'Question deleted successfully');
     }
 
     /**
@@ -403,7 +403,7 @@ class AssignmentController extends Controller
                 }
             }
         }
-        return redirect()->route('teacher.assignments.questions.list', $assignment)->with('success', 'تم إضافة الأسئلة بنجاح');
+        return redirect()->route('teacher.assignments.questions.list', $assignment)->with('success', 'Questions added successfully');
     }
 
     /**

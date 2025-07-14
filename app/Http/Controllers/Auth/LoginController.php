@@ -23,16 +23,16 @@ class LoginController extends Controller
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
             if ($user->role == 'teacher') {
-                session()->flash('welcome', 'أهلاً وسهلاً بك مدرس');
+                session()->flash('welcome', 'Welcome Teacher');
                 return redirect()->route('teacher.dashboard');
             } elseif ($user->role == 'admin') {
-                session()->flash('welcome', 'أهلاً وسهلاً بك مسؤول النظام');
+                session()->flash('welcome', 'Welcome System Administrator');
                 return redirect()->route('admin.dashboard');
             }
             return redirect()->route('dashboard');
         }
 
-        return back()->withErrors(['email' => 'بيانات الدخول غير صحيحة']);
+        return back()->withErrors(['email' => 'Invalid login credentials']);
     }
 
     public function logout()

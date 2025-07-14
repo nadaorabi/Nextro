@@ -79,7 +79,7 @@ class CourseEnrollmentController extends Controller
                             'user_id' => $courseInstructor->instructor_id,
                             'amount' => $instructorShare,
                             'type' => 'instructor_share',
-                            'notes' => 'نسبة من تسجيل طالب جديد في الدورة: ' . $course->title,
+                            'notes' => 'Instructor share from new student enrollment in course: ' . $course->title,
                             'payment_date' => now(),
                         ]);
                     }

@@ -287,7 +287,7 @@ class ExamController extends Controller
             return response()->json(['success' => true, 'question' => $question]);
         }
         return redirect()->route('teacher.exams.questions.list', $exam)
-            ->with('success', 'تم تحديث السؤال بنجاح');
+            ->with('success', 'Question updated successfully');
     }
 
     /**
@@ -305,7 +305,7 @@ class ExamController extends Controller
             return response()->json(['success' => true]);
         }
         return redirect()->route('teacher.exams.questions.list', $exam)
-            ->with('success', 'تم حذف السؤال بنجاح');
+            ->with('success', 'Question deleted successfully');
     }
 
     /**
@@ -409,7 +409,7 @@ class ExamController extends Controller
                 }
             }
         }
-        return redirect()->route('teacher.exams.questions.list', $exam)->with('success', 'تم إضافة الأسئلة بنجاح');
+        return redirect()->route('teacher.exams.questions.list', $exam)->with('success', 'Questions added successfully');
     }
 
     /**

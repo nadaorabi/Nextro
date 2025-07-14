@@ -21,19 +21,19 @@ class RoomController extends Controller
             'capacity' => 'nullable|integer|min:1',
             'location' => 'nullable|string|max:255',
         ], [
-            'room_number.required' => 'رقم القاعة مطلوب.',
-            'room_number.integer' => 'رقم القاعة يجب أن يكون رقمًا صحيحًا.',
-            'room_number.unique' => 'رقم القاعة مستخدم من قبل.',
-            'room_number.min' => 'رقم القاعة يجب أن يكون أكبر من الصفر.',
+            'room_number.required' => 'Room number is required.',
+            'room_number.integer' => 'Room number must be an integer.',
+            'room_number.unique' => 'Room number is already in use.',
+            'room_number.min' => 'Room number must be greater than zero.',
         ]);
         Room::create($request->only('room_number', 'capacity', 'location'));
-        return redirect()->back()->with('success', 'تمت إضافة القاعة بنجاح!');
+        return redirect()->back()->with('success', 'Room added successfully!');
     }
 
     public function destroy(Room $room)
     {
         $room->delete();
-        return redirect()->back()->with('success', 'تم حذف القاعة بنجاح!');
+        return redirect()->back()->with('success', 'Room deleted successfully!');
     }
 
     public function edit(Room $room)
@@ -48,12 +48,12 @@ class RoomController extends Controller
             'capacity' => 'nullable|integer|min:1',
             'location' => 'nullable|string|max:255',
         ], [
-            'room_number.required' => 'رقم القاعة مطلوب.',
-            'room_number.integer' => 'رقم القاعة يجب أن يكون رقمًا صحيحًا.',
-            'room_number.unique' => 'رقم القاعة مستخدم من قبل.',
-            'room_number.min' => 'رقم القاعة يجب أن يكون أكبر من الصفر.',
+            'room_number.required' => 'Room number is required.',
+            'room_number.integer' => 'Room number must be an integer.',
+            'room_number.unique' => 'Room number is already in use.',
+            'room_number.min' => 'Room number must be greater than zero.',
         ]);
         $room->update($request->only('room_number', 'capacity', 'location'));
-        return redirect()->route('admin.facilities.rooms.index')->with('success', 'تم تحديث بيانات القاعة بنجاح!');
+        return redirect()->route('admin.facilities.rooms.index')->with('success', 'Room data updated successfully!');
     }
 } 

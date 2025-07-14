@@ -96,17 +96,17 @@ class CourseScheduleController extends Controller
             'end_time' => 'required|date_format:H:i|after:start_time',
             'room_id' => 'required|exists:rooms,id',
         ], [
-            'course_id.required' => 'يجب اختيار الكورس.',
-            'course_id.exists' => 'الكورس غير موجود.',
-            'session_date.required' => 'يجب اختيار تاريخ الجلسة.',
-            'session_date.date' => 'صيغة التاريخ غير صحيحة.',
-            'start_time.required' => 'يجب إدخال وقت البداية.',
-            'start_time.date_format' => 'صيغة وقت البداية غير صحيحة.',
-            'end_time.required' => 'يجب إدخال وقت النهاية.',
-            'end_time.date_format' => 'صيغة وقت النهاية غير صحيحة.',
-            'end_time.after' => 'وقت النهاية يجب أن يكون بعد وقت البداية.',
-            'room_id.required' => 'يجب اختيار القاعة.',
-            'room_id.exists' => 'القاعة غير موجودة.',
+            'course_id.required' => 'Course selection is required.',
+            'course_id.exists' => 'Course not found.',
+            'session_date.required' => 'Session date is required.',
+            'session_date.date' => 'Invalid date format.',
+            'start_time.required' => 'Start time is required.',
+            'start_time.date_format' => 'Invalid start time format.',
+            'end_time.required' => 'End time is required.',
+            'end_time.date_format' => 'Invalid end time format.',
+            'end_time.after' => 'End time must be after start time.',
+            'room_id.required' => 'Room selection is required.',
+            'room_id.exists' => 'Room not found.',
         ]);
 
         if ($validator->fails()) {
@@ -121,7 +121,7 @@ class CourseScheduleController extends Controller
         $now = now();
         $sessionDateTime = \Carbon\Carbon::parse($request->session_date . ' ' . $request->start_time);
         if ($sessionDateTime < $now) {
-            return redirect()->back()->with('error', 'لا يمكن إضافة جلسة بتاريخ أو وقت قديم.')->withInput();
+            return redirect()->back()->with('error', 'Cannot add a session with past date or time.')->withInput();
         }
 
         // حساب يوم الأسبوع تلقائياً من التاريخ
@@ -142,7 +142,7 @@ class CourseScheduleController extends Controller
 
         if ($conflict) {
             $roomName = $conflict->room ? $conflict->room->name : 'Unknown';
-            $msg = 'يوجد تعارض في القاعة <b>' . $roomName . '</b> بتاريخ <b>' . $conflict->session_date . '</b> من <b>' . $conflict->start_time . '</b> إلى <b>' . $conflict->end_time . '</b>.';
+            $msg = 'There is a conflict in room <b>' . $roomName . '</b> on date <b>' . $conflict->session_date . '</b> from <b>' . $conflict->start_time . '</b> to <b>' . $conflict->end_time . '</b>.';
             return redirect()->back()->with('error', $msg)->withInput();
         }
 
@@ -159,7 +159,7 @@ class CourseScheduleController extends Controller
 
         if ($courseConflict) {
             $roomName = $courseConflict->room ? $courseConflict->room->name : 'Unknown';
-            $msg = 'لا يمكن جدولة نفس الكورس في أكثر من قاعة بنفس الوقت!<br>الكورس محجوز بالفعل في القاعة <b>' . $roomName . '</b> بتاريخ <b>' . $courseConflict->session_date . '</b> من <b>' . $courseConflict->start_time . '</b> إلى <b>' . $courseConflict->end_time . '</b>.';
+            $msg = 'Cannot schedule the same course in multiple rooms at the same time!<br>The course is already booked in room <b>' . $roomName . '</b> on date <b>' . $courseConflict->session_date . '</b> from <b>' . $courseConflict->start_time . '</b> to <b>' . $courseConflict->end_time . '</b>.';
             return redirect()->back()->with('error', $msg)->withInput();
         }
 
@@ -204,7 +204,7 @@ class CourseScheduleController extends Controller
             ]);
             
             return redirect()->back()
-                ->with('error', 'حدث خطأ أثناء إضافة الجدولة: ' . $e->getMessage())
+                ->with('error', 'Error occurred while adding schedule: ' . $e->getMessage())
                 ->withInput();
         }
     }
@@ -227,11 +227,11 @@ class CourseScheduleController extends Controller
             'start_time' => 'required|date_format:H:i',
             'end_time' => 'required|date_format:H:i|after:start_time',
         ], [
-            'start_time.required' => 'يجب إدخال وقت البداية.',
-            'start_time.date_format' => 'صيغة وقت البداية غير صحيحة.',
-            'end_time.required' => 'يجب إدخال وقت النهاية.',
-            'end_time.date_format' => 'صيغة وقت النهاية غير صحيحة.',
-            'end_time.after' => 'وقت النهاية يجب أن يكون بعد وقت البداية.',
+            'start_time.required' => 'Start time is required.',
+            'start_time.date_format' => 'Invalid start time format.',
+            'end_time.required' => 'End time is required.',
+            'end_time.date_format' => 'Invalid end time format.',
+            'end_time.after' => 'End time must be after start time.',
         ]);
 
         if ($validator->fails()) {
@@ -242,14 +242,14 @@ class CourseScheduleController extends Controller
 
         // لا يسمح بتساوي وقت البداية والنهاية
         if ($request->start_time == $request->end_time) {
-            return redirect()->back()->with('error', 'وقت البداية ووقت النهاية لا يمكن أن يكونا متساويين.')->withInput();
+            return redirect()->back()->with('error', 'Start time and end time cannot be the same.')->withInput();
         }
 
         // لا يسمح بوقت قديم
         $now = now();
         $sessionDateTime = Carbon::parse($schedule->session_date . ' ' . $request->start_time);
         if ($sessionDateTime < $now) {
-            return redirect()->back()->with('error', 'لا يمكن تعديل الجدولة إلى وقت قديم.')->withInput();
+            return redirect()->back()->with('error', 'Cannot modify schedule to past time.')->withInput();
         }
 
         // تحقق من عدم وجود تعارض مع نفس القاعة والتاريخ
@@ -264,7 +264,7 @@ class CourseScheduleController extends Controller
             })
             ->first();
         if ($conflict) {
-            return redirect()->back()->with('error', 'يوجد تعارض مع جدولة أخرى في نفس القاعة والتاريخ.')->withInput();
+            return redirect()->back()->with('error', 'There is a conflict with another schedule in the same room and date.')->withInput();
         }
 
         // تحقق من عدم وجود تعارض مع نفس الكورس في قاعة أخرى بنفس الوقت
@@ -279,7 +279,7 @@ class CourseScheduleController extends Controller
             })
             ->first();
         if ($courseConflict) {
-            return redirect()->back()->with('error', 'لا يمكن جدولة نفس الكورس في أكثر من قاعة بنفس الوقت!')->withInput();
+            return redirect()->back()->with('error', 'Cannot schedule the same course in multiple rooms at the same time!')->withInput();
         }
 
         // إضافة ثواني للوقت قبل الحفظ (00:00)
@@ -290,7 +290,7 @@ class CourseScheduleController extends Controller
         $schedule->end_time = $end_time_with_seconds;
         $schedule->save();
 
-        return redirect()->back()->with('success', 'تم تعديل أوقات الجدولة بنجاح!');
+        return redirect()->back()->with('success', 'Schedule times updated successfully!');
     }
 
     public function schedulesBoard(Request $request)

@@ -49,7 +49,7 @@ class HomeController extends Controller
     {
         // التحقق من أن المستخدم مسجل دخوله
         if (!Auth::check()) {
-            return redirect()->route('login')->with('error', 'يجب تسجيل الدخول أولاً');
+            return redirect()->route('login')->with('error', 'You must login first');
         }
 
         $user = Auth::user();

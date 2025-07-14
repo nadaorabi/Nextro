@@ -34,22 +34,22 @@ class TeacherController extends Controller
             if ($user->role == 'teacher') {
                 Auth::login($user);
                 $request->session()->regenerate();
-                session()->flash('welcome', 'أهلاً وسهلاً بك مدرس');
+                session()->flash('welcome', 'Welcome Teacher');
                 return redirect()->intended(route('teacher.dashboard'));
             } elseif ($user->role == 'admin') {
                 Auth::login($user);
                 $request->session()->regenerate();
-                session()->flash('welcome', 'أهلاً وسهلاً بك مسؤول النظام');
+                session()->flash('welcome', 'Welcome System Administrator');
                 return redirect()->route('admin.dashboard');
             }
             Auth::logout();
             return back()->withErrors([
-                'login_id' => 'هذا الحساب غير مصرح له بالدخول من هنا.'
+                'login_id' => 'This account is not authorized to login from here.'
             ]);
         }
 
         return back()->withErrors([
-            'login_id' => 'بيانات الاعتماد غير صحيحة.',
+            'login_id' => 'Invalid credentials.',
         ]);
     }
 
@@ -150,7 +150,7 @@ class TeacherController extends Controller
             ->get();
         
         if (auth()->user()->role == 'teacher') {
-            session()->flash('welcome', 'أهلاً وسهلاً بك مدرس');
+            session()->flash('welcome', 'Welcome Teacher');
         }
         
         return view('teacher.dashboard', compact(

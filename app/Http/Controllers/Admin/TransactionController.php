@@ -77,14 +77,14 @@ class TransactionController extends Controller
             'notes' => $request->notes
         ]);
 
-        return redirect()->back()->with('success', 'تم إضافة المعاملة المالية بنجاح');
+        return redirect()->back()->with('success', 'Financial transaction added successfully');
     }
 
     public function update(Request $request, Payment $payment)
     {
         // التحقق من أن المعاملة قابلة للتعديل
         if (!in_array($payment->type, ['instructor_payment', 'discount', 'refund'])) {
-            return redirect()->back()->with('error', 'لا يمكن تعديل هذا النوع من المعاملات');
+            return redirect()->back()->with('error', 'This type of transaction cannot be modified');
         }
 
         $request->validate([
@@ -99,26 +99,26 @@ class TransactionController extends Controller
             'notes' => $request->notes
         ]);
 
-        return redirect()->back()->with('success', 'تم تحديث المعاملة المالية بنجاح');
+        return redirect()->back()->with('success', 'Financial transaction updated successfully');
     }
 
     public function destroy(Payment $payment)
     {
         // التحقق من أن المعاملة قابلة للحذف
         if (!in_array($payment->type, ['instructor_payment', 'discount', 'refund'])) {
-            return redirect()->back()->with('error', 'لا يمكن حذف هذا النوع من المعاملات');
+            return redirect()->back()->with('error', 'This type of transaction cannot be deleted');
         }
 
         $payment->delete();
 
-        return redirect()->back()->with('success', 'تم حذف المعاملة المالية بنجاح');
+        return redirect()->back()->with('success', 'Financial transaction deleted successfully');
     }
 
     public function generateReceipt(Payment $payment)
     {
         // التحقق من أن المعاملة إيجابية (دفع)
         if ($payment->amount <= 0) {
-            return redirect()->back()->with('error', 'لا يمكن إنشاء إيصال لمعاملة غير إيجابية');
+            return redirect()->back()->with('error', 'Cannot generate receipt for non-positive transaction');
         }
 
         // هنا يمكن إضافة منطق إنشاء PDF للإيصال
@@ -137,18 +137,18 @@ class TransactionController extends Controller
         // يمكن إضافة مكتبة PDF هنا لإنشاء إيصال حقيقي
         // return PDF::loadView('admin.receipts.payment', $receiptData)->download('receipt-' . $payment->id . '.pdf');
         
-        return redirect()->back()->with('success', 'تم إنشاء الإيصال بنجاح');
+        return redirect()->back()->with('success', 'Receipt generated successfully');
     }
 
     private function getTransactionTypeName($type)
     {
         $types = [
-            'student_fee' => 'رسوم طالب',
-            'package_fee' => 'رسوم باقة',
-            'instructor_share' => 'حصة أستاذ',
-            'instructor_payment' => 'دفعة أستاذ',
-            'discount' => 'خصم',
-            'refund' => 'استرداد'
+            'student_fee' => 'Student Fee',
+            'package_fee' => 'Package Fee',
+            'instructor_share' => 'Instructor Share',
+            'instructor_payment' => 'Instructor Payment',
+            'discount' => 'Discount',
+            'refund' => 'Refund'
         ];
 
         return $types[$type] ?? $type;
@@ -228,7 +228,7 @@ class TransactionController extends Controller
             'payment_date' => now()
         ]);
 
-        return redirect()->back()->with('success', 'تم إضافة المعاملة المالية للطالب بنجاح');
+        return redirect()->back()->with('success', 'Student financial transaction added successfully');
     }
 
     public function teacherAccount(User $teacher)
@@ -287,7 +287,7 @@ class TransactionController extends Controller
             'payment_date' => now()
         ]);
 
-        return redirect()->back()->with('success', 'تم إضافة المعاملة المالية للأستاذ بنجاح');
+        return redirect()->back()->with('success', 'Teacher financial transaction added successfully');
     }
 
     public function editTeacherTransaction(User $teacher, Payment $payment)
@@ -311,7 +311,7 @@ class TransactionController extends Controller
             'amount' => $request->amount,
             'notes' => $request->notes,
         ]);
-        return redirect()->route('admin.teachers.account', $teacher->id)->with('success', 'تم تعديل الدفعة بنجاح');
+        return redirect()->route('admin.teachers.account', $teacher->id)->with('success', 'Payment updated successfully');
     }
 
     public function deleteTeacherTransaction(User $teacher, Payment $payment)
@@ -320,6 +320,6 @@ class TransactionController extends Controller
             abort(404);
         }
         $payment->delete();
-        return redirect()->route('admin.teachers.account', $teacher->id)->with('success', 'تم حذف الدفعة بنجاح');
+        return redirect()->route('admin.teachers.account', $teacher->id)->with('success', 'Payment deleted successfully');
     }
 } 

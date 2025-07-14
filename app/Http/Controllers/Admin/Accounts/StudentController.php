@@ -376,7 +376,7 @@ class StudentController extends Controller
                     'user_id' => $student->id,
                     'amount' => -$finalAmount, // سالب لأن الطالب يدفع
                     'type' => 'course_enrollment',
-                    'notes' => 'تسجيل كورس: ' . $course->title . ($discountAmount > 0 ? ' (خصم: ' . $courseDiscount . '%)' : ''),
+                    'notes' => 'Course enrollment: ' . $course->title . ($discountAmount > 0 ? ' (discount: ' . $courseDiscount . '%)' : ''),
                     'payment_date' => now(),
                 ]);
 
@@ -390,7 +390,7 @@ class StudentController extends Controller
                         'user_id' => $courseInstructor->instructor_id,
                         'amount' => $instructorShare,
                         'type' => 'instructor_share',
-                        'notes' => 'نسبة من تسجيل الطالب: ' . $student->name . ' في الدورة: ' . $course->title,
+                        'notes' => 'Instructor share from student enrollment: ' . $student->name . ' in course: ' . $course->title,
                         'payment_date' => now(),
                     ]);
                 }
@@ -449,7 +449,7 @@ class StudentController extends Controller
                     'user_id' => $student->id,
                     'amount' => -$finalAmount, // سالب لأن الطالب يدفع
                     'type' => 'package_enrollment',
-                    'notes' => 'تسجيل باقة: ' . $package->name . ($discountAmount > 0 ? ' (خصم: ' . $discount . '%)' : ''),
+                    'notes' => 'Package enrollment: ' . $package->name . ($discountAmount > 0 ? ' (discount: ' . $discount . '%)' : ''),
                     'payment_date' => now(),
                 ]);
                 
@@ -461,22 +461,22 @@ class StudentController extends Controller
         $messages = [];
         
         if ($successCount > 0) {
-            $messages[] = "تم تسجيل {$successCount} كورس/باقة بنجاح!";
+            $messages[] = "Successfully enrolled in {$successCount} course(s)/package(s)!";
         }
         
         if (!empty($enrolledCourses)) {
             $coursesList = implode(', ', $enrolledCourses);
-            $messages[] = "الكورسات التالية مسجلة مسبقاً: {$coursesList}";
+            $messages[] = "The following courses are already enrolled: {$coursesList}";
         }
         
         if (!empty($enrolledPackages)) {
             $packagesList = implode(', ', $enrolledPackages);
-            $messages[] = "الباقات التالية مسجلة مسبقاً: {$packagesList}";
+            $messages[] = "The following packages are already enrolled: {$packagesList}";
         }
 
         if (!empty($conflictingCourses)) {
             $conflictsList = implode(', ', $conflictingCourses);
-            $messages[] = "لا يمكن تسجيل الباقات التالية لوجود تعارض: {$conflictsList}";
+            $messages[] = "Cannot enroll the following packages due to conflicts: {$conflictsList}";
         }
 
         $messageType = !empty($enrolledCourses) || !empty($enrolledPackages) || !empty($conflictingCourses) ? 'warning' : 'success';
@@ -506,13 +506,13 @@ class StudentController extends Controller
                 'user_id' => $student->id,
                 'amount' => $coursePrice, // موجب لأن الطالب يسترد المال
                 'type' => 'course_refund',
-                'notes' => 'حذف كورس: ' . $course->title . ' (استرداد)',
+                'notes' => 'Course removal: ' . $course->title . ' (refund)',
                 'payment_date' => now(),
             ]);
 
-            return redirect()->back()->with('success', 'تم حذف الكورس بنجاح واسترداد المبلغ!');
+            return redirect()->back()->with('success', 'Course removed successfully and amount refunded!');
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'فشل في حذف الكورس: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Failed to remove course: ' . $e->getMessage());
         }
     }
 
@@ -536,13 +536,13 @@ class StudentController extends Controller
                 'user_id' => $student->id,
                 'amount' => $packagePrice, // موجب لأن الطالب يسترد المال
                 'type' => 'package_refund',
-                'notes' => 'حذف باقة: ' . $package->name . ' (استرداد)',
+                'notes' => 'Package removal: ' . $package->name . ' (refund)',
                 'payment_date' => now(),
             ]);
 
-            return redirect()->back()->with('success', 'تم حذف الباقة بنجاح واسترداد المبلغ!');
+            return redirect()->back()->with('success', 'Package removed successfully and amount refunded!');
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'فشل في حذف الباقة: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Failed to remove package: ' . $e->getMessage());
         }
     }
 

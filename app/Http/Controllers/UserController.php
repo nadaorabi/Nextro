@@ -15,7 +15,7 @@ class UserController extends Controller
     }
     public function register(Request $request)
     {
-        // التحقق من صحة البيانات
+        // Validate data
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
@@ -23,9 +23,9 @@ class UserController extends Controller
             'role' => 'required|in:student,teacher,admin',
             'terms' => 'required|accepted',
         ], [
-            'email.unique' => 'البريد الإلكتروني المدخل موجود مسبقًا.',
-            'password.confirmed' => 'كلمة المرور المدخلة غير متطابقة.',
-            'terms.accepted' => 'يجب قبول الشروط والأحكام.',
+            'email.unique' => 'The entered email already exists.',
+            'password.confirmed' => 'The entered password does not match.',
+            'terms.accepted' => 'You must accept the terms and conditions.',
         ]);
 
         $user = new User();
@@ -34,7 +34,7 @@ class UserController extends Controller
         $user->password = Hash::make($request->password);
         $user->role = $request->role;
         $user->save();
-        return redirect()->route('login')->with('success', 'تم التسجيل بنجاح');
+        return redirect()->route('login')->with('success', 'Registration completed successfully');
     }
 
     
@@ -44,7 +44,7 @@ class UserController extends Controller
     }
 
     /**
-     * معالجة تسجيل الدخول
+     * Handle login
      */
     public function login(Request $request)
     {
@@ -53,14 +53,14 @@ class UserController extends Controller
             'password' => 'required',
         ]);
 
-        // البحث عن المستخدم باستخدام login_id
+        // Search for user using login_id
         $user = User::where('login_id', $credentials['login_id'])->first();
 
         if ($user && Hash::check($credentials['password'], $user->password)) {
             if ($user->role == 'user' || $user->role == 'student') {
                 Auth::login($user);
                 $request->session()->regenerate(); 
-                return redirect()->route('home_page')->with('success', 'تم تسجيل الدخول بنجاح!');
+                return redirect()->route('home_page')->with('success', 'Login successful!');
             } else {
                 return back()->withErrors([
                     'login_id' => 'This account belongs to a staff member (teacher or admin). Please use the staff login page to access your account.'
@@ -68,18 +68,18 @@ class UserController extends Controller
             }
         }
 
-        // العودة مع رسالة خطأ في حال كانت بيانات الاعتماد غير صحيحة
-        return back()->withErrors(['login_id' => 'بيانات الاعتماد غير صحيحة.']);
+        // Return with error message if credentials are invalid
+        return back()->withErrors(['login_id' => 'Invalid credentials.']);
     }
 
     public function logout(Request $request)
     {
-        // تسجيل الخروج
+        // Logout
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        // إعادة التوجيه إلى الصفحة الرئيسية بعد الخروج
-        return redirect()->route('home_page')->with('success', 'تم تسجيل الخروج بنجاح!');
+        // Redirect to home page after logout
+        return redirect()->route('home_page')->with('success', 'Logout successful!');
     }
 }
