@@ -206,7 +206,6 @@
         aria-hidden="true" id="iconSidenav"></i>
       <a class="navbar-brand m-0" href=" https://demos.creative-tim.com/argon-dashboard/pages/dashboard.html "
         target="_blank">
-        
         <div style="width: 100%; text-align: center; margin-top: -40px;">
           <a href="{{ route('home_page') }}" class="logo menu-absolute m-0" style="font-size: 2rem; font-weight: bold; letter-spacing: 2px; display: inline-block;">
             Nextro<span class="text-primary">.</span>
@@ -219,8 +218,7 @@
       <ul class="navbar-nav">
         <li class="nav-item">
           <a class="nav-link {{ request()->routeIs('teacher.dashboard') ? 'active' : '' }}" href="{{ route('teacher.dashboard') }}">
-            <div
-              class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+            <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
               <i class="ni ni-tv-2 text-dark text-sm opacity-10"></i>
             </div>
             <span class="nav-link-text ms-1">Dashboard</span>
@@ -228,8 +226,7 @@
         </li>
         <li class="nav-item">
           <a class="nav-link {{ request()->routeIs('teacher.tables') ? 'active' : '' }}" href="{{ route('teacher.tables') }}">
-            <div
-              class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+            <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
               <i class="ni ni-calendar-grid-58 text-dark text-sm opacity-10"></i>
             </div>
             <span class="nav-link-text ms-1">Tables</span>
@@ -237,23 +234,20 @@
         </li>
         <li class="nav-item">
           <a class="nav-link {{ request()->routeIs('teacher.students') ? 'active' : '' }}" href="{{ route('teacher.students') }}">
-            <div
-              class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+            <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
               <i class="ni ni-single-02 text-dark text-sm opacity-10"></i>
             </div>
             <span class="nav-link-text ms-1">Students</span>
           </a>
         </li>
-      <li class="nav-item">
-  <a class="nav-link {{ request()->routeIs('teacher.QR-scan') ? 'active' : '' }}" href="{{ route('teacher.QR-scan') }}">
-    <div
-      class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-      <i class="fas fa-qrcode text-dark text-sm opacity-10"></i>
-    </div>
-    <span class="nav-link-text ms-1">QR-scan </span>
-  </a>
-</li>
-
+        <li class="nav-item">
+          <a class="nav-link {{ request()->routeIs('teacher.QR-scan') ? 'active' : '' }}" href="{{ route('teacher.QR-scan') }}">
+            <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+              <i class="fas fa-qrcode text-dark text-sm opacity-10"></i>
+            </div>
+            <span class="nav-link-text ms-1">QR-scan </span>
+          </a>
+        </li>
         <li class="nav-item">
           <a class="nav-link {{ request()->routeIs('teacher.materials.index') ? 'active' : '' }}" href="{{ route('teacher.materials.index') }}">
             <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
@@ -294,34 +288,19 @@
             <span class="nav-link-text ms-1">Finance Management</span>
           </a>
         </li>
-        <li class="nav-item">
-          <!-- <a class="nav-link {{ request()->routeIs('teacher.billing') ? 'active' : '' }}" href="{{ route('teacher.billing') }}">
-            <div
-              class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-              <i class="ni ni-credit-card text-dark text-sm opacity-10"></i>
-            </div>
-            <span class="nav-link-text ms-1">Billing</span>
-          </a> -->
-        </li>
-        
-        
         <li class="nav-item mt-3">
           <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">Account pages</h6>
         </li>
         <li class="nav-item">
           <a class="nav-link {{ request()->routeIs('teacher.profile') ? 'active' : '' }}" href="{{ route('teacher.profile') }}">
-            <div
-              class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+            <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
               <i class="ni ni-single-02 text-dark text-sm opacity-10"></i>
             </div>
             <span class="nav-link-text ms-1">Profile</span>
           </a>
         </li>
-     
-        
       </ul>
     </div>
-  
   </aside>
 <script>
 // عند تحميل الصفحة، استرجع الخيارات وطبقها

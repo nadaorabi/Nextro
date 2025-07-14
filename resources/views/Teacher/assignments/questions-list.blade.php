@@ -16,7 +16,106 @@
   <!-- Font Awesome Icons -->
   <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
   <!-- CSS Files -->
-  <link id="pagestyle" href="{{ asset('css/argon-dashboard.css?v=2.1.0') }}" rel="stylesheet" />
+  <link id="pagestyle" href="{{ asset('css/argon-dashboard.css') }}" rel="stylesheet" />
+  <style>
+    /* أبقِ فقط ستايلات الصفحة الخاصة بالأسئلة والجداول، واحذف أي شيء قد يؤثر على السايد بار أو main-content أو body */
+    .questions-card {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 2px 16px rgba(123, 105, 172, 0.08);
+      border: none;
+      transition: box-shadow 0.3s;
+    }
+    .questions-card:hover {
+      box-shadow: 0 6px 32px rgba(123, 105, 172, 0.13);
+    }
+    .card-header {
+      background: linear-gradient(135deg, #f5f7f9 0%, #fff 100%);
+      color: #7b69ac;
+      border-radius: 16px 16px 0 0;
+      border: none;
+    }
+    .card-header h5, .card-header h6 {
+      color: #7b69ac !important;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+    .card-header i {
+      color: #7b69ac !important;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #7b69ac 0%, #675598 100%);
+      border: none;
+      border-radius: 10px;
+      font-weight: 600;
+      color: #fff;
+      transition: box-shadow 0.3s, transform 0.2s;
+    }
+    .btn-primary:hover {
+      box-shadow: 0 4px 15px rgba(123, 105, 172, 0.18);
+      transform: translateY(-2px);
+    }
+    .btn-secondary {
+      background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+      border: none;
+      border-radius: 10px;
+      font-weight: 600;
+      color: #fff;
+      transition: box-shadow 0.3s, transform 0.2s;
+    }
+    .btn-secondary:hover {
+      box-shadow: 0 4px 15px rgba(108, 117, 125, 0.18);
+      transform: translateY(-2px);
+    }
+    .badge {
+      border-radius: 12px;
+      font-size: 0.85rem;
+      padding: 0.4em 1em;
+    }
+    .bg-gradient-success {
+      background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%) !important;
+    }
+    .bg-gradient-info {
+      background: linear-gradient(135deg, #36b9cc 0%, #1e7eae 100%) !important;
+    }
+    .bg-gradient-warning {
+      background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%) !important;
+    }
+    .table {
+      margin-bottom: 0;
+    }
+    .table th, .table td {
+      vertical-align: middle;
+      padding: 0.75rem 0.5rem;
+    }
+    .table th {
+      color: #7b69ac;
+      font-weight: 700;
+      background: #f8f9fb !important;
+      border-bottom: 2px solid #e9ecef;
+    }
+    .icon-shape {
+      width: 60px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      margin: 0 auto;
+    }
+    .bg-gradient-primary {
+      background: linear-gradient(135deg, #5f5aad 0%, #7b69ac 100%) !important;
+    }
+    .text-white { color: #fff !important; }
+    .text-muted { color: #6c757d !important; }
+    .font-weight-bold { font-weight: 600 !important; }
+    .font-weight-bolder { font-weight: 700 !important; }
+    @media (max-width: 767px) {
+      .card-header, .card-body {
+        padding: 1rem;
+      }
+    }
+  </style>
 </head>
 <body class="g-sidenav-show bg-gray-100">
   @include('teacher.parts.sidebar-teacher')
@@ -30,15 +129,31 @@
             <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="{{ route('teacher.assignments.index') }}">Assignments</a></li>
             <li class="breadcrumb-item text-sm text-dark active" aria-current="page">Assignment Questions</li>
           </ol>
-          <h6 class="font-weight-bolder mb-0">Assignment Questions: {{ $assignment->title }}</h6>
         </nav>
       </div>
     </nav>
     <!-- End Header -->
     <div class="container-fluid py-4">
+      <!-- Page Header -->
+      <div class="row mb-2">
+        <div class="col-12">
+          <div class="page-header">
+            <div class="d-flex align-items-center">
+              <div class="me-3">
+                <i class="fas fa-question-circle fa-2x"></i>
+              </div>
+              <div>
+                <h2 class="mb-1">Assignment Questions</h2>
+                <p class="mb-0 opacity-75">Manage and edit all questions for this assignment</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- End Page Header -->
       <div class="row">
         <div class="col-12">
-          <div class="card mb-4">
+          <div class="questions-card card mb-4">
             <div class="card-header pb-0 d-flex justify-content-between align-items-center">
               <div>
                 <h6 class="mb-0">Number of Questions: {{ $assignment->questions->count() }}</h6>

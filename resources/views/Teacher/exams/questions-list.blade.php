@@ -19,6 +19,155 @@
   <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
   <!-- CSS Files -->
   <link id="pagestyle" href="{{ asset('css/argon-dashboard.css?v=2.1.0') }}" rel="stylesheet" />
+  <style>
+    body {
+      background: #f8f9fa;
+    }
+    .page-header {
+      background: linear-gradient(135deg, #f5f6fa 0%, #fff 100%);
+      color: #7b69ac;
+      border-radius: 15px;
+      padding: 1.2rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    }
+    .card {
+      border-radius: 16px;
+      box-shadow: 0 2px 16px rgba(123, 105, 172, 0.08);
+      border: none;
+      transition: box-shadow 0.3s;
+    }
+    .card:hover {
+      box-shadow: 0 6px 32px rgba(123, 105, 172, 0.13);
+    }
+    .card-header {
+      background: linear-gradient(135deg, #f5f7f9 0%, #fff 100%);
+      color: #7b69ac;
+      border-radius: 16px 16px 0 0;
+      border: none;
+    }
+    .card-header h6 {
+      color: #7b69ac;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+    .btn-primary, .btn-success {
+      background: linear-gradient(135deg, #7b69ac 0%, #675598 100%);
+      border: none;
+      border-radius: 10px;
+      font-weight: 600;
+      transition: box-shadow 0.3s, transform 0.2s;
+      color: #fff;
+    }
+    .btn-primary:hover, .btn-success:hover {
+      box-shadow: 0 4px 15px rgba(123, 105, 172, 0.18);
+      transform: translateY(-2px);
+    }
+    .btn-info {
+      background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+      border: none;
+      border-radius: 10px;
+      font-weight: 600;
+      color: #fff;
+      transition: box-shadow 0.3s, transform 0.2s;
+    }
+    .btn-info:hover {
+      box-shadow: 0 4px 15px rgba(23, 162, 184, 0.18);
+      transform: translateY(-2px);
+    }
+    .btn-outline-primary {
+      background: #fff;
+      color: #7b69ac;
+      border: 1.5px solid #7b69ac;
+      border-radius: 10px;
+      font-weight: 600;
+      transition: box-shadow 0.3s, color 0.2s, background 0.2s;
+    }
+    .btn-outline-primary:hover {
+      background: #7b69ac;
+      color: #fff;
+      box-shadow: 0 4px 15px rgba(123, 105, 172, 0.18);
+    }
+    .btn-danger {
+      background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+      border: none;
+      border-radius: 10px;
+      font-weight: 600;
+      color: #fff;
+      transition: box-shadow 0.3s, transform 0.2s;
+    }
+    .btn-danger:hover {
+      box-shadow: 0 4px 15px rgba(220, 53, 69, 0.18);
+      transform: translateY(-2px);
+    }
+    .form-control, .form-select {
+      border-radius: 8px;
+      border: 1px solid #e9ecef;
+      box-shadow: none;
+      font-size: 1rem;
+      padding: 0.75rem 1rem;
+      transition: border-color 0.2s;
+    }
+    .form-control:focus, .form-select:focus {
+      border-color: #7b69ac;
+      box-shadow: 0 0 0 2px rgba(123, 105, 172, 0.08);
+    }
+    .form-group label, .form-label {
+      color: #7b69ac;
+      font-weight: 600;
+      margin-bottom: 0.3rem;
+    }
+    .input-group-text {
+      background: #f5f6fa;
+      color: #7b69ac;
+      border: none;
+      font-weight: 600;
+      border-radius: 0 8px 8px 0;
+    }
+    .table {
+      background: #fff;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 0;
+    }
+    .table th {
+      color: #7b69ac;
+      font-weight: 700;
+      background: #f5f6fa;
+      border-top: none;
+    }
+    .table td {
+      vertical-align: middle;
+      padding: 0.75rem 0.5rem;
+    }
+    .badge {
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 0.4em 0.8em;
+    }
+    .modal-content {
+      border-radius: 16px;
+    }
+    .modal-header, .modal-footer {
+      border: none;
+    }
+    .modal-title {
+      color: #7b69ac;
+      font-weight: 700;
+    }
+    .btn i {
+      margin-left: 0.3rem;
+    }
+    @media (max-width: 767px) {
+      .card-header, .card-body {
+        padding: 1rem;
+      }
+      .form-group label, .form-label {
+        font-size: 0.95rem;
+      }
+    }
+  </style>
 </head>
 
 <body class="g-sidenav-show bg-gray-100">
@@ -41,6 +190,17 @@
   <!-- End Header -->
 
   <div class="container-fluid py-4">
+    <!-- Page Header -->
+    <div class="row mb-3">
+      <div class="col-12">
+        <div class="page-header d-flex flex-column flex-md-row justify-content-between align-items-md-center align-items-start">
+          <div>
+            <h2 class="mb-1" style="font-weight: bold; letter-spacing: 0.5px;">Exam Questions: <span style="color:#675598">{{ $exam->title }}</span></h2>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- End Page Header -->
     <div class="row">
       <div class="col-12">
         <div class="card mb-4">
@@ -49,9 +209,6 @@
               <h6 class="mb-0">Total Questions: {{ $exam->questions->count() }}</h6>
             </div>
             <div class="d-flex gap-2">
-              <a href="{{ route('teacher.exams.questions.bulk-create', $exam) }}" class="btn btn-primary btn-sm">
-                <i class="fas fa-plus me-2"></i>Add Questions
-              </a>
               <a href="{{ route('teacher.exams.edit', $exam) }}" class="btn btn-info btn-sm">
                 <i class="fas fa-edit me-2"></i>Edit Exam
               </a>

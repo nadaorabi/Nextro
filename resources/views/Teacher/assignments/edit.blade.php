@@ -18,7 +18,103 @@
   <!-- Font Awesome Icons -->
   <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
   <!-- CSS Files -->
-  <link id="pagestyle" href="{{ asset('css/argon-dashboard.css?v=2.1.0') }}" rel="stylesheet" />
+  <link id="pagestyle" href="{{ asset('css/argon-dashboard.css') }}" rel="stylesheet" />
+  <style>
+    body {
+      background: #f8f9fa;
+    }
+    .page-header {
+      background: linear-gradient(135deg, #f5f6fa 0%, #fff 100%);
+      color: #7b69ac;
+      border-radius: 15px;
+      padding: 1.2rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    }
+    .form-card {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 2px 16px rgba(123, 105, 172, 0.08);
+      border: none;
+      transition: box-shadow 0.3s;
+    }
+    .form-card:hover {
+      box-shadow: 0 6px 32px rgba(123, 105, 172, 0.13);
+    }
+    .card-header {
+      background: linear-gradient(135deg, #f5f7f9 0%, #fff 100%);
+      color: #7b69ac;
+      border-radius: 16px 16px 0 0;
+      border: none;
+    }
+    .card-header h5, .card-header h6 {
+      color: #7b69ac !important;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+    .card-header i {
+      color: #7b69ac !important;
+    }
+    .form-control {
+      border-radius: 8px;
+      border: 1px solid #e9ecef;
+      font-size: 1rem;
+      padding: 0.75rem 1rem;
+      transition: border-color 0.2s;
+    }
+    .form-control:focus {
+      border-color: #7b69ac;
+      box-shadow: 0 0 0 2px rgba(123, 105, 172, 0.08);
+    }
+    .form-control-label {
+      color: #7b69ac;
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #7b69ac 0%, #675598 100%);
+      border: none;
+      border-radius: 10px;
+      font-weight: 600;
+      color: #fff;
+      transition: box-shadow 0.3s, transform 0.2s;
+    }
+    .btn-primary:hover {
+      box-shadow: 0 4px 15px rgba(123, 105, 172, 0.18);
+      transform: translateY(-2px);
+    }
+    .btn-secondary {
+      background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+      border: none;
+      border-radius: 10px;
+      font-weight: 600;
+      color: #fff;
+      transition: box-shadow 0.3s, transform 0.2s;
+    }
+    .btn-secondary:hover {
+      box-shadow: 0 4px 15px rgba(108, 117, 125, 0.18);
+      transform: translateY(-2px);
+    }
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+    .invalid-feedback {
+      color: #dc3545;
+      font-size: 0.875rem;
+    }
+    .form-text {
+      color: #6c757d;
+      font-size: 0.875rem;
+    }
+    @media (max-width: 767px) {
+      .card-header, .card-body {
+        padding: 1rem;
+      }
+      .form-control-label {
+        font-size: 0.92rem;
+      }
+    }
+  </style>
 </head>
 
 <body class="g-sidenav-show bg-gray-100">
@@ -42,14 +138,33 @@
     <!-- End Header -->
 
     <div class="container-fluid py-4">
+      <!-- Page Header -->
+      <div class="row mb-2">
+        <div class="col-12">
+          <div class="page-header">
+            <div class="d-flex align-items-center">
+              <div class="me-3">
+                <i class="fas fa-edit fa-2x"></i>
+              </div>
+              <div>
+                <h2 class="mb-1">Edit Assignment</h2>
+                <p class="mb-0 opacity-75">Update assignment details and settings</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
       <div class="row">
         <div class="col-12">
-          <div class="card">
+          <div class="form-card card">
             <div class="card-header pb-0">
               <div class="d-flex justify-content-between align-items-center">
-                <h6 class="mb-0">Edit Assignment: {{ $assignment->title }}</h6>
+                <div class="d-flex align-items-center">
+                  <i class="fas fa-edit text-muted me-2"></i>
+                  <h5 class="mb-0">Assignment Details</h5>
+                </div>
                 <a href="{{ route('teacher.assignments.index') }}" class="btn btn-secondary btn-sm">
-                  <i class="fas fa-arrow-right"></i> Back
+                  <i class="fas fa-arrow-left"></i> Back to Assignments
                 </a>
               </div>
             </div>
