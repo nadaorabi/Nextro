@@ -12,14 +12,31 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('address')->nullable();
-            $table->date('birth_date')->nullable();
-            $table->enum('gender', ['male', 'female'])->nullable();
-            $table->string('nationality')->nullable();
-            $table->string('emergency_contact')->nullable();
-            $table->string('parent_name')->nullable();
-            $table->string('parent_mobile')->nullable();
-            $table->text('medical_conditions')->nullable();
+            // Check if columns exist before adding them
+            if (!Schema::hasColumn('users', 'address')) {
+                $table->string('address')->nullable();
+            }
+            if (!Schema::hasColumn('users', 'birth_date')) {
+                $table->date('birth_date')->nullable();
+            }
+            if (!Schema::hasColumn('users', 'gender')) {
+                $table->enum('gender', ['male', 'female'])->nullable();
+            }
+            if (!Schema::hasColumn('users', 'nationality')) {
+                $table->string('nationality')->nullable();
+            }
+            if (!Schema::hasColumn('users', 'emergency_contact')) {
+                $table->string('emergency_contact')->nullable();
+            }
+            if (!Schema::hasColumn('users', 'parent_name')) {
+                $table->string('parent_name')->nullable();
+            }
+            if (!Schema::hasColumn('users', 'parent_mobile')) {
+                $table->string('parent_mobile')->nullable();
+            }
+            if (!Schema::hasColumn('users', 'medical_conditions')) {
+                $table->text('medical_conditions')->nullable();
+            }
         });
     }
 
