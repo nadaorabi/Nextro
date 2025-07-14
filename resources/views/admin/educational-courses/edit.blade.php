@@ -52,7 +52,7 @@
                             </a>
                         </div>
 
-                        <form action="{{ route('admin.educational-courses.update', $course) }}" method="POST">
+                        <form action="{{ route('admin.educational-courses.update', $course) }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             @method('PUT')
 
@@ -160,6 +160,31 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Course Image</label>
+                                <input type="file" name="image" class="form-control @error('image') is-invalid @enderror" accept="image/*" onchange="previewEditCourseImage(event)">
+                                @error('image')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                                <div class="mt-2 text-center">
+                                    @if($course->image)
+                                        <img id="editCourseImagePreview" src="{{ asset('storage/'.$course->image) }}" style="max-width:100%;max-height:180px;border-radius:10px;">
+                                    @else
+                                        <img id="editCourseImagePreview" src="{{ asset('images/default-course.png') }}" style="max-width:100%;max-height:180px;border-radius:10px;display:none;">
+                                    @endif
+                                </div>
+                            </div>
+                            <script>
+                            function previewEditCourseImage(event) {
+                                const [file] = event.target.files;
+                                if (file) {
+                                    const img = document.getElementById('editCourseImagePreview');
+                                    img.src = URL.createObjectURL(file);
+                                    img.style.display = 'block';
+                                }
+                            }
+                            </script>
 
                             <div class="mb-3">
                                 <label class="form-label">Category</label>

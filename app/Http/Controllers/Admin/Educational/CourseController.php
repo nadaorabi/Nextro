@@ -300,7 +300,7 @@ class CourseController extends Controller
             $course->messages()->delete();
             $course->complaints()->delete();
             $course->packages()->detach();
-            $course->course_instructors()->delete();
+            $course->courseInstructors()->delete();
 
             $course->delete();
 

@@ -301,29 +301,13 @@
                                             <label for="image" class="form-label">
                                                 <i class="fas fa-image me-2"></i>Course Image
                                             </label>
-                                            <div class="border-2 border-dashed rounded-3 p-4 text-center bg-light">
-                                                <input type="file" name="image" id="image" 
-                                                    class="form-control @error('image') is-invalid @enderror" 
-                                                    accept="image/*"
-                                                    onchange="previewImage(event)">
-                                                <small class="text-muted d-block mt-2">
-                                                    Upload an image (optional)<br>
-                                                    <span class="text-primary">Supported: JPG, PNG, GIF (Max: 2MB)</span>
-                                                </small>
-                                                
-                                                <!-- Image Preview -->
-                                                <div id="imagePreview" class="mt-3" style="display: none;">
-                                                    <img id="preview" src="" class="img-thumbnail" width="150" alt="Preview">
-                                                    <div class="mt-2">
-                                                        <button type="button" class="btn btn-sm btn-outline-danger" onclick="removeImage()">
-                                                            <i class="fas fa-trash"></i> Remove
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                            <input type="file" name="image" id="image" class="form-control @error('image') is-invalid @enderror" accept="image/*" onchange="previewCourseImage(event)">
                                             @error('image')
-                                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                                                <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
+                                            <div class="mt-2 text-center">
+                                                <img id="courseImagePreview" src="{{ asset('images/default-course.png') }}" style="max-width:100%;max-height:180px;border-radius:10px;display:none;" alt="Course Image Preview">
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -474,6 +458,15 @@
         function removeImage() {
             document.getElementById('image').value = '';
             document.getElementById('imagePreview').style.display = 'none';
+        }
+
+        function previewCourseImage(event) {
+            const [file] = event.target.files;
+            if (file) {
+                const img = document.getElementById('courseImagePreview');
+                img.src = URL.createObjectURL(file);
+                img.style.display = 'block';
+            }
         }
 
         // Toggle price fields based on free checkbox

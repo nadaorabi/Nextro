@@ -306,6 +306,20 @@
 @endpush
 
 @section('content')
+    @if (session('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle me-2"></i>
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    @endif
+    @if (session('error'))
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-circle me-2"></i>
+            {{ session('error') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    @endif
 
     <!-- Welcome Card -->
     <div class="card mb-4">
@@ -427,6 +441,7 @@
                 <table class="table align-items-center mb-0">
                     <thead>
                         <tr>
+                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Image</th>
                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                 Course Details</th>
                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
@@ -447,20 +462,21 @@
                             <tr data-title="{{ strtolower($course->title) }}" data-status="{{ $course->status }}"
                                 data-category="{{ strtolower($course->category?->name ?? '') }}">
                                 <td>
-                                    <div class="d-flex px-2 py-1">
-                                        <div>
-                                            <img src="{{ $course->image ? asset('storage/' . $course->image) : asset('images/theme/course-default.png') }}"
-                                                class="avatar avatar-sm me-3 course-image" alt="course">
-                                        </div>
-                                        <div class="d-flex flex-column justify-content-center">
-                                            <h6 class="mb-0 text-sm">{{ $course->title }}</h6>
-                                            <p class="text-xs text-secondary mb-0">
-                                                {{ \Illuminate\Support\Str::limit($course->description, 50) ?: 'No description available' }}
-                                            </p>
-                                            <small class="text-xs text-info">
-                                                <i class="fas fa-clock me-1"></i>{{ $course->credit_hours }} Credit Hours
-                                            </small>
-                                        </div>
+                                    @if($course->image)
+                                        <img src="{{ asset('storage/'.$course->image) }}" class="course-image" alt="Course Image">
+                                    @else
+                                        <img src="{{ asset('images/default-course.png') }}" class="course-image" alt="Course Image">
+                                    @endif
+                                </td>
+                                <td>
+                                    <div class="d-flex flex-column justify-content-center">
+                                        <h6 class="mb-0 text-sm">{{ $course->title }}</h6>
+                                        <p class="text-xs text-secondary mb-0">
+                                            {{ \Illuminate\Support\Str::limit($course->description, 50) ?: 'No description available' }}
+                                        </p>
+                                        <small class="text-xs text-info">
+                                            <i class="fas fa-clock me-1"></i>{{ $course->credit_hours }} Credit Hours
+                                        </small>
                                     </div>
                                 </td>
                                 <td>
@@ -793,11 +809,13 @@
         // Set page language to English to ensure file input displays English text
         document.documentElement.lang = 'en';
         
+        window.deleteCourseRoute = "{{ route('admin.educational-courses.destroy', ['course' => 'COURSE_ID_PLACEHOLDER']) }}";
         function confirmCourseDelete(courseId, courseTitle) {
             const form = document.getElementById('deleteCourseForm');
             const namePlaceholder = document.getElementById('courseNamePlaceholder');
             namePlaceholder.textContent = `"${courseTitle}"`;
-            form.action = `/admin/educational-courses/${courseId}`;
+            form.action = window.deleteCourseRoute.replace('COURSE_ID_PLACEHOLDER', courseId);
+            console.log('Delete form action set to:', form.action);
         }
 
         // Price calculation functions for modals

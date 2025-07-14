@@ -140,7 +140,7 @@ Route::prefix('admin')->middleware('isAdmin')->name('admin.')->group(function ()
         Route::get('/edit', [CourseController::class, 'edit'])->name('edit');
         Route::post('/store', [CourseController::class, 'store'])->name('store');
         Route::put('/{course}', [CourseController::class, 'update'])->name('update');
-        Route::delete('/{course}', [CourseController::class, 'destroy'])->name('destroy');
+        Route::delete('/{course}', [\App\Http\Controllers\Admin\Educational\CourseController::class, 'destroy'])->name('destroy');
         Route::get('show/{course}', [CourseController::class, 'show'])->name('show');
         
         // Additional routes for course management

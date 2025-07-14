@@ -18,7 +18,8 @@ class Course extends Model
         'discount_percentage',
         'is_free',
         'status', 
-        'category_id'
+        'category_id',
+        'image'
     ];
 
     protected $casts = [
