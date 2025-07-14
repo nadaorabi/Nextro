@@ -299,17 +299,16 @@
                         </td>
                         <td>
                           <div class="d-flex align-items-center">
-                            <a href="#" class="btn btn-link text-secondary px-3 mb-0" title="View Details">
+                            <a href="{{ route('teacher.grading.grade-exam', [$exam, $submission]) }}" 
+                               class="btn btn-link text-secondary px-3 mb-0" title="View & Grade">
                               <i class="fas fa-eye text-xs"></i>
                             </a>
-                            @if($submission->status != 'graded')
-                            <a href="#" class="btn btn-link text-warning px-3 mb-0" title="Grade">
-                              <i class="fas fa-star text-xs"></i>
-                            </a>
-                            @endif
-                            <a href="#" class="btn btn-link text-danger px-3 mb-0" title="Download">
+                            @if($submission->submission_file)
+                            <a href="{{ route('teacher.grading.download-file', ['type' => 'exam', 'id' => $exam->id, 'submissionId' => $submission->id]) }}" 
+                               class="btn btn-link text-danger px-3 mb-0" title="Download File">
                               <i class="fas fa-download text-xs"></i>
                             </a>
+                            @endif
                           </div>
                         </td>
                       </tr>
@@ -396,6 +395,18 @@
               </div>
             </div>
           </div>
+        </div>
+      </div>
+      
+      {{-- قسم التعليقات العامة --}}
+      <div class="row mt-4">
+        <div class="col-12">
+          @include('Teacher.grading.general-comments-section', [
+            'item' => $exam,
+            'commentRoute' => route('teacher.grading.add-exam-general-comment', $exam),
+            'downloadRoute' => 'teacher.grading.download-exam-general-comment-attachment',
+            'deleteRoute' => 'teacher.grading.delete-exam-general-comment',
+          ])
         </div>
       </div>
     </div>

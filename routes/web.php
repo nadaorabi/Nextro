@@ -341,13 +341,52 @@ Route::prefix('teacher')->middleware(['isTeacher', 'password.changed'])->name('t
     });
 });
 
-Route::prefix('teacher')->middleware(['auth', 'isTeacher', 'password.changed'])->group(function () {
-    Route::get('assignments/{assignment}/questions/bulk-create', [\App\Http\Controllers\Teacher\AssignmentController::class, 'bulkCreateQuestions'])->name('teacher.assignments.questions.bulk-create');
-    Route::post('assignments/{assignment}/questions/bulk-store', [\App\Http\Controllers\Teacher\AssignmentController::class, 'bulkStoreQuestions'])->name('teacher.assignments.questions.bulk-store');
-    Route::get('exams/{exam}/questions/bulk-create', [\App\Http\Controllers\Teacher\ExamController::class, 'bulkCreateQuestions'])->name('teacher.exams.questions.bulk-create');
-    Route::post('exams/{exam}/questions/bulk-store', [\App\Http\Controllers\Teacher\ExamController::class, 'bulkStoreQuestions'])->name('teacher.exams.questions.bulk-store');
-    Route::get('assignments/{assignment}/questions/list', [\App\Http\Controllers\Teacher\AssignmentController::class, 'questionsList'])->name('teacher.assignments.questions.list');
-    Route::get('exams/{exam}/questions/list', [\App\Http\Controllers\Teacher\ExamController::class, 'questionsList'])->name('teacher.exams.questions.list');
+Route::prefix('teacher')->middleware(['auth', 'isTeacher', 'password.changed'])->name('teacher.')->group(function () {
+    Route::get('assignments/{assignment}/questions/bulk-create', [\App\Http\Controllers\Teacher\AssignmentController::class, 'bulkCreateQuestions'])->name('assignments.questions.bulk-create');
+    Route::post('assignments/{assignment}/questions/bulk-store', [\App\Http\Controllers\Teacher\AssignmentController::class, 'bulkStoreQuestions'])->name('assignments.questions.bulk-store');
+    Route::get('exams/{exam}/questions/bulk-create', [\App\Http\Controllers\Teacher\ExamController::class, 'bulkCreateQuestions'])->name('exams.questions.bulk-create');
+    Route::post('exams/{exam}/questions/bulk-store', [\App\Http\Controllers\Teacher\ExamController::class, 'bulkStoreQuestions'])->name('exams.questions.bulk-store');
+    Route::get('assignments/{assignment}/questions/list', [\App\Http\Controllers\Teacher\AssignmentController::class, 'questionsList'])->name('assignments.questions.list');
+    Route::get('exams/{exam}/questions/list', [\App\Http\Controllers\Teacher\ExamController::class, 'questionsList'])->name('exams.questions.list');
+    
+    // Grading Routes
+    Route::prefix('grading')->name('grading.')->group(function () {
+        // Assignment Grading
+        Route::get('assignments/{assignment}/submissions/{submission}', [\App\Http\Controllers\Teacher\GradingController::class, 'gradeAssignment'])->name('grade-assignment');
+        Route::put('assignments/{assignment}/submissions/{submission}', [\App\Http\Controllers\Teacher\GradingController::class, 'updateAssignmentGrade'])->name('update-assignment');
+        Route::post('assignments/{assignment}/bulk-grade', [\App\Http\Controllers\Teacher\GradingController::class, 'bulkGradeAssignments'])->name('bulk-grade-assignments');
+        
+        // Exam Grading
+        Route::get('exams/{exam}/submissions/{submission}', [\App\Http\Controllers\Teacher\GradingController::class, 'gradeExam'])->name('grade-exam');
+        Route::put('exams/{exam}/submissions/{submission}', [\App\Http\Controllers\Teacher\GradingController::class, 'updateExamGrade'])->name('update-exam');
+        Route::post('exams/{exam}/bulk-grade', [\App\Http\Controllers\Teacher\GradingController::class, 'bulkGradeExams'])->name('bulk-grade-exams');
+        
+        // File Download
+        Route::get('download/{type}/{id}/submission/{submissionId}', [\App\Http\Controllers\Teacher\GradingController::class, 'downloadSubmissionFile'])->name('download-file');
+        
+        // View Submission Details
+        Route::get('view/{type}/{id}/submission/{submissionId}', [\App\Http\Controllers\Teacher\GradingController::class, 'viewSubmission'])->name('view-submission');
+        
+        // Comments Management
+        Route::post('assignments/{assignment}/submissions/{submission}/comments', [\App\Http\Controllers\Teacher\GradingController::class, 'addAssignmentComment'])->name('add-assignment-comment');
+        Route::post('exams/{exam}/submissions/{submission}/comments', [\App\Http\Controllers\Teacher\GradingController::class, 'addExamComment'])->name('add-exam-comment');
+        Route::get('comments/{comment}/attachment', [\App\Http\Controllers\Teacher\GradingController::class, 'downloadCommentAttachment'])->name('download-comment-attachment');
+        Route::delete('comments/{comment}', [\App\Http\Controllers\Teacher\GradingController::class, 'deleteComment'])->name('delete-comment');
+        
+        // General Comments Management
+        Route::post('assignments/{assignment}/general-comment', [\App\Http\Controllers\Teacher\GradingController::class, 'addAssignmentGeneralComment'])->name('add-assignment-general-comment');
+        Route::post('exams/{exam}/general-comment', [\App\Http\Controllers\Teacher\GradingController::class, 'addExamGeneralComment'])->name('add-exam-general-comment');
+        Route::get('assignments/{assignment}/general-attachment', [\App\Http\Controllers\Teacher\GradingController::class, 'downloadAssignmentGeneralAttachment'])->name('download-assignment-general-attachment');
+        Route::get('exams/{exam}/general-attachment', [\App\Http\Controllers\Teacher\GradingController::class, 'downloadExamGeneralAttachment'])->name('download-exam-general-attachment');
+        Route::delete('assignments/{assignment}/general-comment', [\App\Http\Controllers\Teacher\GradingController::class, 'deleteAssignmentGeneralComment'])->name('delete-assignment-general-comment');
+        Route::delete('exams/{exam}/general-comment', [\App\Http\Controllers\Teacher\GradingController::class, 'deleteExamGeneralComment'])->name('delete-exam-general-comment');
+        // جديد: تحميل مرفق التعليق العام وحذفه عبر معرف التعليق
+        Route::get('general-comments/{comment}/attachment', [\App\Http\Controllers\Teacher\GradingController::class, 'downloadGeneralCommentAttachment'])->name('download-assignment-general-comment-attachment');
+        Route::delete('general-comments/{comment}', [\App\Http\Controllers\Teacher\GradingController::class, 'deleteGeneralComment'])->name('delete-assignment-general-comment');
+        // راوت لتحميل مرفق التعليق العام للاختبارات
+        Route::get('general-comments/{comment}/exam-attachment', [\App\Http\Controllers\Teacher\GradingController::class, 'downloadGeneralCommentAttachment'])->name('download-exam-general-comment-attachment');
+        Route::delete('general-comments/{comment}/exam', [\App\Http\Controllers\Teacher\GradingController::class, 'deleteGeneralComment'])->name('delete-exam-general-comment');
+    });
 });
 
 

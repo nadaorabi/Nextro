@@ -22,14 +22,21 @@ class Exam extends Model
         'total_grade',
         'exam_date', 
         'duration',
-        'created_by'
+        'created_by',
+        'general_comment',
+        'comment_attachment',
+        'comment_attachment_type',
+        'comment_attachment_size',
+        'commented_at'
     ];
 
     protected $casts = [
         'start_at' => 'datetime',
         'end_at' => 'datetime',
         'exam_date' => 'date',
-        'total_grade' => 'decimal:2'
+        'total_grade' => 'decimal:2',
+        'commented_at' => 'datetime',
+        'comment_attachment_size' => 'integer'
     ];
 
     public function course() 
@@ -55,5 +62,59 @@ class Exam extends Model
     public function submissions()
     {
         return $this->hasMany(ExamSubmission::class);
+    }
+
+    /**
+     * العلاقة مع التعليقات على هذا الاختبار
+     */
+    public function comments()
+    {
+        return $this->hasMany(SubmissionComment::class, 'submission_id')
+                    ->where('submission_type', 'exam');
+    }
+
+    /**
+     * العلاقة مع التعليقات العامة
+     */
+    public function generalComments()
+    {
+        return $this->morphMany(GeneralComment::class, 'commentable');
+    }
+
+    /**
+     * التحقق من وجود تعليقات عامة
+     */
+    public function hasGeneralComments()
+    {
+        return $this->generalComments()->exists();
+    }
+
+    /**
+     * التحقق من وجود مرفق للتعليق العام
+     */
+    public function hasCommentAttachment()
+    {
+        return !empty($this->comment_attachment);
+    }
+
+    /**
+     * الحصول على حجم المرفق بتنسيق مقروء
+     */
+    public function getFormattedCommentAttachmentSizeAttribute()
+    {
+        if (!$this->comment_attachment_size) {
+            return null;
+        }
+
+        $units = ['B', 'KB', 'MB', 'GB'];
+        $size = $this->comment_attachment_size;
+        $unit = 0;
+
+        while ($size >= 1024 && $unit < count($units) - 1) {
+            $size /= 1024;
+            $unit++;
+        }
+
+        return round($size, 2) . ' ' . $units[$unit];
     }
 }
