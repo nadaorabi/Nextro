@@ -534,9 +534,14 @@
                             <div class="course-card">
                                 <div class="course-image">
                                     @php
-                                        $courseImage = $enrollment->course->image ?? ($enrollment->course->category->image ?? 'images/img_3.jpg');
+                                        $courseImage = $enrollment->course->image
+                                            ? asset('storage/' . $enrollment->course->image)
+                                            : ( ($enrollment->course->category && $enrollment->course->category->image)
+                                                ? asset('storage/' . $enrollment->course->category->image)
+                                                : asset('images/img_3.jpg')
+                                            );
                                     @endphp
-                                    <img src="{{ asset($courseImage) }}" alt="Course Image" onerror="this.src='{{ asset('images/img_3.jpg') }}'">
+                                    <img src="{{ $courseImage }}" alt="Course Image" onerror="this.src='{{ asset('images/img_3.jpg') }}'">
                                 </div>
                                 <div class="course-info">
                                     <div class="course-title">{{ $enrollment->course->title }}</div>
