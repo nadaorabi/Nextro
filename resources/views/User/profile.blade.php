@@ -566,7 +566,7 @@
                                     </div>
                                 </div>
                                 <div class="course-actions">
-                                    <button class="btn btn-sm btn-outline-primary">View Details</button>
+                                    <button class="btn btn-sm btn-outline-primary" onclick="showCourseSchedule({{ $enrollment->course->id }})">View Details</button>
                                 </div>
                             </div>
                         @endif
@@ -1080,6 +1080,21 @@
     </div>
 </div>
 
+<!-- Course Schedule Modal -->
+<div class="modal fade" id="courseScheduleModal" tabindex="-1" aria-labelledby="courseScheduleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="courseScheduleModalLabel">Scheduled Lectures</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="courseScheduleContent">
+        <!-- سيتم تعبئته بالجافاسكريبت -->
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Include QR Code Library -->
 <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -1337,6 +1352,37 @@ function downloadFinancialStatusPDF() {
         jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
     };
     html2pdf().set(opt).from(element).save();
+}
+
+function showCourseSchedule(courseId) {
+    let schedules = @json($allSchedules ?? []);
+    let courseSchedules = schedules.filter(s => s.course_id == courseId);
+    let content = '';
+    if (courseSchedules.length > 0) {
+        content += `<table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Room</th>
+                    <th>Instructor</th>
+                </tr>
+            </thead>
+            <tbody>`;
+        courseSchedules.forEach(s => {
+            content += `<tr>
+                <td>${s.session_date ? new Date(s.session_date).toLocaleDateString() : '-'}</td>
+                <td>${s.start_time ? s.start_time.substring(0,5) : ''} - ${s.end_time ? s.end_time.substring(0,5) : ''}</td>
+                <td>${s.room || 'TBD'}</td>
+                <td>${s.instructor || '-'}</td>
+            </tr>`;
+        });
+        content += `</tbody></table>`;
+    } else {
+        content = `<div class="alert alert-info text-center mb-0">Sorry, there are no scheduled lectures for this course.</div>`;
+    }
+    document.getElementById('courseScheduleContent').innerHTML = content;
+    new bootstrap.Modal(document.getElementById('courseScheduleModal')).show();
 }
 </script>
 @endsection
