@@ -75,7 +75,7 @@ class AdminController extends Controller
 
             $user->save();
 
-            return redirect()->back()->with('success', 'Admin created successfully with password: ' . $plainPassword);
+            return redirect()->route('admin.accounts.admins.list')->with('success', 'Admin created successfully with password: ' . $plainPassword);
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Failed to create admin: ' . $e->getMessage());
         }

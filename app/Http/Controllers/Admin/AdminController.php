@@ -20,9 +20,43 @@ class AdminController extends Controller
     public function dashboard()
     {
         if (auth()->user()->role == 'admin') {
-            session()->flash('welcome', 'أهلاً وسهلاً بك مسؤول النظام');
+            session()->flash('welcome', 'Welcome System Administrator');
         }
-        return view('admin.dashboard');
+        
+        // Get real statistics from database
+        $stats = [
+            'total_students' => User::where('role', 'student')->count(),
+            'total_teachers' => User::where('role', 'teacher')->count(),
+            'total_admins' => User::where('role', 'admin')->count(),
+            'total_courses' => Course::count(),
+            'total_packages' => Package::count(),
+            'total_rooms' => Room::count(),
+            'active_students' => User::where('role', 'student')->where('is_active', 1)->count(),
+            'active_teachers' => User::where('role', 'teacher')->where('is_active', 1)->count(),
+            'pending_students' => User::where('role', 'student')->where('is_active', 2)->count(),
+            'pending_teachers' => User::where('role', 'teacher')->where('is_active', 2)->count(),
+            'blocked_students' => User::where('role', 'student')->where('is_active', 0)->count(),
+            'blocked_teachers' => User::where('role', 'teacher')->where('is_active', 0)->count(),
+            'students_this_month' => User::where('role', 'student')
+                ->whereMonth('created_at', now()->month)
+                ->whereYear('created_at', now()->year)
+                ->count(),
+            'teachers_this_month' => User::where('role', 'teacher')
+                ->whereMonth('created_at', now()->month)
+                ->whereYear('created_at', now()->year)
+                ->count(),
+            'total_payments' => Payment::count(),
+            'payments_this_month' => Payment::whereMonth('payment_date', now()->month)
+                ->whereYear('payment_date', now()->year)
+                ->count(),
+            'total_revenue' => Payment::where('type', 'payment')->sum('amount'),
+            'revenue_this_month' => Payment::where('type', 'payment')
+                ->whereMonth('payment_date', now()->month)
+                ->whereYear('payment_date', now()->year)
+                ->sum('amount'),
+        ];
+        
+        return view('admin.dashboard', compact('stats'));
     }
 
     public function billing()

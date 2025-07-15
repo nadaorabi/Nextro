@@ -59,47 +59,23 @@
     <!-- End Navbar -->
     <div class="container-fluid py-4">
       <div class="row">
-    <!-- Number of Classes -->
+    <!-- Total Students -->
         <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
           <div class="card">
             <div class="card-body p-3">
               <div class="row">
                 <div class="col-8">
                   <div class="numbers">
-                <p class="text-sm mb-0 text-uppercase font-weight-bold">My Current Classes</p>
-                <h5 class="font-weight-bolder">5</h5>
+                <p class="text-sm mb-0 text-uppercase font-weight-bold">Total Students</p>
+                <h5 class="font-weight-bolder">{{ $stats['total_students'] ?? 0 }}</h5>
                     <p class="mb-0">
-                  <span class="text-success text-sm font-weight-bolder">+1</span>
-                  Since last semester
+                  <span class="text-success text-sm font-weight-bolder">+{{ $stats['students_this_month'] ?? 0 }}</span>
+                  This month
                     </p>
                   </div>
                 </div>
                 <div class="col-4 text-end">
                   <div class="icon icon-shape bg-gradient-primary shadow-primary text-center rounded-circle">
-                <i class="ni ni-books text-lg opacity-10" aria-hidden="true"></i>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- Number of Students -->
-        <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
-          <div class="card">
-            <div class="card-body p-3">
-              <div class="row">
-                <div class="col-8">
-                  <div class="numbers">
-                <p class="text-sm mb-0 text-uppercase font-weight-bold">Number of Students</p>
-                <h5 class="font-weight-bolder">120</h5>
-                    <p class="mb-0">
-                  <span class="text-success text-sm font-weight-bolder">+3</span>
-                  This week
-                    </p>
-                  </div>
-                </div>
-                <div class="col-4 text-end">
-                  <div class="icon icon-shape bg-gradient-danger shadow-danger text-center rounded-circle">
                 <i class="ni ni-hat-3 text-lg opacity-10" aria-hidden="true"></i>
               </div>
             </div>
@@ -107,48 +83,72 @@
         </div>
       </div>
     </div>
-    <!-- New Assignments -->
+    <!-- Total Teachers -->
         <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
           <div class="card">
             <div class="card-body p-3">
               <div class="row">
                 <div class="col-8">
                   <div class="numbers">
-                <p class="text-sm mb-0 text-uppercase font-weight-bold">Assignments Received</p>
-                <h5 class="font-weight-bolder">37</h5>
+                <p class="text-sm mb-0 text-uppercase font-weight-bold">Total Teachers</p>
+                <h5 class="font-weight-bolder">{{ $stats['total_teachers'] ?? 0 }}</h5>
                     <p class="mb-0">
-                  <span class="text-danger text-sm font-weight-bolder">+10</span>
-                  Today
+                  <span class="text-success text-sm font-weight-bolder">+{{ $stats['teachers_this_month'] ?? 0 }}</span>
+                  This month
                     </p>
                   </div>
                 </div>
                 <div class="col-4 text-end">
-                  <div class="icon icon-shape bg-gradient-success shadow-success text-center rounded-circle">
-                <i class="ni ni-folder-17 text-lg opacity-10" aria-hidden="true"></i>
+                  <div class="icon icon-shape bg-gradient-danger shadow-danger text-center rounded-circle">
+                <i class="ni ni-single-02 text-lg opacity-10" aria-hidden="true"></i>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <!-- Graded Exams -->
+    <!-- Total Courses -->
+        <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+          <div class="card">
+            <div class="card-body p-3">
+              <div class="row">
+                <div class="col-8">
+                  <div class="numbers">
+                <p class="text-sm mb-0 text-uppercase font-weight-bold">Total Courses</p>
+                <h5 class="font-weight-bolder">{{ $stats['total_courses'] ?? 0 }}</h5>
+                    <p class="mb-0">
+                  <span class="text-info text-sm font-weight-bolder">Active</span>
+                  Educational courses
+                    </p>
+                  </div>
+                </div>
+                <div class="col-4 text-end">
+                  <div class="icon icon-shape bg-gradient-success shadow-success text-center rounded-circle">
+                <i class="ni ni-books text-lg opacity-10" aria-hidden="true"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Total Revenue -->
         <div class="col-xl-3 col-sm-6">
           <div class="card">
             <div class="card-body p-3">
               <div class="row">
                 <div class="col-8">
                   <div class="numbers">
-                <p class="text-sm mb-0 text-uppercase font-weight-bold">Graded Exams</p>
-                <h5 class="font-weight-bolder">22</h5>
+                <p class="text-sm mb-0 text-uppercase font-weight-bold">Total Revenue</p>
+                <h5 class="font-weight-bolder">${{ number_format($stats['total_revenue'] ?? 0, 2) }}</h5>
                     <p class="mb-0">
-                  <span class="text-success text-sm font-weight-bolder">+4</span>
-                  This week
+                  <span class="text-success text-sm font-weight-bolder">+${{ number_format($stats['revenue_this_month'] ?? 0, 2) }}</span>
+                  This month
                     </p>
                   </div>
                 </div>
                 <div class="col-4 text-end">
                   <div class="icon icon-shape bg-gradient-warning shadow-warning text-center rounded-circle">
-                <i class="ni ni-check-bold text-lg opacity-10" aria-hidden="true"></i>
+                <i class="ni ni-money-coins text-lg opacity-10" aria-hidden="true"></i>
               </div>
             </div>
           </div>
@@ -163,15 +163,50 @@
         <div class="col-lg-7 mb-lg-0 mb-4">
           <div class="card z-index-2 h-100">
             <div class="card-header pb-0 pt-3 bg-transparent">
-          <h6 class="text-capitalize">Student Performance Tracking</h6>
+          <h6 class="text-capitalize">Institute Statistics Overview</h6>
               <p class="text-sm mb-0">
                 <i class="fa fa-arrow-up text-success"></i>
-            <span class="font-weight-bold">+4%</span> improvement since last week
+            <span class="font-weight-bold">{{ $stats['total_students'] ?? 0 }}</span> total students enrolled
               </p>
             </div>
             <div class="card-body p-3">
-              <div class="chart">
-                <canvas id="chart-line" class="chart-canvas" height="300"></canvas>
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="card bg-gradient-primary text-white mb-3">
+                    <div class="card-body">
+                      <h6 class="card-title">Total Packages</h6>
+                      <h3 class="mb-0">{{ $stats['total_packages'] ?? 0 }}</h3>
+                      <small>Educational packages available</small>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="card bg-gradient-success text-white mb-3">
+                    <div class="card-body">
+                      <h6 class="card-title">Total Rooms</h6>
+                      <h3 class="mb-0">{{ $stats['total_rooms'] ?? 0 }}</h3>
+                      <small>Available facilities</small>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="card bg-gradient-info text-white mb-3">
+                    <div class="card-body">
+                      <h6 class="card-title">Total Payments</h6>
+                      <h3 class="mb-0">{{ $stats['total_payments'] ?? 0 }}</h3>
+                      <small>Financial transactions</small>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="card bg-gradient-warning text-white mb-3">
+                    <div class="card-body">
+                      <h6 class="card-title">This Month</h6>
+                      <h3 class="mb-0">{{ $stats['payments_this_month'] ?? 0 }}</h3>
+                      <small>Recent payments</small>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -184,51 +219,51 @@
             </div>
             <div class="card-body p-3">
               <ul class="list-group">
-            <!-- Assignments Awaiting Grading -->
+            <!-- Active Students -->
                 <li class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg">
                   <div class="d-flex align-items-center">
-                    <div class="icon icon-shape icon-sm me-3 bg-gradient-dark shadow text-center">
-                  <i class="ni ni-folder-17 text-white opacity-10"></i>
+                    <div class="icon icon-shape icon-sm me-3 bg-gradient-success shadow text-center">
+                  <i class="ni ni-hat-3 text-white opacity-10"></i>
                     </div>
                     <div class="d-flex flex-column">
-                  <h6 class="mb-1 text-dark text-sm">📌 Assignments Awaiting Grading</h6>
-                  <span class="text-xs">12 assignments not graded yet</span>
+                  <h6 class="mb-1 text-dark text-sm">✅ Active Students</h6>
+                  <span class="text-xs">{{ $stats['active_students'] ?? 0 }} active students</span>
                     </div>
                   </div>
                 </li>
-            <!-- Today's Scheduled Lessons -->
+            <!-- Active Teachers -->
                 <li class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg">
                   <div class="d-flex align-items-center">
-                    <div class="icon icon-shape icon-sm me-3 bg-gradient-dark shadow text-center">
-                  <i class="ni ni-calendar-grid-58 text-white opacity-10"></i>
+                    <div class="icon icon-shape icon-sm me-3 bg-gradient-info shadow text-center">
+                  <i class="ni ni-single-02 text-white opacity-10"></i>
                     </div>
                     <div class="d-flex flex-column">
-                  <h6 class="mb-1 text-dark text-sm">📅 Today's Scheduled Lessons</h6>
-                  <span class="text-xs">3 scheduled classes</span>
+                  <h6 class="mb-1 text-dark text-sm">👨‍🏫 Active Teachers</h6>
+                  <span class="text-xs">{{ $stats['active_teachers'] ?? 0 }} active teachers</span>
                     </div>
                   </div>
                 </li>
-            <!-- New Messages from Students -->
+            <!-- Pending Accounts -->
                 <li class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg">
                   <div class="d-flex align-items-center">
-                    <div class="icon icon-shape icon-sm me-3 bg-gradient-dark shadow text-center">
-                  <i class="ni ni-email-83 text-white opacity-10"></i>
+                    <div class="icon icon-shape icon-sm me-3 bg-gradient-warning shadow text-center">
+                  <i class="ni ni-time-alarm text-white opacity-10"></i>
                     </div>
                     <div class="d-flex flex-column">
-                  <h6 class="mb-1 text-dark text-sm">📤 New Messages from Students</h6>
-                  <span class="text-xs">5 new messages</span>
+                  <h6 class="mb-1 text-dark text-sm">⏳ Pending Accounts</h6>
+                  <span class="text-xs">{{ ($stats['pending_students'] ?? 0) + ($stats['pending_teachers'] ?? 0) }} pending accounts</span>
                     </div>
                   </div>
                 </li>
-            <!-- Review or Evaluation Requests -->
+            <!-- Blocked Accounts -->
                 <li class="list-group-item border-0 d-flex justify-content-between ps-0 border-radius-lg">
                   <div class="d-flex align-items-center">
-                    <div class="icon icon-shape icon-sm me-3 bg-gradient-dark shadow text-center">
-                  <i class="ni ni-ruler-pencil text-white opacity-10"></i>
+                    <div class="icon icon-shape icon-sm me-3 bg-gradient-danger shadow text-center">
+                  <i class="ni ni-lock-circle text-white opacity-10"></i>
                     </div>
                     <div class="d-flex flex-column">
-                  <h6 class="mb-1 text-dark text-sm">🎓 Review or Evaluation Requests</h6>
-                  <span class="text-xs">2 new requests</span>
+                  <h6 class="mb-1 text-dark text-sm">🚫 Blocked Accounts</h6>
+                  <span class="text-xs">{{ ($stats['blocked_students'] ?? 0) + ($stats['blocked_teachers'] ?? 0) }} blocked accounts</span>
                     </div>
                   </div>
                 </li>
@@ -244,34 +279,48 @@
     <div class="col-lg-7 mb-lg-0 mb-4">
       <div class="card">
         <div class="card-header pb-0 p-3">
-          <h6 class="mb-2">Class Performance</h6>
+          <h6 class="mb-2">System Overview</h6>
         </div>
         <div class="table-responsive">
           <table class="table align-items-center">
+            <thead>
+              <tr>
+                <th>Category</th>
+                <th>Count</th>
+                <th>Status</th>
+                <th>Details</th>
+              </tr>
+            </thead>
             <tbody>
               <tr>
-                <td>10th Grade - Mathematics</td>
-                <td>28 students</td>
-                <td>87%</td>
-                <td>5% absence</td>
+                <td>Total Students</td>
+                <td>{{ $stats['total_students'] ?? 0 }}</td>
+                <td><span class="badge bg-success">Active</span></td>
+                <td>{{ $stats['active_students'] ?? 0 }} active, {{ $stats['pending_students'] ?? 0 }} pending</td>
               </tr>
               <tr>
-                <td>9th Grade - Science</td>
-                <td>32 students</td>
-                <td>79%</td>
-                <td>8% absence</td>
+                <td>Total Teachers</td>
+                <td>{{ $stats['total_teachers'] ?? 0 }}</td>
+                <td><span class="badge bg-info">Active</span></td>
+                <td>{{ $stats['active_teachers'] ?? 0 }} active, {{ $stats['pending_teachers'] ?? 0 }} pending</td>
               </tr>
               <tr>
-                <td>11th Grade - Chemistry</td>
-                <td>20 students</td>
-                <td>92%</td>
-                <td>3% absence</td>
+                <td>Total Courses</td>
+                <td>{{ $stats['total_courses'] ?? 0 }}</td>
+                <td><span class="badge bg-primary">Available</span></td>
+                <td>Educational courses in system</td>
               </tr>
               <tr>
-                <td>8th Grade - Physics</td>
-                <td>25 students</td>
-                <td>73%</td>
-                <td>11% absence</td>
+                <td>Total Packages</td>
+                <td>{{ $stats['total_packages'] ?? 0 }}</td>
+                <td><span class="badge bg-warning">Available</span></td>
+                <td>Educational packages</td>
+              </tr>
+              <tr>
+                <td>Total Revenue</td>
+                <td>${{ number_format($stats['total_revenue'] ?? 0, 2) }}</td>
+                <td><span class="badge bg-success">Income</span></td>
+                <td>${{ number_format($stats['revenue_this_month'] ?? 0, 2) }} this month</td>
               </tr>
             </tbody>
           </table>
@@ -286,28 +335,28 @@
             <div class="carousel-item h-100 active" style="background-image: url('{{ asset('images/carousel-1.jpg') }}'); background-size: cover;">
               <div class="carousel-caption d-none d-md-block bottom-0 text-start start-0 ms-5">
                 <div class="icon icon-shape icon-sm bg-white text-center border-radius-md mb-3">
-                  <i class="ni ni-camera-compact text-dark opacity-10"></i>
+                  <i class="ni ni-hat-3 text-dark opacity-10"></i>
                 </div>
-                <h5 class="text-white mb-1">Get started with Argon</h5>
-                <p>There's nothing I really wanted to do in life that I wasn't able to get good at.</p>
+                <h5 class="text-white mb-1">Student Management</h5>
+                <p>{{ $stats['total_students'] ?? 0 }} students enrolled in our institute</p>
               </div>
             </div>
             <div class="carousel-item h-100" style="background-image: url('{{ asset('images/carousel-2.jpg') }}'); background-size: cover;">
               <div class="carousel-caption d-none d-md-block bottom-0 text-start start-0 ms-5">
                 <div class="icon icon-shape icon-sm bg-white text-center border-radius-md mb-3">
-                  <i class="ni ni-bulb-61 text-dark opacity-10"></i>
+                  <i class="ni ni-single-02 text-dark opacity-10"></i>
                 </div>
-                <h5 class="text-white mb-1">Faster way to create web pages</h5>
-                <p>That's my skill. I'm not really specifically talented at anything except for the ability to learn.</p>
+                <h5 class="text-white mb-1">Teacher Excellence</h5>
+                <p>{{ $stats['total_teachers'] ?? 0 }} qualified teachers providing quality education</p>
               </div>
             </div>
             <div class="carousel-item h-100" style="background-image: url('{{ asset('images/carousel-3.jpg') }}'); background-size: cover;">
               <div class="carousel-caption d-none d-md-block bottom-0 text-start start-0 ms-5">
                 <div class="icon icon-shape icon-sm bg-white text-center border-radius-md mb-3">
-                  <i class="ni ni-trophy text-dark opacity-10"></i>
+                  <i class="ni ni-money-coins text-dark opacity-10"></i>
                 </div>
-                <h5 class="text-white mb-1">Share with us your design tips!</h5>
-                <p>Don't be afraid to be wrong because you can't learn anything from a compliment.</p>
+                <h5 class="text-white mb-1">Financial Overview</h5>
+                <p>Total revenue: ${{ number_format($stats['total_revenue'] ?? 0, 2) }}</p>
               </div>
             </div>
           </div>

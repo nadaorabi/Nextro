@@ -88,7 +88,7 @@ class StudentController extends Controller
 
             $user->save();
 
-            return redirect()->back()->with('success', 'Student created successfully with password: ' . $plainPassword);
+            return redirect()->route('admin.accounts.students.list')->with('success', 'Student created successfully with password: ' . $plainPassword);
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Failed to create student: ' . $e->getMessage());
         }

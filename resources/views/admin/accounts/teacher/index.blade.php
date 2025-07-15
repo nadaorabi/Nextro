@@ -8,6 +8,7 @@
     <link rel="icon" type="image/png" href="{{ asset('images/favicon.png') }}">
     <title>Teacher Management</title>
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://demos.creative-tim.com/argon-dashboard-pro/assets/css/nucleo-icons.css" rel="stylesheet" />
     <link href="https://demos.creative-tim.com/argon-dashboard-pro/assets/css/nucleo-svg.css" rel="stylesheet" />
     <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
@@ -513,7 +514,7 @@
                 <div class="modal-header bg-danger text-white border-0">
                     <div class="d-flex align-items-center">
                         <div class="icon icon-shape bg-white bg-gradient-danger shadow-danger text-center rounded-circle me-3">
-                            <i class="fas fa-exclamation-triangle text-danger text-lg opacity-10"></i>
+                            <i class="bi bi-exclamation-triangle text-danger text-lg opacity-10"></i>
                         </div>
                         <div>
                             <h5 class="modal-title mb-0" id="deleteConfirmModalLabel">Confirm Teacher Deletion</h5>
@@ -525,7 +526,7 @@
                 <div class="modal-body p-4">
                     <div class="text-center mb-4">
                         <div class="icon icon-shape bg-gradient-danger shadow-danger text-center rounded-circle mx-auto mb-3" style="width: 80px; height: 80px;">
-                            <i class="fas fa-user-times text-white text-lg opacity-10" style="font-size: 2rem;"></i>
+                            <i class="bi bi-person-x text-white text-lg opacity-10" style="font-size: 2rem;"></i>
                         </div>
                         <h6 class="text-danger mb-2">Are you sure you want to delete this teacher account?</h6>
                         <p class="text-muted mb-0" id="deleteTeacherName"></p>
@@ -533,7 +534,7 @@
                     
                     <div class="alert alert-warning border-0">
                         <div class="d-flex">
-                            <i class="fas fa-exclamation-triangle text-warning me-2 mt-1"></i>
+                            <i class="bi bi-exclamation-triangle text-warning me-2 mt-1"></i>
                             <div>
                                 <strong>Warning:</strong> This will permanently delete the teacher account and all associated data.
                                 <ul class="mb-0 mt-2 small">
@@ -549,7 +550,7 @@
                     <!-- Confirmation Input -->
                     <div class="form-group">
                         <label for="deleteConfirmation" class="form-label text-danger">
-                            <i class="fas fa-keyboard me-2"></i>Type "DELETE" to confirm
+                            <i class="bi bi-keyboard me-2"></i>Type "DELETE" to confirm
                         </label>
                         <input type="text" id="deleteConfirmation" class="form-control" 
                                placeholder="Type DELETE to confirm" 
@@ -561,13 +562,13 @@
                 </div>
                 <div class="modal-footer border-0 bg-light">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                        <i class="fas fa-times me-2"></i>Cancel
+                        <i class="bi bi-x me-2"></i>Cancel
                     </button>
                     <form id="deleteForm" method="POST" style="display: inline;">
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="btn btn-secondary" disabled>
-                            <i class="fas fa-trash me-2"></i>Delete Teacher Account
+                            <i class="bi bi-trash me-2"></i>Delete Teacher Account
                         </button>
                     </form>
                 </div>

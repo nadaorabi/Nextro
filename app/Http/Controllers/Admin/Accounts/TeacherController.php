@@ -75,7 +75,7 @@ class TeacherController extends Controller
 
             $user->save();
 
-            return redirect()->back()->with('success', 'Teacher created successfully with password: ' . $plainPassword);
+            return redirect()->route('admin.accounts.teachers.list')->with('success', 'Teacher created successfully with password: ' . $plainPassword);
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Failed to create teacher: ' . $e->getMessage());
         }
