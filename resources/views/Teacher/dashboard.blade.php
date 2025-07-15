@@ -41,12 +41,114 @@
         0% { background-position: 0% 50%; }
         100% { background-position: 100% 50%; }
     }
-    .teacher-info-card {
-      background: linear-gradient(45deg,rgb(255, 255, 255),rgb(255, 255, 255));
-      color:rgb(123, 105, 172);
-      border-radius: 1rem;
-      padding: 1.5rem;
+    .teacher-profile-card {
+      background: #ffffff;
+      color: #2d3748;
+      border-radius: 12px;
+      padding: 0;
       margin-bottom: 2rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      border: 1px solid #e2e8f0;
+      overflow: hidden;
+    }
+    .teacher-header {
+      background: #ffffff;
+      color: #6C2EB7;
+      padding: 1rem;
+      position: relative;
+    }
+    .teacher-header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 100px;
+      height: 100px;
+      background: rgba(108, 46, 183, 0.05);
+      border-radius: 50%;
+      transform: translate(50%, -50%);
+    }
+    .teacher-avatar {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: linear-gradient(45deg, #6C2EB7, #8B5CF6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      color: white;
+      border: 2px solid #e2e8f0;
+    }
+    .teacher-name {
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 0;
+      color: #6C2EB7;
+    }
+    .teacher-subtitle {
+      font-size: 0.9rem;
+      opacity: 0.8;
+      color: #6C2EB7;
+    }
+    .teacher-body {
+      padding: 1rem;
+    }
+    .teacher-info-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      margin-top: 0.5rem;
+    }
+    
+    /* للشاشات المتوسطة - بطاقتين في السطر */
+    @media (max-width: 992px) {
+      .teacher-info-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.8rem;
+      }
+    }
+    
+    /* للشاشات الصغيرة - بطاقة واحدة في السطر */
+    @media (max-width: 576px) {
+      .teacher-info-grid {
+        grid-template-columns: 1fr;
+        gap: 0.6rem;
+      }
+    }
+    .teacher-info-item {
+      display: flex;
+      align-items: center;
+      padding: 0.8rem;
+      background: #f8fafc;
+      border-radius: 6px;
+      border-left: 3px solid #6C2EB7;
+      transition: all 0.3s ease;
+    }
+    .teacher-info-item:hover {
+      background: #edf2f7;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    .teacher-info-item i {
+      width: 20px;
+      margin-right: 0.8rem;
+      color: #6C2EB7;
+      font-size: 1rem;
+    }
+    .teacher-info-content {
+      flex: 1;
+    }
+    .teacher-info-label {
+      font-size: 0.8rem;
+      color: #6C2EB7;
+      margin-bottom: 0.2rem;
+      font-weight: 500;
+    }
+    .teacher-info-value {
+      font-size: 1rem;
+      color: #2d3748;
+      font-weight: 600;
     }
     .schedule-card {
       background: white;
@@ -88,39 +190,54 @@
     </div>
     <!-- End Animated Welcome Message -->
     
-    <!-- معلومات المعلم -->
-    <div class="container-fluid py-4">
-      <div class="teacher-info-card">
-        <div class="row align-items-center">
-          <div class="col-md-8">
-            <h3 class="mb-2">
-              <i class="fas fa-chalkboard-teacher me-2"></i>
-              {{ $teacher->name }}
-            </h3>
-            <p class="mb-1">
-              <i class="fas fa-id-card me-2"></i>
-              ID: {{ $teacher->login_id }}
-            </p>
-            <p class="mb-1">
-              <i class="fas fa-phone me-2"></i>
-              Phone: {{ $teacher->mobile ?? 'Not set' }}
-            </p>
-            @if($teacher->email)
-            <p class="mb-0">
-              <i class="fas fa-envelope me-2"></i>
-              Email: {{ $teacher->email }}
-            </p>
-            @endif
+    <!-- بطاقة معلومات المعلم المحسنة -->
+    <div class="container-fluid py-2">
+      <div class="teacher-profile-card">
+        <div class="teacher-header">
+          <div class="d-flex align-items-center">
+            <div class="teacher-avatar me-3">
+              <i class="fas fa-chalkboard-teacher"></i>
+            </div>
+            <div>
+              <h2 class="teacher-name">{{ $teacher->name }}</h2>
+            </div>
           </div>
-          <div class="col-md-4 text-end">
-            <div class="row text-center">
-              <div class="col-6">
-                <h4 class="mb-1">{{ $totalCourses }}</h4>
-                <small>Courses</small>
+        </div>
+        
+        <!-- جسم البطاقة -->
+        <div class="teacher-body">
+          <div class="teacher-info-grid">
+            <div class="teacher-info-item">
+              <i class="fas fa-id-card"></i>
+              <div class="teacher-info-content">
+                <div class="teacher-info-label">ID Number</div>
+                <div class="teacher-info-value">{{ $teacher->login_id }}</div>
               </div>
-              <div class="col-6">
-                <h4 class="mb-1">{{ $totalStudents }}</h4>
-                <small>Students</small>
+            </div>
+            
+            <div class="teacher-info-item">
+              <i class="fas fa-phone"></i>
+              <div class="teacher-info-content">
+                <div class="teacher-info-label">Phone Number</div>
+                <div class="teacher-info-value">{{ $teacher->mobile ?? 'Not set' }}</div>
+              </div>
+            </div>
+            
+            @if($teacher->email)
+            <div class="teacher-info-item">
+              <i class="fas fa-envelope"></i>
+              <div class="teacher-info-content">
+                <div class="teacher-info-label">Email Address</div>
+                <div class="teacher-info-value">{{ $teacher->email }}</div>
+              </div>
+            </div>
+            @endif
+            
+            <div class="teacher-info-item">
+              <i class="fas fa-calendar-alt"></i>
+              <div class="teacher-info-content">
+                <div class="teacher-info-label">Join Date</div>
+                <div class="teacher-info-value">{{ \Carbon\Carbon::parse($teacher->created_at)->format('Y-m-d') }}</div>
               </div>
             </div>
           </div>
@@ -212,7 +329,7 @@
                   <div class="numbers">
                     <p class="text-sm mb-0 text-uppercase font-weight-bold">Total Earnings</p>
                     <h5 class="font-weight-bolder">${{ number_format($totalEarnings, 2) }}</h5>
-                    <p class="mb-0">
+                    <p class="mb-0"><br>
                       <span class="text-success text-sm font-weight-bolder">USD</span>
                       Earnings
                     </p>
