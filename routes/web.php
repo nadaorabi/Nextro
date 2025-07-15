@@ -78,6 +78,12 @@ Route::prefix('admin')->middleware('isAdmin')->name('admin.')->group(function ()
     Route::get('finance', [AdminController::class, 'finance'])->name('finance');
     Route::get('profile', [AdminController::class, 'profile'])->name('profile');
     Route::post('logout', [AdminController::class, 'logout'])->name('logout');
+    
+    // teacher profile  Management
+    Route::prefix('profile')->name('profile.')->group(function () {
+        Route::put('/update', [\App\Http\Controllers\Admin\ProfileController::class, 'update'])->name('update');
+        Route::put('/password', [\App\Http\Controllers\Admin\ProfileController::class, 'updatePassword'])->name('password.update');
+    });
 
     // Accounts Management
     Route::prefix('accounts/students')->name('accounts.students.')->group(function () {
@@ -297,6 +303,7 @@ Route::prefix('teacher')->middleware(['isTeacher', 'password.changed'])->name('t
     // Teacher Profile
     Route::get('profile', [\App\Http\Controllers\Teacher\ProfileController::class, 'index'])->name('profile');
     Route::put('profile/update', [\App\Http\Controllers\Teacher\ProfileController::class, 'update'])->name('profile.update');
+    Route::put('password/update', [\App\Http\Controllers\Teacher\ProfileController::class, 'updatePassword'])->name('password.update');
     
     // Teacher Assignments
     Route::prefix('assignments')->name('assignments.')->group(function () {
