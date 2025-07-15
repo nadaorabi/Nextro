@@ -100,13 +100,13 @@
               <div class="card card-plain">
                 <div class="card-header pb-0 text-start">
                   <h4 class="font-weight-bolder">Sign In</h4>
-                  <p class="mb-0">Enter your login ID and password to sign in</p>
+                  <p class="mb-0">Enter your username and password to sign in</p>
                 </div>
                 <div class="card-body">
                   <form action="{{ route('staff.login.post') }}" method="POST" role="form">
                     @csrf
                     <div class="mb-3">
-                      <input type="text" name="login_id" class="form-control form-control-lg" placeholder="Login ID" aria-label="Login ID" required>
+                      <input type="text" name="user_name" class="form-control form-control-lg" placeholder="Username" aria-label="Username" required>
                     </div>
                     <div class="mb-3">
                       <input type="password" name="password" class="form-control form-control-lg" placeholder="Password" aria-label="Password" required>

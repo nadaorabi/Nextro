@@ -70,6 +70,7 @@ class TeacherController extends Controller
             $user->is_active = $validated['is_active'];
             $user->role = 'teacher';
             $user->login_id = $loginId;
+            $user->user_name = $loginId; // استخدام login_id كـ user_name
             $user->plain_password = $plainPassword;
             $user->password = Hash::make($plainPassword);
 

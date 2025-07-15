@@ -114,7 +114,7 @@ class StudentDashboardController extends Controller
         
         $user = Auth::user();
         
-        // التحقق من كلمة السر الحالية
+        // Check current password
         if (!Hash::check($request->current_password, $user->password)) {
             return response()->json([
                 'success' => false,
@@ -122,9 +122,9 @@ class StudentDashboardController extends Controller
             ], 422);
         }
         
-        // تحديث كلمة السر
+        // Update password
         $user->password = Hash::make($request->new_password);
-        $user->plain_password = $request->new_password; // حفظ كلمة السر النصية للعرض
+        $user->plain_password = $request->new_password; // Save plain password for display
         $user->save();
         
         return response()->json([

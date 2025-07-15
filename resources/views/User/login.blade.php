@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'تسجيل الدخول')
+@section('title', 'Login')
 
 @section('hero')
 <div class="untree_co-hero inner-page overlay" style="background-image: url('{{ asset('images/img-school-5-min.jpg') }}');">
@@ -9,7 +9,7 @@
       <div class="col-12">
         <div class="row justify-content-center">
           <div class="col-lg-6 text-center">
-            <h1 class="mb-4 heading text-white" data-aos="fade-up" data-aos-delay="100">تسجيل الدخول</h1>
+            <h1 class="mb-4 heading text-white" data-aos="fade-up" data-aos-delay="100">Login</h1>
           </div>
         </div>
       </div>
@@ -28,33 +28,33 @@
         <form action="{{ route('login.post') }}" method="POST" class="p-4 border rounded shadow-sm bg-white">
           @csrf
           <div class="row">
-            {{-- رقم تسجيل الدخول --}}
+            {{-- Username --}}
             <div class="col-12 mb-3">
-              <label for="login_id" class="form-label">رقم تسجيل الدخول</label>
-              <input type="text" id="login_id" name="login_id" class="form-control" placeholder="أدخل رقم تسجيل الدخول" required>
-              @error('login_id')
+              <label for="user_name" class="form-label">Username</label>
+              <input type="text" id="user_name" name="user_name" class="form-control" placeholder="Enter your username" required>
+              @error('user_name')
                 <div class="text-danger mt-1">{{ $message }}</div>
               @enderror
             </div>
 
-            {{-- كلمة المرور --}}
+            {{-- Password --}}
             <div class="col-12 mb-3">
-              <label for="password" class="form-label">كلمة المرور</label>
+              <label for="password" class="form-label">Password</label>
               <input type="password" id="password" name="password" class="form-control" placeholder="Password" required>
               @error('password')
                 <div class="text-danger mt-1">{{ $message }}</div>
               @enderror
             </div>
 
-            {{-- تذكرني --}}
+            {{-- Remember Me --}}
             <div class="col-12 mb-3 form-check">
               <input type="checkbox" id="remember" name="remember" class="form-check-input">
-              <label for="remember" class="form-check-label">تذكرني</label>
+              <label for="remember" class="form-check-label">Remember me</label>
             </div>
 
-            {{-- زر تسجيل الدخول --}}
+            {{-- Login Button --}}
             <div class="col-12 text-center">
-              <button type="submit" class="btn btn-primary w-100">تسجيل الدخول</button>
+              <button type="submit" class="btn btn-primary w-100">Login</button>
             </div>
           </div>
         </form>

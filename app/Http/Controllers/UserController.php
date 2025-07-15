@@ -18,11 +18,13 @@ class UserController extends Controller
         // Validate data
         $validated = $request->validate([
             'name' => 'required|string|max:255',
+            'user_name' => 'required|string|max:255|unique:users,user_name',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:8|confirmed',
             'role' => 'required|in:student,teacher,admin',
             'terms' => 'required|accepted',
         ], [
+            'user_name.unique' => 'The username already exists.',
             'email.unique' => 'The entered email already exists.',
             'password.confirmed' => 'The entered password does not match.',
             'terms.accepted' => 'You must accept the terms and conditions.',
@@ -30,6 +32,7 @@ class UserController extends Controller
 
         $user = new User();
         $user->name = $request->name;
+        $user->user_name = $request->user_name;
         $user->email = $request->email;
         $user->password = Hash::make($request->password);
         $user->role = $request->role;
@@ -49,37 +52,43 @@ class UserController extends Controller
     public function login(Request $request)
     {
         $credentials = $request->validate([
-            'login_id' => 'required|string',
+            'user_name' => 'required|string',
             'password' => 'required',
         ]);
 
-        // Search for user using login_id
-        $user = User::where('login_id', $credentials['login_id'])->first();
+        // Search for user using user_name
+        $user = User::where('user_name', $credentials['user_name'])->first();
 
         if ($user && Hash::check($credentials['password'], $user->password)) {
             if ($user->role == 'user' || $user->role == 'student') {
-                Auth::login($user);
+                Auth::login($user, $request->filled('remember'));
                 $request->session()->regenerate(); 
                 return redirect()->route('home_page')->with('success', 'Login successful!');
             } else {
                 return back()->withErrors([
-                    'login_id' => 'This account belongs to a staff member (teacher or admin). Please use the staff login page to access your account.'
+                    'user_name' => 'This account belongs to a staff member (teacher or admin). Please use the staff login page to access your account.'
                 ]);
             }
         }
 
         // Return with error message if credentials are invalid
-        return back()->withErrors(['login_id' => 'Invalid credentials.']);
+        return back()->withErrors(['user_name' => 'Invalid credentials.']);
     }
 
     public function logout(Request $request)
     {
-        // Logout
+        // احفظ نوع المستخدم قبل تسجيل الخروج
+        $role = Auth::check() ? Auth::user()->role : null;
+
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        // Redirect to home page after logout
-        return redirect()->route('home_page')->with('success', 'Logout successful!');
+        // التوجيه حسب نوع المستخدم
+        if ($role === 'teacher' || $role === 'admin') {
+            return redirect()->route('staff.login')->with('success', 'Logout successful!');
+        } else {
+            return redirect()->route('login')->with('success', 'Logout successful!');
+        }
     }
 }

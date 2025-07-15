@@ -195,7 +195,7 @@ class AttendanceController extends Controller
             }
         }
 
-        // جلب الطالب عبر login_id فقط
+        // Get student by login_id only
         $student = \App\Models\User::where('login_id', $qrValue)
             ->where('role', 'student')
             ->first();
@@ -206,7 +206,7 @@ class AttendanceController extends Controller
             ]);
         }
 
-        // جلب enrollment المناسب لهذا الطالب في هذا الكورس
+        // Get enrollment for this student in this course
         $enrollment = \App\Models\Enrollment::where('student_id', $student->id)
             ->where('course_id', $schedule->course_id)
             ->first();
