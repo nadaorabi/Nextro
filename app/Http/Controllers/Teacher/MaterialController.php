@@ -112,7 +112,19 @@ class MaterialController extends Controller
     {
         $material = Material::findOrFail($id);
         $this->authorizeMaterial($material);
-        return response()->file(storage_path('app/public/' . $material->file_url));
+        $filePath = storage_path('app/public/' . $material->file_url);
+        
+        if (!file_exists($filePath)) {
+            abort(404, 'File not found');
+        }
+        
+        $headers = [];
+        if ($material->file_type === 'pdf') {
+            $headers['Content-Type'] = 'application/pdf';
+            $headers['Content-Disposition'] = 'inline; filename="' . $material->title . '.pdf"';
+        }
+        
+        return response()->file($filePath, $headers);
     }
 
     // تحقق من أن المعلم هو صاحب المادة

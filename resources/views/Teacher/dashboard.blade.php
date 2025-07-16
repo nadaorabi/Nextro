@@ -68,6 +68,27 @@
       border-radius: 50%;
       transform: translate(50%, -50%);
     }
+    .profile-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: none;
+      color: #6C2EB7;
+      border: none;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      font-size: 1.2rem;
+    }
+    .profile-btn:hover {
+      color: #5B21B6;
+      transform: translateY(-2px);
+      text-decoration: none;
+    }
     .teacher-avatar {
       width: 50px;
       height: 50px;
@@ -101,7 +122,7 @@
       margin-top: 0.5rem;
     }
     
-    /* للشاشات المتوسطة - بطاقتين في السطر */
+    /* Medium screens - two cards per row */
     @media (max-width: 992px) {
       .teacher-info-grid {
         grid-template-columns: repeat(2, 1fr);
@@ -109,7 +130,7 @@
       }
     }
     
-    /* للشاشات الصغيرة - بطاقة واحدة في السطر */
+    /* Small screens - one card per row */
     @media (max-width: 576px) {
       .teacher-info-grid {
         grid-template-columns: 1fr;
@@ -176,6 +197,157 @@
     .icon-strong-purple {
       color: #6C2EB7 !important;
     }
+    .schedule-slot {
+      background: linear-gradient(45deg, #6C2EB7, #8B5CF6);
+      color: white;
+      border-radius: 4px;
+      padding: 3px;
+      margin: 1px;
+      font-size: 0.65rem;
+    }
+    .schedule-slot .course-name {
+      color: white;
+      margin-bottom: 1px;
+      font-size: 0.6rem;
+    }
+    .schedule-slot .room-info {
+      color: white;
+      font-size: 0.55rem;
+    }
+    .empty-slot {
+      color: #ccc;
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+    }
+    .table-bordered td, .table-bordered th {
+      border: 1px solid #dee2e6;
+    }
+    /* Fix last row columns */
+    .table tbody tr:last-child td {
+      border-bottom: 2px solid #dee2e6;
+    }
+    .table tbody tr td:last-child {
+      border-right: 2px solid #dee2e6;
+    }
+    .table tbody tr:last-child td:last-child {
+      border-bottom-right-radius: 4px;
+    }
+    .table tbody tr:last-child td:first-child {
+      border-bottom-left-radius: 4px;
+    }
+    /* Ensure all borders are visible */
+    .table-bordered {
+      border: 2px solid #dee2e6;
+    }
+    .table-bordered th,
+    .table-bordered td {
+      border: 1px solid #dee2e6 !important;
+    }
+    .table-bordered th:last-child,
+    .table-bordered td:last-child {
+      border-right: 2px solid #dee2e6 !important;
+    }
+    .table-bordered tbody tr:last-child td {
+      border-bottom: 2px solid #dee2e6 !important;
+    }
+    /* Force border display */
+    .table-responsive {
+      border: 1px solid #dee2e6;
+      border-radius: 4px;
+    }
+    .table {
+      border-collapse: collapse !important;
+      border-spacing: 0;
+    }
+    .table th,
+    .table td {
+      border: 1px solid #dee2e6 !important;
+      position: relative;
+    }
+    .table th:last-child,
+    .table td:last-child {
+      border-right: 2px solid #dee2e6 !important;
+    }
+    .table tbody tr:last-child td {
+      border-bottom: 2px solid #dee2e6 !important;
+    }
+    /* Ensure consistent cell display */
+    .table td {
+      min-width: 60px;
+      text-align: center;
+      vertical-align: middle;
+      padding: 8px 4px;
+    }
+    .table td:first-child {
+      min-width: 80px;
+      font-weight: bold;
+      background-color: #f8f9fa;
+    }
+    /* Consistent table styling */
+    .table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+    .table th {
+      background-color: #f8f9fa;
+      border-bottom: 2px solid #dee2e6;
+      font-weight: 600;
+      text-align: center;
+    }
+    .table td {
+      border-bottom: 1px solid #dee2e6;
+      vertical-align: middle;
+    }
+    .table tbody tr:hover {
+      background-color: rgba(108, 46, 183, 0.05);
+    }
+    /* Mobile responsive table */
+    @media (max-width: 768px) {
+      .table-responsive {
+        overflow-x: scroll;
+        overflow-y: hidden;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: thin;
+        scrollbar-color: #6C2EB7 #f8f9fa;
+        touch-action: pan-x;
+        -webkit-user-select: none;
+        user-select: none;
+      }
+      .table-responsive::-webkit-scrollbar {
+        height: 6px;
+      }
+      .table-responsive::-webkit-scrollbar-track {
+        background: #f8f9fa;
+        border-radius: 3px;
+      }
+      .table-responsive::-webkit-scrollbar-thumb {
+        background: #6C2EB7;
+        border-radius: 3px;
+      }
+      .table-responsive::-webkit-scrollbar-thumb:hover {
+        background: #5B21B6;
+      }
+      .table {
+        min-width: 600px;
+        white-space: nowrap;
+      }
+      .schedule-slot {
+        min-width: 80px;
+        white-space: normal;
+        word-wrap: break-word;
+      }
+      .schedule-slot .course-name {
+        font-size: 0.5rem;
+        line-height: 1.2;
+      }
+      .schedule-slot .room-info {
+        font-size: 0.45rem;
+        line-height: 1.1;
+      }
+    }
   </style>
 </head>
 
@@ -190,10 +362,13 @@
     </div>
     <!-- End Animated Welcome Message -->
     
-    <!-- بطاقة معلومات المعلم المحسنة -->
+    <!-- Enhanced Teacher Information Card -->
     <div class="container-fluid py-2">
       <div class="teacher-profile-card">
         <div class="teacher-header">
+          <a href="{{ route('teacher.profile') }}" class="profile-btn">
+            <i class="fas fa-user"></i>
+          </a>
           <div class="d-flex align-items-center">
             <div class="teacher-avatar me-3">
               <i class="fas fa-chalkboard-teacher"></i>
@@ -204,7 +379,7 @@
           </div>
         </div>
         
-        <!-- جسم البطاقة -->
+        <!-- Card Body -->
         <div class="teacher-body">
           <div class="teacher-info-grid">
             <div class="teacher-info-item">
@@ -245,7 +420,7 @@
       </div>
 
       <div class="row">
-        <!-- عدد الكورسات -->
+        <!-- Number of Courses -->
         <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
           <div class="card">
             <div class="card-body p-3">
@@ -270,7 +445,7 @@
           </div>
         </div>
         
-        <!-- عدد الطلاب -->
+        <!-- Number of Students -->
         <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
           <div class="card">
             <div class="card-body p-3">
@@ -295,7 +470,7 @@
           </div>
         </div>
         
-        <!-- عدد الحصص -->
+        <!-- Number of Sessions -->
         <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
           <div class="card">
             <div class="card-body p-3">
@@ -320,7 +495,7 @@
           </div>
         </div>
         
-        <!-- الأرباح -->
+        <!-- Earnings -->
         <div class="col-xl-3 col-sm-6">
           <div class="card">
             <div class="card-body p-3">
@@ -346,55 +521,96 @@
         </div>
       </div>
 
-      <!-- الجداول القادمة والكورسات -->
+      <!-- Upcoming Schedules and Courses -->
       <div class="row mt-4">
-        <!-- الجداول القادمة -->
+        <!-- Upcoming Schedules -->
         <div class="col-lg-7 mb-lg-0 mb-4">
           <div class="card">
             <div class="card-header pb-0 p-3">
               <h6 class="mb-0 main-purple">
                 <i class="fas fa-calendar-alt me-2 main-purple"></i>
-                الجداول القادمة
+                Upcoming Schedules
               </h6>
             </div>
             <div class="card-body p-3">
               @if($upcomingSchedules->count() > 0)
-                @foreach($upcomingSchedules->take(5) as $schedule)
-                <div class="schedule-card">
-                  <div class="row align-items-center">
-                    <div class="col-md-8">
-                      <h6 class="mb-1">{{ $schedule['course'] }}</h6>
-                      <p class="mb-1 text-muted">
-                        <i class="fas fa-calendar me-1 icon-strong-purple"></i>
-                        {{ \Carbon\Carbon::parse($schedule['session_date'])->format('Y-m-d') }}
-                        ({{ __(ucfirst($schedule['day_of_week'])) }})
-                      </p>
-                      <p class="mb-0 text-muted">
-                        <i class="fas fa-clock me-1 icon-strong-purple"></i>
-                        {{ substr($schedule['start_time'], 0, 5) }} - {{ substr($schedule['end_time'], 0, 5) }}
-                      </p>
-                      <p class="mb-0 text-muted">
-                        <i class="fas fa-door-open me-1 icon-strong-purple"></i>
-                        {{ $schedule['room'] ?: 'غير محدد' }}
-                      </p>
-                    </div>
-                    <div class="col-md-4 text-end">
-                      <span class="course-badge">{{ $schedule['category'] }}</span>
-                    </div>
-                  </div>
+                <div class="d-block d-md-none mb-2">
+                  <small class="text-muted">
+                    <i class="fas fa-info-circle me-1"></i>
+                    Swipe left/right to view all schedules
+                  </small>
                 </div>
-                @endforeach
+                @php
+                  $days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+                  $timeSlots = ['9:00 AM', '10:00 AM', '11:00 AM', '12:00 PM', '1:00 PM', '2:00 PM', '3:00 PM', '4:00 PM'];
+                @endphp
+                <div class="table-responsive">
+                  <table class="table table-bordered align-items-center mb-0">
+                    <thead>
+                      <tr>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="width: 80px;">Day/Time</th>
+                        @foreach($timeSlots as $time)
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center" style="width: 60px;">
+                          {{ $time }}
+                        </th>
+                        @endforeach
+                      </tr>
+                    </thead>
+                    <tbody>
+                      @foreach($days as $day)
+                      <tr>
+                        <td class="text-center font-weight-bold" style="background-color: #f8f9fa;">
+                          {{ __(ucfirst($day)) }}
+                        </td>
+                        @foreach($timeSlots as $time)
+                        @php
+                          // Convert display time to 24-hour format for comparison
+                          $time24 = '';
+                          if (strpos($time, 'AM') !== false) {
+                            $time24 = str_replace([' AM', ':00'], '', $time);
+                            if ($time24 == '12') $time24 = '00';
+                            else $time24 = str_pad($time24, 2, '0', STR_PAD_LEFT);
+                          } else {
+                            $time24 = str_replace([' PM', ':00'], '', $time);
+                            if ($time24 != '12') $time24 = $time24 + 12;
+                            $time24 = str_pad($time24, 2, '0', STR_PAD_LEFT);
+                          }
+                          $time24 .= ':00';
+                          
+                          $schedule = $upcomingSchedules->where('day_of_week', strtolower($day))
+                                                      ->where('start_time', '<=', $time24)
+                                                      ->where('end_time', '>', $time24)
+                                                      ->first();
+                        @endphp
+                        <td class="text-center" style="height: 50px; vertical-align: middle;">
+                          @if($schedule)
+                            <div class="schedule-slot">
+                              <div class="course-name text-xs font-weight-bold">{{ $schedule['course'] }}</div>
+                              <div class="room-info text-xs">
+                                <strong>Room: {{ $schedule['room'] ?: 'N/A' }}</strong>
+                              </div>
+                            </div>
+                          @else
+                            <div class="empty-slot text-muted">-</div>
+                          @endif
+                        </td>
+                        @endforeach
+                      </tr>
+                      @endforeach
+                    </tbody>
+                  </table>
+                </div>
               @else
                 <div class="text-center text-muted py-4">
                   <i class="fas fa-calendar-times fa-2x mb-3"></i>
-                  <p class="mb-0">لا توجد جداول قادمة</p>
+                  <p class="mb-0">No upcoming schedules</p>
                 </div>
               @endif
             </div>
           </div>
         </div>
         
-        <!-- الكورسات -->
+        <!-- Courses -->
         <div class="col-lg-5">
           <div class="card">
             <div class="card-header pb-0 p-3">
@@ -406,24 +622,24 @@
             <div class="card-body p-3">
               @if($teacherCourses->count() > 0)
                 <div class="table-responsive">
-                  <table class="table align-items-center mb-0">
+                  <table class="table table-bordered align-items-center mb-0" style="min-width: 400px;">
                     <thead>
                       <tr>
-                        <th>Course</th>
-                        <th>Category</th>
-                        <th>Students</th>
-                        <th>Earnings %</th>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Course</th>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Category</th>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Students</th>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Earnings %</th>
                       </tr>
                     </thead>
                     <tbody>
-                @foreach($teacherCourses as $courseInstructor)
-                @php $course = $courseInstructor->course; @endphp
-                        <tr>
-                          <td>{{ $course->title }}</td>
-                          <td>{{ $course->category->name ?? 'Not set' }}</td>
-                          <td>{{ $course->enrollments->count() }}</td>
-                          <td>{{ $courseInstructor->percentage }}%</td>
-                        </tr>
+                      @foreach($teacherCourses as $courseInstructor)
+                      @php $course = $courseInstructor->course; @endphp
+                      <tr>
+                        <td>{{ $course->title }}</td>
+                        <td>{{ $course->category->name ?? 'Not set' }}</td>
+                        <td>{{ $course->enrollments->count() }}</td>
+                        <td>{{ $courseInstructor->percentage }}%</td>
+                      </tr>
                       @endforeach
                     </tbody>
                   </table>
@@ -452,12 +668,12 @@
             </div>
             <div class="card-body p-3">
               <div class="table-responsive">
-                <table class="table align-items-center mb-0">
+                <table class="table table-bordered align-items-center mb-0">
                   <thead>
                     <tr>
-                      <th>Date</th>
-                      <th>Amount ($)</th>
-                      <th>Notes</th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Date</th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Amount ($)</th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Notes</th>
                     </tr>
                   </thead>
                   <tbody>
