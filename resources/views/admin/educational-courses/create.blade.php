@@ -347,9 +347,6 @@
                                                 </label>
                                                 <select name="currency" class="form-select">
                                                     <option value="USD" {{ old('currency', 'USD') == 'USD' ? 'selected' : '' }}>USD ($)</option>
-                                                    <option value="SAR" {{ old('currency') == 'SAR' ? 'selected' : '' }}>SAR (ر.س)</option>
-                                                    <option value="AED" {{ old('currency') == 'AED' ? 'selected' : '' }}>AED (د.إ)</option>
-                                                    <option value="EUR" {{ old('currency') == 'EUR' ? 'selected' : '' }}>EUR (€)</option>
                                                 </select>
                                             </div>
                                         </div>

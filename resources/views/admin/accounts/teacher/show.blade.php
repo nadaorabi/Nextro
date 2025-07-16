@@ -252,51 +252,12 @@
             </div>
           </div>
 
-          <!-- Notes Section -->
-          <div class="custom-card mb-4">
-            <div class="custom-card-header d-flex justify-content-between align-items-center">
-              <span>Teacher Notes</span>
-              <button type="button" class="btn btn-main d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#addNoteModal">
-                <i class="fas fa-plus"></i> Add Note
-              </button>
-            </div>
-            <div class="custom-card-body p-0">
-              <div class="custom-table-responsive">
-                <table class="custom-table">
-                  <thead>
-                    <tr>
-                      <th>Added By</th>
-                      <th>Note Content</th>
-                      <th>Date Added</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td><span class="badge-custom badge-admin">الإدارة</span></td>
-                      <td>مدرس ممتاز ومتفاني في عمله</td>
-                      <td>2024-06-20</td>
-                      <td><button class="btn btn-sm btn-outline-danger btn-delete-note"><i class="fas fa-trash"></i></button></td>
-                    </tr>
-                    <tr>
-                      <td><span class="badge-custom badge-user">أ. أحمد</span></td>
-                      <td>يحتاج إلى تحسين في إدارة الوقت</td>
-                      <td>2024-06-19</td>
-                      <td><button class="btn btn-sm btn-outline-danger btn-delete-note"><i class="fas fa-trash"></i></button></td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
+          
 
           <!-- Teacher Courses Section -->
           <div class="custom-card mb-4">
             <div class="custom-card-header d-flex justify-content-between align-items-center">
               <span>Assigned Courses</span>
-              <button type="button" class="btn btn-main d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#addCourseModal">
-                <i class="fas fa-plus"></i> Add Course
-              </button>
             </div>
             <div class="custom-card-body p-0">
               <div class="custom-table-responsive">

@@ -231,9 +231,9 @@
                     <i class="fas fa-arrow-up"></i>
                 </div>
                 <div class="stat-title">Total Revenue</div>
-                <div class="stat-value">${{ number_format($totalRevenue ?? 0, 2) }}</div>
+                <div class="stat-value" id="total-revenue">${{ number_format($totalRevenue ?? 0, 2) }}</div>
                 <div class="stat-description">
-                    <span class="highlight success">{{ $payments->where('amount', '>', 0)->count() }}</span> credit transactions
+                    <span class="highlight success" id="credit-count">{{ $payments->where('amount', '>', 0)->count() }}</span> credit transactions
                 </div>
             </div>
         </div>
@@ -244,9 +244,9 @@
                     <i class="fas fa-arrow-down"></i>
                 </div>
                 <div class="stat-title">Total Expenses</div>
-                <div class="stat-value">${{ number_format(abs($totalExpenses ?? 0), 2) }}</div>
+                <div class="stat-value" id="total-expenses">${{ number_format(abs($totalExpenses ?? 0), 2) }}</div>
                 <div class="stat-description">
-                    <span class="highlight warning">{{ $payments->where('amount', '<', 0)->count() }}</span> debit transactions
+                    <span class="highlight warning" id="debit-count">{{ $payments->where('amount', '<', 0)->count() }}</span> debit transactions
                 </div>
             </div>
         </div>
@@ -257,9 +257,9 @@
                     <i class="fas fa-balance-scale"></i>
                 </div>
                 <div class="stat-title">Net Balance</div>
-                <div class="stat-value">${{ number_format($currentBalance ?? 0, 2) }}</div>
+                <div class="stat-value" id="net-balance">${{ number_format($currentBalance ?? 0, 2) }}</div>
                 <div class="stat-description">
-                    <span class="highlight {{ ($currentBalance ?? 0) >= 0 ? 'success' : 'danger' }}">
+                    <span class="highlight {{ ($currentBalance ?? 0) >= 0 ? 'success' : 'danger' }}" id="balance-indicator">
                         {{ ($currentBalance ?? 0) >= 0 ? '+' : '' }}{{ number_format(($currentBalance ?? 0), 2) }}
                     </span> current balance
                 </div>
@@ -272,7 +272,7 @@
                     <i class="fas fa-receipt"></i>
                 </div>
                 <div class="stat-title">Total Transactions</div>
-                <div class="stat-value">{{ $payments->total() }}</div>
+                <div class="stat-value" id="visible-count">{{ $payments->count() }}</div>
                 <div class="stat-description">
                     <span class="highlight info">{{ $payments->count() }}</span> on this page
                 </div>
@@ -283,6 +283,17 @@
     <!-- Filters -->
     <div class="card mb-4">
         <div class="card-body p-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h6 class="text-primary fw-bold mb-0">
+                    <i class="fas fa-filter me-2"></i>Filter Transactions
+                </h6>
+                <div class="d-flex align-items-center gap-2">
+                    <small class="text-muted" id="active-filters-count">
+                        <i class="fas fa-info-circle me-1"></i>
+                        No active filters
+                    </small>
+                </div>
+            </div>
             <form id="filterForm" method="get">
                 <div class="row g-3 mb-3">
                     <div class="col-md-4">
@@ -290,6 +301,9 @@
                         <div class="input-group">
                             <span class="input-group-text bg-light"><i class="fas fa-search text-muted"></i></span>
                             <input id="search-input" name="search" type="text" class="form-control" placeholder="Search by name or notes..." value="{{ request('search') }}">
+                            <span class="input-group-text bg-light d-none" id="search-loading">
+                                <i class="fas fa-spinner fa-spin text-primary"></i>
+                            </span>
                         </div>
                     </div>
                     <div class="col-md-2">
@@ -302,10 +316,10 @@
                     </div>
                     <div class="col-md-3">
                         <label class="form-label fw-semibold">User</label>
-                        <select name="user_id" class="form-select">
+                        <select name="user_id" class="form-select" id="user-filter">
                             <option value="">All Users</option>
                             @foreach($users as $u)
-                                <option value="{{ $u->id }}" @if(request('user_id')==$u->id) selected @endif>{{ $u->name }}</option>
+                                <option value="{{ $u->id }}" @if(request('user_id')==$u->id) selected @endif>{{ $u->name }} ({{ ucfirst($u->role) }})</option>
                             @endforeach
                         </select>
                     </div>
@@ -326,20 +340,17 @@
                 <div class="row g-3 align-items-end">
                     <div class="col-md-2">
                         <label class="form-label fw-semibold">From Date</label>
-                        <input type="date" name="from" class="form-control" value="{{ request('from') }}">
+                        <input type="date" name="from" class="form-control" id="from-date" value="{{ request('from') }}">
                     </div>
                     <div class="col-md-2">
                         <label class="form-label fw-semibold">To Date</label>
-                        <input type="date" name="to" class="form-control" value="{{ request('to') }}">
+                        <input type="date" name="to" class="form-control" id="to-date" value="{{ request('to') }}">
                     </div>
                     <div class="col-md-8">
                         <div class="d-flex gap-2 justify-content-end">
-                            <button type="submit" class="btn btn-primary px-4">
-                                <i class="fas fa-filter me-2"></i>Apply Filters
-                            </button>
-                            <a href="{{ route('admin.transactions.index') }}" class="btn btn-outline-secondary px-4">
+                            <button type="button" class="btn btn-outline-secondary px-4" id="clear-filters-btn">
                                 <i class="fas fa-times me-2"></i>Clear Filters
-                            </a>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -350,7 +361,15 @@
     <!-- Transactions Table -->
     <div class="card">
         <div class="card-header pb-0">
-            <h6 class="text-primary fw-bold">Financial Transactions</h6>
+            <div class="d-flex justify-content-between align-items-center">
+                <h6 class="text-primary fw-bold">Financial Transactions</h6>
+                <div class="d-flex align-items-center gap-2">
+                    <small class="text-muted">
+                        <i class="fas fa-info-circle me-1"></i>
+                        Showing {{ $payments->count() }} of {{ $payments->total() }} transactions
+                    </small>
+                </div>
+            </div>
         </div>
         <div class="card-body px-0 pt-0 pb-2">
             <div class="table-responsive p-0">
@@ -373,8 +392,8 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($payments as $payment)
-                            <tr>
+                        @forelse ($payments as $payment)
+                            <tr data-user-id="{{ $payment->user_id }}">
                                 <td>
                                     <div class="d-flex px-2 py-1">
                                         <div>
@@ -466,12 +485,20 @@
                                     </div>
                                 </td>
                             </tr>
-                        @endforeach
+                        @empty
+                            <tr>
+                                <td colspan="7" class="text-center text-muted py-4">
+                                    <i class="fas fa-search fa-2x mb-3 text-muted"></i>
+                                    <p class="mb-0">No transactions found matching your filters.</p>
+                                </td>
+                            </tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>
 
             <!-- Pagination -->
+            @if($payments->hasPages())
             <div class="d-flex justify-content-between align-items-center p-3">
                 <p class="text-sm mb-0">Showing
                     {{ $payments->firstItem() }}-{{ $payments->lastItem() }} of
@@ -479,6 +506,7 @@
                 </p>
                 {{ $payments->withQueryString()->links('pagination::bootstrap-5') }}
             </div>
+            @endif
         </div>
     </div>
 
@@ -718,36 +746,282 @@
         }
 
         document.addEventListener('DOMContentLoaded', function () {
+            // تحسين نظام الفلترة بالكامل من خلال JavaScript
+            const filterForm = document.getElementById('filterForm');
             const searchInput = document.getElementById('search-input');
             const roleFilter = document.getElementById('role-filter');
             const typeFilter = document.getElementById('type-filter');
-            const tableRows = document.querySelectorAll('table tbody tr');
+            const userFilter = document.getElementById('user-filter');
+            const fromDateFilter = document.getElementById('from-date');
+            const toDateFilter = document.getElementById('to-date');
+            const clearFiltersBtn = document.getElementById('clear-filters-btn');
+            const searchLoading = document.getElementById('search-loading');
+            const activeFiltersCount = document.getElementById('active-filters-count');
+            
+            // جميع عناصر الفلترة
+            const filterElements = [searchInput, roleFilter, typeFilter, userFilter, fromDateFilter, toDateFilter];
+            
+            // دالة تطبيق الفلترة
+            function applyFilters() {
+                const searchTerm = searchInput ? searchInput.value.toLowerCase() : '';
+                const selectedRole = roleFilter ? roleFilter.value : '';
+                const selectedType = typeFilter ? typeFilter.value : '';
+                const selectedUser = userFilter ? userFilter.value : '';
+                const fromDate = fromDateFilter ? fromDateFilter.value : '';
+                const toDate = toDateFilter ? toDateFilter.value : '';
 
-            function filterTransactions() {
-                const searchTerm = searchInput.value.toLowerCase();
-                const selectedRole = roleFilter.value;
-                const selectedType = typeFilter.value;
+                const tableRows = document.querySelectorAll('table tbody tr:not(.no-results-row)');
+                let visibleCount = 0;
 
                 tableRows.forEach(row => {
                     const nameCell = row.querySelector('td:nth-child(1)').textContent.toLowerCase();
                     const roleCell = row.querySelector('td:nth-child(3)').textContent.toLowerCase();
                     const typeCell = row.querySelector('td:nth-child(4)').textContent.toLowerCase();
-
-                    const matchesSearch = nameCell.includes(searchTerm);
-                    const matchesRole = !selectedRole || roleCell.includes(selectedRole.toLowerCase());
+                    const dateCell = row.querySelector('td:nth-child(6) p:first-child').textContent.trim();
+                    
+                    // فلترة بالبحث
+                    const matchesSearch = !searchTerm || nameCell.includes(searchTerm);
+                    
+                    // فلترة بنوع الحساب
+                    let matchesRole = true;
+                    if (selectedRole) {
+                        if (selectedRole === 'teacher') {
+                            // البحث عن "Instructor" أو "teacher" في النص
+                            matchesRole = roleCell.includes('instructor') || roleCell.includes('teacher');
+                        } else if (selectedRole === 'student') {
+                            // البحث عن "Student" في النص
+                            matchesRole = roleCell.includes('student');
+                        } else {
+                            // للأنواع الأخرى، البحث المباشر
+                            matchesRole = roleCell.includes(selectedRole.toLowerCase());
+                        }
+                    }
+                    
+                    // فلترة بنوع المعاملة
                     const matchesType = !selectedType || typeCell.includes(selectedType.replace('_', ' ').toLowerCase());
+                    
+                    // فلترة بالمستخدم
+                    const matchesUser = !selectedUser || row.getAttribute('data-user-id') === selectedUser;
 
-                    if (matchesSearch && matchesRole && matchesType) {
+                    // فلترة بالتاريخ
+                    let matchesDate = true;
+                    if (fromDate || toDate) {
+                        const rowDate = new Date(dateCell);
+                        if (fromDate) {
+                            const fromDateObj = new Date(fromDate);
+                            matchesDate = matchesDate && rowDate >= fromDateObj;
+                        }
+                        if (toDate) {
+                            const toDateObj = new Date(toDate);
+                            matchesDate = matchesDate && rowDate <= toDateObj;
+                        }
+                    }
+
+                    if (matchesSearch && matchesRole && matchesType && matchesUser && matchesDate) {
                         row.style.display = '';
+                        visibleCount++;
                     } else {
                         row.style.display = 'none';
                     }
                 });
+
+                // إظهار/إخفاء رسالة "لا توجد نتائج"
+                const tbody = document.querySelector('table tbody');
+                let noResultsRow = tbody.querySelector('.no-results-row');
+                
+                if (visibleCount === 0 && !noResultsRow) {
+                    noResultsRow = document.createElement('tr');
+                    noResultsRow.className = 'no-results-row';
+                    noResultsRow.innerHTML = `
+                        <td colspan="7" class="text-center text-muted py-4">
+                            <i class="fas fa-search fa-2x mb-3 text-muted"></i>
+                            <p class="mb-0">No transactions found matching your filters.</p>
+                        </td>
+                    `;
+                    tbody.appendChild(noResultsRow);
+                } else if (visibleCount > 0 && noResultsRow) {
+                    noResultsRow.remove();
+                }
+
+                // تحديث عداد النتائج
+                updateResultsCounter(visibleCount);
+                updateActiveFiltersCount(); // تحديث عداد الفلاتر النشطة
+                updateStatistics(); // تحديث الإحصائيات بناءً على النتائج المفلترة
             }
 
-            if (searchInput) searchInput.addEventListener('input', filterTransactions);
-            if (roleFilter) roleFilter.addEventListener('change', filterTransactions);
-            if (typeFilter) typeFilter.addEventListener('change', filterTransactions);
+            // دالة تحديث عداد النتائج
+            function updateResultsCounter(visibleCount) {
+                const totalCount = document.querySelectorAll('table tbody tr:not(.no-results-row)').length;
+                const counterElement = document.querySelector('.card-header small');
+                if (counterElement) {
+                    counterElement.innerHTML = `
+                        <i class="fas fa-info-circle me-1"></i>
+                        Showing ${visibleCount} of ${totalCount} transactions
+                    `;
+                }
+            }
+
+            // دالة تحديث عداد الفلاتر النشطة
+            function updateActiveFiltersCount() {
+                let activeCount = 0;
+                const filterValues = {
+                    search: searchInput ? searchInput.value : '',
+                    role: roleFilter ? roleFilter.value : '',
+                    user: userFilter ? userFilter.value : '',
+                    type: typeFilter ? typeFilter.value : '',
+                    fromDate: fromDateFilter ? fromDateFilter.value : '',
+                    toDate: toDateFilter ? toDateFilter.value : ''
+                };
+
+                Object.values(filterValues).forEach(value => {
+                    if (value && value.trim() !== '') {
+                        activeCount++;
+                    }
+                });
+
+                if (activeCount > 0) {
+                    activeFiltersCount.innerHTML = `
+                        <i class="fas fa-filter me-1 text-primary"></i>
+                        ${activeCount} active filter${activeCount > 1 ? 's' : ''}
+                    `;
+                    activeFiltersCount.className = 'text-primary fw-semibold';
+                } else {
+                    activeFiltersCount.innerHTML = `
+                        <i class="fas fa-info-circle me-1"></i>
+                        No active filters
+                    `;
+                    activeFiltersCount.className = 'text-muted';
+                }
+            }
+
+            // دالة تحديث الإحصائيات بناءً على النتائج المفلترة
+            function updateStatistics() {
+                const visibleRows = document.querySelectorAll('table tbody tr:not(.no-results-row):not([style*="display: none"])');
+                
+                let totalRevenue = 0;
+                let totalExpenses = 0;
+                let creditCount = 0;
+                let debitCount = 0;
+
+                visibleRows.forEach(row => {
+                    const amountText = row.querySelector('td:nth-child(5) p').textContent;
+                    const amount = parseFloat(amountText.replace(/[$,]/g, ''));
+                    
+                    if (amount > 0) {
+                        totalRevenue += amount;
+                        creditCount++;
+                    } else {
+                        totalExpenses += Math.abs(amount);
+                        debitCount++;
+                    }
+                });
+
+                const netBalance = totalRevenue - totalExpenses;
+
+                // تحديث الإحصائيات
+                document.getElementById('total-revenue').textContent = `$${totalRevenue.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+                document.getElementById('total-expenses').textContent = `$${totalExpenses.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+                document.getElementById('net-balance').textContent = `$${netBalance.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+                document.getElementById('credit-count').textContent = creditCount;
+                document.getElementById('debit-count').textContent = debitCount;
+                document.getElementById('visible-count').textContent = visibleRows.length;
+                
+                // تحديث مؤشر الرصيد
+                const balanceIndicator = document.getElementById('balance-indicator');
+                balanceIndicator.textContent = `${netBalance >= 0 ? '+' : ''}$${netBalance.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+                balanceIndicator.className = `highlight ${netBalance >= 0 ? 'success' : 'danger'}`;
+            }
+
+            // إضافة مستمعي الأحداث لجميع عناصر الفلترة
+            filterElements.forEach(element => {
+                if (element) {
+                    if (element === searchInput) {
+                        // فلترة فورية للبحث مع تأخير
+                        let searchTimeout;
+                        element.addEventListener('input', function() {
+                            clearTimeout(searchTimeout);
+                            searchLoading.classList.remove('d-none');
+                            searchLoading.classList.add('d-flex');
+                            
+                            searchTimeout = setTimeout(() => {
+                                applyFilters();
+                                searchLoading.classList.remove('d-flex');
+                                searchLoading.classList.add('d-none');
+                            }, 300);
+                        });
+                    } else {
+                        // فلترة فورية للفلاتر الأخرى
+                        element.addEventListener('change', function() {
+                            // إضافة تأثير بصري
+                            this.style.borderColor = '#667eea';
+                            setTimeout(() => {
+                                this.style.borderColor = '';
+                            }, 1000);
+                            
+                            // إضافة مؤشر تحميل سريع
+                            this.style.opacity = '0.7';
+                            
+                            setTimeout(() => {
+                                applyFilters();
+                                this.style.opacity = '1';
+                            }, 100);
+                        });
+                    }
+                }
+            });
+
+            // دالة تفريغ الفلاتر
+            function clearAllFilters() {
+                // إضافة تأثير بصري
+                filterElements.forEach(element => {
+                    if (element) {
+                        element.style.borderColor = '#28a745';
+                        element.style.backgroundColor = 'rgba(40, 167, 69, 0.1)';
+                        setTimeout(() => {
+                            element.style.borderColor = '';
+                            element.style.backgroundColor = '';
+                        }, 1000);
+                        element.value = '';
+                    }
+                });
+                
+                // إظهار رسالة نجاح
+                showNotification('Filters cleared successfully!', 'success');
+                
+                applyFilters();
+            }
+
+            // دالة إظهار الإشعارات
+            function showNotification(message, type = 'info') {
+                const notification = document.createElement('div');
+                notification.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
+                notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+                notification.innerHTML = `
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                `;
+                
+                document.body.appendChild(notification);
+                
+                // إزالة الإشعار تلقائياً بعد 3 ثوان
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.remove();
+                    }
+                }, 3000);
+            }
+
+            // إضافة مستمع الحدث لزر تفريغ الفلاتر
+            if (clearFiltersBtn) {
+                clearFiltersBtn.addEventListener('click', clearAllFilters);
+            }
+
+            // تطبيق الفلترة الأولية عند تحميل الصفحة
+            applyFilters();
+
+            // إضافة debugging للفلترة (يمكن إزالته لاحقاً)
+            console.log('Filter system initialized');
+            console.log('Available filter elements:', filterElements.length);
         });
     </script>
 @endpush 

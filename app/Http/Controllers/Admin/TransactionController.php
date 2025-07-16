@@ -19,9 +19,11 @@ class TransactionController extends Controller
         // فلترة بالبحث
         if ($request->filled('search')) {
             $search = $request->search;
-            $query->whereHas('user', function($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%");
-            })->orWhere('notes', 'like', "%{$search}%");
+            $query->where(function($q) use ($search) {
+                $q->whereHas('user', function($userQuery) use ($search) {
+                    $userQuery->where('name', 'like', "%{$search}%");
+                })->orWhere('notes', 'like', "%{$search}%");
+            });
         }
         
         // فلترة بنوع الحساب
@@ -29,6 +31,11 @@ class TransactionController extends Controller
             $query->whereHas('user', function($q) use ($request) {
                 $q->where('role', $request->role);
             });
+        }
+        
+        // فلترة بالمستخدم المحدد
+        if ($request->filled('user_id')) {
+            $query->where('user_id', $request->user_id);
         }
         
         // فلترة بنوع المعاملة
@@ -46,9 +53,30 @@ class TransactionController extends Controller
         
         $payments = $query->orderByDesc('payment_date')->paginate(20);
         
-        // إحصائيات
-        $totalRevenue = Payment::where('amount', '>', 0)->sum('amount');
-        $totalExpenses = Payment::where('amount', '<', 0)->sum('amount');
+        // إحصائيات (مع تطبيق نفس الفلاتر)
+        $statsQuery = Payment::query();
+        
+        // تطبيق نفس الفلاتر على الإحصائيات
+        if ($request->filled('role')) {
+            $statsQuery->whereHas('user', function($q) use ($request) {
+                $q->where('role', $request->role);
+            });
+        }
+        if ($request->filled('user_id')) {
+            $statsQuery->where('user_id', $request->user_id);
+        }
+        if ($request->filled('type')) {
+            $statsQuery->where('type', $request->type);
+        }
+        if ($request->filled('from')) {
+            $statsQuery->whereDate('payment_date', '>=', $request->from);
+        }
+        if ($request->filled('to')) {
+            $statsQuery->whereDate('payment_date', '<=', $request->to);
+        }
+        
+        $totalRevenue = (clone $statsQuery)->where('amount', '>', 0)->sum('amount');
+        $totalExpenses = (clone $statsQuery)->where('amount', '<', 0)->sum('amount');
         $currentBalance = $totalRevenue + $totalExpenses; // Expenses are negative
         
         // بيانات للفلترة

@@ -140,6 +140,8 @@ class HomeController extends Controller
                         'room' => $schedule->room ? ($schedule->room->room_number ?? $schedule->room->name ?? '') : '',
                         'attendance_status' => $attendanceStatus,
                         'instructor' => $enrollment->course->courseInstructors->first()->instructor->name ?? 'No Instructor',
+                        'course_id' => $enrollment->course->id,
+                        'schedule_id' => $schedule->id,
                     ]);
                 }
             }
@@ -154,14 +156,20 @@ class HomeController extends Controller
                     if ($course && $course->schedules) {
                         foreach ($course->schedules as $schedule) {
                             // البحث عن سجل الحضور لهذا الطالب في هذه الحصة
-                            $attendance = Attendance::where('enrollment_id', $enrollment->id)
-                                ->where('schedule_id', $schedule->id)
-                                ->where('date', $schedule->session_date)
-                                ->first();
-                            
+                            // Note: For package courses, we need to find the enrollment for this specific course
+                            $enrollment = $enrollments->where('course_id', $course->id)->first();
+                            $attendance = null;
                             $attendanceStatus = 'pending'; // الحالة الافتراضية
-                            if ($attendance) {
-                                $attendanceStatus = $attendance->status;
+                            
+                            if ($enrollment) {
+                                $attendance = Attendance::where('enrollment_id', $enrollment->id)
+                                    ->where('schedule_id', $schedule->id)
+                                    ->where('date', $schedule->session_date)
+                                    ->first();
+                                
+                                if ($attendance) {
+                                    $attendanceStatus = $attendance->status;
+                                }
                             }
                             
                             $packageSchedules->push([
@@ -176,6 +184,8 @@ class HomeController extends Controller
                                 'room' => $schedule->room ? ($schedule->room->room_number ?? $schedule->room->name ?? '') : '',
                                 'attendance_status' => $attendanceStatus,
                                 'instructor' => $course->courseInstructors->first()->instructor->name ?? 'No Instructor',
+                                'course_id' => $course->id,
+                                'schedule_id' => $schedule->id,
                             ]);
                         }
                     }

@@ -79,10 +79,11 @@ Route::prefix('admin')->middleware('isAdmin')->name('admin.')->group(function ()
     Route::get('profile', [AdminController::class, 'profile'])->name('profile');
     Route::post('logout', [AdminController::class, 'logout'])->name('logout');
     
-    // teacher profile  Management
+    // Admin Profile Management
     Route::prefix('profile')->name('profile.')->group(function () {
-        Route::put('/update', [\App\Http\Controllers\Admin\ProfileController::class, 'update'])->name('update');
-        Route::put('/password', [\App\Http\Controllers\Admin\ProfileController::class, 'updatePassword'])->name('password.update');
+        Route::put('/update', [AdminController::class, 'updateProfile'])->name('update');
+        Route::put('/password', [AdminController::class, 'updatePassword'])->name('password');
+        Route::put('/image', [AdminController::class, 'updateProfileImage'])->name('image');
     });
 
     // Accounts Management

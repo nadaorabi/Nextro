@@ -1,281 +1,583 @@
-<!DOCTYPE html>
-<html lang="en">
+@extends('layouts.admin')
 
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <link rel="apple-touch-icon" sizes="76x76" href="{{ asset('images/apple-icon.png') }}">
-  <link rel="icon" type="image/png" href="{{ asset('images/favicon.png') }}">
-  <title>
-    profile 
-  </title>
-  <!--     Fonts and icons     -->
-  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
-  <!-- Nucleo Icons -->
-  <link href="https://demos.creative-tim.com/argon-dashboard-pro/assets/css/nucleo-icons.css" rel="stylesheet" />
-  <link href="https://demos.creative-tim.com/argon-dashboard-pro/assets/css/nucleo-svg.css" rel="stylesheet" />
-  <!-- Font Awesome Icons -->
-  <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
-  <!-- CSS Files -->
-  <link id="pagestyle" href="{{ asset('css/argon-dashboard.css') }}" rel="stylesheet" />
-  <style>
-    @media (max-width: 600px) {
-      .card-profile-bottom {
-        max-width: 98% !important;
-        width: 100% !important;
-        margin-left: auto !important;
-        margin-right: auto !important;
-      }
+@section('title', 'Admin Profile')
+
+@push('styles')
+<style>
+    .profile-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 20px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        color: white;
+        position: relative;
+        overflow: hidden;
     }
-  </style>
-</head>
 
-<body class="g-sidenav-show bg-gray-100">
-  <div class="position-absolute w-100 min-height-300 top-0" style="background-image: url('https://raw.githubusercontent.com/creativetimofficial/public-assets/master/argon-dashboard-pro/assets/img/profile-layout-header.jpg'); background-position-y: 50%;">
-    <span class="mask bg-primary opacity-6"></span>
-  </div>
-  @include('admin.parts.sidebar-admin')
-  <div class="main-content position-relative max-height-vh-100 h-100">
+    .profile-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.1"/><circle cx="50" cy="10" r="0.5" fill="white" opacity="0.1"/><circle cx="10" cy="60" r="0.5" fill="white" opacity="0.1"/><circle cx="90" cy="40" r="0.5" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+        opacity: 0.3;
+    }
 
-    <div class="card shadow-lg mx-4 card-profile-bottom" style="margin-top: -1px;">
-      <div class="card-body p-3">
-        <div class="row gx-4 align-items-center">
-          <div class="col-auto">
-            <div class="avatar avatar-xl position-relative" style="display: flex; flex-direction: column; align-items: center; position: relative; width: 100px;">
-              <img id="profileImage" src="https://randomuser.me/api/portraits/women/44.jpg" alt="profile_image" class="w-100 border-radius-lg shadow-sm" style="width:100px;height:100px;object-fit:cover;border-radius:50%;">
-              <input type="file" id="imageInput" accept="image/*" style="display:none">
-              <button type="button" onclick="document.getElementById('imageInput').click();" class="btn btn-primary" style="position:absolute; right:-18px; bottom:-10px; width:38px; height:38px; border-radius:50%; padding:0; display:flex; align-items:center; justify-content:center; box-shadow:0 2px 8px rgba(44,62,80,0.13); font-size:1.1rem; z-index:2;"><i class="fa fa-camera"></i></button>
-            </div>
-          </div>
-          <div class="col-auto my-auto">
-            <div class="h-100">
-              <h5 class="mb-1" id="firstLastName">Sayo Kravits</h5>
-              <p class="mb-0 font-weight-bold text-sm">Public Relations</p>
-            </div>
-          </div>
-          <!-- <div class="col-lg-4 col-md-6 my-sm-auto ms-sm-auto me-sm-0 mx-auto mt-3">
-            <div class="nav-wrapper position-relative end-0">
-              <ul class="nav nav-pills nav-fill p-1" role="tablist">
-                <li class="nav-item">
-                  <a class="nav-link mb-0 px-0 py-1 active d-flex align-items-center justify-content-center " data-bs-toggle="tab" href="javascript:;" role="tab" aria-selected="true">
-                    <i class="ni ni-app"></i>
-                    <span class="ms-2">App</span>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link mb-0 px-0 py-1 d-flex align-items-center justify-content-center " data-bs-toggle="tab" href="javascript:;" role="tab" aria-selected="false">
-                    <i class="ni ni-email-83"></i>
-                    <span class="ms-2">Messages</span>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link mb-0 px-0 py-1 d-flex align-items-center justify-content-center " data-bs-toggle="tab" href="javascript:;" role="tab" aria-selected="false">
-                    <i class="ni ni-settings-gear-65"></i>
-                    <span class="ms-2">Settings</span>
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </div> -->
-        </div>
-      </div>
-    </div>
-    <div class="container-fluid py-4">
-      <div class="row">
-        <div class="col-12">
-          <div class="card">
-            <div class="card-header pb-0">
-              <div class="d-flex align-items-center">
-                <h5 class="mb-0">Profile</h5>
-              </div>
-            </div>
-            <div class="card-body">
-              <form autocomplete="off">
-                <div class="row">
-                  <div class="col-md-6">
-                    <div class="form-group">
-                      <label>First Name</label>
-                      <input class="form-control" type="text" value="Sayo">
+    .profile-content {
+        position: relative;
+        z-index: 1;
+    }
+
+    .profile-avatar {
+        position: relative;
+        display: inline-block;
+    }
+
+    .profile-avatar img {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 4px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        background: #f8f9fa;
+    }
+    
+    .profile-avatar img[src*="ui-avatars.com"] {
+        background: linear-gradient(45deg, #667eea, #764ba2);
+    }
+    
+    .profile-avatar img {
+        transition: all 0.3s ease;
+    }
+    
+    .profile-avatar img:hover {
+        transform: scale(1.05);
+    }
+    
+    .profile-avatar.loading img {
+        opacity: 0.7;
+    }
+    
+    .profile-avatar.loading::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 20px;
+        height: 20px;
+        border: 2px solid #fff;
+        border-top: 2px solid transparent;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+        0% { transform: translate(-50%, -50%) rotate(0deg); }
+        100% { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+
+    .avatar-upload-btn {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(45deg, #667eea, #764ba2);
+        border: 3px solid white;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .avatar-upload-btn:hover {
+        transform: scale(1.1);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .profile-info h3 {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .profile-info p {
+        font-size: 1.1rem;
+        opacity: 0.9;
+        margin-bottom: 0;
+    }
+
+    .card {
+        border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        border: none;
+        margin-bottom: 2rem;
+    }
+
+    .card-header {
+        background: linear-gradient(45deg, #f8f9fa, #e9ecef);
+        border-radius: 15px 15px 0 0;
+        border: none;
+        padding: 1.5rem;
+    }
+
+    .card-header h5 {
+        margin: 0;
+        color: #495057;
+        font-weight: 600;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #344767;
+        margin-bottom: 0.5rem;
+    }
+
+    .form-control, .form-select {
+        border-radius: 10px;
+        border: 2px solid #e9ecef;
+        padding: 12px 15px;
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus, .form-select:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+    }
+
+    .btn-primary {
+        background: linear-gradient(45deg, #667eea, #764ba2);
+        border: none;
+        border-radius: 10px;
+        padding: 12px 30px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        background: linear-gradient(45deg, #5a67d8, #6b46c1);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-secondary {
+        background: #6c757d;
+        border: none;
+        border-radius: 10px;
+        padding: 12px 30px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .btn-secondary:hover {
+        background: #5a6268;
+        transform: translateY(-2px);
+    }
+
+    .alert {
+        border-radius: 10px;
+        border: none;
+    }
+
+    .password-section {
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 1.5rem;
+        margin-top: 2rem;
+    }
+
+    .password-section h6 {
+        color: #495057;
+        font-weight: 600;
+        margin-bottom: 1rem;
+    }
+
+    @media (max-width: 768px) {
+        .profile-header {
+            text-align: center;
+            padding: 1.5rem;
+        }
+        
+        .profile-info h3 {
+            font-size: 1.5rem;
+        }
+    }
+</style>
+@endpush
+
+@section('content')
+<div class="container-fluid py-4">
+    <!-- Profile Header -->
+    <div class="profile-header">
+        <div class="profile-content">
+            <div class="row align-items-center">
+                <div class="col-md-3 text-center">
+                    <div class="profile-avatar">
+                        <img id="profileImage" src="{{ \App\Helpers\ImageHelper::getProfileImageUrl(auth()->user()) }}" alt="Profile Image" onerror="this.src='{{ \App\Helpers\ImageHelper::getDefaultAvatarUrl(auth()->user()->name ?? 'Admin') }}'">
+                        <label for="imageInput" class="avatar-upload-btn">
+                            <i class="fas fa-camera"></i>
+                        </label>
+                        <input type="file" id="imageInput" accept="image/*" style="display: none;">
+                        
+                        <!-- Fallback form for image upload -->
+                        <form id="imageUploadForm" action="{{ route('admin.profile.image') }}" method="POST" enctype="multipart/form-data" style="display: none;">
+                            @csrf
+                            @method('PUT')
+                            <input type="file" name="profile_image" id="fallbackImageInput" accept="image/*">
+                        </form>
+                        
                     </div>
-                  </div>
-                  <div class="col-md-6">
-                    <div class="form-group">
-                      <label>Last Name</label>
-                      <input class="form-control" type="text" value="Kravits">
-                    </div>
-                  </div>
-                  <div class="col-md-6">
-                    <div class="form-group">
-                      <label>Email</label>
-                      <input class="form-control" type="email" value="sayo@email.com">
-                    </div>
-                  </div>
-                  <div class="col-md-6">
-                    <div class="form-group">
-                      <label>Phone Number</label>
-                      <input class="form-control" type="text" value="+1 234 567 8900">
-                    </div>
-                  </div>
-                  <div class="col-md-6">
-                    <div class="form-group">
-                      <label>Specialization</label>
-                      <select class="form-control">
-                        <option>Public Relations</option>
-                        <option>Mathematics</option>
-                        <option>Science</option>
-                        <option>English</option>
-                        <option>History</option>
-                        <option>Computer Science</option>
-                        <option>Physics</option>
-                        <option>Chemistry</option>
-                      </select>
-                    </div>
-                  </div>
-                  <div class="col-md-6">
-                    <div class="form-group">
-                      <label>Location</label>
-                      <input class="form-control" type="text" value="New York, USA">
-                    </div>
-                  </div>
                 </div>
-                <button type="submit" class="btn btn-primary mt-3">Save Changes</button>
-              </form>
+                <div class="col-md-9">
+                    <div class="profile-info">
+                        <h3>{{ auth()->user()->name ?? 'Admin User' }}</h3>
+                        <p><i class="fas fa-envelope me-2"></i>{{ auth()->user()->email ?? 'admin@example.com' }}</p>
+                        <p><i class="fas fa-user-tie me-2"></i>Administrator</p>
+                    </div>
+                </div>
             </div>
-          </div>
         </div>
-      </div>
-      <footer class="footer pt-3  ">
-        <div class="container-fluid">
-          <div class="row align-items-center justify-content-lg-between">
-            <div class="col-lg-6 mb-lg-0 mb-4">
-              <div class="copyright text-center text-sm text-muted text-lg-start">
-                © <script>
-                  document.write(new Date().getFullYear())
-                </script>,
-                made with <i class="fa fa-heart"></i> by
-                <a href="https://www.creative-tim.com" class="font-weight-bold" target="_blank">Creative Tim</a>
-                for a better web.
-              </div>
-            </div>
-            <div class="col-lg-6">
-              <ul class="nav nav-footer justify-content-center justify-content-lg-end">
-                <li class="nav-item">
-                  <a href="https://www.creative-tim.com" class="nav-link text-muted" target="_blank">Creative Tim</a>
-                </li>
-                <li class="nav-item">
-                  <a href="https://www.creative-tim.com/presentation" class="nav-link text-muted" target="_blank">About Us</a>
-                </li>
-                <li class="nav-item">
-                  <a href="https://www.creative-tim.com/blog" class="nav-link text-muted" target="_blank">Blog</a>
-                </li>
-                <li class="nav-item">
-                  <a href="https://www.creative-tim.com/license" class="nav-link pe-0 text-muted" target="_blank">License</a>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </footer>
     </div>
-  </div>
-  <div class="fixed-plugin">
-    <a class="fixed-plugin-button text-dark position-fixed px-3 py-2">
-      <i class="fa fa-cog py-2"> </i>
-    </a>
-    <div class="card shadow-lg">
-      <div class="card-header pb-0 pt-3 ">
-        <div class="float-start">
-          <h5 class="mt-3 mb-0">Argon Configurator</h5>
-          <p>See our dashboard options.</p>
+
+    <!-- Success/Error Messages -->
+    @if(session('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle me-2"></i>
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
-        <div class="float-end mt-4">
-          <button class="btn btn-link text-dark p-0 fixed-plugin-close-button">
-            <i class="fa fa-close"></i>
-          </button>
+    @endif
+
+    @if(session('error'))
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-circle me-2"></i>
+            {{ session('error') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
-        <!-- End Toggle Button -->
-      </div>
-      <hr class="horizontal dark my-1">
-      <div class="card-body pt-sm-3 pt-0 overflow-auto">
-        <!-- Sidebar Backgrounds -->
-        <div>
-          <h6 class="mb-0">Sidebar Colors</h6>
+    @endif
+
+    @if($errors->any())
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-circle me-2"></i>
+            <strong>Please fix the following errors:</strong>
+            <ul class="mb-0 mt-2">
+                @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
-        <a href="javascript:void(0)" class="switch-trigger background-color">
-          <div class="badge-colors my-2 text-start">
-            <span class="badge filter bg-gradient-primary active" data-color="primary" onclick="sidebarColor(this)"></span>
-            <span class="badge filter bg-gradient-dark" data-color="dark" onclick="sidebarColor(this)"></span>
-            <span class="badge filter bg-gradient-info" data-color="info" onclick="sidebarColor(this)"></span>
-            <span class="badge filter bg-gradient-success" data-color="success" onclick="sidebarColor(this)"></span>
-            <span class="badge filter bg-gradient-warning" data-color="warning" onclick="sidebarColor(this)"></span>
-            <span class="badge filter bg-gradient-danger" data-color="danger" onclick="sidebarColor(this)"></span>
-          </div>
-        </a>
-        <!-- Sidenav Type -->
-        <div class="mt-3">
-          <h6 class="mb-0">Sidenav Type</h6>
-          <p class="text-sm">Choose between 2 different sidenav types.</p>
+    @endif
+
+    <!-- Profile Information Form -->
+    <div class="card">
+        <div class="card-header">
+            <h5><i class="fas fa-user me-2"></i>Profile Information</h5>
         </div>
-        <div class="d-flex">
-          <button class="btn bg-gradient-primary w-100 px-3 mb-2 active me-2" data-class="bg-white" onclick="sidebarType(this)">White</button>
-          <button class="btn bg-gradient-primary w-100 px-3 mb-2" data-class="bg-default" onclick="sidebarType(this)">Dark</button>
+        <div class="card-body">
+            <form action="{{ route('admin.profile.update') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                @method('PUT')
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">
+                                <i class="fas fa-user me-2"></i>Full Name
+                            </label>
+                            <input type="text" name="name" id="name" 
+                                   class="form-control @error('name') is-invalid @enderror" 
+                                   value="{{ old('name', auth()->user()->name) }}" 
+                                   placeholder="Enter your full name" required>
+                            @error('name')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="email" class="form-label">
+                                <i class="fas fa-envelope me-2"></i>Email Address
+                            </label>
+                            <input type="email" name="email" id="email" 
+                                   class="form-control @error('email') is-invalid @enderror" 
+                                   value="{{ old('email', auth()->user()->email) }}" 
+                                   placeholder="Enter your email address" required>
+                            @error('email')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="phone" class="form-label">
+                                <i class="fas fa-phone me-2"></i>Phone Number
+                            </label>
+                            <input type="tel" name="phone" id="phone" 
+                                   class="form-control @error('phone') is-invalid @enderror" 
+                                   value="{{ old('phone', auth()->user()->phone) }}" 
+                                   placeholder="Enter your phone number">
+                            @error('phone')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="address" class="form-label">
+                                <i class="fas fa-map-marker-alt me-2"></i>Address
+                            </label>
+                            <input type="text" name="address" id="address" 
+                                   class="form-control @error('address') is-invalid @enderror" 
+                                   value="{{ old('address', auth()->user()->address) }}" 
+                                   placeholder="Enter your address">
+                            @error('address')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <a href="{{ route('admin.dashboard') }}" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save me-2"></i>Save Changes
+                    </button>
+                </div>
+            </form>
         </div>
-        <p class="text-sm d-xl-none d-block mt-2">You can change the sidenav type just on desktop view.</p>
-        <!-- Navbar Fixed -->
-        <hr class="horizontal dark my-sm-4">
-        <div class="mt-2 mb-5 d-flex">
-          <h6 class="mb-0">Light / Dark</h6>
-          <div class="form-check form-switch ps-0 ms-auto my-auto">
-            <input class="form-check-input mt-1 ms-auto" type="checkbox" id="dark-version" onclick="darkMode(this)">
-          </div>
-        </div>
-        <a class="btn bg-gradient-dark w-100" href="https://www.creative-tim.com/product/argon-dashboard">Free Download</a>
-        <a class="btn btn-outline-dark w-100" href="https://www.creative-tim.com/learning-lab/bootstrap/license/argon-dashboard">View documentation</a>
-        <div class="w-100 text-center">
-          <a class="github-button" href="https://github.com/creativetimofficial/argon-dashboard" data-icon="octicon-star" data-size="large" data-show-count="true" aria-label="Star creativetimofficial/argon-dashboard on GitHub">Star</a>
-          <h6 class="mt-3">Thank you for sharing!</h6>
-          <a href="https://twitter.com/intent/tweet?text=Check%20Argon%20Dashboard%20made%20by%20%40CreativeTim%20%23webdesign%20%23dashboard%20%23bootstrap5&amp;url=https%3A%2F%2Fwww.creative-tim.com%2Fproduct%2Fargon-dashboard" class="btn btn-dark mb-0 me-2" target="_blank">
-            <i class="fab fa-twitter me-1" aria-hidden="true"></i> Tweet
-          </a>
-          <a href="https://www.facebook.com/sharer/sharer.php?u=https://www.creative-tim.com/product/argon-dashboard" class="btn btn-dark mb-0 me-2" target="_blank">
-            <i class="fab fa-facebook-square me-1" aria-hidden="true"></i> Share
-          </a>
-        </div>
-      </div>
     </div>
-  </div>
-  <!--   Core JS Files   -->
-  <script src="{{ asset('js/core/popper.min.js') }}"></script>
-  <script src="{{ asset('js/core/bootstrap.min.js') }}"></script>
-  <script src="{{ asset('js/plugins/perfect-scrollbar.min.js') }}"></script>
-  <script src="{{ asset('js/plugins/smooth-scrollbar.min.js') }}"></script>
-  <script>
-    var win = navigator.platform.indexOf('Win') > -1;
-    if (win && document.querySelector('#sidenav-scrollbar')) {
-      var options = {
-        damping: '0.5'
-      }
-      Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
-    }
-  </script>
-  <!-- Github buttons -->
-  <script async defer src="https://buttons.github.io/buttons.js"></script>
-  <!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->
-  <script src="{{ asset('js/argon-dashboard.min.js') }}"></script>
-  <script>
-    document.getElementById('imageInput').addEventListener('change', function(event) {
-      const file = event.target.files[0];
-      if (file) {
+
+    <!-- Change Password Section -->
+    <div class="card">
+        <div class="card-header">
+            <h5><i class="fas fa-lock me-2"></i>Change Password</h5>
+        </div>
+        <div class="card-body">
+            <form action="{{ route('admin.profile.password') }}" method="POST">
+                @csrf
+                @method('PUT')
+                
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label for="current_password" class="form-label">
+                                <i class="fas fa-key me-2"></i>Current Password
+                            </label>
+                            <input type="password" name="current_password" id="current_password" 
+                                   class="form-control @error('current_password') is-invalid @enderror" 
+                                   placeholder="Enter current password" required>
+                            @error('current_password')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label for="new_password" class="form-label">
+                                <i class="fas fa-lock me-2"></i>New Password
+                            </label>
+                            <input type="password" name="new_password" id="new_password" 
+                                   class="form-control @error('new_password') is-invalid @enderror" 
+                                   placeholder="Enter new password" required>
+                            @error('new_password')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label for="new_password_confirmation" class="form-label">
+                                <i class="fas fa-lock me-2"></i>Confirm New Password
+                            </label>
+                            <input type="password" name="new_password_confirmation" id="new_password_confirmation" 
+                                   class="form-control @error('new_password_confirmation') is-invalid @enderror" 
+                                   placeholder="Confirm new password" required>
+                            @error('new_password_confirmation')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-end">
+                    <button type="submit" class="btn btn-warning">
+                        <i class="fas fa-key me-2"></i>Change Password
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+// Profile image upload functionality
+document.getElementById('imageInput').addEventListener('change', function(event) {
+    const file = event.target.files[0];
+    if (file) {
+        console.log('File selected:', {
+            name: file.name,
+            size: file.size,
+            type: file.type
+        });
+        
+        // Validate file type
+        if (!file.type.startsWith('image/')) {
+            alert('Please select an image file.');
+            return;
+        }
+        
+        // Validate file size (max 2MB)
+        if (file.size > 2 * 1024 * 1024) {
+            alert('Image size should be less than 2MB.');
+            return;
+        }
+        
         const reader = new FileReader();
         reader.onload = function(e) {
-          document.getElementById('profileImage').src = e.target.result;
+            document.getElementById('profileImage').src = e.target.result;
         };
         reader.readAsDataURL(file);
-      }
-    });
-  </script>
-</body>
+        
+        // Show loading state
+        const profileAvatar = document.querySelector('.profile-avatar');
+        profileAvatar.classList.add('loading');
+        
+        // Disable the upload button during upload
+        const uploadBtn = document.querySelector('.avatar-upload-btn');
+        uploadBtn.style.pointerEvents = 'none';
+        uploadBtn.style.opacity = '0.5';
+        
+        // Try AJAX upload first
+        const form = new FormData();
+        form.append('profile_image', file);
+        form.append('_token', '{{ csrf_token() }}');
+        form.append('_method', 'PUT');
+        
+        console.log('Uploading to:', '{{ route("admin.profile.image") }}');
+        console.log('Form data:', {
+            file: file.name,
+            token: '{{ csrf_token() }}',
+            method: 'PUT'
+        });
+        
+        fetch('{{ route("admin.profile.image") }}', {
+            method: 'POST',
+            body: form,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Remove loading state
+            profileAvatar.classList.remove('loading');
+            uploadBtn.style.pointerEvents = '';
+            uploadBtn.style.opacity = '';
+            
+            if (data.success) {
+                // Update the profile image immediately
+                if (data.image_url) {
+                    const profileImage = document.getElementById('profileImage');
+                    profileImage.src = data.image_url;
+                    console.log('Profile image updated:', data.image_url);
+                    
+                    // Force image reload
+                    profileImage.onload = function() {
+                        console.log('Image loaded successfully');
+                    };
+                    profileImage.onerror = function() {
+                        console.log('Image failed to load, using fallback');
+                        this.src = '{{ \App\Helpers\ImageHelper::getDefaultAvatarUrl(auth()->user()->name ?? 'Admin') }}';
+                    };
+                }
+                
+                // Show success message
+                const alert = document.createElement('div');
+                alert.className = 'alert alert-success alert-dismissible fade show';
+                alert.innerHTML = `
+                    <i class="fas fa-check-circle me-2"></i>
+                    Profile image updated successfully!
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                `;
+                document.querySelector('.container-fluid').insertBefore(alert, document.querySelector('.card'));
+                
+                // Auto-hide after 3 seconds
+                setTimeout(() => {
+                    alert.remove();
+                }, 3000);
+            } else {
+                throw new Error(data.message || 'Upload failed');
+            }
+        })
+        .catch(error => {
+            console.error('AJAX upload failed:', error);
+            
+            // Remove loading state
+            profileAvatar.classList.remove('loading');
+            uploadBtn.style.pointerEvents = '';
+            uploadBtn.style.opacity = '';
+            
+            // Show error message first
+            const alert = document.createElement('div');
+            alert.className = 'alert alert-warning alert-dismissible fade show';
+            alert.innerHTML = `
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                AJAX upload failed, trying traditional form submission...
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            document.querySelector('.container-fluid').insertBefore(alert, document.querySelector('.card'));
+            
+            // Auto-hide after 3 seconds
+            setTimeout(() => {
+                alert.remove();
+            }, 3000);
+            
+            // Fallback to traditional form submission
+            console.log('Trying fallback form submission...');
+            const fallbackInput = document.getElementById('fallbackImageInput');
+            const fallbackForm = document.getElementById('imageUploadForm');
+            
+            // Create a new FileList-like object
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(file);
+            fallbackInput.files = dataTransfer.files;
+            
+            // Submit the form
+            fallbackForm.submit();
+        });
+    }
+});
 
-</html>
-</html>
-</html>
+// Auto-hide alerts after 5 seconds
+document.addEventListener('DOMContentLoaded', function() {
+    const alerts = document.querySelectorAll('.alert');
+    alerts.forEach(function(alert) {
+        setTimeout(function() {
+            const bsAlert = new bootstrap.Alert(alert);
+            bsAlert.close();
+        }, 5000);
+    });
+});
+</script>
+@endsection

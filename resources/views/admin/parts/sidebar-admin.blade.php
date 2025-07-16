@@ -303,8 +303,9 @@
             <i class="fa fa-bell cursor-pointer me-2 d-none d-sm-inline"></i>
             <a href="{{ route('admin.profile') }}" class="d-flex align-items-center text-decoration-none">
               <i class="fa fa-bell cursor-pointer me-2 d-inline d-sm-none" style="font-size: 22px;"></i>
-              <img src="{{ asset('images/team-2.jpg') }}" class="avatar avatar-sm rounded-circle me-2 profile-img"
-                style="width: 32px; height: 32px; object-fit: cover;">
+              <img src="{{ \App\Helpers\ImageHelper::getProfileImageUrl(Auth::user()) }}" class="avatar avatar-sm rounded-circle me-2 profile-img"
+                style="width: 32px; height: 32px; object-fit: cover;" alt="Profile Image"
+                onerror="this.src='{{ \App\Helpers\ImageHelper::getDefaultAvatarUrl(Auth::user()->name ?? 'Admin') }}'">
               <span class="text-white fw-bold d-none d-sm-inline user-name"
                 style="white-space:nowrap;">{{ Auth::user()->name ?? 'Admin' }}</span>
             </a>

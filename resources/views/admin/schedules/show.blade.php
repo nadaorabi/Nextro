@@ -49,6 +49,105 @@
         transform: translateY(-2px);
         box-shadow: 0 4px 8px rgba(0,123,255,0.3);
     }
+
+    /* Delete Confirmation Modal Styles */
+    .delete-modal .modal-content {
+        border-radius: 15px;
+        border: none;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .delete-modal .modal-header {
+        background: linear-gradient(45deg, #dc3545, #c82333);
+        color: white;
+        border-radius: 15px 15px 0 0;
+        border: none;
+        padding: 1.5rem;
+    }
+
+    .delete-modal .modal-header .btn-close {
+        filter: invert(1);
+        opacity: 0.8;
+    }
+
+    .delete-modal .modal-body {
+        padding: 2rem;
+        text-align: center;
+    }
+
+    .delete-modal .modal-footer {
+        border: none;
+        padding: 1.5rem 2rem 2rem;
+        gap: 1rem;
+    }
+
+    .delete-icon {
+        font-size: 4rem;
+        color: #dc3545;
+        margin-bottom: 1rem;
+        animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+        100% { transform: scale(1); }
+    }
+
+    .btn-danger {
+        background: linear-gradient(45deg, #dc3545, #c82333);
+        border: none;
+        border-radius: 10px;
+        padding: 12px 30px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .btn-danger:hover {
+        background: linear-gradient(45deg, #c82333, #bd2130);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(220, 53, 69, 0.4);
+    }
+
+    .btn-outline-secondary {
+        border: 2px solid #6c757d;
+        border-radius: 10px;
+        padding: 12px 30px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        color: #6c757d;
+        background: transparent;
+    }
+
+    .btn-outline-secondary:hover {
+        background: #6c757d;
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    /* Enhanced table styles */
+    .table {
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .table th {
+        background: #f8f9fa;
+        color: #495057;
+        font-weight: 600;
+        border: none;
+        padding: 1rem;
+    }
+
+    .table td {
+        padding: 1rem;
+        vertical-align: middle;
+        border-color: #f1f3f4;
+    }
+
+    .btn-group {
+        gap: 0.5rem;
+    }
 </style>
 @endpush
 
@@ -156,14 +255,11 @@
                                                 <i class="fas fa-edit me-1"></i>
                                                 Edit
                                             </button>
-                                            <form action="{{ route('admin.schedules.destroy', $schedule->id) }}" method="POST" style="display:inline-block" onsubmit="return confirm('Are you sure you want to delete this schedule?');">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-danger btn-sm">
-                                                    <i class="fas fa-trash me-1"></i>
-                                                    Delete
-                                                </button>
-                                            </form>
+                                            <button type="button" class="btn btn-danger btn-sm" 
+                                                    onclick="showDeleteConfirmation({{ $schedule->id }}, '{{ \Carbon\Carbon::parse($schedule->start_time)->format('h:i A') }}', '{{ \Carbon\Carbon::parse($schedule->end_time)->format('h:i A') }}', '{{ ucfirst($schedule->day_of_week) }}', '{{ $schedule->room ? $schedule->room->room_number : 'Room #' . $schedule->room_id }}')">
+                                                <i class="fas fa-trash me-1"></i>
+                                                Delete
+                                            </button>
                                         </div>
 
                                         <!-- Edit Modal -->
@@ -173,21 +269,21 @@
                                                     <form method="POST" action="{{ route('admin.schedules.update', $schedule->id) }}">
                                                         @csrf
                                                         @method('PUT')
-                                                                                                <div class="modal-header">
-                                            <h5 class="modal-title" id="editModalLabel{{ $schedule->id }}">
-                                                Edit Schedule Times
-                                            </h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="editModalLabel{{ $schedule->id }}">
+                                                                Edit Schedule Times
+                                                            </h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
                                                         <div class="modal-body">
-                                                                                                        <div class="mb-3">
-                                                <label class="form-label">Start Time</label>
-                                                <input type="time" name="start_time" class="form-control" value="{{ \Carbon\Carbon::parse($schedule->start_time)->format('H:i') }}" required>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label class="form-label">End Time</label>
-                                                <input type="time" name="end_time" class="form-control" value="{{ \Carbon\Carbon::parse($schedule->end_time)->format('H:i') }}" required>
-                                            </div>
+                                                            <div class="mb-3">
+                                                                <label class="form-label">Start Time</label>
+                                                                <input type="time" name="start_time" class="form-control" value="{{ \Carbon\Carbon::parse($schedule->start_time)->format('H:i') }}" required>
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label class="form-label">End Time</label>
+                                                                <input type="time" name="end_time" class="form-control" value="{{ \Carbon\Carbon::parse($schedule->end_time)->format('H:i') }}" required>
+                                                            </div>
                                                         </div>
                                                         <div class="modal-footer">
                                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -212,6 +308,48 @@
                     <p class="text-muted">Add schedule sessions using the form above</p>
                 </div>
             @endif
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade delete-modal" id="deleteConfirmationModal" tabindex="-1" aria-labelledby="deleteConfirmationModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteConfirmationModalLabel">
+                    <i class="fas fa-exclamation-triangle me-2"></i>Confirm Schedule Deletion
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="delete-icon">
+                    <i class="fas fa-calendar-times"></i>
+                </div>
+                <h4 class="mb-3">Are you sure you want to delete this schedule session?</h4>
+                <div class="alert alert-warning" role="alert">
+                    <i class="fas fa-info-circle me-2"></i>
+                    <strong>Schedule Details:</strong>
+                    <div id="scheduleDetails" class="mt-2">
+                        <!-- Schedule details will be populated here -->
+                    </div>
+                </div>
+                <p class="text-muted mb-0">
+                    This action cannot be undone and will permanently remove the schedule session from the system.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i>Cancel
+                </button>
+                <form id="deleteForm" method="POST" style="display: inline;">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash me-2"></i>Delete Schedule
+                    </button>
+                </form>
+            </div>
         </div>
     </div>
 </div>
@@ -257,5 +395,41 @@ function showDayOfWeek() {
         display.style.display = 'none';
     }
 }
+
+function showDeleteConfirmation(scheduleId, startTime, endTime, dayOfWeek, roomNumber) {
+    // Update modal content with schedule details
+    const scheduleDetails = document.getElementById('scheduleDetails');
+    scheduleDetails.innerHTML = `
+        <div class="row">
+            <div class="col-md-6">
+                <strong>Day:</strong> ${dayOfWeek}<br>
+                <strong>Time:</strong> ${startTime} - ${endTime}
+            </div>
+            <div class="col-md-6">
+                <strong>Room:</strong> ${roomNumber}<br>
+                <strong>Course:</strong> {{ $course->name ?? $course->title }}
+            </div>
+        </div>
+    `;
+    
+    // Update form action
+    const deleteForm = document.getElementById('deleteForm');
+    deleteForm.action = '{{ route("admin.schedules.destroy", ":id") }}'.replace(':id', scheduleId);
+    
+    // Show modal
+    const modal = new bootstrap.Modal(document.getElementById('deleteConfirmationModal'));
+    modal.show();
+}
+
+// Auto-hide success alerts after 5 seconds
+document.addEventListener('DOMContentLoaded', function() {
+    const alerts = document.querySelectorAll('.alert');
+    alerts.forEach(function(alert) {
+        setTimeout(function() {
+            const bsAlert = new bootstrap.Alert(alert);
+            bsAlert.close();
+        }, 5000);
+    });
+});
 </script>
 @endsection 

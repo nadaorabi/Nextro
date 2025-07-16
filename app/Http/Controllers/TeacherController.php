@@ -23,33 +23,33 @@ class TeacherController extends Controller
     public function login(Request $request)
     {
         $credentials = $request->validate([
-            'login_id' => ['required', 'string'],
+            'user_name' => ['required', 'string'],
             'password' => ['required'],
         ]);
 
-        // البحث عن المستخدم باستخدام login_id
-        $user = User::where('login_id', $credentials['login_id'])->first();
+        // Search for user using user_name
+        $user = User::where('user_name', $credentials['user_name'])->first();
 
         if ($user && Hash::check($credentials['password'], $user->password)) {
             if ($user->role == 'teacher') {
-                Auth::login($user);
+                Auth::login($user, $request->filled('remember'));
                 $request->session()->regenerate();
                 session()->flash('welcome', 'Welcome Teacher');
                 return redirect()->intended(route('teacher.dashboard'));
             } elseif ($user->role == 'admin') {
-                Auth::login($user);
+                Auth::login($user, $request->filled('remember'));
                 $request->session()->regenerate();
                 session()->flash('welcome', 'Welcome System Administrator');
                 return redirect()->route('admin.dashboard');
             }
             Auth::logout();
             return back()->withErrors([
-                'login_id' => 'This account is not authorized to login from here.'
+                'user_name' => 'This account is not authorized to login from here.'
             ]);
         }
 
         return back()->withErrors([
-            'login_id' => 'Invalid credentials.',
+            'user_name' => 'Invalid credentials.',
         ]);
     }
 
@@ -63,6 +63,7 @@ class TeacherController extends Controller
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
+            'user_name' => ['required', 'string', 'max:255', 'unique:users,user_name'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'confirmed', Password::defaults()],
             'terms' => ['required', 'accepted'],
@@ -70,6 +71,7 @@ class TeacherController extends Controller
 
         $user = User::create([
             'name' => $request->name,
+            'user_name' => $request->user_name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'role' => 'teacher',
