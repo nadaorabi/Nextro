@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use App\Models\Schedule;
 use App\Models\Subject;
 use App\Models\User;
@@ -94,6 +96,129 @@ class AdminController extends Controller
     public function profile()
     {
         return view('admin.profile');
+    }
+
+    public function updateProfile(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,' . auth()->id(),
+            'phone' => 'nullable|string|max:20',
+            'address' => 'nullable|string|max:500',
+        ]);
+
+        $user = auth()->user();
+        $user->update([
+            'name' => $request->name,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'address' => $request->address,
+        ]);
+
+        return redirect()->route('admin.profile')->with('success', 'Profile updated successfully!');
+    }
+
+    public function updatePassword(Request $request)
+    {
+        $request->validate([
+            'current_password' => 'required|current_password',
+            'new_password' => 'required|string|min:8|confirmed',
+        ]);
+
+        $user = auth()->user();
+        $user->update([
+            'password' => Hash::make($request->new_password),
+        ]);
+
+        return redirect()->route('admin.profile')->with('success', 'Password changed successfully!');
+    }
+
+    public function updateProfileImage(Request $request)
+    {
+        try {
+            \Log::info('Profile image upload started', [
+                'user_id' => auth()->id(),
+                'has_file' => $request->hasFile('profile_image'),
+                'file_size' => $request->file('profile_image')?->getSize(),
+                'file_type' => $request->file('profile_image')?->getMimeType()
+            ]);
+
+            $request->validate([
+                'profile_image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            ]);
+
+            $user = auth()->user();
+            
+            // Delete old image if exists
+            if ($user->profile_image && Storage::disk('public')->exists($user->profile_image)) {
+                Storage::disk('public')->delete($user->profile_image);
+                \Log::info('Old profile image deleted', ['old_path' => $user->profile_image]);
+            }
+
+            // Store new image
+            $imagePath = $request->file('profile_image')->store('profile-images', 'public');
+            
+            \Log::info('Image stored', ['new_path' => $imagePath]);
+            
+            if (!$imagePath) {
+                throw new \Exception('Failed to store image');
+            }
+            
+            // Verify the file was actually stored
+            if (!Storage::disk('public')->exists($imagePath)) {
+                throw new \Exception('Image file was not stored properly');
+            }
+            
+            $user->update([
+                'profile_image' => $imagePath,
+            ]);
+
+            \Log::info('Profile image updated successfully', [
+                'user_id' => $user->id,
+                'image_path' => $imagePath,
+                'image_url' => Storage::disk('public')->url($imagePath)
+            ]);
+
+            // Check if it's an AJAX request
+            if ($request->ajax()) {
+                            return response()->json([
+                'success' => true,
+                'message' => 'Profile image updated successfully!',
+                'image_url' => \App\Helpers\ImageHelper::getProfileImageUrl($user)
+            ]);
+            } else {
+                // Traditional form submission
+                return redirect()->route('admin.profile')->with('success', 'Profile image updated successfully! Please refresh the page to see the changes.');
+            }
+            
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            \Log::error('Profile image validation error', ['errors' => $e->errors()]);
+            
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Validation error: ' . implode(', ', $e->errors()['profile_image'] ?? ['Invalid image file'])
+                ], 422);
+            } else {
+                return redirect()->route('admin.profile')->withErrors($e->errors());
+            }
+            
+        } catch (\Exception $e) {
+            \Log::error('Profile image upload error: ' . $e->getMessage(), [
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Error uploading image: ' . $e->getMessage()
+                ], 500);
+            } else {
+                return redirect()->route('admin.profile')->with('error', 'Error uploading image: ' . $e->getMessage());
+            }
+        }
     }
 
     // إدارة حسابات: طلاب

@@ -311,9 +311,6 @@
                                             <label for="currency" class="form-label">Currency</label>
                                             <select name="currency" id="currency" class="form-select">
                                                 <option value="USD" {{ old('currency', 'USD') == 'USD' ? 'selected' : '' }}>USD</option>
-                                                <option value="EUR" {{ old('currency') == 'EUR' ? 'selected' : '' }}>EUR</option>
-                                                <option value="GBP" {{ old('currency') == 'GBP' ? 'selected' : '' }}>GBP</option>
-                                                <option value="SAR" {{ old('currency') == 'SAR' ? 'selected' : '' }}>SAR</option>
                                             </select>
                                         </div>
                                     </div>
