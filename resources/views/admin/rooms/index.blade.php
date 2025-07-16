@@ -99,6 +99,81 @@
         opacity: 0.5;
     }
 
+    /* Delete Confirmation Modal Styles */
+    .delete-modal .modal-content {
+        border-radius: 15px;
+        border: none;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .delete-modal .modal-header {
+        background: linear-gradient(45deg, #dc3545, #c82333);
+        color: white;
+        border-radius: 15px 15px 0 0;
+        border: none;
+        padding: 1.5rem;
+    }
+
+    .delete-modal .modal-header .btn-close {
+        filter: invert(1);
+        opacity: 0.8;
+    }
+
+    .delete-modal .modal-body {
+        padding: 2rem;
+        text-align: center;
+    }
+
+    .delete-modal .modal-footer {
+        border: none;
+        padding: 1.5rem 2rem 2rem;
+        gap: 1rem;
+    }
+
+    .delete-icon {
+        font-size: 4rem;
+        color: #dc3545;
+        margin-bottom: 1rem;
+        animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+        100% { transform: scale(1); }
+    }
+
+    .btn-danger {
+        background: linear-gradient(45deg, #dc3545, #c82333);
+        border: none;
+        border-radius: 10px;
+        padding: 12px 30px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .btn-danger:hover {
+        background: linear-gradient(45deg, #c82333, #bd2130);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(220, 53, 69, 0.4);
+    }
+
+    .btn-outline-secondary {
+        border: 2px solid #6c757d;
+        border-radius: 10px;
+        padding: 12px 30px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        color: #6c757d;
+        background: transparent;
+    }
+
+    .btn-outline-secondary:hover {
+        background: #6c757d;
+        color: white;
+        transform: translateY(-2px);
+    }
+
     @media (max-width: 600px) {
         .card-body {
             padding: 1rem;
@@ -208,15 +283,10 @@
                                                class="btn btn-primary btn-sm">
                                                 <i class="fas fa-edit me-1"></i>Edit
                                             </a>
-                                            <form method="POST" action="{{ route('admin.facilities.rooms.destroy', $room->id) }}" 
-                                                  style="display:inline-block;">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-outline-danger btn-sm" 
-                                                        onclick="return confirm('Are you sure you want to delete this classroom?')">
-                                                    <i class="fas fa-trash me-1"></i>Delete
-                                                </button>
-                                            </form>
+                                            <button type="button" class="btn btn-outline-danger btn-sm" 
+                                                    onclick="showDeleteConfirmation({{ $room->id }}, '{{ $room->room_number }}')">
+                                                <i class="fas fa-trash me-1"></i>Delete
+                                            </button>
                                         </div>
                                     </td>
                                 </tr>
@@ -234,4 +304,66 @@
         </div>
     </div>
 </div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade delete-modal" id="deleteConfirmationModal" tabindex="-1" aria-labelledby="deleteConfirmationModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteConfirmationModalLabel">
+                    <i class="fas fa-exclamation-triangle me-2"></i>Confirm Deletion
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="delete-icon">
+                    <i class="fas fa-trash-alt"></i>
+                </div>
+                <h4 class="mb-3">Are you sure you want to delete this classroom?</h4>
+                <p class="text-muted mb-0">
+                    You are about to delete <strong id="roomNumberToDelete"></strong>. 
+                    This action cannot be undone and will permanently remove the classroom from the system.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i>Cancel
+                </button>
+                <form id="deleteForm" method="POST" style="display: inline;">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash me-2"></i>Delete Classroom
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function showDeleteConfirmation(roomId, roomNumber) {
+    // Update modal content
+    document.getElementById('roomNumberToDelete').textContent = 'Room ' + roomNumber;
+    
+    // Update form action
+    const deleteForm = document.getElementById('deleteForm');
+    deleteForm.action = '{{ route("admin.facilities.rooms.destroy", ":id") }}'.replace(':id', roomId);
+    
+    // Show modal
+    const modal = new bootstrap.Modal(document.getElementById('deleteConfirmationModal'));
+    modal.show();
+}
+
+// Auto-hide success alerts after 5 seconds
+document.addEventListener('DOMContentLoaded', function() {
+    const alerts = document.querySelectorAll('.alert');
+    alerts.forEach(function(alert) {
+        setTimeout(function() {
+            const bsAlert = new bootstrap.Alert(alert);
+            bsAlert.close();
+        }, 5000);
+    });
+});
+</script>
 @endsection 
