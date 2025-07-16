@@ -441,12 +441,12 @@
                 </div>
 
                 <!-- Students Section -->
-                @if($package->students->count() > 0)
+                @if($package->enrolledStudents->count() > 0)
                     <div class="card shadow-sm mt-4">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-center mb-4">
                                 <h5 class="card-title mb-0">Enrolled Students</h5>
-                                <span class="badge bg-success">{{ $package->students->count() }} students</span>
+                                <span class="badge bg-success">{{ $package->enrolledStudents->count() }} students</span>
                             </div>
 
                             <div class="table-responsive">
@@ -460,11 +460,11 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach($package->students as $studentPackage)
+                                        @foreach($package->enrolledStudents as $student)
                                             <tr>
-                                                <td>{{ $studentPackage->student->name ?? 'N/A' }}</td>
-                                                <td>{{ $studentPackage->student->email ?? 'N/A' }}</td>
-                                                <td>{{ $studentPackage->created_at->format('M d, Y') }}</td>
+                                                <td>{{ $student->name ?? 'N/A' }}</td>
+                                                <td>{{ $student->email ?? 'N/A' }}</td>
+                                                <td>{{ $student->pivot->created_at->format('M d, Y') }}</td>
                                                 <td>
                                                     <span class="badge bg-success">Enrolled</span>
                                                 </td>

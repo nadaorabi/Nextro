@@ -81,8 +81,7 @@ Route::prefix('admin')->middleware('isAdmin')->name('admin.')->group(function ()
     
     // teacher profile  Management
     Route::prefix('profile')->name('profile.')->group(function () {
-        Route::put('/update', [\App\Http\Controllers\Admin\ProfileController::class, 'update'])->name('update');
-        Route::put('/password', [\App\Http\Controllers\Admin\ProfileController::class, 'updatePassword'])->name('password.update');
+        // Routes removed - ProfileController not found
     });
 
     // Accounts Management

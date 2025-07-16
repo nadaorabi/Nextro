@@ -258,15 +258,7 @@
                           @endif
                         </div>
                       </div>
-                      <form method="POST" action="#" class="d-inline">
-                        @csrf
-                        @method('PATCH')
-                        <button type="submit" class="btn btn-outline-danger btn-sm" 
-                            title="Remove from category"
-                            onclick="return confirm('Are you sure you want to remove this course from the category?')">
-                          <i class="fas fa-unlink"></i>
-                        </button>
-                      </form>
+                      
                     </div>
                   @endforeach
                 </div>
@@ -306,15 +298,7 @@
                           @endif
                         </div>
                       </div>
-                      <form method="POST" action="#" class="d-inline">
-                        @csrf
-                        @method('PATCH')
-                        <button type="submit" class="btn btn-outline-danger btn-sm" 
-                            title="Remove from category"
-                            onclick="return confirm('Are you sure you want to remove this package from the category?')">
-                          <i class="fas fa-unlink"></i>
-                        </button>
-                      </form>
+                      
                     </div>
                   @endforeach
                 </div>

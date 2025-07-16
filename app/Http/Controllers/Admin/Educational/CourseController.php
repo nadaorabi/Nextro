@@ -151,7 +151,7 @@ class CourseController extends Controller
         try {
             $course->load([
                 'category',
-                'course_instructors.user',
+                'courseInstructors.user',
                 'enrollments.student',
                 'schedules',
                 'materials',
