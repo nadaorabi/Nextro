@@ -484,7 +484,7 @@
             </div>
         </div>
         <div class="sd-header-actions">
-            <button class="sd-btn-action" onclick="showQRModal()"><i class="uil uil-qrcode-scan"></i>SHOW QR</button>
+            <button class="sd-btn-action" onclick="showStudentIdCard()"><i class="uil uil-qrcode-scan"></i>SHOW QR</button>
             <button class="sd-btn-action" onclick="contactSupport()"><i class="uil uil-envelope"></i>CONTACT SUPPORT</button>
             <button class="sd-btn-action" onclick="showProfileModal()"><i class="uil uil-user-edit"></i>EDIT PROFILE</button>
         </div>
@@ -575,7 +575,6 @@
                             <i class="uil uil-book-open"></i>
                             <h4>No Courses Enrolled</h4>
                             <p>You haven't enrolled in any courses yet.</p>
-                            <a href="#" class="btn">Browse Courses</a>
                         </div>
                     @endforelse
 
@@ -611,7 +610,7 @@
                                     </div>
                                 </div>
                                 <div class="course-actions">
-                                    <button class="btn btn-sm btn-outline-primary">View Details</button>
+                                    <button class="btn btn-sm btn-outline-primary" onclick="showPackageSchedule({{ $studentPackage->package->id }})">View Details</button>
                                 </div>
                             </div>
                         @endif
@@ -621,7 +620,6 @@
                                 <i class="uil uil-box"></i>
                                 <h4>No Packages Enrolled</h4>
                                 <p>You haven't enrolled in any packages yet.</p>
-                                <a href="#" class="btn">Browse Packages</a>
                             </div>
                         @endif
                     @endforelse
@@ -642,7 +640,6 @@
                                     <th>Type</th>
                                     <th>Instructor</th>
                                     <th>Room</th>
-                                    <th>Status</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -673,15 +670,6 @@
                                         </td>
                                         <td>{{ $schedule['instructor'] }}</td>
                                         <td>{{ $schedule['room'] ?: 'TBD' }}</td>
-                                        <td>
-                                            @if($schedule['attendance_status'] === 'present')
-                                                <span class="status-badge present">Present</span>
-                                            @elseif($schedule['attendance_status'] === 'absent')
-                                                <span class="status-badge absent">Absent</span>
-                                            @else
-                                                <span style="color: #888; font-size: 0.85rem; background: #f8f9fa; padding: 4px 8px; border-radius: 6px;">Pending</span>
-                                            @endif
-                                        </td>
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -800,7 +788,7 @@
             <div class="sd-side-section">
                 <h3><i class="uil uil-bolt"></i>Quick Actions</h3>
                 <div class="sd-quick-actions">
-                    <button class="sd-quick-action"><span class="qa-icon"><i class="uil uil-qrcode-scan"></i></span><span class="qa-title">Scan QR Code</span><span class="qa-desc">Mark your attendance</span></button>
+                    <button class="sd-quick-action"><span class="qa-icon"><i class="uil uil-qrcode-scan"></i></span><span class="qa-title">Show QR Code</span><span class="qa-desc">View ID Card</span></button>
                     <button class="sd-quick-action"><span class="qa-icon"><i class="uil uil-chart-line"></i></span><span class="qa-title">View Grades</span><span class="qa-desc">Check your progress</span></button>
                     <button class="sd-quick-action"><span class="qa-icon"><i class="uil uil-usd-circle"></i></span><span class="qa-title">Financial Status</span><span class="qa-desc">Payment history</span></button>
                     <button class="sd-quick-action"><span class="qa-icon"><i class="uil uil-envelope"></i></span><span class="qa-title">Contact Support</span><span class="qa-desc">Get help</span></button>
@@ -1084,12 +1072,75 @@
 <div class="modal fade" id="courseScheduleModal" tabindex="-1" aria-labelledby="courseScheduleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
-      <div class="modal-header bg-primary text-white">
-        <h5 class="modal-title" id="courseScheduleModalLabel">Scheduled Lectures</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      <div class="modal-header">
+        <h5 class="modal-title text-primary" id="courseScheduleModalLabel">
+          <i class="uil uil-calendar-alt me-2"></i>
+          Scheduled Lectures
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body" id="courseScheduleContent">
-        <!-- سيتم تعبئته بالجافاسكريبت -->
+        <!-- Content will be populated by JavaScript -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Student ID Card Modal -->
+<div class="modal fade" id="studentIdCardModal" tabindex="-1" aria-labelledby="studentIdCardModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content modern-card">
+      <div class="modal-header gradient-header">
+        <h5 class="modal-title text-white" id="studentIdCardModalLabel">
+          <i class="uil uil-id-card me-2"></i>
+          Student ID Card
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="text-center">
+          <div class="student-photo-container mb-3">
+            @if(Auth::user()->image)
+              <img src="{{ asset('storage/' . Auth::user()->image) }}" alt="Student Photo" class="student-photo-small" onerror="this.src='{{ asset('images/default-avatar.png') }}'">
+            @else
+              <div class="default-avatar-small">
+                <div class="default-avatar-text-small">STUDENT</div>
+              </div>
+            @endif
+          </div>
+          <h5 class="student-name mb-2">{{ Auth::user()->name }}</h5>
+          <p class="student-role mb-3">Student</p>
+          
+          <div class="qr-code-container-small mb-3">
+            <div id="studentQRCode"></div>
+          </div>
+          
+          <div class="student-details-small">
+            <div class="detail-item-small">
+              <span class="detail-label-small">Student ID:</span>
+              <span class="detail-value-small">{{ Auth::user()->login_id ?? 'N/A' }}</span>
+            </div>
+            <div class="detail-item-small">
+              <span class="detail-label-small">Registration Date:</span>
+              <span class="detail-value-small">{{ Auth::user()->created_at ? Auth::user()->created_at->format('Y-m-d') : 'N/A' }}</span>
+            </div>
+            <div class="detail-item-small">
+              <span class="detail-label-small">Status:</span>
+              <span class="detail-value-small status-active-small">Active</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer modern-footer">
+        <button type="button" class="btn btn-outline-light modern-btn" data-bs-dismiss="modal">
+          <i class="uil uil-times me-1"></i>Close
+        </button>
+        <button type="button" class="btn btn-light modern-btn" onclick="printIdCard()">
+          <i class="uil uil-print me-1"></i>Print Card
+        </button>
       </div>
     </div>
   </div>
@@ -1097,8 +1148,558 @@
 
 <!-- Include QR Code Library -->
 <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+<style>
+/* Enhanced Modal Styles - Cleaner Design */
+.modal-lg {
+    max-width: 800px;
+}
+
+.modal-header {
+    background: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.modal-title {
+    color: #495057 !important;
+    font-weight: 600;
+}
+
+.table-light th {
+    background: #f8f9fa !important;
+    color: #495057;
+    border-color: #dee2e6;
+    font-weight: 600;
+}
+
+.badge {
+    font-size: 0.75rem;
+    padding: 0.375rem 0.75rem;
+    border-radius: 6px;
+}
+
+.bg-success {
+    background-color: #28a745 !important;
+    color: white !important;
+}
+
+.bg-danger {
+    background-color: #dc3545 !important;
+    color: white !important;
+}
+
+.bg-warning {
+    background-color: #ffc107 !important;
+    color: #212529 !important;
+}
+
+.bg-secondary {
+    background-color: #6c757d !important;
+    color: white !important;
+}
+
+.bg-info {
+    background-color: #17a2b8 !important;
+    color: white !important;
+}
+
+.card.bg-light {
+    background: #f8f9fa !important;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+}
+
+.alert-info {
+    background: #d1ecf1;
+    border-color: #bee5eb;
+    color: #0c5460;
+    border-radius: 8px;
+}
+
+.alert-warning {
+    background: #fff3cd;
+    border-color: #ffeaa7;
+    color: #856404;
+    border-radius: 8px;
+}
+
+/* Enhanced table styles */
+.table {
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: #f8f9fa;
+}
+
+.table-hover tbody tr:hover {
+    background-color: #e9ecef;
+}
+
+.table th {
+    border-top: none;
+    font-weight: 600;
+}
+
+/* Status badges with icons */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-weight: 500;
+}
+
+.status-badge.present {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.status-badge.absent {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.status-badge.late {
+    background: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeaa7;
+}
+
+.status-badge.pending {
+    background: #e2e3e5;
+    color: #383d41;
+    border: 1px solid #d6d8db;
+}
+
+/* Modern Student ID Card Modal Styles */
+.modern-card {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.95);
+}
+
+/* Small Modal Styles */
+.student-photo-small {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #fff;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+.default-avatar-small {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 3px solid #fff;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+.default-avatar-text-small {
+    font-size: 0.8rem;
+    color: white;
+    font-weight: 700;
+    text-align: center;
+    line-height: 80px;
+}
+
+.qr-code-container-small {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    border: 1px solid rgba(0,0,0,0.05);
+}
+
+.student-details-small {
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    border-radius: 10px;
+    padding: 1rem;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    border: 1px solid rgba(0,0,0,0.05);
+}
+
+.detail-item-small {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    font-size: 0.85rem;
+}
+
+.detail-item-small:last-child {
+    border-bottom: none;
+}
+
+.detail-label-small {
+    font-weight: 600;
+    color: #2c3e50;
+    font-size: 0.8rem;
+}
+
+.detail-value-small {
+    color: #495057;
+    font-weight: 600;
+    font-size: 0.8rem;
+}
+
+.status-active-small {
+    color: #28a745 !important;
+    font-weight: 700;
+    background: rgba(40, 167, 69, 0.1);
+    padding: 0.2rem 0.5rem;
+    border-radius: 15px;
+    font-size: 0.75rem;
+}
+
+.gradient-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.gradient-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, rgba(255,255,255,0.1) 0%, transparent 50%, rgba(255,255,255,0.1) 100%);
+    animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+.gradient-header .modal-title {
+    font-weight: 700;
+    font-size: 1.4rem;
+    position: relative;
+    z-index: 1;
+}
+
+.modern-footer {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border: none;
+    padding: 2rem;
+    border-top: 1px solid rgba(0,0,0,0.05);
+}
+
+.student-photo-section {
+    padding: 2rem 1rem;
+}
+
+.student-photo-container {
+    position: relative;
+    margin-bottom: 1rem;
+}
+
+.student-photo {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 5px solid #fff;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+    transition: all 0.3s ease;
+}
+
+.student-photo:hover {
+    transform: scale(1.05);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+}
+
+.default-avatar {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 5px solid #fff;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.default-avatar::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, transparent, rgba(255,255,255,0.3), transparent);
+    animation: rotate 3s linear infinite;
+}
+
+@keyframes rotate {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.default-avatar-text {
+    font-size: 1.2rem;
+    color: white;
+    font-weight: 700;
+    text-align: center;
+    line-height: 140px;
+}
+
+.student-name {
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+}
+
+.student-role {
+    color: #6c757d;
+    font-size: 0.9rem;
+    margin-bottom: 0;
+}
+
+.qr-section {
+    padding: 2rem;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 15px;
+    margin: 1rem 0;
+}
+
+.qr-code-container-modern {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2.5rem;
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    margin-bottom: 2rem;
+    border: 1px solid rgba(0,0,0,0.05);
+    position: relative;
+    overflow: hidden;
+}
+
+.qr-code-container-modern::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #667eea, #764ba2, #667eea);
+    background-size: 200% 100%;
+    animation: gradientMove 2s ease infinite;
+}
+
+@keyframes gradientMove {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+#studentQRCode {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.student-details {
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    border: 1px solid rgba(0,0,0,0.05);
+    position: relative;
+    overflow: hidden;
+}
+
+.student-details::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+}
+
+.detail-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 0;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    transition: all 0.3s ease;
+}
+
+.detail-item:hover {
+    background: rgba(102, 126, 234, 0.05);
+    margin: 0 -2rem;
+    padding: 1rem 2rem;
+    border-radius: 10px;
+}
+
+.detail-item:last-child {
+    border-bottom: none;
+}
+
+.detail-label {
+    font-weight: 700;
+    color: #2c3e50;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+}
+
+.detail-label::before {
+    content: '•';
+    color: #667eea;
+    margin-right: 0.5rem;
+    font-weight: bold;
+}
+
+.detail-value {
+    color: #495057;
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.status-active {
+    color: #28a745 !important;
+    font-weight: 700;
+    background: rgba(40, 167, 69, 0.1);
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+}
+
+/* Modern Button Styles */
+.modern-btn {
+    border-radius: 25px;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    position: relative;
+    overflow: hidden;
+}
+
+.modern-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s;
+}
+
+.modern-btn:hover::before {
+    left: 100%;
+}
+
+.modern-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .student-photo {
+        width: 100px;
+        height: 100px;
+    }
+    
+    .default-avatar {
+        width: 100px;
+        height: 100px;
+    }
+    
+    .default-avatar-text {
+        font-size: 1rem;
+        line-height: 100px;
+    }
+    
+    .student-photo-small {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .default-avatar-small {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .default-avatar-text-small {
+        font-size: 0.6rem;
+        line-height: 60px;
+    }
+    
+    .qr-section {
+        padding: 1rem;
+    }
+    
+    .student-details {
+        padding: 1rem;
+    }
+    
+    .modern-card {
+        margin: 1rem;
+    }
+    
+    .gradient-header {
+        padding: 1.5rem;
+    }
+    
+    .modern-footer {
+        padding: 1.5rem;
+    }
+}
+
+/* Responsive improvements */
+@media (max-width: 768px) {
+    .modal-lg {
+        max-width: 95%;
+        margin: 0.5rem;
+    }
+    
+    .table-responsive {
+        font-size: 0.875rem;
+    }
+    
+    .badge {
+        font-size: 0.7rem;
+        padding: 0.25rem 0.5rem;
+    }
+}
+</style>
 
 <script>
 // QR Code Functions
@@ -1118,6 +1719,46 @@ function showQRModal() {
         }
     });
 }
+
+function showStudentIdCard() {
+    const modal = new bootstrap.Modal(document.getElementById('studentIdCardModal'));
+    modal.show();
+    
+    // Generate QR Code for student ID
+    const studentId = '{{ Auth::user()->login_id ?? Auth::user()->id }}';
+    const container = document.getElementById('studentQRCode');
+    container.innerHTML = '';
+    
+    // Try QRCode.js first, then fallback to qrcode@1.5.3
+    try {
+        // Use QRCode.js library
+        new QRCode(container, {
+            text: studentId,
+            width: 150,
+            height: 150,
+            colorDark: "#000000",
+            colorLight: "#ffffff",
+            correctLevel: QRCode.CorrectLevel.H
+        });
+        console.log('QR Code generated successfully with QRCode.js');
+    } catch (error) {
+        console.log('QRCode.js failed, trying qrcode@1.5.3...');
+        // Fallback to qrcode@1.5.3
+        QRCode.toCanvas(container, studentId, {
+            width: 150,
+            margin: 2,
+            color: { dark: '#000000', light: '#FFFFFF' }
+        }, function (error) {
+            if (error) {
+                console.error('QR Code Error:', error);
+                container.innerHTML = '<p class="text-danger">Error generating QR code</p>';
+            } else {
+                console.log('QR Code generated successfully with qrcode@1.5.3');
+            }
+        });
+    }
+}
+
 function downloadQRCode() {
     const studentId = document.getElementById('studentIdText').textContent.trim();
     const canvas = document.querySelector('#qrCodeContainer canvas');
@@ -1127,6 +1768,196 @@ function downloadQRCode() {
         link.href = canvas.toDataURL();
         link.click();
     }
+}
+
+function printIdCard() {
+    // Create a new window for printing
+    const printWindow = window.open('', '_blank', 'width=600,height=800');
+    
+    // Get student data
+    const studentName = '{{ Auth::user()->name }}';
+    const studentId = '{{ Auth::user()->login_id ?? Auth::user()->id }}';
+    const registrationDate = '{{ Auth::user()->created_at ? Auth::user()->created_at->format('Y-m-d') : 'N/A' }}';
+    const studentImage = '{{ Auth::user()->image ? asset('storage/' . Auth::user()->image) : asset('images/default-avatar.png') }}';
+    
+    // Create QR code for printing
+    const qrContainer = document.createElement('div');
+    qrContainer.id = 'printQRCode';
+    
+    // Generate QR code
+    new QRCode(qrContainer, {
+        text: studentId,
+        width: 120,
+        height: 120,
+        colorDark: "#000000",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.H
+    });
+    
+    // Create print content
+    const printContent = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Student ID Card</title>
+            <style>
+                body {
+                    font-family: Arial, sans-serif;
+                    margin: 0;
+                    padding: 20px;
+                    background: white;
+                }
+                .id-card {
+                    width: 350px;
+                    height: 220px;
+                    border: 2px solid #333;
+                    border-radius: 10px;
+                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                    color: white;
+                    position: relative;
+                    overflow: hidden;
+                }
+                .id-card::before {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    height: 3px;
+                    background: linear-gradient(90deg, #fff, #f0f0f0, #fff);
+                }
+                .header {
+                    text-align: center;
+                    padding: 10px;
+                    background: rgba(255,255,255,0.1);
+                    border-bottom: 1px solid rgba(255,255,255,0.2);
+                }
+                .header h2 {
+                    margin: 0;
+                    font-size: 18px;
+                    font-weight: bold;
+                }
+                .content {
+                    display: flex;
+                    padding: 15px;
+                    height: 150px;
+                }
+                .photo-section {
+                    width: 80px;
+                    text-align: center;
+                }
+                .student-photo {
+                    width: 70px;
+                    height: 70px;
+                    border-radius: 50%;
+                    border: 3px solid white;
+                    object-fit: cover;
+                    margin-bottom: 5px;
+                }
+                .default-photo {
+                    width: 70px;
+                    height: 70px;
+                    border-radius: 50%;
+                    background: rgba(255,255,255,0.2);
+                    border: 3px solid white;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 12px;
+                    font-weight: bold;
+                    margin-bottom: 5px;
+                }
+                .info-section {
+                    flex: 1;
+                    margin-left: 15px;
+                }
+                .info-row {
+                    margin-bottom: 8px;
+                    font-size: 12px;
+                }
+                .info-label {
+                    font-weight: bold;
+                    color: rgba(255,255,255,0.9);
+                }
+                .info-value {
+                    color: white;
+                }
+                .qr-section {
+                    position: absolute;
+                    bottom: 10px;
+                    right: 10px;
+                    background: white;
+                    padding: 5px;
+                    border-radius: 5px;
+                }
+                .status-badge {
+                    background: #28a745;
+                    color: white;
+                    padding: 2px 8px;
+                    border-radius: 10px;
+                    font-size: 10px;
+                    font-weight: bold;
+                }
+                @media print {
+                    body { margin: 0; }
+                    .id-card { border: 2px solid #333; }
+                }
+            </style>
+        </head>
+        <body>
+            <div class="id-card">
+                <div class="header">
+                    <h2>STUDENT ID CARD</h2>
+                </div>
+                <div class="content">
+                    <div class="photo-section">
+                        ${studentImage.includes('default-avatar') ? 
+                            '<div class="default-photo">STUDENT</div>' : 
+                            `<img src="${studentImage}" alt="Student Photo" class="student-photo">`
+                        }
+                        <div style="font-size: 10px; font-weight: bold;">${studentName}</div>
+                    </div>
+                    <div class="info-section">
+                        <div class="info-row">
+                            <span class="info-label">Student ID:</span>
+                            <span class="info-value">${studentId}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Registration Date:</span>
+                            <span class="info-value">${registrationDate}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Status:</span>
+                            <span class="status-badge">ACTIVE</span>
+                        </div>
+                    </div>
+                    <div class="qr-section">
+                        <div id="printQRCode"></div>
+                    </div>
+                </div>
+            </div>
+        </body>
+        </html>
+    `;
+    
+    printWindow.document.write(printContent);
+    printWindow.document.close();
+    
+    // Wait for QR code to generate then print
+    setTimeout(() => {
+        // Move QR code to print window
+        const qrCode = qrContainer.querySelector('img');
+        if (qrCode) {
+            const printQRContainer = printWindow.document.getElementById('printQRCode');
+            if (printQRContainer) {
+                printQRContainer.innerHTML = '';
+                printQRContainer.appendChild(qrCode.cloneNode(true));
+            }
+        }
+        
+        printWindow.focus();
+        printWindow.print();
+    }, 500);
 }
 // Profile Functions
 function showProfileModal() {
@@ -1250,7 +2081,7 @@ function contactSupport() {
 // Update Quick Actions
 document.addEventListener('DOMContentLoaded', function() {
     const quickActions = document.querySelectorAll('.sd-quick-action');
-    quickActions[0].addEventListener('click', showQRModal); // Scan QR
+    quickActions[0].addEventListener('click', showStudentIdCard); // Show Student ID Card
     quickActions[1].addEventListener('click', function() { showToast('Grades feature coming soon!', true); });
     quickActions[2].addEventListener('click', function() { showToast('Financial status feature coming soon!', true); });
     quickActions[3].addEventListener('click', contactSupport); // Contact Support
@@ -1358,29 +2189,248 @@ function showCourseSchedule(courseId) {
     let schedules = @json($allSchedules ?? []);
     let courseSchedules = schedules.filter(s => s.course_id == courseId);
     let content = '';
+    
     if (courseSchedules.length > 0) {
-        content += `<table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Time</th>
-                    <th>Room</th>
-                    <th>Instructor</th>
-                </tr>
-            </thead>
-            <tbody>`;
+        // Get course details from the first schedule
+        let courseInfo = courseSchedules[0];
+        
+        // Calculate attendance statistics
+        let presentCount = courseSchedules.filter(s => s.attendance_status === 'present').length;
+        let absentCount = courseSchedules.filter(s => s.attendance_status === 'absent').length;
+        let lateCount = courseSchedules.filter(s => s.attendance_status === 'late').length;
+        let pendingCount = courseSchedules.filter(s => s.attendance_status === 'pending').length;
+        
+        content += `
+        <div class="row mb-3">
+            <div class="col-12">
+                <div class="card bg-light">
+                    <div class="card-body py-3">
+                        <h6 class="card-title text-primary mb-2">
+                            <i class="uil uil-book-open me-2"></i>
+                            ${courseInfo.name}
+                        </h6>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p class="mb-1 small"><strong>Category:</strong> ${courseInfo.category || 'Not specified'}</p>
+                                <p class="mb-1 small"><strong>Instructor:</strong> ${courseInfo.instructor || 'Not assigned'}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="mb-1 small"><strong>Total Sessions:</strong> ${courseSchedules.length}</p>
+                                <p class="mb-1 small"><strong>Status:</strong> 
+                                    <span class="badge ${presentCount > 0 ? 'bg-success' : 'bg-secondary'}">${presentCount} Present</span>
+                                    <span class="badge ${absentCount > 0 ? 'bg-danger' : 'bg-secondary'}">${absentCount} Absent</span>
+                                    <span class="badge ${lateCount > 0 ? 'bg-warning' : 'bg-secondary'}">${lateCount} Late</span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th><i class="uil uil-calendar-alt me-1"></i>Date</th>
+                        <th><i class="uil uil-clock me-1"></i>Time</th>
+                        <th><i class="uil uil-map-marker me-1"></i>Room</th>
+                        <th><i class="uil uil-check-circle me-1"></i>Status</th>
+                    </tr>
+                </thead>
+                <tbody>`;
+        
         courseSchedules.forEach(s => {
+            let date = s.session_date ? new Date(s.session_date) : null;
+            let shortDate = date ? date.toLocaleDateString('en-US', { 
+                month: 'short', 
+                day: 'numeric',
+                weekday: 'short'
+            }) : '-';
+            let timeRange = `${s.start_time ? s.start_time.substring(0,5) : ''} - ${s.end_time ? s.end_time.substring(0,5) : ''}`;
+            
+            let statusBadge = '';
+            let statusIcon = '';
+            switch(s.attendance_status) {
+                case 'present':
+                    statusBadge = '<span class="status-badge present"><i class="uil uil-check-circle me-1"></i>Present</span>';
+                    break;
+                case 'absent':
+                    statusBadge = '<span class="status-badge absent"><i class="uil uil-times-circle me-1"></i>Absent</span>';
+                    break;
+                case 'late':
+                    statusBadge = '<span class="status-badge late"><i class="uil uil-clock me-1"></i>Late</span>';
+                    break;
+                default:
+                    statusBadge = '<span class="status-badge pending"><i class="uil uil-clock-eight me-1"></i>Pending</span>';
+            }
+            
             content += `<tr>
-                <td>${s.session_date ? new Date(s.session_date).toLocaleDateString() : '-'}</td>
-                <td>${s.start_time ? s.start_time.substring(0,5) : ''} - ${s.end_time ? s.end_time.substring(0,5) : ''}</td>
-                <td>${s.room || 'TBD'}</td>
-                <td>${s.instructor || '-'}</td>
+                <td>
+                    <div>
+                        <strong>${shortDate}</strong>
+                    </div>
+                </td>
+                <td>
+                    <div>
+                        <strong>${timeRange}</strong>
+                    </div>
+                </td>
+                <td>
+                    <span class="badge bg-info">${s.room || 'TBD'}</span>
+                </td>
+                <td>${statusBadge}</td>
             </tr>`;
         });
-        content += `</tbody></table>`;
+        
+        content += `</tbody></table>
+        </div>
+        
+        <div class="row mt-3">
+            <div class="col-12">
+                <div class="alert alert-info">
+                    <i class="uil uil-info-circle me-2"></i>
+                    <strong>Note:</strong> Attendance status is updated based on your participation in each session.
+                </div>
+            </div>
+        </div>`;
     } else {
-        content = `<div class="alert alert-info text-center mb-0">Sorry, there are no scheduled lectures for this course.</div>`;
+        content = `
+        <div class="text-center py-4">
+            <i class="uil uil-calendar-slash text-muted" style="font-size: 3rem;"></i>
+            <h6 class="text-muted mt-2">No Scheduled Lectures</h6>
+            <p class="text-muted small">There are currently no scheduled lectures for this course.</p>
+        </div>`;
     }
+    
+    document.getElementById('courseScheduleContent').innerHTML = content;
+    new bootstrap.Modal(document.getElementById('courseScheduleModal')).show();
+}
+
+function showPackageSchedule(packageId) {
+    let schedules = @json($allSchedules ?? []);
+    let packageSchedules = schedules.filter(s => s.type === 'package' && s.package_name);
+    let content = '';
+    
+    if (packageSchedules.length > 0) {
+        // Get package details from the first schedule
+        let packageInfo = packageSchedules[0];
+        
+        // Calculate attendance statistics
+        let presentCount = packageSchedules.filter(s => s.attendance_status === 'present').length;
+        let absentCount = packageSchedules.filter(s => s.attendance_status === 'absent').length;
+        let lateCount = packageSchedules.filter(s => s.attendance_status === 'late').length;
+        let pendingCount = packageSchedules.filter(s => s.attendance_status === 'pending').length;
+        
+        content += `
+        <div class="row mb-3">
+            <div class="col-12">
+                <div class="card bg-light">
+                    <div class="card-body py-3">
+                        <h6 class="card-title text-primary mb-2">
+                            <i class="uil uil-box me-2"></i>
+                            ${packageInfo.package_name}
+                        </h6>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p class="mb-1 small"><strong>Package Type:</strong> Educational Package</p>
+                                <p class="mb-1 small"><strong>Total Sessions:</strong> ${packageSchedules.length}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="mb-1 small"><strong>Status:</strong> <span class="badge bg-success">Active</span></p>
+                                <p class="mb-1 small"><strong>Attendance:</strong> 
+                                    <span class="badge ${presentCount > 0 ? 'bg-success' : 'bg-secondary'}">${presentCount} Present</span>
+                                    <span class="badge ${absentCount > 0 ? 'bg-danger' : 'bg-secondary'}">${absentCount} Absent</span>
+                                    <span class="badge ${lateCount > 0 ? 'bg-warning' : 'bg-secondary'}">${lateCount} Late</span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th><i class="uil uil-book-open me-1"></i>Course</th>
+                        <th><i class="uil uil-calendar-alt me-1"></i>Date</th>
+                        <th><i class="uil uil-clock me-1"></i>Time</th>
+                        <th><i class="uil uil-map-marker me-1"></i>Room</th>
+                        <th><i class="uil uil-check-circle me-1"></i>Status</th>
+                    </tr>
+                </thead>
+                <tbody>`;
+        
+        packageSchedules.forEach(s => {
+            let date = s.session_date ? new Date(s.session_date) : null;
+            let shortDate = date ? date.toLocaleDateString('en-US', { 
+                month: 'short', 
+                day: 'numeric',
+                weekday: 'short'
+            }) : '-';
+            let timeRange = `${s.start_time ? s.start_time.substring(0,5) : ''} - ${s.end_time ? s.end_time.substring(0,5) : ''}`;
+            
+            let statusBadge = '';
+            switch(s.attendance_status) {
+                case 'present':
+                    statusBadge = '<span class="status-badge present"><i class="uil uil-check-circle me-1"></i>Present</span>';
+                    break;
+                case 'absent':
+                    statusBadge = '<span class="status-badge absent"><i class="uil uil-times-circle me-1"></i>Absent</span>';
+                    break;
+                case 'late':
+                    statusBadge = '<span class="status-badge late"><i class="uil uil-clock me-1"></i>Late</span>';
+                    break;
+                default:
+                    statusBadge = '<span class="status-badge pending"><i class="uil uil-clock-eight me-1"></i>Pending</span>';
+            }
+            
+            content += `<tr>
+                <td>
+                    <div>
+                        <strong>${s.name}</strong>
+                        <div class="text-muted small">${s.category || 'No category'}</div>
+                    </div>
+                </td>
+                <td>
+                    <div>
+                        <strong>${shortDate}</strong>
+                    </div>
+                </td>
+                <td>
+                    <div>
+                        <strong>${timeRange}</strong>
+                    </div>
+                </td>
+                <td>
+                    <span class="badge bg-info">${s.room || 'TBD'}</span>
+                </td>
+                <td>${statusBadge}</td>
+            </tr>`;
+        });
+        
+        content += `</tbody></table>
+        </div>
+        
+        <div class="row mt-3">
+            <div class="col-12">
+                <div class="alert alert-info">
+                    <i class="uil uil-info-circle me-2"></i>
+                    <strong>Note:</strong> This schedule shows all scheduled lectures for courses included in this package.
+                </div>
+            </div>
+        </div>`;
+    } else {
+        content = `
+        <div class="text-center py-4">
+            <i class="uil uil-calendar-slash text-muted" style="font-size: 3rem;"></i>
+            <h6 class="text-muted mt-2">No Scheduled Lectures</h6>
+            <p class="text-muted small">There are currently no scheduled lectures for courses in this package.</p>
+        </div>`;
+    }
+    
     document.getElementById('courseScheduleContent').innerHTML = content;
     new bootstrap.Modal(document.getElementById('courseScheduleModal')).show();
 }
