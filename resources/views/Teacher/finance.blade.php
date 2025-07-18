@@ -245,7 +245,7 @@
                 </div>
               </div>
               <div class="ms-auto">
-                <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#courseEarningsModal">
+                <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#courseEarningsModal" style="margin-left: auto; position: absolute; right: 20px; top: 50%; transform: translateY(-50%);">
                   <i class="fas fa-chart-bar me-2"></i>Course Earnings Report
                 </button>
               </div>
