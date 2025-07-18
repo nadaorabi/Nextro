@@ -28,7 +28,7 @@
   <main class="main-content position-relative border-radius-lg ">
     <!-- Animated Welcome Message -->
     <div class="container mt-4 text-center">
-      <h1 class="welcome-animated">Welcome, Admin 👋</h1>
+      <h1 class="welcome-animated">Welcome, Admin </h1>
     </div>
     <style>
     .welcome-animated {
@@ -72,6 +72,7 @@
                   <span class="text-success text-sm font-weight-bolder">+{{ $stats['students_this_month'] ?? 0 }}</span>
                   This month
                     </p>
+                    <br> <br>
                   </div>
                 </div>
                 <div class="col-4 text-end">
@@ -96,6 +97,7 @@
                   <span class="text-success text-sm font-weight-bolder">+{{ $stats['teachers_this_month'] ?? 0 }}</span>
                   This month
                     </p>
+                    <br> <br>
                   </div>
                 </div>
                 <div class="col-4 text-end">
@@ -120,6 +122,7 @@
                   <span class="text-info text-sm font-weight-bolder">Active</span>
                   Educational courses
                     </p>
+                    
                   </div>
                 </div>
                 <div class="col-4 text-end">
@@ -144,6 +147,7 @@
                   <span class="text-success text-sm font-weight-bolder">+${{ number_format($stats['revenue_this_month'] ?? 0, 2) }}</span>
                   This month
                     </p>
+                    <br>
                   </div>
                 </div>
                 <div class="col-4 text-end">

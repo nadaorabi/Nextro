@@ -1,265 +1,119 @@
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 <style>
-  /* --- Enhanced Sidebar UI/UX --- */
-
-  /* General Link Styling & Spacing */
-  .sidenav .nav-item .nav-link {
-    transition: all 0.2s ease-in-out;
-    border-radius: 0.375rem;
-    margin: 3px 1rem; /* Added more consistent margin */
-    padding: 0.7rem 1rem;
-    color: #67748e; /* Softer default text color */
+.sidenav {
+  height: auto !important;
+  min-height: 0 !important;
+  overflow-y: visible !important;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE 10+ */
+}
+.sidenav .navbar-nav {
+  height: auto !important;
+  overflow: visible !important;
+  display: block !important;
+}
+#sidenav-main {
+  overflow-y: visible !important;
+  height: auto !important;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE 10+ */
+  z-index: 1050;
+  background: #fff !important;
+  box-shadow: 0 0 2rem 0 rgba(136, 152, 170, .15);
+}
+.sidenav .collapse.navbar-collapse {
+  height: 100% !important;
+  overflow: visible !important;
+}
+.sidenav::-webkit-scrollbar,
+#sidenav-main::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+@media (max-width: 575.98px) {
+  .navbar-main .nav-item .d-flex.align-items-center {
+    flex-direction: column !important;
+    align-items: flex-end !important;
+    gap: 0.25rem !important;
   }
-
-  /* Hover Effect for Non-Active Links */
-  .sidenav .nav-item .nav-link:not(.active):hover {
-    background-color: rgba(58, 116, 254, 0.08);
-    transform: translateX(4px);
-    color: #3a74fe;
+  .navbar-main .nav-item .d-flex.align-items-center a span {
+    display: block !important;
+    margin-top: 2px;
+    font-size: 13px;
   }
-
-  /* Active Link Styling */
-  .sidenav .nav-item .nav-link.active {
-    background: #e7f0fd !important;
-    color: #2563eb !important;
-    font-weight: 600;
-    box-shadow: none !important;
+  .navbar-main .nav-item .d-flex.align-items-center a img {
+    margin-right: 0 !important;
   }
-  .sidenav .nav-item .nav-link.active i {
-    color: #2563eb !important;
-  }
-
-  /* Disabled Navigation Items */
-  .sidenav .nav-item.disabled .nav-link {
-    opacity: 0.5;
-    cursor: not-allowed;
-    pointer-events: none;
-    color: #999 !important;
-    background-color: #f8f9fa !important;
-    border: 1px solid #e9ecef;
-  }
-
-  .sidenav .nav-item.disabled .nav-link:hover {
-    background-color: #f8f9fa !important;
-    transform: none;
-    color: #999 !important;
-  }
-
-  .sidenav .nav-item.disabled .nav-link i {
-    opacity: 0.5;
-  }
-
-  .sidenav .nav-item.disabled .nav-link .icon-shape {
-    opacity: 0.3;
-  }
-
-  /* Disabled submenu items */
-  .sidenav .nav-item.disabled .collapse .nav-link {
-    opacity: 0.5;
-    cursor: not-allowed;
-    pointer-events: none;
-    color: #999 !important;
-  }
-
-  .sidenav .nav-item.disabled .collapse .nav-link:hover {
-    color: #999 !important;
-    background: transparent !important;
-  }
-
-  /* Dropdown Arrow Indicator */
-  .sidenav .nav-link[data-bs-toggle="collapse"] {
+  .navbar-main .nav-item .user-profile-navbar {
+    flex-direction: row !important;
+    align-items: flex-start !important;
+    gap: 0.5rem !important;
     position: relative;
   }
-  .sidenav .nav-link[data-bs-toggle="collapse"]::after {
-    content: '\f104'; /* FontAwesome chevron-left */
-    font-family: 'Font Awesome 5 Free';
-    font-weight: 900;
-    position: absolute;
-    right: 1.25rem;
-    top: 50%;
-    transform: translateY(-50%);
-    transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
-    font-size: 0.9rem;
+  .navbar-main .nav-item .user-profile-navbar .profile-img {
+    margin-right: 0 !important;
   }
-
-  .sidenav .nav-link[data-bs-toggle="collapse"][aria-expanded="true"]::after {
-    transform: translateY(-50%) rotate(-90deg);
-  }
-
-  /* Disabled dropdown arrows */
-  .sidenav .nav-item.disabled .nav-link[data-bs-toggle="collapse"]::after {
-    opacity: 0.3;
-  }
-
-  /* Nested Menu Structure & Styling */
-  .sidenav .navbar-nav .collapse {
-    margin-top: 0.5rem;
-    margin-left: 0;
-    padding-left: 1rem;
-    border-left: 2px solid #e9ecef;
-  }
-  
-  .sidenav .navbar-nav .collapse .nav-link {
-    font-size: 0.88em;
-    font-weight: 500;
-    margin: 1px 0;
-    padding-left: 0.5rem;
-    padding-right: 0.5rem;
-  }
-
-  .sidenav .navbar-nav .collapse .nav-link.active {
-      font-weight: 600;
-      color: #3a74fe;
-      background: transparent;
-      box-shadow: none;
-  }
-  
-  .sidenav .navbar-nav .collapse .nav-link:hover {
-      color: #3a74fe;
-  }
-
-  /* Additional styling to prevent overflow */
-  .sidenav .navbar-nav .collapse .nav-item {
-    margin-left: 0;
-    margin-right: 0;
-  }
-
-  .sidenav .navbar-nav .collapse .nav-item .nav-link {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  /* Ensure sidebar content doesn't overflow */
-  .sidenav .navbar-nav {
-    width: 100%;
-    max-width: 100%;
-  }
-
-  .sidenav .navbar-nav .nav-item {
-    width: 100%;
-  }
-
-  .sidenav .navbar-nav .nav-link {
-    width: 100%;
-    box-sizing: border-box;
-  }
-
-  /* Prevent nested menus from overflowing */
-  .sidenav .navbar-nav .collapse {
-    width: 100%;
-    max-width: 100%;
-    box-sizing: border-box;
-  }
-
-  .sidenav .navbar-nav .collapse .nav-link {
-    width: 100%;
-    box-sizing: border-box;
-    word-wrap: break-word;
-  }
-
-  .sidenav {
-    height: auto !important;
-    min-height: 0 !important;
-    overflow-y: visible !important;
-    scrollbar-width: none;
-    /* Firefox */
-    -ms-overflow-style: none;
-    /* IE 10+ */
-  }
-
-  .sidenav .navbar-nav {
-    height: auto !important;
-    overflow: visible !important;
+  .navbar-main .nav-item .user-profile-navbar .user-name {
     display: block !important;
+    width: 100%;
+    text-align: right;
+    margin-top: 2px;
+    font-size: 13px;
   }
-
-  #sidenav-main {
-    overflow-y: visible !important;
-    height: auto !important;
-    scrollbar-width: none;
-    /* Firefox */
-    -ms-overflow-style: none;
-    /* IE 10+ */
-    z-index: 1050;
-    background: #fff !important;
-    box-shadow: 0 0 2rem 0 rgba(136, 152, 170, .15);
+  .navbar-main .nav-item .user-profile-navbar a {
+    flex-direction: row !important;
+    align-items: center !important;
   }
-
-  .sidenav .collapse.navbar-collapse {
-    height: 100% !important;
-    overflow: visible !important;
+  .navbar-main .nav-item .user-profile-navbar .fa-bell.d-inline.d-sm-none {
+    margin-right: 0.25rem !important;
+    color: #fff;
+    font-size: 22px;
+    order: 1;
   }
-
-  .sidenav::-webkit-scrollbar,
-  #sidenav-main::-webkit-scrollbar {
-    display: none;
-    /* Chrome, Safari, Opera */
-  }
-
-  @media (max-width: 575.98px) {
-    .navbar-main .nav-item .d-flex.align-items-center {
-      flex-direction: column !important;
-      align-items: flex-end !important;
-      gap: 0.25rem !important;
-    }
-
-    .navbar-main .nav-item .d-flex.align-items-center a span {
-      display: block !important;
-      margin-top: 2px;
-      font-size: 13px;
-    }
-
-    .navbar-main .nav-item .d-flex.align-items-center a img {
-      margin-right: 0 !important;
-    }
-
-    .navbar-main .nav-item .user-profile-navbar {
-      flex-direction: row !important;
-      align-items: flex-start !important;
-      gap: 0.5rem !important;
-      position: relative;
-    }
-
-    .navbar-main .nav-item .user-profile-navbar .profile-img {
-      margin-right: 0 !important;
-    }
-
-    .navbar-main .nav-item .user-profile-navbar .user-name {
-      display: block !important;
-      width: 100%;
-      text-align: right;
-      margin-top: 2px;
-      font-size: 13px;
-    }
-
-    .navbar-main .nav-item .user-profile-navbar a {
-      flex-direction: row !important;
-      align-items: center !important;
-    }
-
-    .navbar-main .nav-item .user-profile-navbar .fa-bell.d-inline.d-sm-none {
-      margin-right: 0.25rem !important;
-      color: #fff;
-      font-size: 22px;
-      order: 1;
-    }
-  }
-
+}
+.main-content {
+  margin-left: 290px !important;
+}
+@media (max-width: 991.98px) {
   .main-content {
-    margin-left: 290px !important;
+    margin-left: 0 !important;
   }
+}
+/* Remove sidebar overlay and keep sidebar solid */
+#sidebar-overlay { display: none !important; }
 
-  @media (max-width: 991.98px) {
-    .main-content {
-      margin-left: 0 !important;
-    }
-  }
+/* Active/selected menu item styling */
+.nav-link.active {
+  background-color: #e3f2fd !important;
+  color: #1976d2 !important;
+  border-radius: 8px !important;
+  margin: 2px 8px !important;
+}
 
-  /* Remove sidebar overlay and keep sidebar solid */
-  #sidebar-overlay {
-    display: none !important;
-  }
+/* Hover effect for menu items */
+.nav-link:hover {
+  background-color: #f5f9ff !important;
+  border-radius: 8px !important;
+  margin: 2px 8px !important;
+}
+
+/* Remove hover effects for logout button */
+.nav-item form button.nav-link:hover {
+  background-color: transparent !important;
+  box-shadow: none !important;
+  transform: none !important;
+  border-radius: 0 !important;
+  margin: 0 !important;
+}
+
+/* Remove hover effects for icon button */
+.nav-item .nav-link[href="javascript:;"]:hover {
+  background-color: transparent !important;
+  box-shadow: none !important;
+  transform: none !important;
+  border-radius: 0 !important;
+  margin: 0 !important;
+}
+</style>
 </style>
 <div class="min-height-300 position-absolute w-100" style="background: rgb(156, 200, 247);"></div>
 <nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl " id="navbarBlur"
@@ -277,7 +131,7 @@
           <form action="{{ route('admin.logout') }}" method="POST" style="display:inline;">
             @csrf
             <button type="submit" class="nav-link text-white font-weight-bold px-0 bg-transparent border-0"
-              style="outline:none;">
+              style="outline:none; box-shadow:none; transition:none;">
               <i class="fa fa-sign-out-alt me-sm-1"></i>
               <span class="d-sm-inline d-none">Logout</span>
             </button>
@@ -293,7 +147,7 @@
           </a>
         </li>
         <li class="nav-item px-3 d-flex align-items-center">
-          <a href="javascript:;" class="nav-link text-white p-0">
+          <a href="javascript:;" class="nav-link text-white p-0" style="outline:none; box-shadow:none; transition:none;">
             <i class="fa fa-cog fixed-plugin-button-nav cursor-pointer"></i>
           </a>
         </li>
@@ -384,7 +238,7 @@
     </div>
   </div>
 </div>
-<aside class="sidenav bg-white navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-4 "
+<aside class="sidenav bg-light-blue navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-4 "
   id="sidenav-main">
   <div class="sidenav-header">
     <i class="fas fa-times p-3 cursor-pointer text-secondary opacity-8 position-absolute end-0 top-0 d-block d-xl-none"

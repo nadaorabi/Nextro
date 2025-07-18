@@ -176,7 +176,10 @@
         <div class="row gx-4 align-items-center">
           <div class="col-auto">
             <div class="avatar avatar-xl position-relative" style="display: flex; flex-direction: column; align-items: center; position: relative; width: 100px;">
-              <img id="profileImage" src="{{ Auth::user()->image ? asset('storage/' . Auth::user()->image) : 'https://randomuser.me/api/portraits/women/44.jpg' }}" alt="profile_image" class="w-100 border-radius-lg shadow-sm" style="width:100px;height:100px;object-fit:cover;border-radius:50%;" onerror="this.src='https://randomuser.me/api/portraits/women/44.jpg'" onload="console.log('Image loaded:', this.src)">
+              <img id="profileImage" src="" alt="profile_image" class="w-100 border-radius-lg shadow-sm" style="width:100px;height:100px;object-fit:cover;border-radius:50%;display:none;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+              <div id="profileInitials" class="d-flex align-items-center justify-content-center" style="width:100px;height:100px;border-radius:50%;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;font-size:2rem;font-weight:bold;">
+                {{ strtoupper(substr(Auth::user()->name ?? 'U', 0, 2)) }}
+              </div>
               <form id="profileImageUploadForm" method="POST" action="{{ route('teacher.profile.update') }}" enctype="multipart/form-data" autocomplete="off" style="display:inline;">
                 @csrf
                 @method('PUT')
@@ -469,6 +472,7 @@
 
     const imageInput = document.getElementById('imageInput');
     const profileImage = document.getElementById('profileImage');
+    const profileInitials = document.getElementById('profileInitials');
     const saveImageBtn = document.getElementById('saveImageBtn');
     let imageChanged = false;
 
@@ -490,6 +494,10 @@
         const reader = new FileReader();
         reader.onload = function(e) {
           profileImage.src = e.target.result;
+          profileImage.style.display = 'block';
+          if (profileInitials) {
+            profileInitials.style.display = 'none';
+          }
         };
         reader.readAsDataURL(file);
         saveImageBtn.style.display = 'flex';
@@ -501,12 +509,19 @@
     document.getElementById('profileImageUploadForm').addEventListener('submit', function(e) {
       e.preventDefault();
       if (!imageChanged) {
+        showToast('Please select an image first', 'warning');
         return;
       }
       
       saveImageBtn.disabled = true;
       saveImageBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i>';
       const formData = new FormData(this);
+      
+      // Ensure the image file is included in the form data
+      const fileInput = document.getElementById('imageInput');
+      if (fileInput.files[0]) {
+        formData.set('image', fileInput.files[0]);
+      }
       
       // Debug: Log form data
       console.log('Form data entries:');
@@ -543,13 +558,25 @@
           // Update the image source with the new path
           if (data.image_path) {
             profileImage.src = data.image_path + '?t=' + new Date().getTime();
+            profileImage.style.display = 'block';
+            if (profileInitials) {
+              profileInitials.style.display = 'none';
+            }
             
             // Also update the image in the profile card
             const profileCardImage = document.querySelector('.card-profile-bottom img');
             if (profileCardImage) {
               profileCardImage.src = data.image_path + '?t=' + new Date().getTime();
+              profileCardImage.style.display = 'block';
+              const cardInitials = document.querySelector('.card-profile-bottom #profileInitials');
+              if (cardInitials) {
+                cardInitials.style.display = 'none';
+              }
             }
           }
+          
+          // Clear the file input
+          fileInput.value = '';
         } else {
           showToast(data.message || 'Error updating profile image', 'error');
         }
