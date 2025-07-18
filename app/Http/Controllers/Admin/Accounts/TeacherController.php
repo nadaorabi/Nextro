@@ -45,6 +45,7 @@ class TeacherController extends Controller
         try {
             $validated = $request->validate([
                 'name'         => 'required|string|max:150',
+                'user_name'    => 'required|string|max:50|unique:users,user_name',
                 'mobile'       => 'required|string|unique:users,mobile|max:15',
                 'email'        => 'nullable|email|unique:users,email|max:150',
                 'address'      => 'nullable|string|max:500',
@@ -63,6 +64,7 @@ class TeacherController extends Controller
             $user = new User();
 
             $user->name = $validated['name'];
+            $user->user_name = $validated['user_name'];
             $user->mobile = $validated['mobile'];
             $user->email = $validated['email'] ?? null;
             $user->address = $validated['address'] ?? null;
@@ -70,9 +72,15 @@ class TeacherController extends Controller
             $user->is_active = $validated['is_active'];
             $user->role = 'teacher';
             $user->login_id = $loginId;
-            $user->user_name = $loginId; // استخدام login_id كـ user_name
             $user->plain_password = $plainPassword;
             $user->password = Hash::make($plainPassword);
+
+            if ($request->hasFile('profile_image')) {
+                $user->profile_image = $request->file('profile_image')->store('profile-images', 'public');
+            } else {
+                $gender = strtolower($request->input('gender', 'male'));
+                $user->profile_image = $gender === 'female' ? 'defaults/default-teacher-female.jpg' : 'defaults/default-teacher-male.jpg';
+            }
 
             $user->save();
 
@@ -120,6 +128,7 @@ class TeacherController extends Controller
             
             $validated = $request->validate([
                 'name'         => 'required|string|max:150',
+                'user_name'    => 'required|string|max:50|unique:users,user_name,' . $id,
                 'mobile'       => 'required|string|max:15|unique:users,mobile,' . $id,
                 'email'        => 'nullable|email|max:150|unique:users,email,' . $id,
                 'address'      => 'nullable|string|max:500',

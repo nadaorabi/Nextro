@@ -93,54 +93,63 @@
                 </div>
 
                 <div class="row">
+                  <!-- Username -->
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label">Username <span class="text-danger">*</span></label>
+                    <input type="text" name="user_name" class="form-control" value="{{ old('user_name') }}" required maxlength="50" placeholder="Enter unique username for login">
+                    <small class="form-text text-muted">This will be used for login. Must be unique.</small>
+                  </div>
+
                   <!-- Father's Name -->
                   <div class="col-md-6 mb-3">
                     <label class="form-label">Father's Full Name</label>
                     <input type="text" name="father_name" class="form-control" value="{{ old('father_name') }}" maxlength="255" placeholder="Enter father's name">
                   </div>
+                </div>
 
+                <div class="row">
                   <!-- Mother's Name -->
                   <div class="col-md-6 mb-3">
                     <label class="form-label">Mother's Full Name</label>
                     <input type="text" name="mother_name" class="form-control" value="{{ old('mother_name') }}" maxlength="255" placeholder="Enter mother's name">
                   </div>
-                </div>
 
-                <div class="row">
                   <!-- Email -->
                   <div class="col-md-6 mb-3">
                     <label class="form-label">Email Address</label>
                     <input type="email" name="email" class="form-control" value="{{ old('email') }}" maxlength="255" placeholder="Enter email address (optional)">
                   </div>
+                </div>
 
+                <div class="row">
                   <!-- Address -->
                   <div class="col-md-6 mb-3">
                     <label class="form-label">Home Address</label>
                     <input type="text" name="address" class="form-control" value="{{ old('address') }}" maxlength="255" placeholder="Enter home address">
                   </div>
-                </div>
 
-                <div class="row">
                   <!-- National ID -->
                   <div class="col-md-6 mb-3">
                     <label class="form-label">National ID Number</label>
                     <input type="text" name="national_id" class="form-control" value="{{ old('national_id') }}" maxlength="50" placeholder="Enter national ID or passport number">
                   </div>
+                </div>
 
+                <div class="row">
                   <!-- Birth Date -->
                   <div class="col-md-6 mb-3">
                     <label class="form-label">Date of Birth</label>
                     <input type="date" name="birth_date" class="form-control" value="{{ old('birth_date') }}" max="{{ now()->toDateString() }}" lang="en" dir="ltr" placeholder="MM/DD/YYYY">
                   </div>
-                </div>
 
-                <div class="row">
                   <!-- Alt Mobile -->
                   <div class="col-md-6 mb-3">
                     <label class="form-label">Alternative Mobile Number</label>
                     <input type="tel" name="alt_mobile" class="form-control" value="{{ old('alt_mobile') }}" pattern="[0-9]{9,15}" maxlength="15" placeholder="Enter alternative contact number">
                   </div>
+                </div>
 
+                <div class="row">
                   <!-- Status -->
                   <div class="col-md-6 mb-3">
                     <label class="form-label">Account Status <span class="text-danger">*</span></label>

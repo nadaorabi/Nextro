@@ -25,6 +25,7 @@ class CourseController extends Controller
             $linkedCategories = Category::has('courses')->count();
             $latestCourse = Course::latest()->first();
             $categoriesList = Category::all();
+            $teachers = \App\Models\User::where('role', 'teacher')->where('is_active', true)->get();
 
             return view('admin.educational-courses.index', compact(
                 'courses',
@@ -32,7 +33,8 @@ class CourseController extends Controller
                 'activeCourses',
                 'linkedCategories',
                 'latestCourse',
-                'categoriesList'
+                'categoriesList',
+                'teachers'
             ));
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Error loading courses: ' . $e->getMessage());
@@ -117,6 +119,8 @@ class CourseController extends Controller
             if ($request->hasFile('image')) {
                 $imagePath = $request->file('image')->store('courses', 'public');
                 $data['image'] = $imagePath;
+            } else {
+                $data['image'] = 'defaults/default-course.jpg';
             }
 
             $course = Course::create($data);
@@ -181,8 +185,8 @@ class CourseController extends Controller
         try {
             $categories = Category::where('status', 'active')->get();
             $packages = Package::where('status', 'active')->get();
-            
-            return view('admin.educational-courses.edit', compact('course', 'categories', 'packages'));
+            $teachers = \App\Models\User::where('role', 'teacher')->where('is_active', true)->get();
+            return view('admin.educational-courses.edit', compact('course', 'categories', 'packages', 'teachers'));
         } catch (\Exception $e) {
             return redirect()->route('admin.educational-courses.index')
                 ->with('error', 'Error loading edit form: ' . $e->getMessage());
@@ -264,6 +268,26 @@ class CourseController extends Controller
             }
 
             $course->update($data);
+
+            // تحديث المدرس الأساسي ونسبته
+            if ($request->filled('instructor_id') && $request->filled('instructor_percentage')) {
+                $instructorId = $request->instructor_id;
+                $percentage = (int) $request->instructor_percentage;
+                $courseInstructor = $course->courseInstructors()->where('role', 'primary')->first();
+                if ($courseInstructor) {
+                    $courseInstructor->update([
+                        'instructor_id' => $instructorId,
+                        'percentage' => $percentage,
+                    ]);
+                } else {
+                    \App\Models\CourseInstructor::create([
+                        'course_id' => $course->id,
+                        'instructor_id' => $instructorId,
+                        'role' => 'primary',
+                        'percentage' => $percentage,
+                    ]);
+                }
+            }
 
             // Handle packages if any
             if ($request->has('packages') && is_array($request->packages)) {

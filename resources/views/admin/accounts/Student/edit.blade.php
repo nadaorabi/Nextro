@@ -90,6 +90,13 @@
                   <input type="text" name="name" class="form-control" value="{{ old('name', $student->name) }}" required maxlength="255" placeholder="Enter student's complete name">
                 </div>
 
+                <!-- Username -->
+                <div class="mb-3">
+                  <label class="form-label">Username <span class="text-danger">*</span></label>
+                  <input type="text" name="user_name" class="form-control" value="{{ old('user_name', $student->user_name) }}" required maxlength="50" placeholder="Enter unique username for login">
+                  <small class="form-text text-muted">This will be used for login. Must be unique.</small>
+                </div>
+
                 <!-- Father's Name -->
                 <div class="mb-3">
                   <label class="form-label">Father's Full Name</label>

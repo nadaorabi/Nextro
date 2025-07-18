@@ -48,6 +48,7 @@ class StudentController extends Controller
         try {
             $validated = $request->validate([
                 'name'         => 'required|string|max:150',
+                'user_name'    => 'required|string|max:50|unique:users,user_name',
                 'father_name'  => 'nullable|string|max:150',
                 'mother_name'  => 'nullable|string|max:150',
                 'mobile'       => 'required|string|unique:users,mobile|max:15',
@@ -71,6 +72,7 @@ class StudentController extends Controller
             $user = new User();
 
             $user->name = $validated['name'];
+            $user->user_name = $validated['user_name'];
             $user->father_name = $validated['father_name'] ?? null;
             $user->mother_name = $validated['mother_name'] ?? null;
             $user->mobile = $validated['mobile'];
@@ -83,9 +85,15 @@ class StudentController extends Controller
             $user->is_active = $validated['is_active'];
             $user->role = 'student';
             $user->login_id = $loginId;
-            $user->user_name = $loginId; // استخدام login_id كـ user_name
             $user->plain_password = $plainPassword;
             $user->password = Hash::make($plainPassword);
+
+            if ($request->hasFile('profile_image')) {
+                $user->profile_image = $request->file('profile_image')->store('profile-images', 'public');
+            } else {
+                $gender = strtolower($request->input('gender', 'male'));
+                $user->profile_image = $gender === 'female' ? 'defaults/default-student-female.jpg' : 'defaults/default-student-male.jpg';
+            }
 
             $user->save();
 
@@ -211,6 +219,7 @@ class StudentController extends Controller
             
             $validated = $request->validate([
                 'name'         => 'required|string|max:150',
+                'user_name'    => 'required|string|max:50|unique:users,user_name,' . $id,
                 'father_name'  => 'nullable|string|max:150',
                 'mother_name'  => 'nullable|string|max:150',
                 'mobile'       => 'required|string|max:15|unique:users,mobile,' . $id,

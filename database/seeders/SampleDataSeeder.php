@@ -12,6 +12,7 @@ use App\Models\Exam;
 use App\Models\AssignmentSubmission;
 use App\Models\ExamSubmission;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Hash;
 
 class SampleDataSeeder extends Seeder
 {
@@ -30,7 +31,8 @@ class SampleDataSeeder extends Seeder
                 'mobile' => '01012345678',
                 'role' => 'student',
                 'password' => bcrypt('password'),
-                'login_id' => 'STU001'
+                'login_id' => 'STU001',
+                'user_name' => 'ahmed_student'
             ],
             [
                 'name' => 'فاطمة أحمد حسن',
@@ -38,7 +40,8 @@ class SampleDataSeeder extends Seeder
                 'mobile' => '01012345679',
                 'role' => 'student',
                 'password' => bcrypt('password'),
-                'login_id' => 'STU002'
+                'login_id' => 'STU002',
+                'user_name' => 'fatima_student'
             ],
             [
                 'name' => 'محمد علي أحمد',
@@ -46,7 +49,8 @@ class SampleDataSeeder extends Seeder
                 'mobile' => '01012345680',
                 'role' => 'student',
                 'password' => bcrypt('password'),
-                'login_id' => 'STU003'
+                'login_id' => 'STU003',
+                'user_name' => 'mohamed_student'
             ],
             [
                 'name' => 'سارة محمود محمد',
@@ -54,7 +58,8 @@ class SampleDataSeeder extends Seeder
                 'mobile' => '01012345681',
                 'role' => 'student',
                 'password' => bcrypt('password'),
-                'login_id' => 'STU004'
+                'login_id' => 'STU004',
+                'user_name' => 'sara_student'
             ],
             [
                 'name' => 'علي حسن محمد',
@@ -62,7 +67,8 @@ class SampleDataSeeder extends Seeder
                 'mobile' => '01012345682',
                 'role' => 'student',
                 'password' => bcrypt('password'),
-                'login_id' => 'STU005'
+                'login_id' => 'STU005',
+                'user_name' => 'ali_student'
             ]
         ];
 
@@ -278,5 +284,134 @@ class SampleDataSeeder extends Seeder
         }
         
         return $answers;
+    }
+
+    private function createUsers()
+    {
+        // Create Admin
+        $admin = User::create([
+            'name' => 'أحمد محمد',
+            'email' => 'admin@example.com',
+            'mobile' => '0501234567',
+            'role' => 'admin',
+            'login_id' => 'ADMIN001',
+            'user_name' => 'admin',
+            'gender' => 'male',
+            'password' => Hash::make('admin123'),
+            'plain_password' => 'admin123',
+            'is_active' => true,
+            'address' => 'عنوان افتراضي',
+            'notes' => 'ملاحظات افتراضية'
+        ]);
+
+        // Create Teachers
+        $teachers = [
+            [
+                'name' => 'د. سارة أحمد',
+                'email' => 'sara@example.com',
+                'mobile' => '0501234570',
+                'role' => 'teacher',
+                'login_id' => 'TCH001',
+                'user_name' => 'sara_teacher',
+                'gender' => 'female',
+                'is_active' => true
+            ],
+            [
+                'name' => 'أ. محمد علي',
+                'email' => 'mohamed@example.com',
+                'mobile' => '0501234571',
+                'role' => 'teacher',
+                'login_id' => 'TCH002',
+                'user_name' => 'mohamed_teacher',
+                'gender' => 'male',
+                'is_active' => true
+            ],
+            [
+                'name' => 'أ. فاطمة حسن',
+                'email' => 'fatima@example.com',
+                'mobile' => '0501234572',
+                'role' => 'teacher',
+                'login_id' => 'TCH003',
+                'user_name' => 'fatima_teacher',
+                'gender' => 'female',
+                'is_active' => true
+            ]
+        ];
+
+        foreach ($teachers as $teacherData) {
+            $plainPassword = 'teacher123';
+            User::create(array_merge($teacherData, [
+                'password' => Hash::make($plainPassword),
+                'plain_password' => $plainPassword,
+                'address' => 'عنوان افتراضي',
+                'notes' => 'ملاحظات افتراضية'
+            ]));
+        }
+
+        // Create Students
+        $students = [
+            [
+                'name' => 'عبدالله أحمد',
+                'email' => 'abdullah@example.com',
+                'mobile' => '0501234575',
+                'role' => 'student',
+                'login_id' => 'STU001',
+                'user_name' => 'abdullah_student',
+                'gender' => 'male',
+                'is_active' => true
+            ],
+            [
+                'name' => 'فاطمة محمد',
+                'email' => 'fatima_student@example.com',
+                'mobile' => '0501234576',
+                'role' => 'student',
+                'login_id' => 'STU002',
+                'user_name' => 'fatima_student',
+                'gender' => 'female',
+                'is_active' => true
+            ],
+            [
+                'name' => 'علي حسن',
+                'email' => 'ali@example.com',
+                'mobile' => '0501234577',
+                'role' => 'student',
+                'login_id' => 'STU003',
+                'user_name' => 'ali_student',
+                'gender' => 'male',
+                'is_active' => true
+            ],
+            [
+                'name' => 'مريم أحمد',
+                'email' => 'maryam@example.com',
+                'mobile' => '0501234578',
+                'role' => 'student',
+                'login_id' => 'STU004',
+                'user_name' => 'maryam_student',
+                'gender' => 'female',
+                'is_active' => true
+            ],
+            [
+                'name' => 'يوسف محمد',
+                'email' => 'youssef@example.com',
+                'mobile' => '0501234579',
+                'role' => 'student',
+                'login_id' => 'STU005',
+                'user_name' => 'youssef_student',
+                'gender' => 'male',
+                'is_active' => true
+            ]
+        ];
+
+        foreach ($students as $studentData) {
+            $plainPassword = 'student123';
+            User::create(array_merge($studentData, [
+                'password' => Hash::make($plainPassword),
+                'plain_password' => $plainPassword,
+                'address' => 'عنوان افتراضي',
+                'notes' => 'ملاحظات افتراضية'
+            ]));
+        }
+
+        $this->command->info('Users created successfully!');
     }
 }

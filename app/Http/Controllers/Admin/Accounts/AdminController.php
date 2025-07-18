@@ -45,6 +45,7 @@ class AdminController extends Controller
         try {
             $validated = $request->validate([
                 'name'         => 'required|string|max:150',
+                'user_name'    => 'required|string|max:50|unique:users,user_name',
                 'email'        => 'required|email|unique:users,email|max:150',
                 'mobile'       => 'required|string|unique:users,mobile|max:15',
                 'address'      => 'nullable|string|max:500',
@@ -63,6 +64,7 @@ class AdminController extends Controller
             $user = new User();
 
             $user->name = $validated['name'];
+            $user->user_name = $validated['user_name'];
             $user->email = $validated['email'];
             $user->mobile = $validated['mobile'];
             $user->address = $validated['address'] ?? null;
@@ -70,9 +72,15 @@ class AdminController extends Controller
             $user->is_active = $validated['is_active'];
             $user->role = 'admin';
             $user->login_id = $loginId;
-            $user->user_name = $loginId; // استخدام login_id كـ user_name
             $user->plain_password = $plainPassword;
             $user->password = Hash::make($plainPassword);
+
+            if ($request->hasFile('profile_image')) {
+                $data['profile_image'] = $request->file('profile_image')->store('profile-images', 'public');
+            } else {
+                $gender = strtolower($request->input('gender', 'male'));
+                $data['profile_image'] = $gender === 'female' ? 'defaults/default-admin-female.jpg' : 'defaults/default-admin-male.jpg';
+            }
 
             $user->save();
 
@@ -101,6 +109,7 @@ class AdminController extends Controller
             
             $validated = $request->validate([
                 'name'         => 'required|string|max:150',
+                'user_name'    => 'required|string|max:50|unique:users,user_name,' . $id,
                 'email'        => 'required|email|max:150|unique:users,email,' . $id,
                 'mobile'       => 'required|string|max:15|unique:users,mobile,' . $id,
                 'address'      => 'nullable|string|max:500',

@@ -23,6 +23,7 @@ class AdminSeeder extends Seeder
             'mobile' => '0501234567',
             'role' => 'admin',
             'login_id' => 'ADMIN001',
+            'user_name' => 'admin',
             'gender' => 'male',
             'password' => Hash::make('admin123'),
             'plain_password' => 'admin123',
@@ -34,6 +35,7 @@ class AdminSeeder extends Seeder
         $this->command->info('Admin User Created Successfully!');
         $this->command->info('================================');
         $this->command->info('Login ID: ADMIN001');
+        $this->command->info('Username: admin');
         $this->command->info('Password: admin123');
         $this->command->info('Email: admin@admin.com');
         $this->command->info('================================');

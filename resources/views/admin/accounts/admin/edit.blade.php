@@ -81,6 +81,13 @@
                   <input type="text" name="name" class="form-control" value="{{ old('name', $admin->name) }}" required maxlength="255" placeholder="Enter admin's full name">
                 </div>
 
+                <!-- Username -->
+                <div class="mb-3">
+                  <label class="form-label">Username <span class="text-danger">*</span></label>
+                  <input type="text" name="user_name" class="form-control" value="{{ old('user_name', $admin->user_name) }}" required maxlength="50" placeholder="Enter unique username for login">
+                  <small class="form-text text-muted">This will be used for login. Must be unique.</small>
+                </div>
+
                 <!-- Mobile Number -->
                 <div class="mb-3">
                   <label class="form-label">Mobile Number <span class="text-danger">*</span></label>

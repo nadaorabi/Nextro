@@ -89,12 +89,21 @@
                 </div>
 
                 <div class="row">
+                  <!-- Username -->
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label">Username <span class="text-danger">*</span></label>
+                    <input type="text" name="user_name" class="form-control" value="{{ old('user_name') }}" required maxlength="50" placeholder="Enter unique username for login">
+                    <small class="form-text text-muted">This will be used for login. Must be unique.</small>
+                  </div>
+
                   <!-- Email Address -->
                   <div class="col-md-6 mb-3">
                     <label class="form-label">Email Address</label>
                     <input type="email" name="email" class="form-control" value="{{ old('email') }}" maxlength="255" placeholder="Enter email address">
                   </div>
+                </div>
 
+                <div class="row">
                   <!-- Address -->
                   <div class="col-md-6 mb-3">
                     <label class="form-label">Address</label>

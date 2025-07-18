@@ -697,6 +697,41 @@
                                     </div>
                                 </div>
 
+                                <!-- Instructor Section -->
+                                <div class="border rounded-3 p-3 mb-3" style="background: linear-gradient(135deg, #11cdef 0%, #1171ef 100%); color: white;">
+                                    <h6 class="mb-3 fw-bold" style="color:white;">
+                                        <i class="fas fa-chalkboard-teacher me-2"></i>Instructor Information
+                                    </h6>
+                                    <div class="row g-2">
+                                        <div class="col-md-8">
+                                            <label class="form-label small fw-bold" style="color:white;">Select Instructor *</label>
+                                            <select name="instructor_id" class="form-select form-select-sm border-2 border-light @error('instructor_id') is-invalid @enderror" required>
+                                                <option value="">Choose an instructor</option>
+                                                @foreach($teachers as $teacher)
+                                                    <option value="{{ $teacher->id }}" {{ old('instructor_id', optional($course->courseInstructors->first())->instructor_id) == $teacher->id ? 'selected' : '' }}>
+                                                        {{ $teacher->name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                            @error('instructor_id')
+                                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-label small fw-bold" style="color:white;">Instructor Share (%) *</label>
+                                            <div class="input-group input-group-sm">
+                                                <input type="number" name="instructor_percentage" class="form-control border-2 border-light @error('instructor_percentage') is-invalid @enderror" 
+                                                       min="0" max="100" value="{{ old('instructor_percentage', optional($course->courseInstructors->first())->percentage) }}" 
+                                                       placeholder="e.g., 70" required>
+                                                <span class="input-group-text">%</span>
+                                            </div>
+                                            @error('instructor_percentage')
+                                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <!-- Pricing Section - Compact -->
                                 <div class="border rounded-3 p-3 bg-light">
                                     <h6 class="mb-3 fw-bold text-primary">
@@ -722,9 +757,6 @@
                                                 <label class="form-label small">Currency</label>
                                                 <select name="currency" class="form-select form-select-sm border-2 border-light">
                                                     <option value="USD" {{ old('currency', $course->currency) == 'USD' ? 'selected' : '' }}>USD</option>
-                                                    <option value="SAR" {{ old('currency', $course->currency) == 'SAR' ? 'selected' : '' }}>SAR</option>
-                                                    <option value="AED" {{ old('currency', $course->currency) == 'AED' ? 'selected' : '' }}>AED</option>
-                                                    <option value="EUR" {{ old('currency', $course->currency) == 'EUR' ? 'selected' : '' }}>EUR</option>
                                                 </select>
                                             </div>
                                             <div class="col-6">
@@ -841,27 +873,34 @@
             }
 
             function updateFinalPrice() {
-                const price = parseFloat(priceInput?.value) || 0;
-                const discount = parseFloat(discountInput?.value) || 0;
-                const currency = currencySelect?.value || 'USD';
-                const isFree = isFreeCheckbox?.checked || false;
-                
-                let finalPrice = 0;
-                
-                if (!isFree && price > 0) {
-                    if (discount > 0) {
-                        const discountAmount = (price * discount) / 100;
-                        finalPrice = price - discountAmount;
-                    } else {
-                        finalPrice = price;
+                try {
+                    const price = parseFloat(priceInput?.value) || 0;
+                    const discount = parseFloat(discountInput?.value) || 0;
+                    const currency = currencySelect?.value || 'USD';
+                    const isFree = isFreeCheckbox?.checked || false;
+                    
+                    let finalPrice = 0;
+                    
+                    if (!isFree && price > 0) {
+                        if (discount > 0 && discount <= 100) {
+                            const discountAmount = (price * discount) / 100;
+                            finalPrice = price - discountAmount;
+                        } else {
+                            finalPrice = price;
+                        }
                     }
-                }
-                
-                if (finalPriceElement) {
-                    if (isFree || finalPrice === 0) {
-                        finalPriceElement.innerHTML = '<span class="badge bg-success">Free</span>';
-                    } else {
-                        finalPriceElement.textContent = `${currency} ${finalPrice.toFixed(2)}`;
+                    
+                    if (finalPriceElement) {
+                        if (isFree || finalPrice === 0) {
+                            finalPriceElement.innerHTML = '<span class="badge bg-success">Free</span>';
+                        } else {
+                            finalPriceElement.textContent = `${currency} ${finalPrice.toFixed(2)}`;
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error calculating final price:', error);
+                    if (finalPriceElement) {
+                        finalPriceElement.textContent = 'Error';
                     }
                 }
             }
@@ -869,10 +908,17 @@
             // Add event listeners for price calculation
             if (priceInput) {
                 priceInput.addEventListener('input', updateFinalPrice);
+                priceInput.addEventListener('blur', function() {
+                    if (this.value < 0) this.value = 0;
+                });
             }
             
             if (discountInput) {
                 discountInput.addEventListener('input', updateFinalPrice);
+                discountInput.addEventListener('blur', function() {
+                    if (this.value < 0) this.value = 0;
+                    if (this.value > 100) this.value = 100;
+                });
             }
             
             if (currencySelect) {
@@ -886,6 +932,36 @@
                     updateFinalPrice();
                 });
             }
+        }
+
+        // Form validation and submission handling
+        function setupFormValidation() {
+            const editForms = document.querySelectorAll('form[action*="update"]');
+            editForms.forEach(form => {
+                form.addEventListener('submit', function(e) {
+                    const instructorId = form.querySelector('select[name="instructor_id"]');
+                    const instructorPercentage = form.querySelector('input[name="instructor_percentage"]');
+                    
+                    // Validate instructor selection
+                    if (instructorId && instructorId.value === '') {
+                        e.preventDefault();
+                        alert('Please select an instructor for this course.');
+                        instructorId.focus();
+                        return false;
+                    }
+                    
+                    // Validate instructor percentage
+                    if (instructorPercentage) {
+                        const percentage = parseFloat(instructorPercentage.value);
+                        if (isNaN(percentage) || percentage < 0 || percentage > 100) {
+                            e.preventDefault();
+                            alert('Instructor percentage must be between 0 and 100.');
+                            instructorPercentage.focus();
+                            return false;
+                        }
+                    }
+                });
+            });
         }
 
         document.addEventListener('DOMContentLoaded', function () {
@@ -930,6 +1006,9 @@
             @foreach($courses as $course)
                 setupPriceCalculation({{ $course->id }});
             @endforeach
+
+            // Setup form validation
+            setupFormValidation();
         });
     </script>
 @endpush

@@ -89,6 +89,8 @@ class PackageController extends Controller
         $data = $request->only(['name', 'description', 'category_id', 'currency', 'status']);
         if ($request->hasFile('image')) {
             $data['image'] = $request->file('image')->store('packages', 'public');
+        } else {
+            $data['image'] = 'defaults/default-package.jpg';
         }
         
         // حساب السعر الأصلي

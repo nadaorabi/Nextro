@@ -80,12 +80,100 @@ class CompleteDatabaseSeeder extends Seeder
     {
         $users = [
             // Admin
-            ['name' => 'أحمد محمد', 'email' => 'ahmed@admin.com', 'mobile' => '0501234567', 'role' => 'admin', 'login_id' => '20240001', 'gender' => 'male'],
-            // Teacher
-            ['name' => 'د. سارة أحمد', 'email' => 'sara@teacher.com', 'mobile' => '0501234570', 'role' => 'teacher', 'login_id' => 'TCH20240001', 'gender' => 'female'],
-            // Student
-            ['name' => 'عبدالله أحمد', 'email' => 'abdullah@student.com', 'mobile' => '0501234575', 'role' => 'student', 'login_id' => '20240004', 'gender' => 'male'],
+            [
+                'name' => 'أحمد محمد',
+                'email' => 'ahmed@admin.com',
+                'mobile' => '0501234567',
+                'role' => 'admin',
+                'login_id' => '20240001',
+                'user_name' => 'ahmed_admin',
+                'gender' => 'male',
+                'is_active' => true
+            ],
+            // Teachers
+            [
+                'name' => 'د. سارة أحمد',
+                'email' => 'sara@teacher.com',
+                'mobile' => '0501234570',
+                'role' => 'teacher',
+                'login_id' => 'TCH20240001',
+                'user_name' => 'sara_teacher',
+                'gender' => 'female',
+                'is_active' => true
+            ],
+            [
+                'name' => 'أ. محمد علي',
+                'email' => 'mohamed@teacher.com',
+                'mobile' => '0501234571',
+                'role' => 'teacher',
+                'login_id' => 'TCH20240002',
+                'user_name' => 'mohamed_teacher',
+                'gender' => 'male',
+                'is_active' => true
+            ],
+            [
+                'name' => 'أ. فاطمة حسن',
+                'email' => 'fatima@teacher.com',
+                'mobile' => '0501234572',
+                'role' => 'teacher',
+                'login_id' => 'TCH20240003',
+                'user_name' => 'fatima_teacher',
+                'gender' => 'female',
+                'is_active' => true
+            ],
+            // Students
+            [
+                'name' => 'عبدالله أحمد',
+                'email' => 'abdullah@student.com',
+                'mobile' => '0501234575',
+                'role' => 'student',
+                'login_id' => '20240004',
+                'user_name' => 'abdullah_student',
+                'gender' => 'male',
+                'is_active' => true
+            ],
+            [
+                'name' => 'فاطمة محمد',
+                'email' => 'fatima_student@student.com',
+                'mobile' => '0501234576',
+                'role' => 'student',
+                'login_id' => '20240005',
+                'user_name' => 'fatima_student',
+                'gender' => 'female',
+                'is_active' => true
+            ],
+            [
+                'name' => 'علي حسن',
+                'email' => 'ali@student.com',
+                'mobile' => '0501234577',
+                'role' => 'student',
+                'login_id' => '20240006',
+                'user_name' => 'ali_student',
+                'gender' => 'male',
+                'is_active' => true
+            ],
+            [
+                'name' => 'مريم أحمد',
+                'email' => 'maryam@student.com',
+                'mobile' => '0501234578',
+                'role' => 'student',
+                'login_id' => '20240007',
+                'user_name' => 'maryam_student',
+                'gender' => 'female',
+                'is_active' => true
+            ],
+            [
+                'name' => 'يوسف محمد',
+                'email' => 'youssef@student.com',
+                'mobile' => '0501234579',
+                'role' => 'student',
+                'login_id' => '20240008',
+                'user_name' => 'youssef_student',
+                'gender' => 'male',
+                'is_active' => true
+            ]
         ];
+        
         foreach ($users as $userData) {
             $plainPassword = '12345678';
             \App\Models\User::create([
@@ -95,9 +183,10 @@ class CompleteDatabaseSeeder extends Seeder
                 'mobile' => $userData['mobile'],
                 'role' => $userData['role'],
                 'login_id' => $userData['login_id'],
+                'user_name' => $userData['user_name'],
                 'password' => \Illuminate\Support\Facades\Hash::make($plainPassword),
                 'plain_password' => $plainPassword,
-                'is_active' => true,
+                'is_active' => $userData['is_active'],
                 'address' => 'عنوان افتراضي',
                 'notes' => 'ملاحظات افتراضية'
             ]);

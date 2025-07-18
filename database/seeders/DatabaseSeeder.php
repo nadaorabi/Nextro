@@ -21,7 +21,8 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
             AdminSeeder::class,
-            // CompleteDatabaseSeeder::class, // معلق مؤقتاً
+            UpdateExistingUsersWithUserName::class, // تحديث المستخدمين الموجودين بـ user_name
+            CompleteDatabaseSeeder::class, // إنشاء بيانات تجريبية شاملة
         ]);
     }
 }

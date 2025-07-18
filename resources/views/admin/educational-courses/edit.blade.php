@@ -161,6 +161,49 @@
                                 </div>
                             </div>
 
+                            <div class="instructor-section" style="background: linear-gradient(135deg, #11cdef 0%, #1171ef 100%); color: white; border-radius: 10px; padding: 1.5rem; margin-bottom: 1.5rem;">
+                                <h5 class="mb-4">
+                                    <i class="fas fa-chalkboard-teacher me-2"></i>Instructor Information
+                                </h5>
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <div class="mb-3">
+                                            <label for="instructor_id" class="form-label" style="color:white;font-weight:600;">
+                                                <i class="fas fa-user-tie me-2"></i>Select Instructor *
+                                            </label>
+                                            <select name="instructor_id" id="instructor_id" class="form-select @error('instructor_id') is-invalid @enderror" required>
+                                                <option value="">Choose an instructor</option>
+                                                @foreach($teachers as $teacher)
+                                                    <option value="{{ $teacher->id }}" {{ old('instructor_id', optional($course->courseInstructors->first())->instructor_id) == $teacher->id ? 'selected' : '' }}>
+                                                        {{ $teacher->name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                            @error('instructor_id')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+                                            <label for="instructor_percentage" class="form-label" style="color:white;font-weight:600;">
+                                                <i class="fas fa-percent me-2"></i>Instructor Share (%) *
+                                            </label>
+                                            <div class="input-group">
+                                                <input type="number" name="instructor_percentage" id="instructor_percentage"
+                                                    class="form-control @error('instructor_percentage') is-invalid @enderror" 
+                                                    min="0" max="100" value="{{ old('instructor_percentage', optional($course->courseInstructors->first())->percentage) }}" 
+                                                    placeholder="e.g., 70" required>
+                                                <span class="input-group-text bg-white">%</span>
+                                            </div>
+                                            @error('instructor_percentage')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="mb-3">
                                 <label class="form-label">Course Image</label>
                                 <input type="file" name="image" class="form-control @error('image') is-invalid @enderror" accept="image/*" onchange="previewEditCourseImage(event)">
