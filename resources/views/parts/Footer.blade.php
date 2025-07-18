@@ -26,35 +26,15 @@
      
     </div> <!-- /.col-lg-3 -->
 
-    <div class="col-lg-3">
-      <div class="widget">
-        <h3>Gallery</h3>
-        <ul class="instafeed instagram-gallery list-unstyled">
-          <li><a class="instagram-item" href="images/gal_1.jpg" data-fancybox="gal"><img src="images/gal_1.jpg" alt="" width="72" height="72"></a>
-          </li>
-          <li><a class="instagram-item" href="images/gal_2.jpg" data-fancybox="gal"><img src="images/gal_2.jpg" alt="" width="72" height="72"></a>
-          </li>
-          <li><a class="instagram-item" href="images/gal_3.jpg" data-fancybox="gal"><img src="images/gal_3.jpg" alt="" width="72" height="72"></a>
-          </li>
-          <li><a class="instagram-item" href="images/gal_4.jpg" data-fancybox="gal"><img src="images/gal_4.jpg" alt="" width="72" height="72"></a>
-          </li>
-          <li><a class="instagram-item" href="images/gal_5.jpg" data-fancybox="gal"><img src="images/gal_5.jpg" alt="" width="72" height="72"></a>
-          </li>
-          <li><a class="instagram-item" href="images/gal_6.jpg" data-fancybox="gal"><img src="images/gal_6.jpg" alt="" width="72" height="72"></a>
-          </li>
-        </ul>
-      </div> <!-- /.widget -->
-    </div> <!-- /.col-lg-3 -->
 
 
     <div class="col-lg-3">
       <div class="widget">
         <h3>Contact</h3>
-        <address>43 Raymouth Rd. Baltemoer, London 3910</address>
+        <address>Syria - Hama</address>
         <ul class="list-unstyled links mb-4">
-          <li><a href="tel://11234567890">+1(123)-456-7890</a></li>
-          <li><a href="tel://11234567890">+1(123)-456-7890</a></li>
-          <li><a href="mailto:info@mydomain.com">info@mydomain.com</a></li>
+          <li><a href="tel://11234567890">+963 933 333 333</a></li>
+          <li><a href="mailto:info@mydomain.com">Nextro@gmail.com</a></li>
         </ul>
       </div> <!-- /.widget -->
     </div> <!-- /.col-lg-3 -->

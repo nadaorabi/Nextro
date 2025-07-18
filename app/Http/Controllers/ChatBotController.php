@@ -96,9 +96,9 @@ class ChatBotController extends Controller
                     'Content-Type' => 'application/json',
                 ])
                 ->post($this->apiUrl, [
-                    'model' => 'gpt-4o-mini',
+                    'model' => 'gpt-3.5-turbo', // أسرع نموذج
                     'messages' => $messages,
-                    'max_tokens' => 600, // Allow longer answers
+                    'max_tokens' => 500, // تقليل للسرعة
                     'temperature' => 0.3,
                     'presence_penalty' => 0.1,
                     'frequency_penalty' => 0.1,
