@@ -1,88 +1,89 @@
-{{-- Unified attendance system with admin --}}
+{{-- تم توحيد نظام الحضور مع الإدارة --}}
 @extends('layouts.teacher')
 @section('content')
 <div class="container-fluid mt-4">
-    <div class="row mb-2">
-        <div class="col-12">
-            <div class="page-header d-flex align-items-center justify-content-between flex-wrap" style="background: linear-gradient(135deg, #fff 0%, #fff 100%); color: rgb(123, 105, 172); border-radius: 15px; padding: 1.2rem; margin-bottom: 1rem; box-shadow: 0 4px 20px rgba(0,0,0,0.1);">
-                <div class="d-flex align-items-center w-100 justify-content-between flex-wrap">
-                    <div class="d-flex align-items-center">
-                        <div class="me-3">
-                            <i class="fas fa-clipboard-check fa-2x"></i>
-                        </div>
-                        <div>
-                            <h2 class="mb-1">Attendance Management</h2>
-                            <p class="mb-0 opacity-75">Select a course and session to take attendance or view details</p>
-                        </div>
-                    </div>
-                    <div class="ms-auto mt-3 mt-md-0 d-flex gap-2">
-                        <a href="{{ route('teacher.attendance.details') }}" class="btn btn-outline-primary btn-sm">
-                                <i class="fas fa-list me-1"></i> Attendance Details
-                            </a>
-                        <a href="{{ route('teacher.attendance.export') }}" class="btn btn-outline-success btn-sm">
-                                <i class="fas fa-download me-1"></i> Export Data
-                            </a>
-                        </div>
-                    </div>
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-11">
+            <!-- Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h2 class="mb-1 fw-bold" style="color:#5f5aad">
+                        <i class="fas fa-clipboard-check text-primary me-2"></i>
+                        إدارة الحضور والغياب
+                    </h2>
+                    <div class="text-muted small">اختر المادة والمحاضرة لأخذ الحضور أو عرض التفاصيل</div>
+                </div>
+                <div>
+                    <a href="{{ route('teacher.attendance.details') }}" class="btn btn-outline-primary me-2">
+                        <i class="fas fa-list me-1"></i> تفاصيل الحضور
+                    </a>
+                    <a href="{{ route('teacher.attendance.export') }}" class="btn btn-outline-success">
+                        <i class="fas fa-download me-1"></i> تصدير البيانات
+                    </a>
                 </div>
             </div>
-    </div>
-    <div class="row">
-        <div class="col-12">
+
+            <!-- Courses List -->
             @forelse($teacherCourses as $courseInstructor)
             @php $course = $courseInstructor->course; @endphp
-            <div class="schedule-card card mb-4">
+            <div class="card mb-4 shadow-sm border-0">
                 <div class="card-body">
                     <div class="d-flex flex-wrap align-items-center justify-content-between mb-2">
-                        <div class="fw-bold" style="color:#374a67;font-size:1.1rem">
-                            <i class="fas fa-book me-2" style="color:#3db6f5;"></i>{{ $course->title }}
+                        <div class="fw-bold" style="color:#5f5aad;font-size:1.1rem">
+                            <i class="fas fa-book me-2"></i>{{ $course->title }}
                         </div>
                         <div class="d-flex align-items-center gap-3">
                             <div class="text-muted small">
-                                <i class="fas fa-users me-1"></i>{{ $course->enrollments->count() }} Students
+                                <i class="fas fa-users me-1"></i>{{ $course->enrollments->count() }} طالب
                             </div>
                             <div>
-                                <span class="badge bg-light text-dark me-1" style="border:1px solid #e3eafc; background:#f5faff; color:#3db6f5;">
+                                <span class="badge bg-light text-dark me-1">
                                     <i class="fas fa-chalkboard-teacher me-1"></i>{{ $courseInstructor->instructor->name }}
                                 </span>
                             </div>
                         </div>
                     </div>
+                    
+                    <!-- معلومات المسار والباكج -->
                     <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
                         @if($course->category)
-                            <span class="category-badge">
+                            <span class="badge bg-primary">
                                 <i class="fas fa-folder me-1"></i>{{ $course->category->name }}
                             </span>
                         @endif
                         @if($course->packages && $course->packages->count() > 0)
-                            <span class="category-badge" style="background: linear-gradient(135deg, #20c997 0%, #1ea085 100%);">
-                                <i class="fas fa-box me-1"></i>Package ({{ $course->packages->count() }})
+                            <span class="badge bg-success">
+                                <i class="fas fa-box me-1"></i>باكج ({{ $course->packages->count() }})
                             </span>
                         @endif
                         @if($course->is_free)
-                            <span class="category-badge" style="background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%); color:#856404;">
-                                <i class="fas fa-gift me-1"></i>Free
+                            <span class="badge bg-warning text-dark">
+                                <i class="fas fa-gift me-1"></i>مجاني
                             </span>
                         @else
-                            <span class="category-badge">
-                                <i class="fas fa-dollar-sign me-1"></i>{{ $course->price ?? 0 }} {{ $course->currency ?? 'SAR' }}
+                            <span class="badge bg-info">
+                                <i class="fas fa-dollar-sign me-1"></i>{{ $course->price ?? 0 }} {{ $course->currency ?? 'ر.س' }}
                             </span>
                         @endif
                     </div>
+                    
+                    <!-- تفاصيل الباكجات المرتبطة -->
                     @if($course->packages && $course->packages->count() > 0)
                         <div class="mb-3">
                             <small class="text-muted fw-bold">
-                                <i class="fas fa-boxes me-1"></i>Linked Packages:
+                                <i class="fas fa-boxes me-1"></i>الباكجات المرتبطة:
                             </small>
                             <div class="d-flex flex-wrap gap-1 mt-1">
                                 @foreach($course->packages as $package)
-                                    <span class="category-badge">
+                                    <span class="badge bg-light text-dark border">
                                         <i class="fas fa-box me-1"></i>{{ $package->name }}
                                     </span>
                                 @endforeach
                             </div>
                         </div>
                     @endif
+                    
+                    <!-- وصف الكورس -->
                     @if($course->description)
                         <div class="mb-3">
                             <small class="text-muted">
@@ -91,46 +92,71 @@
                         </div>
                     @endif
                     <div class="table-responsive">
-                        <table class="table align-items-center mb-0">
-                            <thead class="table-header">
+                        <table class="table align-middle mb-0">
+                            <thead class="bg-light">
                                 <tr>
-                                    <th class="py-2" style="font-size:0.93rem;">DATE</th>
-                                    <th class="py-2" style="font-size:0.93rem;">DAY</th>
-                                    <th class="py-2" style="font-size:0.93rem;">TIME</th>
-                                    <th class="py-2" style="font-size:0.93rem;">ROOM</th>
-                                    <th class="py-2" style="font-size:0.93rem;">SUBJECT</th>
-                                    <th class="py-2" style="font-size:0.93rem;">CATEGORY</th>
+                                    <th>التاريخ</th>
+                                    <th>اليوم</th>
+                                    <th>الوقت</th>
+                                    <th>القاعة</th>
+                                    <th>الكلي / الحضور</th>
+                                    <th class="text-center">إجراءات</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @forelse($course->schedules as $schedule)
-                                <tr class="table-row" style="font-size:0.97rem; height:38px;">
-                                    <td class="py-2">{{ \Carbon\Carbon::parse($schedule->session_date)->format('Y-m-d') }}</td>
-                                    <td class="py-2">{{ __(ucfirst($schedule->day_of_week)) }}</td>
-                                    <td class="py-2">
-                                        <span class="type-badge">
-                                            <i class="fas fa-clock me-1"></i> {{ substr($schedule->start_time, 0, 5) }} - {{ substr($schedule->end_time, 0, 5) }}
-                                        </span>
+                                @php
+                                    $today = now()->format('Y-m-d');
+                                    $scheduleDate = $schedule->session_date;
+                                    $status = '';
+                                    $statusClass = '';
+                                    
+                                    if ($scheduleDate < $today) {
+                                        $status = 'منتهية';
+                                        $statusClass = 'text-muted';
+                                    } elseif ($scheduleDate == $today) {
+                                        $status = 'اليوم';
+                                        $statusClass = 'text-success fw-bold';
+                                    } else {
+                                        $status = 'قادمة';
+                                        $statusClass = 'text-warning';
+                                    }
+                                    
+                                    // حساب إحصائيات الحضور
+                                    $totalStudents = \App\Models\Enrollment::where('course_id', $course->id)->count();
+                                    $presentStudents = \App\Models\Attendance::where('schedule_id', $schedule->id)
+                                        
+                                        ->where('status', 'present')
+                                        ->count();
+                                @endphp
+                                <tr>
+                                    <td>
+                                        <span class="{{ $statusClass }}">{{ \Carbon\Carbon::parse($schedule->session_date)->format('Y-m-d') }}</span>
+                                        <br><small class="text-muted">{{ $status }}</small>
                                     </td>
-                                    <td class="py-2">
-                                        <span class="type-badge">
-                                            <i class="fas fa-door-open me-1"></i> {{ $schedule->room ? ($schedule->room->room_number ?? $schedule->room->name) : '-' }}
-                                        </span>
+                                    <td>{{ __(ucfirst($schedule->day_of_week)) }}</td>
+                                    <td>{{ substr($schedule->start_time, 0, 5) }} - {{ substr($schedule->end_time, 0, 5) }}</td>
+                                    <td>{{ $schedule->room ? ($schedule->room->room_number ?? $schedule->room->name) : 'غير محدد' }}</td>
+                                    <td class="text-center">
+                                        <span style="color:#5f5aad;font-weight:bold;font-size:1.15em">{{ $totalStudents }}</span>
+                                        <span style="color:#888;font-size:1.1em">/</span>
+                                        <span style="color:#28a745;font-weight:bold;font-size:1.15em">{{ $presentStudents }}</span>
                                     </td>
-                                    <td class="py-2">
-                                        <span class="subject-badge">
-                                            {{ $course->title }}
-                                        </span>
-                                    </td>
-                                    <td class="py-2">
-                                        <span class="category-badge">
-                                            {{ $course->category ? $course->category->name : '-' }}
-                                        </span>
+                                    <td class="text-center">
+                                        <button class="btn btn-outline-primary btn-sm me-1" onclick="openAttendanceModal('{{ $course->title }}', {{ $schedule->id }})">
+                                            <i class="fas fa-camera me-1"></i> أخذ الحضور
+                                        </button>
+                                        <a href="{{ route('teacher.attendance.qr-codes', $schedule->id) }}" class="btn btn-outline-info btn-sm me-1">
+                                            <i class="fas fa-qrcode me-1"></i> QR Codes
+                                        </a>
+                                        <a href="{{ route('teacher.attendance.schedule-details', $schedule->id) }}" class="btn btn-outline-secondary btn-sm">
+                                            <i class="fas fa-list me-1"></i> التفاصيل
+                                        </a>
                                     </td>
                                 </tr>
                                 @empty
                                 <tr>
-                                    <td colspan="6" class="text-muted text-center">No scheduled sessions for this course</td>
+                                    <td colspan="6" class="text-muted text-center">لا توجد محاضرات مجدولة لهذه المادة</td>
                                 </tr>
                                 @endforelse
                             </tbody>
@@ -139,98 +165,440 @@
                 </div>
             </div>
             @empty
-            <div class="schedule-card card shadow-sm border-0">
+            <div class="card shadow-sm border-0">
                 <div class="card-body text-center py-5">
                     <i class="fas fa-book-open text-muted mb-3" style="font-size: 4rem;"></i>
-                    <h4 class="text-muted">No courses assigned</h4>
-                    <p class="text-muted">No courses have been assigned to you yet</p>
+                    <h4 class="text-muted">لا توجد مواد دراسية</h4>
+                    <p class="text-muted">لم يتم تعيين أي مواد دراسية لك بعد</p>
                 </div>
             </div>
             @endforelse
         </div>
     </div>
 </div>
+
 <!-- Modal for QR Code Scanner -->
-@yield('qr_modal')
+<div class="modal fade" id="attendanceModal" tabindex="-1" role="dialog" aria-labelledby="attendanceModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content" style="border-radius: 15px; overflow: hidden;">
+            <div class="modal-header bg-gradient-primary text-white">
+                <h5 class="modal-title" id="attendanceModalLabel">
+                    <i class="fas fa-qrcode me-2"></i>
+                    أخذ الحضور - <span id="subjectName"></span>
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="scanner-container position-relative" style="border-radius: 10px; overflow: hidden;">
+                            <div id="qr-reader" style="width: 100%"></div>
+                            <div class="scanner-overlay">
+                                <div class="scanner-line"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="attendance-stats p-3 bg-light rounded">
+                            <h6 class="text-center mb-3">إحصائيات الحضور</h6>
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <span>عدد الحاضرين:</span>
+                                <span class="badge bg-primary" id="attendanceCount">0</span>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <span>آخر مسح:</span>
+                                <span id="lastScanTime">-</span>
+                            </div>
+                            <div class="recent-scans mt-4">
+                                <h6 class="mb-2">آخر المسح</h6>
+                                <div id="recentScansList" class="list-group">
+                                    <!-- Recent scans will be added here -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="qr-reader-results" class="mt-3"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i> إغلاق
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <style>
-.page-header {
-    background: linear-gradient(135deg,#fff 0%,#fff 100%);
-    color: rgb(123, 105, 172);
-    border-radius: 15px;
-    padding: 1.2rem;
-    margin-bottom: 1rem;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-}
-.schedule-card {
-    background: white;
-    border-radius: 15px;
-    box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+.card {
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
     border: none;
-    transition: all 0.3s ease;
 }
-.schedule-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 25px rgba(0,0,0,0.12);
+
+.badge {
+    font-size: 0.9rem;
+    border-radius: 12px;
+    padding: 0.4em 1em;
 }
-.table-header {
-    background: linear-gradient(135deg,rgb(255, 255, 255) 0%,rgb(255, 255, 255) 100%) !important;
-    color: rgb(123, 105, 172) !important;
+
+.badge.bg-primary {
+    background-color: #5f5aad !important;
+}
+
+.badge.bg-success {
+    background-color: #28a745 !important;
+}
+
+.badge.bg-warning {
+    background-color: #ffc107 !important;
+}
+
+.badge.bg-info {
+    background-color: #17a2b8 !important;
+}
+
+.badge.bg-light {
+    background-color: #f8f9fa !important;
+    color: #6c757d !important;
+    border: 1px solid #dee2e6 !important;
+}
+
+.table thead th {
+    font-weight: bold;
+    color: #5f5aad;
+    background: #f8f9fb !important;
     border-bottom: 2px solid #e9ecef;
 }
-.table-header th {
-    color: rgb(123, 105, 172) !important;
-    font-weight: 600 !important;
-    text-transform: uppercase;
-    font-size: 0.75rem;
-    letter-spacing: 0.5px;
+
+.table td, .table th {
+    vertical-align: middle;
 }
-.table-row {
-    transition: all 0.2s ease;
-    border-bottom: 1px solid #f8f9fa;
+
+/* QR Scanner Styles */
+.scanner-container {
+    position: relative;
+    background: #000;
+    min-height: 300px;
+    border-radius: 1rem;
+    overflow: hidden;
 }
-.table-row:hover {
-    background: linear-gradient(135deg, rgba(0, 123, 255, 0.05) 0%, rgba(0, 86, 179, 0.05) 100%) !important;
-    transform: scale(1.01);
+
+.scanner-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
 }
-.subject-badge {
-    background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%);
-    color: white;
-    padding: 0.4rem 0.8rem;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    display: inline-block;
-    box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
+
+.scanner-line {
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    background: #00ff00;
+    box-shadow: 0 0 8px #00ff00;
+    animation: scan 2s linear infinite;
 }
-.category-badge {
-    background: linear-gradient(135deg, #20c997 0%, #1ea085 100%);
-    color: white;
-    padding: 0.4rem 0.8rem;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    display: inline-block;
-    box-shadow: 0 2px 8px rgba(32, 201, 151, 0.3);
+
+@keyframes scan {
+    0% { top: 0; }
+    100% { top: 100%; }
 }
-.type-badge {
-    background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
-    color: white;
-    padding: 0.4rem 0.8rem;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    display: inline-block;
-    box-shadow: 0 2px 8px rgba(108, 117, 125, 0.3);
+
+.scan-success {
+    animation: success-pulse 0.5s ease-in-out;
 }
-.table {
-    margin-bottom: 0;
-    border-radius: 0;
-    background: #fff;
+
+@keyframes success-pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
 }
-.table-header th, .table-header td {
-    border-radius: 0 !important;
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); color: #28a745; }
+    100% { transform: scale(1); }
 }
-.table-row td, .table-row th {
-    padding-top: 0.5rem !important;
-    padding-bottom: 0.5rem !important;
+
+.recent-scan-item {
+    transition: all 0.3s ease;
+}
+
+.recent-scan-item:hover {
+    transform: translateX(-5px);
+}
+
+.attendance-stats {
+    background: #f6f9ff;
+    border-radius: 1rem;
+    box-shadow: 0 2px 8px 0 rgba(80, 120, 200, 0.07);
 }
 </style>
-@yield('qr_scripts')
+
+<!-- QR Code Scanner -->
+<script src="https://unpkg.com/html5-qrcode"></script>
+
+<script>
+    let attendanceCount = 0;
+    const recentScans = [];
+    let currentScheduleId = null;
+    let html5QrCode = null;
+    let isScannerActive = false;
+    let scannedStudents = new Set(); // لمنع المسح المكرر
+    
+    function openAttendanceModal(subject, scheduleId) {
+        console.log('Opening modal for subject:', subject, 'schedule ID:', scheduleId);
+        document.getElementById('subjectName').textContent = subject;
+        currentScheduleId = scheduleId;
+        
+        // Reset attendance count for new session
+        attendanceCount = 0;
+        scannedStudents.clear(); // مسح قائمة الطلاب المسحين
+        document.getElementById('attendanceCount').textContent = attendanceCount;
+        document.getElementById('lastScanTime').textContent = '-';
+        document.getElementById('recentScansList').innerHTML = '';
+        document.getElementById('qr-reader-results').innerHTML = '';
+        
+        var modal = new bootstrap.Modal(document.getElementById('attendanceModal'));
+        modal.show();
+        
+        // Initialize QR Scanner only if not already active
+        if (!isScannerActive) {
+            startQRScanner();
+        }
+    }
+    
+    function startQRScanner() {
+        if (html5QrCode) {
+            html5QrCode.clear();
+        }
+        
+        html5QrCode = new Html5Qrcode("qr-reader");
+        isScannerActive = true;
+        
+        html5QrCode.start(
+            { facingMode: "environment" },
+            {
+                fps: 10,
+                qrbox: 250,
+                aspectRatio: 1.0
+            },
+            (decodedText, decodedResult) => {
+                handleQRScan(decodedText);
+            },
+            (errorMessage) => {
+                // Ignore errors
+            }
+        ).catch(err => {
+            console.error('QR Scanner error:', err);
+            isScannerActive = false;
+        });
+    }
+    
+    function handleQRScan(decodedText) {
+        // Check if student already scanned
+        if (scannedStudents.has(decodedText)) {
+            // Show duplicate message
+            const resultsDiv = document.getElementById('qr-reader-results');
+            resultsDiv.innerHTML = `
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    تم مسح هذا الطالب مسبقاً: ${decodedText}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            `;
+            return;
+        }
+        
+        // Add student to scanned set
+        scannedStudents.add(decodedText);
+        
+        // Add success animation
+        const scannerContainer = document.querySelector('.scanner-container');
+        scannerContainer.classList.add('scan-success');
+        setTimeout(() => {
+            scannerContainer.classList.remove('scan-success');
+        }, 500);
+        
+        // Update attendance count
+        attendanceCount++;
+        document.getElementById('attendanceCount').textContent = attendanceCount;
+        
+        // Update last scan time
+        const now = new Date();
+        document.getElementById('lastScanTime').textContent = now.toLocaleTimeString();
+        
+        // Add to recent scans
+        recentScans.unshift({
+            id: decodedText,
+            time: now.toLocaleTimeString()
+        });
+        
+        // Keep only last 5 scans
+        if (recentScans.length > 5) {
+            recentScans.pop();
+        }
+        
+        // Update recent scans list
+        updateRecentScansList();
+        
+        // Show success message
+        const resultsDiv = document.getElementById('qr-reader-results');
+        resultsDiv.innerHTML = `
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="fas fa-check-circle me-2"></i>
+                تم تسجيل حضور الطالب: ${decodedText}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        `;
+        
+                        // Send attendance data to server
+                console.log('Current schedule ID:', currentScheduleId);
+                saveAttendance(decodedText, currentScheduleId);
+                
+                // Update attendance count in the main table
+                updateAttendanceCount(currentScheduleId);
+
+        // Play success sound
+        const beepSound = document.getElementById('beepSound');
+        beepSound.currentTime = 0;
+        beepSound.volume = 1.0;
+        beepSound.play();
+    }
+    
+    function saveAttendance(studentId, scheduleId) {
+        console.log('Saving attendance for student:', studentId, 'schedule:', scheduleId);
+        
+        fetch('/teacher/attendance/scan', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            },
+            body: JSON.stringify({
+                qr: studentId,
+                schedule_id: scheduleId
+            })
+        })
+        .then(response => {
+            console.log('Response status:', response.status);
+            return response.json();
+        })
+        .then(data => {
+            console.log('Response data:', data);
+            if (!data.success) {
+                // Show error message
+                const resultsDiv = document.getElementById('qr-reader-results');
+                resultsDiv.innerHTML = `
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        ${data.message}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                `;
+            } else {
+                // Show success message
+                const resultsDiv = document.getElementById('qr-reader-results');
+                resultsDiv.innerHTML = `
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <i class="fas fa-check-circle me-2"></i>
+                        تم تسجيل الحضور بنجاح للطالب: ${studentId}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                `;
+                
+                // Update attendance count in the main table
+                updateAttendanceCount(scheduleId);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            // Show error message
+            const resultsDiv = document.getElementById('qr-reader-results');
+            resultsDiv.innerHTML = `
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    حدث خطأ في تسجيل الحضور. يرجى المحاولة مرة أخرى.
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            `;
+        });
+    }
+    
+    function updateAttendanceCount(scheduleId) {
+        // Find the row with this schedule ID and update the attendance count
+        const rows = document.querySelectorAll('tbody tr');
+        rows.forEach(row => {
+            const buttons = row.querySelectorAll('button');
+            buttons.forEach(button => {
+                const onclick = button.getAttribute('onclick');
+                if (onclick && onclick.includes(scheduleId.toString())) {
+                    // This is the row for this schedule
+                    const attendanceCell = row.querySelector('td:nth-child(5)');
+                    if (attendanceCell) {
+                        const totalSpan = attendanceCell.querySelector('span:first-child');
+                        const presentSpan = attendanceCell.querySelector('span:last-child');
+                        
+                        if (totalSpan && presentSpan) {
+                            const total = parseInt(totalSpan.textContent);
+                            const present = parseInt(presentSpan.textContent) + 1;
+                            presentSpan.textContent = present;
+                            
+                            // Add animation to the updated number
+                            presentSpan.style.animation = 'pulse 0.5s ease-in-out';
+                            setTimeout(() => {
+                                presentSpan.style.animation = '';
+                            }, 500);
+                        }
+                    }
+                }
+            });
+        });
+        
+        // Also update the attendance count in the modal
+        const modalAttendanceCount = document.getElementById('attendanceCount');
+        if (modalAttendanceCount) {
+            const currentCount = parseInt(modalAttendanceCount.textContent);
+            modalAttendanceCount.textContent = currentCount + 1;
+            
+            // Add animation to the modal count
+            modalAttendanceCount.style.animation = 'pulse 0.5s ease-in-out';
+            setTimeout(() => {
+                modalAttendanceCount.style.animation = '';
+            }, 500);
+        }
+    }
+    
+    function updateRecentScansList() {
+        const list = document.getElementById('recentScansList');
+        list.innerHTML = recentScans.map(scan => `
+            <div class="list-group-item recent-scan-item d-flex justify-content-between align-items-center">
+                <span>${scan.id}</span>
+                <small class="text-muted">${scan.time}</small>
+            </div>
+        `).join('');
+    }
+    
+    // Stop scanner when modal is closed
+    document.addEventListener('DOMContentLoaded', function() {
+        const modal = document.getElementById('attendanceModal');
+        modal.addEventListener('hidden.bs.modal', function () {
+            if (html5QrCode && isScannerActive) {
+                html5QrCode.stop().then(() => {
+                    isScannerActive = false;
+                    console.log('QR Scanner stopped');
+                }).catch(err => {
+                    console.error('Error stopping QR Scanner:', err);
+                });
+            }
+        });
+    });
+</script>
+
+<audio id="beepSound" class="success-sound" src="https://cdn.pixabay.com/audio/2022/03/15/audio_115b9b7bfa.mp3"></audio>
+<div id="duplicateAlert" class="alert alert-warning text-center py-2" style="display:none; font-size:0.95rem;">تم مسح هذا الطالب مسبقاً.</div>
+
 @endsection
