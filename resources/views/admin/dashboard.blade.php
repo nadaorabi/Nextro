@@ -336,7 +336,7 @@
       <div class="card card-carousel overflow-hidden h-100 p-0">
         <div id="carouselExampleCaptions" class="carousel slide h-100" data-bs-ride="carousel">
           <div class="carousel-inner border-radius-lg h-100">
-            <div class="carousel-item h-100 active" style="background-image: url('{{ asset('images/carousel-1.jpg') }}'); background-size: cover;">
+            <div class="carousel-item h-100 active" style="background-image: url('{{ asset('images/img-school-1-min.jpg') }}'); background-size: cover; background-position: center;">
               <div class="carousel-caption d-none d-md-block bottom-0 text-start start-0 ms-5">
                 <div class="icon icon-shape icon-sm bg-white text-center border-radius-md mb-3">
                   <i class="ni ni-hat-3 text-dark opacity-10"></i>
@@ -345,7 +345,7 @@
                 <p>{{ $stats['total_students'] ?? 0 }} students enrolled in our institute</p>
               </div>
             </div>
-            <div class="carousel-item h-100" style="background-image: url('{{ asset('images/carousel-2.jpg') }}'); background-size: cover;">
+            <div class="carousel-item h-100" style="background-image: url('{{ asset('images/teacher-min.jpg') }}'); background-size: cover; background-position: center;">
               <div class="carousel-caption d-none d-md-block bottom-0 text-start start-0 ms-5">
                 <div class="icon icon-shape icon-sm bg-white text-center border-radius-md mb-3">
                   <i class="ni ni-single-02 text-dark opacity-10"></i>
@@ -354,13 +354,22 @@
                 <p>{{ $stats['total_teachers'] ?? 0 }} qualified teachers providing quality education</p>
               </div>
             </div>
-            <div class="carousel-item h-100" style="background-image: url('{{ asset('images/carousel-3.jpg') }}'); background-size: cover;">
+            <div class="carousel-item h-100" style="background-image: url('{{ asset('images/img-school-3-min.jpg') }}'); background-size: cover; background-position: center;">
               <div class="carousel-caption d-none d-md-block bottom-0 text-start start-0 ms-5">
                 <div class="icon icon-shape icon-sm bg-white text-center border-radius-md mb-3">
                   <i class="ni ni-money-coins text-dark opacity-10"></i>
                 </div>
                 <h5 class="text-white mb-1">Financial Overview</h5>
                 <p>Total revenue: ${{ number_format($stats['total_revenue'] ?? 0, 2) }}</p>
+              </div>
+            </div>
+            <div class="carousel-item h-100" style="background-image: url('{{ asset('images/img-school-2-min.jpg') }}'); background-size: cover; background-position: center;">
+              <div class="carousel-caption d-none d-md-block bottom-0 text-start start-0 ms-5">
+                <div class="icon icon-shape icon-sm bg-white text-center border-radius-md mb-3">
+                  <i class="ni ni-books text-dark opacity-10"></i>
+                </div>
+                <h5 class="text-white mb-1">Educational Excellence</h5>
+                <p>{{ $stats['total_courses'] ?? 0 }} courses available for students</p>
               </div>
             </div>
           </div>

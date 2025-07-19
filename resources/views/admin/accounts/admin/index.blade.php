@@ -229,6 +229,93 @@
         .stat-card .stat-description .info { color: #11cdef; }
         .stat-card .stat-description .danger { color: #f5365c; }
         
+        /* Table Responsive Styles */
+        .table-responsive {
+            overflow-x: auto;
+        }
+        
+        #admins-table {
+            font-size: 0.875rem;
+        }
+        
+        #admins-table th,
+        #admins-table td {
+            padding: 0.75rem 0.5rem;
+            white-space: nowrap;
+        }
+        
+        #admins-table th:first-child,
+        #admins-table td:first-child {
+            min-width: 200px;
+            white-space: normal;
+        }
+        
+        #admins-table th:nth-child(2),
+        #admins-table td:nth-child(2) {
+            min-width: 120px;
+        }
+        
+        #admins-table th:nth-child(3),
+        #admins-table td:nth-child(3) {
+            min-width: 100px;
+        }
+        
+        #admins-table th:nth-child(4),
+        #admins-table td:nth-child(4) {
+            min-width: 150px;
+        }
+        
+        #admins-table th:nth-child(5),
+        #admins-table td:nth-child(5) {
+            min-width: 80px;
+        }
+        
+        #admins-table th:nth-child(6),
+        #admins-table td:nth-child(6) {
+            min-width: 100px;
+        }
+        
+        #admins-table th:last-child,
+        #admins-table td:last-child {
+            min-width: 150px;
+        }
+        
+        /* Compact admin info */
+        .admin-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .admin-info .avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        
+        .admin-info .details h6 {
+            font-size: 0.875rem;
+            margin-bottom: 0.25rem;
+        }
+        
+        .admin-info .details p {
+            font-size: 0.75rem;
+            margin-bottom: 0;
+        }
+        
+        /* Compact action buttons */
+        .action-buttons {
+            display: flex;
+            gap: 0.25rem;
+            flex-wrap: wrap;
+        }
+        
+        .action-buttons .btn {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+        }
+        
         @media (max-width: 991px) {
             .stat-card {
                 min-height: 120px;
@@ -244,6 +331,26 @@
             
             .stat-card .stat-value {
                 font-size: 2rem;
+            }
+            
+            /* Make table more compact on mobile */
+            #admins-table {
+                font-size: 0.75rem;
+            }
+            
+            #admins-table th,
+            #admins-table td {
+                padding: 0.5rem 0.25rem;
+            }
+            
+            .admin-info .avatar {
+                width: 24px;
+                height: 24px;
+            }
+            
+            .action-buttons .btn {
+                padding: 0.2rem 0.4rem;
+                font-size: 0.7rem;
             }
         }
     </style>
@@ -408,12 +515,12 @@
                                 <table id="admins-table" class="table align-items-center mb-0">
                                     <thead>
                                         <tr>
-                                            <th>Admin Information</th>
-                                            <th>Admin ID</th>
+                                            <th>Admin Info</th>
+                                            <th>ID</th>
                                             <th>Password</th>
                                             <th>Contact</th>
                                             <th>Status</th>
-                                            <th>Registration Date</th>
+                                            <th>Reg. Date</th>
                                             <th>Actions</th>
                                         </tr>
                                     </thead>
@@ -421,29 +528,27 @@
                                         @foreach ($admins as $admin)
                                             <tr>
                                                 <td>
-                                                    <div class="d-flex px-2 py-1">
-                                                        <div>
-                                                            <img src="{{ asset($admin->avatar ?? 'images/default-avatar.png') }}"
-                                                                class="avatar avatar-sm me-3" 
-                                                                onerror="this.src='{{ asset('images/default-avatar.png') }}'"
-                                                                alt="{{ $admin->name }}">
-                                                        </div>
-                                                        <div class="d-flex flex-column justify-content-center">
-                                                            <h6 class="mb-0 text-sm">{{ $admin->name }}</h6>
-                                                            <p class="text-xs text-secondary mb-0">
+                                                    <div class="admin-info">
+                                                        <img src="{{ asset($admin->avatar ?? 'images/default-avatar.png') }}"
+                                                            class="avatar" 
+                                                            onerror="this.src='{{ asset('images/default-avatar.png') }}'"
+                                                            alt="{{ $admin->name }}">
+                                                        <div class="details">
+                                                            <h6 class="mb-0">{{ $admin->name }}</h6>
+                                                            <p class="text-secondary mb-0">
                                                                 {{ $admin->mobile ?? '-' }}
                                                             </p>
                                                         </div>
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <p class="text-xs font-weight-bold mb-0">{{ $admin->login_id }}</p>
+                                                    <span class="text-xs font-weight-bold">{{ $admin->login_id }}</span>
                                                 </td>
                                                 <td>
-                                                    <p class="text-xs font-weight-bold mb-0">{{ $admin->plain_password ?? '-' }}</p>
+                                                    <span class="text-xs font-weight-bold">{{ $admin->plain_password ?? '-' }}</span>
                                                 </td>
                                                 <td>
-                                                    <p class="text-xs font-weight-bold mb-0">{{ $admin->email }}</p>
+                                                    <span class="text-xs font-weight-bold">{{ $admin->email }}</span>
                                                 </td>
                                                 <td>
                                                     <span class="badge badge-sm {{ $admin->is_active ? 'bg-gradient-success' : 'bg-gradient-secondary' }}">
@@ -451,32 +556,33 @@
                                                     </span>
                                                 </td>
                                                 <td>
-                                                    <p class="text-xs font-weight-bold mb-0">
-                                                        {{ $admin->created_at->format('Y-m-d') }}</p>
+                                                    <span class="text-xs font-weight-bold">
+                                                        {{ $admin->created_at->format('Y-m-d') }}</span>
                                                 </td>
                                                 <td class="align-middle">
-                                                    <div class="d-flex align-items-center gap-2">
+                                                    <div class="action-buttons">
                                                         <a href="{{ route('admin.accounts.admins.edit', $admin->id) }}"
-                                                            class="btn btn-link text-info p-2">
+                                                            class="btn btn-link text-info" title="Edit">
                                                         <i class="fas fa-edit"></i>
                                                     </a>
                                                         <a href="{{ route('admin.accounts.admins.show', $admin->id) }}"
-                                                            class="btn btn-link text-primary p-2">
+                                                            class="btn btn-link text-primary" title="View">
                                                             <i class="fas fa-eye"></i>
                                                         </a>
-                                                        <button class="btn btn-link text-dark p-2"
+                                                        <button class="btn btn-link text-dark"
                                                             onclick="printCredentials('{{ $admin->login_id }}', '{{ $admin->name }}', '{{ $admin->plain_password }}')"
                                                             title="Print Login Credentials">
                                                             <i class="fas fa-key"></i>
                                                     </button>
                                                         
                                                         <form action="{{ route('admin.accounts.admins.destroy', $admin->id) }}"
-                                                            method="POST" onsubmit="return false;" class="delete-form">
+                                                            method="POST" onsubmit="return false;" class="delete-form d-inline">
                                                             @csrf
                                                             @method('DELETE')
-                                                            <button type="button" class="btn btn-link text-danger p-2 delete-btn"
+                                                            <button type="button" class="btn btn-link text-danger delete-btn"
                                                             data-admin-id="{{ $admin->id }}"
-                                                            data-admin-name="{{ $admin->name }}">
+                                                            data-admin-name="{{ $admin->name }}"
+                                                            title="Delete">
                                                                 <i class="fas fa-trash"></i>
                                                     </button>
                                                         </form>

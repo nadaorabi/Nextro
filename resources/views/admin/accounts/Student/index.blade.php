@@ -218,6 +218,93 @@
         .stat-card .stat-description .info { color: #11cdef; }
         .stat-card .stat-description .danger { color: #f5365c; }
         
+        /* Table Responsive Styles */
+        .table-responsive {
+            overflow-x: auto;
+        }
+        
+        #students-table {
+            font-size: 0.875rem;
+        }
+        
+        #students-table th,
+        #students-table td {
+            padding: 0.75rem 0.5rem;
+            white-space: nowrap;
+        }
+        
+        #students-table th:first-child,
+        #students-table td:first-child {
+            min-width: 200px;
+            white-space: normal;
+        }
+        
+        #students-table th:nth-child(2),
+        #students-table td:nth-child(2) {
+            min-width: 120px;
+        }
+        
+        #students-table th:nth-child(3),
+        #students-table td:nth-child(3) {
+            min-width: 100px;
+        }
+        
+        #students-table th:nth-child(4),
+        #students-table td:nth-child(4) {
+            min-width: 100px;
+        }
+        
+        #students-table th:nth-child(5),
+        #students-table td:nth-child(5) {
+            min-width: 100px;
+        }
+        
+        #students-table th:nth-child(6),
+        #students-table td:nth-child(6) {
+            min-width: 80px;
+        }
+        
+        #students-table th:last-child,
+        #students-table td:last-child {
+            min-width: 150px;
+        }
+        
+        /* Compact student info */
+        .student-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .student-info .avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        
+        .student-info .details h6 {
+            font-size: 0.875rem;
+            margin-bottom: 0.25rem;
+        }
+        
+        .student-info .details p {
+            font-size: 0.75rem;
+            margin-bottom: 0;
+        }
+        
+        /* Compact action buttons */
+        .action-buttons {
+            display: flex;
+            gap: 0.25rem;
+            flex-wrap: wrap;
+        }
+        
+        .action-buttons .btn {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+        }
+        
         @media (max-width: 991px) {
             .stat-card {
                 min-height: 120px;
@@ -233,6 +320,26 @@
             
             .stat-card .stat-value {
                 font-size: 2rem;
+            }
+            
+            /* Make table more compact on mobile */
+            #students-table {
+                font-size: 0.75rem;
+            }
+            
+            #students-table th,
+            #students-table td {
+                padding: 0.5rem 0.25rem;
+            }
+            
+            .student-info .avatar {
+                width: 24px;
+                height: 24px;
+            }
+            
+            .action-buttons .btn {
+                padding: 0.2rem 0.4rem;
+                font-size: 0.7rem;
             }
         }
     </style>
@@ -396,12 +503,12 @@
                                 <table id="students-table" class="table align-items-center mb-0">
                                     <thead>
                                         <tr>
-                                            <th>Student Information</th>
-                                            <th>Student ID</th>
-                                            <th>Initial Password</th>
-                                            <th>Account Status</th>
-                                            <th>Registration Date</th>
-                                            <th>QR Code</th>
+                                            <th>Student Info</th>
+                                            <th>ID</th>
+                                            <th>Password</th>
+                                            <th>Status</th>
+                                            <th>Reg. Date</th>
+                                            <th>QR</th>
                                             <th>Actions</th>
                                         </tr>
                                     </thead>
@@ -409,25 +516,23 @@
                                         @foreach ($students as $student)
                                             <tr>
                                                 <td>
-                                                    <div class="d-flex px-2 py-1">
-                                                        <div>
-                                                            <img src="{{ asset($student->avatar ?? 'images/default-avatar.png') }}"
-                                                                class="avatar avatar-sm me-3" 
-                                                                onerror="this.src='{{ asset('images/default-avatar.png') }}'"
-                                                                alt="{{ $student->name }}">
-                                                        </div>
-                                                        <div class="d-flex flex-column justify-content-center">
-                                                            <h6 class="mb-0 text-sm">{{ $student->name }}</h6>
-                                                            <p class="text-xs text-secondary mb-0">
+                                                    <div class="student-info">
+                                                        <img src="{{ asset($student->avatar ?? 'images/default-avatar.png') }}"
+                                                            class="avatar" 
+                                                            onerror="this.src='{{ asset('images/default-avatar.png') }}'"
+                                                            alt="{{ $student->name }}">
+                                                        <div class="details">
+                                                            <h6 class="mb-0">{{ $student->name }}</h6>
+                                                            <p class="text-secondary mb-0">
                                                                 {{ $student->mobile ?? '-' }}</p>
                                                         </div>
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <p class="text-xs font-weight-bold mb-0">{{ $student->login_id }}</p>
+                                                    <span class="text-xs font-weight-bold">{{ $student->login_id }}</span>
                                                 </td>
                                                 <td>
-                                                    <p class="text-xs font-weight-bold mb-0">{{ $student->plain_password ?? '-' }}</p>
+                                                    <span class="text-xs font-weight-bold">{{ $student->plain_password ?? '-' }}</span>
                                                 </td>
 
                                                 <td>
@@ -437,8 +542,8 @@
                                                     </span>
                                                 </td>
                                                 <td>
-                                                    <p class="text-xs font-weight-bold mb-0">
-                                                        {{ $student->created_at->format('Y-m-d') }}</p>
+                                                    <span class="text-xs font-weight-bold">
+                                                        {{ $student->created_at->format('Y-m-d') }}</span>
                                                 </td>
                                                 <td>
                                                     <button class="btn btn-link text-secondary p-2 qr-button"
@@ -451,31 +556,32 @@
                                                     </button>
                                                 </td>
                                                 <td class="align-middle">
-                                                    <div class="d-flex align-items-center gap-2">
+                                                    <div class="action-buttons">
                                                         <a href="{{ route('admin.accounts.students.edit', $student->id) }}"
-                                                            class="btn btn-link text-info p-2">
+                                                            class="btn btn-link text-info" title="Edit">
                                                             <i class="fas fa-edit"></i>
                                                         </a>
                                                         <a href="{{ route('admin.accounts.students.show', $student->id) }}"
-                                                            class="btn btn-link text-primary p-2">
+                                                            class="btn btn-link text-primary" title="View">
                                                             <i class="fas fa-eye"></i>
                                                         </a>
                                                         <a href="{{ route('admin.students.account', $student->id) }}"
-                                                            class="btn btn-link text-success p-2" title="Financial Account">
+                                                            class="btn btn-link text-success" title="Financial Account">
                                                             <i class="fas fa-wallet"></i>
                                                         </a>
-                                                        <button class="btn btn-link text-dark p-2"
+                                                        <button class="btn btn-link text-dark"
                                                             onclick="printCredentials('{{ $student->login_id }}', '{{ $student->plain_password }}', '{{ $student->name }}')"
                                                             title="Print Credentials">
                                                             <i class="fas fa-key"></i>
                                                         </button>
                                                         <form action="{{ route('admin.accounts.students.destroy', $student->id) }}"
-                                                            method="POST" onsubmit="return false;" class="delete-form">
+                                                            method="POST" onsubmit="return false;" class="delete-form d-inline">
                                                             @csrf
                                                             @method('DELETE')
-                                                            <button type="button" class="btn btn-link text-danger p-2 delete-btn"
+                                                            <button type="button" class="btn btn-link text-danger delete-btn"
                                                                     data-student-id="{{ $student->id }}"
-                                                                    data-student-name="{{ $student->name }}">
+                                                                    data-student-name="{{ $student->name }}"
+                                                                    title="Delete">
                                                                 <i class="fas fa-trash"></i>
                                                             </button>
                                                         </form>
