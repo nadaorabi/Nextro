@@ -129,9 +129,7 @@
                     </div>
                   @endif
                 </div>
-                <div class="card-footer text-center pt-0 px-lg-2 px-1">
-                  <p class="text-sm mt-3 mb-0">Don't have an account? <a href="{{ route('staff.sign-up') }}" class="text-dark font-weight-bolder">Sign up</a></p>
-                </div>
+             
               </div>
             </div>
             <div class="col-6 d-lg-flex d-none h-100 my-auto pe-0 position-absolute top-0 end-0 text-center justify-content-center flex-column">
