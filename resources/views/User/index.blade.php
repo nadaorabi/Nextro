@@ -35,14 +35,14 @@
 
     <div class="row align-items-stretch">
       @foreach([
-        ['icon' => 'uil-atom', 'title' => 'Science', 'count' => '1,391'],
-        ['icon' => 'uil-briefcase', 'title' => 'Business', 'count' => '3,234'],
-        ['icon' => 'uil-calculator', 'title' => 'Finance Accounting', 'count' => '931'],
-        ['icon' => 'uil-pen', 'title' => 'Design', 'count' => '7,291'],
-        ['icon' => 'uil-music', 'title' => 'Music', 'count' => '9,114'],
-        ['icon' => 'uil-chart-pie', 'title' => 'Marketing', 'count' => '2,391'],
-        ['icon' => 'uil-camera', 'title' => 'Photography', 'count' => '7,991'],
-        ['icon' => 'uil-circle-layer', 'title' => 'Animation', 'count' => '6,491']
+        ['icon' => 'uil-graduation-cap', 'title' => '9th Grade Scientific', 'count' => '12'],
+        ['icon' => 'uil-book-open', 'title' => 'Secondary Literary', 'count' => '8'],
+        ['icon' => 'uil-briefcase', 'title' => 'Business Administration', 'count' => '15'],
+        ['icon' => 'uil-code-branch', 'title' => 'Programming', 'count' => '19'],
+        ['icon' => 'uil-palette', 'title' => 'Drawing', 'count' => '6'],
+        ['icon' => 'uil-comments', 'title' => 'Conversation', 'count' => '11'],
+        ['icon' => 'uil-globe', 'title' => 'Languages', 'count' => '14'],
+        ['icon' => 'uil-atom', 'title' => 'Secondary Scientific', 'count' => '17']
       ] as $index => $category)
       <div class="col-sm-6 col-md-6 col-lg-3 mb-4" data-aos="fade-up" data-aos-delay="{{ ($index % 4) * 100 }}">
         <a href="#" class="category d-flex align-items-start h-100">
@@ -57,9 +57,7 @@
     </div>
 
     <div class="row justify-content-center" data-aos="fade-up" data-aos-delay="400">
-      <div class="col-lg-8 text-center">
-        <p>We have more category here. <a href="#">Browse all</a></p>
-      </div>
+     
     </div>
   </div>
 </div>

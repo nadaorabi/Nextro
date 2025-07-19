@@ -2,19 +2,18 @@
 @section('hero')
 @section('title', 'About Us')
 
-
 <div class="untree_co-hero overlay" style="background-image: url('{{ asset('images/img-school-1-min.jpg') }}');">
     <div class="container">
         <div class="row align-items-center justify-content-center">
             <div class="col-12">
                 <div class="row justify-content-center">
                     <div class="col-lg-6 text-center">
-                        <h1 class="mb-4 heading text-white" data-aos="fade-up" data-aos-delay="100">About Us</h1>
+                        <h1 class="mb-4 heading text-white" data-aos="fade-up" data-aos-delay="100">About Syrian Educational Institutes</h1>
                         <div class="mb-5 text-white desc mx-auto" data-aos="fade-up" data-aos-delay="200">
-                            <p>Another free template by <a href="https://untree.co/" target="_blank" class="link-highlight">Untree.co</a>. Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live.</p>
+                            <p>Discover the rich educational heritage of Syria and our commitment to providing quality education that prepares students for future success in a rapidly evolving world.</p>
                         </div>
                         <p class="mb-0" data-aos="fade-up" data-aos-delay="300">
-                            <a href="#" class="btn btn-secondary">Explore courses</a>
+                            <a href="#about-section" class="btn btn-secondary">Learn More About Us</a>
                         </p>
                     </div>
                 </div>
@@ -26,27 +25,28 @@
 
 @section('content')
 
-{{-- Become an Instructor --}}
-<div class="services-section">
+{{-- About Syrian Education Section --}}
+<div class="services-section" id="about-section">
     <div class="container">
         <div class="row justify-content-between">
             <div class="col-lg-4 mb-5 mb-lg-0" data-aos="fade-up" data-aos-delay="0">
                 <div class="section-title mb-3">
-                    <h2 class="line-bottom mb-4">Become an Instructor</h2>
+                    <h2 class="line-bottom mb-4">Syrian Educational Excellence</h2>
                 </div>
-                <p data-aos="fade-up" data-aos-delay="100">Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts.</p>
+                <p data-aos="fade-up" data-aos-delay="100">Syria has a long-standing tradition of educational excellence, with institutions that have produced generations of scholars, scientists, and leaders. Our educational system combines traditional values with modern teaching methodologies to create a comprehensive learning environment.</p>
                 <ul class="ul-check list-unstyled mb-5 primary" data-aos="fade-up" data-aos-delay="200">
-                    <li>Behind the word Mountains.</li>
-                    <li>Far far away Mountains.</li>
-                    <li>Large language Ocean.</li>
+                    <li>Rich Cultural and Academic Heritage</li>
+                    <li>Modern Educational Technologies</li>
+                    <li>Experienced Teaching Faculty</li>
+                    <li>Comprehensive Curriculum Programs</li>
                 </ul>
                 <p data-aos="fade-up" data-aos-delay="300">
-                    <a href="#" class="btn btn-primary">Get Started</a>
+                    <a href="#institutes-section" class="btn btn-primary">Explore Our Institutes</a>
                 </p>
             </div>
             <div class="col-lg-6" data-aos="fade-up" data-aos-delay="0">
                 <figure class="img-wrap-2">
-                    <img src="{{ asset('images/teacher-min.jpg') }}" alt="Image" class="img-fluid">
+                    <img src="{{ asset('images/teacher-min.jpg') }}" alt="Syrian Education" class="img-fluid">
                     <div class="dotted"></div>
                 </figure>
             </div>
@@ -54,62 +54,31 @@
     </div>
 </div>
 
-{{-- Our Team --}}
-<div class="untree_co-section bg-light">
-    <div class="container">
-        <div class="row justify-content-center mb-5">
-            <div class="col-lg-7 text-center" data-aos="fade-up">
-                <h2 class="line-bottom text-center mb-4">Our Team</h2>
-                <p>Far far away, behind the word mountains...</p>
-            </div>
-        </div>
-        <div class="row">
-            @foreach([1,2,3] as $i)
-            <div class="col-12 col-sm-6 col-md-6 mb-4 col-lg-4" data-aos="fade-up" data-aos-delay="{{ $i * 100 }}">
-                <div class="staff text-center">
-                    <div class="mb-4">
-                        <img src="{{ asset('images/staff_'.$i.'.jpg') }}" alt="Staff Image" class="img-fluid">
-                    </div>
-                    <div class="staff-body">
-                        <h3 class="staff-name">{{ ['Mina Collins', 'Anderson Matthew', 'Cynthia Misso'][$i-1] }}</h3>
-                        <span class="d-block position mb-4">{{ ['Teacher in Math', 'Teacher in Music', 'Teacher English'][$i-1] }}</span>
-                        <p class="mb-4">Far far away, behind the word mountains...</p>
-                        <div class="social">
-                            <a href="#" class="mx-2"><span class="icon-facebook"></span></a>
-                            <a href="#" class="mx-2"><span class="icon-twitter"></span></a>
-                            <a href="#" class="mx-2"><span class="icon-linkedin"></span></a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            @endforeach
-        </div>
-    </div>
-</div>
 
-{{-- We Have Best Education --}}
+
+{{-- Syrian Educational Programs --}}
 <div class="untree_co-section">
     <div class="container">
         <div class="row justify-content-center mb-5">
             <div class="col-lg-7 text-center" data-aos="fade-up">
-                <h2 class="line-bottom text-center mb-4">We Have Best Education</h2>
-                <p>Far far away, behind the word mountains...</p>
+                <h2 class="line-bottom text-center mb-4">Syrian Educational Programs</h2>
+                <p>Our comprehensive educational programs are designed to meet the diverse needs of Syrian students and prepare them for global opportunities.</p>
             </div>
         </div>
         <div class="row">
             @foreach([
-                ['icon' => 'uil-music', 'title' => 'Music Class'],
-                ['icon' => 'uil-calculator-alt', 'title' => 'Math Class'],
-                ['icon' => 'uil-book-open', 'title' => 'English Class'],
-                ['icon' => 'uil-book-alt', 'title' => 'Reading for Kids'],
-                ['icon' => 'uil-history', 'title' => 'History Class'],
-                ['icon' => 'uil-headphones', 'title' => 'Music']
+                ['icon' => 'uil-graduation-cap', 'title' => 'Secondary Education', 'desc' => 'Comprehensive secondary education programs including scientific and literary tracks.'],
+                ['icon' => 'uil-calculator-alt', 'title' => 'Mathematics & Sciences', 'desc' => 'Advanced mathematics, physics, chemistry, and biology programs.'],
+                ['icon' => 'uil-book-open', 'title' => 'Language Studies', 'desc' => 'Arabic, English, French, and other language programs.'],
+                ['icon' => 'uil-code-branch', 'title' => 'Technology & Programming', 'desc' => 'Modern programming, web development, and IT courses.'],
+                ['icon' => 'uil-briefcase', 'title' => 'Business Administration', 'desc' => 'Management, economics, and business administration programs.'],
+                ['icon' => 'uil-palette', 'title' => 'Arts & Design', 'desc' => 'Fine arts, drawing, and creative design programs.']
             ] as $index => $feature)
             <div class="col-6 col-sm-6 col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="{{ ($index+1) * 100 }}">
                 <div class="feature">
                     <span class="{{ $feature['icon'] }}"></span>
                     <h3>{{ $feature['title'] }}</h3>
-                    <p>Far far away, behind the word mountains...</p>
+                    <p>{{ $feature['desc'] }}</p>
                 </div>
             </div>
             @endforeach
@@ -117,22 +86,22 @@
     </div>
 </div>
 
-{{-- Why Choose Us --}}
+{{-- Why Choose Syrian Education --}}
 <div class="untree_co-section">
     <div class="container">
         <div class="row">
             <div class="col-lg-5 mr-auto mb-5 mb-lg-0" data-aos="fade-up">
-                <img src="{{ asset('images/img-school-5-min.jpg') }}" alt="School Image" class="img-fluid">
+                <img src="{{ asset('images/img-school-5-min.jpg') }}" alt="Syrian Education" class="img-fluid">
             </div>
             <div class="col-lg-7 ml-auto" data-aos="fade-up" data-aos-delay="100">
-                <h3 class="line-bottom mb-4">Why Choose Us</h3>
-                <p>Far far away, behind the word mountains...</p>
+                <h3 class="line-bottom mb-4">Why Choose Syrian Educational Institutes</h3>
+                <p>Syrian educational institutes offer a unique combination of traditional academic excellence and modern educational approaches, providing students with a solid foundation for their future careers.</p>
 
                 <div class="custom-accordion" id="accordion_1">
                     @foreach([
-                        ['title' => 'Good Teachers and Staffs', 'image' => 'img-school-1-min.jpg'],
-                        ['title' => 'We Value Good Characters', 'image' => 'img-school-2-min.jpg'],
-                        ['title' => 'Your Children are Safe', 'image' => 'img-school-3-min.jpg']
+                        ['title' => 'Experienced Syrian Faculty', 'image' => 'img-school-1-min.jpg', 'desc' => 'Our teaching staff consists of experienced Syrian educators with advanced degrees and international experience. They bring deep knowledge of local culture while incorporating global educational standards.'],
+                        ['title' => 'Cultural Heritage Preservation', 'image' => 'img-school-2-min.jpg', 'desc' => 'We emphasize the preservation of Syrian cultural heritage while embracing modern educational methodologies. Students learn to appreciate their cultural roots while developing global perspectives.'],
+                        ['title' => 'Quality Education Standards', 'image' => 'img-school-3-min.jpg', 'desc' => 'Our institutes maintain high educational standards that meet both local and international requirements. We focus on developing critical thinking, creativity, and practical skills.']
                     ] as $key => $accordion)
                     <div class="accordion-item">
                         <h2 class="mb-0">
@@ -145,11 +114,10 @@
                             <div class="accordion-body">
                                 <div class="d-flex">
                                     <div class="accordion-img mr-4">
-                                        <img src="{{ asset('images/'.$accordion['image']) }}" alt="Accordion Image" class="img-fluid">
+                                        <img src="{{ asset('images/'.$accordion['image']) }}" alt="Syrian Education Feature" class="img-fluid">
                                     </div>
                                     <div>
-                                        <p>Far far away, behind the word mountains...</p>
-                                        <p>Separated they live in Bookmarksgrove right at the coast of the Semantics, a large language ocean.</p>
+                                        <p>{{ $accordion['desc'] }}</p>
                                     </div>
                                 </div>
                             </div>
@@ -158,6 +126,60 @@
                     @endforeach
                 </div>
 
+            </div>
+        </div>
+    </div>
+</div>
+
+{{-- Syrian Educational Statistics --}}
+<div class="untree_co-section bg-light">
+    <div class="container">
+        <div class="row justify-content-center mb-5">
+            <div class="col-lg-7 text-center" data-aos="fade-up">
+                <h2 class="line-bottom text-center mb-4">Syrian Educational Achievements</h2>
+                <p>Our commitment to educational excellence has resulted in significant achievements and recognition.</p>
+            </div>
+        </div>
+        <div class="row text-center">
+            <div class="col-lg-3 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="100">
+                <div class="counter-wrap">
+                    <div class="counter">
+                        <span class="number" data-number="95">0</span>
+                        <span class="unit">%</span>
+                    </div>
+                    <h3>Student Success Rate</h3>
+                    <p>High success rate in academic achievements and career placements</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="200">
+                <div class="counter-wrap">
+                    <div class="counter">
+                        <span class="number" data-number="25">0</span>
+                        <span class="unit">+</span>
+                    </div>
+                    <h3>Years of Excellence</h3>
+                    <p>Over 25 years of providing quality education in Syria</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="300">
+                <div class="counter-wrap">
+                    <div class="counter">
+                        <span class="number" data-number="1000">0</span>
+                        <span class="unit">+</span>
+                    </div>
+                    <h3>Graduates</h3>
+                    <p>Successful graduates working in various professional fields</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="400">
+                <div class="counter-wrap">
+                    <div class="counter">
+                        <span class="number" data-number="50">0</span>
+                        <span class="unit">+</span>
+                    </div>
+                    <h3>Expert Teachers</h3>
+                    <p>Experienced faculty members with advanced qualifications</p>
+                </div>
             </div>
         </div>
     </div>
