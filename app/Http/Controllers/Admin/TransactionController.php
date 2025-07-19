@@ -149,23 +149,23 @@ class TransactionController extends Controller
             return redirect()->back()->with('error', 'Cannot generate receipt for non-positive transaction');
         }
 
-        // هنا يمكن إضافة منطق إنشاء PDF للإيصال
-        // للآن سنقوم بإنشاء إيصال بسيط
-        
+        // إنشاء بيانات الإيصال
         $receiptData = [
             'receipt_number' => 'R-' . str_pad($payment->id, 6, '0', STR_PAD_LEFT),
             'payment' => $payment,
             'user' => $payment->user,
-            'date' => $payment->payment_date,
+            'date' => \Carbon\Carbon::parse($payment->payment_date),
             'amount' => $payment->amount,
             'type' => $this->getTransactionTypeName($payment->type),
-            'notes' => $payment->notes
+            'notes' => $payment->notes,
+            'institute_name' => 'NEXTRO',
+            'institute_address' => 'Syria - Hama',
+            'institute_phone' => '+963 33 123 4567',
+            'institute_email' => 'info@nextro.edu.sy',
+            'generated_at' => now()
         ];
 
-        // يمكن إضافة مكتبة PDF هنا لإنشاء إيصال حقيقي
-        // return PDF::loadView('admin.receipts.payment', $receiptData)->download('receipt-' . $payment->id . '.pdf');
-        
-        return redirect()->back()->with('success', 'Receipt generated successfully');
+        return view('admin.transactions.receipt', compact('receiptData'));
     }
 
     private function getTransactionTypeName($type)

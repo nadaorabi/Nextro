@@ -741,8 +741,8 @@
         }
 
         function generateReceipt(transactionId) {
-            // You can implement receipt generation here
-            alert('Receipt generation feature will be implemented soon.');
+            // Redirect to receipt page
+            window.open(`/admin/transactions/${transactionId}/receipt`, '_blank');
         }
 
         document.addEventListener('DOMContentLoaded', function () {

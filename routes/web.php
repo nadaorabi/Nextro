@@ -32,8 +32,8 @@ Route::get('user/register', [UserController::class, 'showRegisterForm'])->name('
 Route::post('user/register1', [UserController::class, 'register'])->name('register.post');
 Route::post('user/logout', [UserController::class, 'logout'])->name('logout');
 
-// راوتات تتطلب أن يكون المستخدم مسجل دخوله كمستخدم عادي فقط للكورسات
-Route::get('user/Courses', [HomeController::class, 'ShowCoursesPage'])->middleware('isUser')->name('courses_page');
+// Courses page - accessible to everyone
+Route::get('user/Courses', [HomeController::class, 'ShowCoursesPage'])->name('courses_page');
 
 // بقية الصفحات متاحة للجميع
 Route::get('user/About', [HomeController::class, 'ShowAboutPage'])->name('about_page');

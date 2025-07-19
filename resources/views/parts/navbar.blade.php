@@ -68,7 +68,7 @@
           <li class="{{ request()->routeIs('about_page') ? 'active' : '' }}"><a href="{{ route('about_page') }}">About</a></li>
           <li class="{{ request()->routeIs('Staff_page') ? 'active' : '' }}"><a href="{{ route('Staff_page') }}">Our Staff</a></li>
           <li class="{{ request()->routeIs('news_page') ? 'active' : '' }}"><a href="{{ route('news_page') }}">News</a></li>
-          <!-- <li class="{{ request()->routeIs('courses_page') ? 'active' : '' }}"><a href="{{ route('courses_page') }}">Courses</a></li> -->
+          <li class="{{ request()->routeIs('courses_page') ? 'active' : '' }}"><a href="{{ route('courses_page') }}">Courses</a></li>
           <li class="{{ request()->routeIs('Contact_page') ? 'active' : '' }}"><a href="{{ route('Contact_page') }}">Contact</a></li>
         </ul>
 

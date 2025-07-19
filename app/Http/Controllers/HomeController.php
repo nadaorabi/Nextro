@@ -224,9 +224,43 @@ class HomeController extends Controller
             'recentTransactions'
         ));
     }
-    public function ShowCoursesPage()
+    public function ShowCoursesPage(Request $request)
     {
-        return view('User/Courses');
+        // Get all active categories
+        $categories = \App\Models\Category::where('status', 'active')->get();
+        
+        // Get all active courses with relationships
+        $courses = \App\Models\Course::where('status', 'active')
+            ->with(['category', 'courseInstructors.instructor', 'schedules.room'])
+            ->get();
+            
+        // Get all active packages with relationships
+        $packages = \App\Models\Package::where('status', 'active')
+            ->with(['category', 'packageCourses.course'])
+            ->get();
+            
+        // Filter by category if requested
+        $selectedCategory = $request->get('category');
+        if ($selectedCategory) {
+            $courses = $courses->where('category_id', $selectedCategory);
+            $packages = $packages->where('category_id', $selectedCategory);
+        }
+        
+        // Get search term
+        $searchTerm = $request->get('search');
+        if ($searchTerm) {
+            $courses = $courses->filter(function($course) use ($searchTerm) {
+                return stripos($course->title, $searchTerm) !== false || 
+                       stripos($course->description, $searchTerm) !== false;
+            });
+            
+            $packages = $packages->filter(function($package) use ($searchTerm) {
+                return stripos($package->name, $searchTerm) !== false || 
+                       stripos($package->description, $searchTerm) !== false;
+            });
+        }
+        
+        return view('User/Courses', compact('categories', 'courses', 'packages', 'selectedCategory', 'searchTerm'));
     }
     
 }
