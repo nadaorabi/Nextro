@@ -3,25 +3,29 @@
 <div class="container-fluid mt-4">
     <div class="row justify-content-center">
         <div class="col-12 col-lg-11">
-            <!-- Header -->
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <div>
-                    <h2 class="mb-1 fw-bold" style="color:#5f5aad">
-                        <i class="fas fa-clipboard-check text-primary me-2"></i>
-                        Attendance Details - {{ $schedule->course->title }}
-                    </h2>
-                    <div class="text-muted small">
-                        {{ \Carbon\Carbon::parse($schedule->session_date)->format('Y-m-d') }} - 
-                        {{ substr($schedule->start_time, 0, 5) }} - {{ substr($schedule->end_time, 0, 5) }}
+            <!-- Header with white background -->
+            <div class="card shadow-sm border-0 mb-4" style="border-radius: 16px;">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h2 class="mb-2 fw-bold" style="color:#5f5aad">
+                                <i class="fas fa-clipboard-check text-primary me-2"></i>
+                                Attendance Details - {{ $schedule->course->title }}
+                            </h2>
+                            <div class="text-muted small">
+                                {{ \Carbon\Carbon::parse($schedule->session_date)->format('Y-m-d') }} - 
+                                {{ substr($schedule->start_time, 0, 5) }} - {{ substr($schedule->end_time, 0, 5) }}
+                            </div>
+                        </div>
+                        <div>
+                            <a href="{{ route('teacher.attendance.details') }}" class="btn btn-outline-primary me-2">
+                                <i class="fas fa-arrow-left me-1"></i> Back
+                            </a>
+                            <a href="{{ route('teacher.attendance.export') }}" class="btn btn-outline-success">
+                                <i class="fas fa-download me-1"></i> Export Data
+                            </a>
+                        </div>
                     </div>
-                </div>
-                <div>
-                    <a href="{{ route('teacher.attendance.details') }}" class="btn btn-outline-primary me-2">
-                        <i class="fas fa-arrow-left me-1"></i> Back
-                    </a>
-                    <a href="{{ route('teacher.attendance.export') }}" class="btn btn-outline-success">
-                        <i class="fas fa-download me-1"></i> Export Data
-                    </a>
                 </div>
             </div>
 

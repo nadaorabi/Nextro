@@ -4,7 +4,7 @@
     <div class="row justify-content-center">
         <div class="col-12 col-lg-11">
             <!-- Header -->
-            <div class="d-flex justify-content-between align-items-center mb-4">
+            <div class="d-flex justify-content-between align-items-center mb-4 p-4 bg-white rounded shadow-sm">
                 <div>
                     <h2 class="mb-1 fw-bold" style="color:#5f5aad">
                         <i class="fas fa-clipboard-check text-primary me-2"></i>

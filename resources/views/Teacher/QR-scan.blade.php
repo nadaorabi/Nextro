@@ -2,24 +2,28 @@
 @extends('layouts.teacher')
 @section('content')
 <div class="container-fluid mt-4">
-    <div class="row justify-content-center">
-        <div class="col-12 col-lg-11">
-            <!-- Header -->
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <div>
-                    <h2 class="mb-1 fw-bold" style="color:#5f5aad">
-                        <i class="fas fa-clipboard-check text-primary me-2"></i>
-                        Attendance Management
-                    </h2>
-                    <div class="text-muted small">Select a course and session to take attendance or view details</div>
-                </div>
-                <div>
-                    <a href="{{ route('teacher.attendance.details') }}" class="btn btn-outline-primary me-2">
-                        <i class="fas fa-list me-1"></i> Attendance Details
-                    </a>
-                    <a href="{{ route('teacher.attendance.export') }}" class="btn btn-outline-success">
-                        <i class="fas fa-download me-1"></i> Export Data
-                    </a>
+    <div class="row">
+        <div class="col-12">
+                        <!-- Page Header -->
+            <div class="page-header bg-white p-4 rounded shadow-sm mb-4">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div class="d-flex align-items-center">
+                        <div class="me-3">
+                            <i class="fas fa-clipboard-check fa-2x text-primary"></i>
+                        </div>
+                        <div>
+                            <h2 class="mb-1 fw-bold text-dark">Attendance Management</h2>
+                            <p class="mb-0 opacity-75">Select a course and session to take attendance or view details</p>
+                        </div>
+                    </div>
+                    <div class="d-flex gap-2 justify-content-end" style="margin-right: 5px; padding-right: 0; position: absolute; right:0;">
+                        <a href="{{ route('teacher.attendance.details') }}" class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-list me-1"></i> Attendance Details
+                        </a>
+                        <a href="{{ route('teacher.attendance.export') }}" class="btn btn-outline-success btn-sm">
+                            <i class="fas fa-download me-1"></i> Export Data
+                        </a>
+                    </div>
                 </div>
             </div>
 
@@ -145,9 +149,6 @@
                                         <button class="btn btn-outline-primary btn-sm me-1" onclick="openAttendanceModal('{{ $course->title }}', {{ $schedule->id }})">
                                             <i class="fas fa-camera me-1"></i> Take Attendance
                                         </button>
-                                        <a href="{{ route('teacher.attendance.qr-codes', $schedule->id) }}" class="btn btn-outline-info btn-sm me-1">
-                                            <i class="fas fa-qrcode me-1"></i> QR Codes
-                                        </a>
                                         <a href="{{ route('teacher.attendance.schedule-details', $schedule->id) }}" class="btn btn-outline-secondary btn-sm">
                                             <i class="fas fa-list me-1"></i> Details
                                         </a>
