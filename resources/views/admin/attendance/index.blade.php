@@ -153,7 +153,7 @@
                             @if($course->is_free)
                               <span class="badge bg-success">Free</span>
                             @else
-                              <span class="badge bg-info">{{ $course->price ?? 0 }} {{ $course->currency ?? 'KWD' }}</span>
+                              <span class="badge bg-info">{{ $course->price ?? 0 }} {{ $course->currency ?? 'USD' }}</span>
                             @endif
                           </div>
                           @if($course->courseInstructors->count() > 0)
