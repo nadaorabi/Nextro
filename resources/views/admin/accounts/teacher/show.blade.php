@@ -9,11 +9,111 @@
 
   <!-- Fonts and CSS -->
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
   <link href="https://demos.creative-tim.com/argon-dashboard-pro/assets/css/nucleo-icons.css" rel="stylesheet" />
   <link href="https://demos.creative-tim.com/argon-dashboard-pro/assets/css/nucleo-svg.css" rel="stylesheet" />
   <link rel="stylesheet" href="{{ asset('css/argon-dashboard.css?v=2.1.0') }}">
   <link rel="stylesheet" href="{{ asset('css/admin-show-pages.css') }}">
   <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+  <style>
+    /* Delete Modal Styles */
+    .delete-modal .modal-content {
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+
+    .delete-modal .modal-header {
+      background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+      padding: 1.5rem;
+    }
+
+    .delete-modal .modal-body {
+      padding: 2rem;
+    }
+
+    .delete-modal .icon-shape {
+      width: 80px;
+      height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .delete-modal .alert-warning {
+      background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+      border: none;
+      border-radius: 10px;
+    }
+
+    .delete-modal .modal-footer {
+      padding: 1.5rem;
+      background: #f8f9fa;
+    }
+
+    .delete-modal .btn {
+      border-radius: 8px;
+      padding: 0.75rem 1.5rem;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .delete-modal .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .delete-modal .form-control {
+      border-radius: 8px;
+      border: 2px solid #e9ecef;
+      transition: all 0.3s ease;
+    }
+
+    .delete-modal .form-control:focus {
+      border-color: #dc3545;
+      box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+    }
+
+    .delete-modal .form-control.valid {
+      border-color: #28a745;
+      box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+    }
+
+    .delete-modal .form-control.is-invalid {
+      border-color: #dc3545;
+      box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+    }
+
+    /* Animation for modal */
+    .delete-modal.fade .modal-dialog {
+      transform: scale(0.8);
+      transition: transform 0.3s ease-out;
+    }
+
+    .delete-modal.show .modal-dialog {
+      transform: scale(1);
+    }
+    
+    /* Custom purple-blue color for buttons */
+    .btn-purple-blue {
+      background-color: #6c5ce7;
+      border-color: #6c5ce7;
+      color: white;
+    }
+    
+    .btn-purple-blue:hover {
+      background-color: #5a4fcf;
+      border-color: #5a4fcf;
+      color: white;
+    }
+    
+    .btn-purple-blue:focus {
+      background-color: #5a4fcf;
+      border-color: #5a4fcf;
+      color: white;
+      box-shadow: 0 0 0 0.2rem rgba(108, 92, 231, 0.25);
+    }
+  </style>
 </head>
 
 <body class="g-sidenav-show bg-gray-100">
@@ -34,9 +134,9 @@
                 </div>
                 <div>
                   <a href="{{ route('admin.accounts.teachers.list') }}" class="btn btn-secondary">
-                    <i class="fas fa-arrow-left"></i> Back to Teachers List
+                    <i class="fas fa-list"></i> Back to List
                   </a>
-                  <a href="{{ route('admin.accounts.teachers.edit', $teacher->id) }}" class="btn btn-primary">
+                  <a href="{{ route('admin.accounts.teachers.edit', $teacher->id) }}" class="btn btn-purple-blue">
                     <i class="fas fa-edit"></i> Edit Teacher
                   </a>
                 </div>
@@ -101,6 +201,11 @@
                       <div class="mb-3">
                         <label class="form-label text-muted">Full Name</label>
                         <p class="font-weight-bold">{{ $teacher->name }}</p>
+                      </div>
+
+                      <div class="mb-3">
+                        <label class="form-label text-muted">Username</label>
+                        <p class="font-weight-bold text-primary">{{ $teacher->user_name ?? 'Not Set' }}</p>
                       </div>
 
                       @if($teacher->father_name)
@@ -244,7 +349,7 @@
                   <div class="position-relative">
                     <input id="teacher-password" type="password" class="form-control font-weight-bold ps-4 pe-5 password-field" value="{{ $teacher->plain_password ?? '' }}" readonly>
                     <span class="position-absolute top-50 end-0 translate-middle-y me-3" style="cursor:pointer;" id="togglePassword">
-                      <i class="fas fa-eye text-secondary"></i>
+                      <i class="fas fa-eye-slash text-secondary"></i>
                     </span>
                   </div>
                 </div>
@@ -435,22 +540,15 @@
             <div class="card-body">
               <div class="d-flex justify-content-between align-items-center">
                 <div>
-                  <form action="{{ route('admin.accounts.teachers.destroy', $teacher->id) }}" 
-                        method="POST" 
-                        onsubmit="return confirmDelete('{{ $teacher->name }}')"
-                        style="display: inline;">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="btn btn-danger">
-                      <i class="fas fa-trash"></i> Delete Teacher Account
-                    </button>
-                  </form>
+                  <button type="button" class="btn btn-danger" onclick="openDeleteModal('{{ $teacher->name }}', '{{ $teacher->id }}')">
+                    <i class="fas fa-trash"></i> Delete Teacher Account
+                  </button>
                 </div>
                 <div>
                   <a href="{{ route('admin.accounts.teachers.list') }}" class="btn btn-secondary">
-                    <i class="fas fa-list"></i> Back to Teachers List
+                    <i class="fas fa-list"></i> Back to List
                   </a>
-                  <a href="{{ route('admin.accounts.teachers.edit', $teacher->id) }}" class="btn btn-primary">
+                  <a href="{{ route('admin.accounts.teachers.edit', $teacher->id) }}" class="btn btn-purple-blue">
                     <i class="fas fa-edit"></i> Edit Teacher Profile
                   </a>
                 </div>
@@ -464,6 +562,75 @@
   </main>
 
   <!-- Modals -->
+  <!-- Delete Teacher Confirmation Modal -->
+  <div class="modal fade delete-modal" id="deleteTeacherModal" tabindex="-1" aria-labelledby="deleteTeacherModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow">
+        <div class="modal-header bg-danger text-white border-0">
+          <div class="d-flex align-items-center">
+            <div class="icon icon-shape bg-white bg-gradient-danger shadow-danger text-center rounded-circle me-3">
+              <i class="bi bi-exclamation-triangle text-danger text-lg opacity-10"></i>
+            </div>
+            <div>
+              <h5 class="modal-title mb-0" id="deleteTeacherModalLabel">Confirm Teacher Deletion</h5>
+              <p class="text-white-50 mb-0 small">This action cannot be undone</p>
+            </div>
+          </div>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4">
+          <div class="text-center mb-4">
+            <div class="icon icon-shape bg-gradient-danger shadow-danger text-center rounded-circle mx-auto mb-3" style="width: 80px; height: 80px;">
+              <i class="bi bi-person-x text-white text-lg opacity-10" style="font-size: 2rem;"></i>
+            </div>
+            <h6 class="text-danger mb-2">Are you sure you want to delete this teacher account?</h6>
+            <p class="text-muted mb-0" id="teacherNameToDelete"></p>
+          </div>
+          
+          <div class="alert alert-warning border-0">
+            <div class="d-flex">
+              <i class="bi bi-exclamation-triangle text-warning me-2 mt-1"></i>
+              <div>
+                <strong>Warning:</strong> This will permanently delete the teacher account and all associated data.
+                <ul class="mb-0 mt-2 small">
+                  <li>Teacher profile will be permanently removed</li>
+                  <li>All course assignments will be deleted</li>
+                  <li>All financial records will be removed</li>
+                  <li>This action cannot be undone</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Confirmation Input -->
+          <div class="form-group">
+            <label for="deleteConfirmation" class="form-label text-danger">
+              <i class="bi bi-keyboard me-2"></i>Type "DELETE" to confirm
+            </label>
+            <input type="text" id="deleteConfirmation" class="form-control" 
+                   placeholder="Type DELETE to confirm" 
+                   required>
+            <div class="form-text text-muted">
+              This extra step helps prevent accidental deletions.
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer border-0 bg-light">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            <i class="bi bi-x me-2"></i>Cancel
+          </button>
+          <form id="deleteForm" method="POST" action="{{ route('admin.accounts.teachers.destroy', $teacher->id) }}" style="display: inline;">
+            @csrf
+            @method('DELETE')
+            <button type="submit" class="btn btn-secondary" disabled>
+              <i class="bi bi-trash me-2"></i>Delete Teacher Account
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  
   <!-- Modal لإضافة ملاحظة -->
   <div class="modal fade" id="addNoteModal" tabindex="-1" aria-labelledby="addNoteModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -560,35 +727,35 @@
       </div>
     </div>
   </div>
-  <!-- Modal: حضور الطلاب -->
+  <!-- Modal: Student Attendance -->
   <div class="modal fade" id="attendanceModal" tabindex="-1" aria-labelledby="attendanceModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="attendanceModalLabel">حضور الطلاب</h5>
+          <h5 class="modal-title" id="attendanceModalLabel">Student Attendance</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
           <div class="mb-3">
-            <strong>المادة:</strong> <span id="modalCourseName"></span>
+            <strong>Subject:</strong> <span id="modalCourseName"></span>
           </div>
           <div class="table-responsive">
             <table class="table table-striped">
               <thead>
                 <tr>
-                  <th>اسم الطالب</th>
-                  <th>تاريخ الحضور</th>
-                  <th>الحالة</th>
+                  <th>Student Name</th>
+                  <th>Attendance Date</th>
+                  <th>Status</th>
                 </tr>
               </thead>
               <tbody id="studentsAttendanceBody">
-                <!-- سيتم تعبئتها بالجافاسكريبت -->
+                <!-- Will be populated by JavaScript -->
               </tbody>
             </table>
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
         </div>
       </div>
     </div>
@@ -602,9 +769,33 @@
   <script src="{{ asset('js/argon-dashboard.min.js?v=2.1.0') }}"></script>
   
   <script>
-    function confirmDelete(teacherName) {
-      return confirm(`Are you sure you want to delete the teacher "${teacherName}"?\n\nThis action cannot be undone.`);
+    
+    function openDeleteModal(teacherName, teacherId) {
+      document.getElementById('teacherNameToDelete').textContent = teacherName;
+      document.getElementById('deleteConfirmation').value = '';
+      
+      var modal = new bootstrap.Modal(document.getElementById('deleteTeacherModal'));
+      modal.show();
     }
+    
+    // Handle confirmation input
+    document.addEventListener('DOMContentLoaded', function() {
+      const confirmationInput = document.getElementById('deleteConfirmation');
+      const confirmBtn = document.querySelector('#deleteForm button[type="submit"]');
+      
+      if (confirmationInput && confirmBtn) {
+        confirmationInput.addEventListener('input', function() {
+          const isValid = this.value === 'DELETE';
+          confirmBtn.disabled = !isValid;
+          
+          // Update input styling
+          this.classList.remove('valid', 'is-invalid');
+          if (this.value !== '') {
+            this.classList.add(isValid ? 'valid' : 'is-invalid');
+          }
+        });
+      }
+    });
   </script>
 
   <script>
@@ -636,10 +827,10 @@
         toggleBtn.addEventListener('click', function() {
           if (pwdInput.type === 'password') {
             pwdInput.type = 'text';
-            this.innerHTML = '<i class="fas fa-eye-slash text-secondary"></i>';
+            this.innerHTML = '<i class="fas fa-eye text-secondary"></i>';
           } else {
             pwdInput.type = 'password';
-            this.innerHTML = '<i class="fas fa-eye text-secondary"></i>';
+            this.innerHTML = '<i class="fas fa-eye-slash text-secondary"></i>';
           }
         });
       }
@@ -675,22 +866,22 @@
   </script>
 
   <script>
-    // بيانات حضور الطلاب لكل كورس (تجريبية)
+    // Student attendance data for each course (sample)
     const courseAttendances = {
-      'عربي': [
-        { name: 'أحمد محمد', date: '2024-06-20', status: 'حاضر' },
-        { name: 'سارة علي', date: '2024-06-20', status: 'حاضر' },
-        { name: 'محمد سامي', date: '2024-06-20', status: 'غائب' }
+      'English1': [
+        { name: 'Ahmed Mohamed', date: '2024-06-20', status: 'Present' },
+        { name: 'Sarah Ali', date: '2024-06-20', status: 'Present' },
+        { name: 'Mohamed Sami', date: '2024-06-20', status: 'Absent' }
       ],
-      'رياضيات': [
-        { name: 'أحمد محمد', date: '2024-05-10', status: 'حاضر' },
-        { name: 'سارة علي', date: '2024-05-10', status: 'حاضر' },
-        { name: 'محمد سامي', date: '2024-05-10', status: 'حاضر' }
+      'Mathematics': [
+        { name: 'Ahmed Mohamed', date: '2024-05-10', status: 'Present' },
+        { name: 'Sarah Ali', date: '2024-05-10', status: 'Present' },
+        { name: 'Mohamed Sami', date: '2024-05-10', status: 'Present' }
       ],
-      'فيزياء': [
-        { name: 'أحمد محمد', date: '2024-04-15', status: 'غائب' },
-        { name: 'سارة علي', date: '2024-04-15', status: 'حاضر' },
-        { name: 'محمد سامي', date: '2024-04-15', status: 'حاضر' }
+      'Physics': [
+        { name: 'Ahmed Mohamed', date: '2024-04-15', status: 'Absent' },
+        { name: 'Sarah Ali', date: '2024-04-15', status: 'Present' },
+        { name: 'Mohamed Sami', date: '2024-04-15', status: 'Present' }
       ]
     };
 
@@ -706,7 +897,7 @@
           var data = courseAttendances[course] || [];
           data.forEach(function(row) {
             var tr = document.createElement('tr');
-            tr.innerHTML = `<td>${row.name}</td><td>${row.date}</td><td><span class="badge ${row.status === 'حاضر' ? 'bg-success' : 'bg-danger'}">${row.status}</span></td>`;
+            tr.innerHTML = `<td>${row.name}</td><td>${row.date}</td><td><span class="badge ${row.status === 'Present' ? 'bg-success' : 'bg-danger'}">${row.status}</span></td>`;
             tbody.appendChild(tr);
           });
         });

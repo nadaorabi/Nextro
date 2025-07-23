@@ -1091,55 +1091,55 @@
 
 <!-- Student ID Card Modal -->
 <div class="modal fade" id="studentIdCardModal" tabindex="-1" aria-labelledby="studentIdCardModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-sm">
-    <div class="modal-content modern-card">
-      <div class="modal-header gradient-header">
+  <div class="modal-dialog modal-xs">
+    <div class="modal-content id-card-content">
+      <div class="modal-header id-card-header">
         <h5 class="modal-title text-white" id="studentIdCardModalLabel">
           <i class="uil uil-id-card me-2"></i>
           Student ID Card
         </h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <div class="modal-body">
-        <div class="text-center">
-          <div class="student-photo-container mb-3">
+      <div class="modal-body id-card-body">
+        <div class="id-card-container">
+          <div class="id-card-photo">
             @if(Auth::user()->image)
-              <img src="{{ asset('storage/' . Auth::user()->image) }}" alt="Student Photo" class="student-photo-small" onerror="this.src='{{ asset('images/default-avatar.png') }}'">
+              <img src="{{ asset('storage/' . Auth::user()->image) }}" alt="Student Photo" class="id-card-avatar" onerror="this.src='{{ asset('images/default-avatar.png') }}'">
             @else
-              <div class="default-avatar-small">
-                <div class="default-avatar-text-small">STUDENT</div>
+              <div class="id-card-default-avatar">
+                <div class="id-card-default-text">STUDENT</div>
               </div>
             @endif
           </div>
-          <h5 class="student-name mb-2">{{ Auth::user()->name }}</h5>
-          <p class="student-role mb-3">Student</p>
-          
-          <div class="qr-code-container-small mb-3">
+          <div class="id-card-info">
+            <h6 class="id-card-name">{{ Auth::user()->name }}</h6>
+            <p class="id-card-role">Student</p>
+          </div>
+          <div class="id-card-qr">
             <div id="studentQRCode"></div>
           </div>
-          
-          <div class="student-details-small">
-            <div class="detail-item-small">
-              <span class="detail-label-small">Student ID:</span>
-              <span class="detail-value-small">{{ Auth::user()->login_id ?? 'N/A' }}</span>
+          <div class="id-card-details">
+            <div class="id-card-detail-row">
+              <span class="id-card-label">Student ID:</span>
+              <span class="id-card-value">{{ Auth::user()->login_id ?? 'N/A' }}</span>
             </div>
-            <div class="detail-item-small">
-              <span class="detail-label-small">Registration Date:</span>
-              <span class="detail-value-small">{{ Auth::user()->created_at ? Auth::user()->created_at->format('Y-m-d') : 'N/A' }}</span>
+            <div class="id-card-detail-row">
+              <span class="id-card-label">Username:</span>
+              <span class="id-card-value">{{ Auth::user()->user_name ?? Auth::user()->login_id ?? 'N/A' }}</span>
             </div>
-            <div class="detail-item-small">
-              <span class="detail-label-small">Status:</span>
-              <span class="detail-value-small status-active-small">Active</span>
+            <div class="id-card-detail-row">
+              <span class="id-card-label">Status:</span>
+              <span class="id-card-status">Active</span>
             </div>
           </div>
         </div>
       </div>
-      <div class="modal-footer modern-footer">
-        <button type="button" class="btn btn-outline-light modern-btn" data-bs-dismiss="modal">
+      <div class="modal-footer id-card-footer">
+        <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">
           <i class="uil uil-times me-1"></i>Close
         </button>
-        <button type="button" class="btn btn-light modern-btn" onclick="printIdCard()">
-          <i class="uil uil-print me-1"></i>Print Card
+        <button type="button" class="btn btn-sm btn-primary" onclick="printIdCard()">
+          <i class="uil uil-print me-1"></i>Print
         </button>
       </div>
     </div>
@@ -1288,87 +1288,155 @@
     background: rgba(255, 255, 255, 0.95);
 }
 
-/* Small Modal Styles */
-.student-photo-small {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 3px solid #fff;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+/* ID Card Modal Styles - Compact Design */
+.modal-xs {
+    max-width: 400px;
 }
 
-.default-avatar-small {
-    width: 80px;
-    height: 80px;
+.id-card-content {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    overflow: hidden;
+}
+
+.id-card-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    padding: 1rem 1.5rem;
+    position: relative;
+}
+
+.id-card-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, rgba(255,255,255,0.1) 0%, transparent 50%, rgba(255,255,255,0.1) 100%);
+    animation: shimmer 2s infinite;
+}
+
+.id-card-body {
+    padding: 1.5rem;
+    background: #f8f9fa;
+}
+
+.id-card-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.id-card-photo {
+    text-align: center;
+}
+
+.id-card-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #fff;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.id-card-default-avatar {
+    width: 60px;
+    height: 60px;
     border-radius: 50%;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 3px solid #fff;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    border: 2px solid #fff;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    margin: 0 auto;
 }
 
-.default-avatar-text-small {
-    font-size: 0.8rem;
+.id-card-default-text {
+    font-size: 0.7rem;
     color: white;
     font-weight: 700;
     text-align: center;
-    line-height: 80px;
 }
 
-.qr-code-container-small {
+.id-card-info {
+    text-align: center;
+}
+
+.id-card-name {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 0.2rem;
+}
+
+.id-card-role {
+    font-size: 0.8rem;
+    color: #6c757d;
+    margin-bottom: 0;
+    font-weight: 500;
+}
+
+.id-card-qr {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 1rem;
-    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
-    border-radius: 10px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    padding: 0.5rem;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     border: 1px solid rgba(0,0,0,0.05);
 }
 
-.student-details-small {
-    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
-    border-radius: 10px;
+.id-card-details {
+    background: white;
+    border-radius: 8px;
     padding: 1rem;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     border: 1px solid rgba(0,0,0,0.05);
 }
 
-.detail-item-small {
+.id-card-detail-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0.5rem 0;
+    padding: 0.4rem 0;
     border-bottom: 1px solid rgba(0,0,0,0.05);
-    font-size: 0.85rem;
+    font-size: 0.8rem;
 }
 
-.detail-item-small:last-child {
+.id-card-detail-row:last-child {
     border-bottom: none;
 }
 
-.detail-label-small {
+.id-card-label {
     font-weight: 600;
-    color: #2c3e50;
-    font-size: 0.8rem;
-}
-
-.detail-value-small {
     color: #495057;
-    font-weight: 600;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
 }
 
-.status-active-small {
-    color: #28a745 !important;
+.id-card-value {
+    color: #2c3e50;
+    font-weight: 600;
+    font-size: 0.75rem;
+}
+
+.id-card-status {
+    color: #28a745;
     font-weight: 700;
     background: rgba(40, 167, 69, 0.1);
     padding: 0.2rem 0.5rem;
-    border-radius: 15px;
-    font-size: 0.75rem;
+    border-radius: 12px;
+    font-size: 0.7rem;
+}
+
+.id-card-footer {
+    background: #f8f9fa;
+    border-top: 1px solid #dee2e6;
+    padding: 1rem 1.5rem;
 }
 
 .gradient-header {
@@ -1731,11 +1799,11 @@ function showStudentIdCard() {
     
     // Try QRCode.js first, then fallback to qrcode@1.5.3
     try {
-        // Use QRCode.js library
+        // Use QRCode.js library with smaller size
         new QRCode(container, {
             text: studentId,
-            width: 150,
-            height: 150,
+            width: 100,
+            height: 100,
             colorDark: "#000000",
             colorLight: "#ffffff",
             correctLevel: QRCode.CorrectLevel.H
@@ -1745,8 +1813,8 @@ function showStudentIdCard() {
         console.log('QRCode.js failed, trying qrcode@1.5.3...');
         // Fallback to qrcode@1.5.3
         QRCode.toCanvas(container, studentId, {
-            width: 150,
-            margin: 2,
+            width: 100,
+            margin: 1,
             color: { dark: '#000000', light: '#FFFFFF' }
         }, function (error) {
             if (error) {
@@ -1772,12 +1840,12 @@ function downloadQRCode() {
 
 function printIdCard() {
     // Create a new window for printing
-    const printWindow = window.open('', '_blank', 'width=600,height=800');
+    const printWindow = window.open('', '_blank', 'width=500,height=600');
     
     // Get student data
     const studentName = '{{ Auth::user()->name }}';
     const studentId = '{{ Auth::user()->login_id ?? Auth::user()->id }}';
-    const registrationDate = '{{ Auth::user()->created_at ? Auth::user()->created_at->format('Y-m-d') : 'N/A' }}';
+    const username = '{{ Auth::user()->user_name ?? Auth::user()->login_id ?? 'N/A' }}';
     const studentImage = '{{ Auth::user()->image ? asset('storage/' . Auth::user()->image) : asset('images/default-avatar.png') }}';
     
     // Create QR code for printing
@@ -1787,8 +1855,8 @@ function printIdCard() {
     // Generate QR code
     new QRCode(qrContainer, {
         text: studentId,
-        width: 120,
-        height: 120,
+        width: 80,
+        height: 80,
         colorDark: "#000000",
         colorLight: "#ffffff",
         correctLevel: QRCode.CorrectLevel.H
@@ -1804,14 +1872,14 @@ function printIdCard() {
                 body {
                     font-family: Arial, sans-serif;
                     margin: 0;
-                    padding: 20px;
+                    padding: 15px;
                     background: white;
                 }
                 .id-card {
-                    width: 350px;
-                    height: 220px;
+                    width: 280px;
+                    height: 160px;
                     border: 2px solid #333;
-                    border-radius: 10px;
+                    border-radius: 8px;
                     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
                     color: white;
                     position: relative;
@@ -1823,57 +1891,57 @@ function printIdCard() {
                     top: 0;
                     left: 0;
                     right: 0;
-                    height: 3px;
+                    height: 2px;
                     background: linear-gradient(90deg, #fff, #f0f0f0, #fff);
                 }
                 .header {
                     text-align: center;
-                    padding: 10px;
+                    padding: 8px;
                     background: rgba(255,255,255,0.1);
                     border-bottom: 1px solid rgba(255,255,255,0.2);
                 }
                 .header h2 {
                     margin: 0;
-                    font-size: 18px;
+                    font-size: 14px;
                     font-weight: bold;
                 }
                 .content {
                     display: flex;
-                    padding: 15px;
-                    height: 150px;
+                    padding: 10px;
+                    height: 100px;
                 }
                 .photo-section {
-                    width: 80px;
+                    width: 50px;
                     text-align: center;
                 }
                 .student-photo {
-                    width: 70px;
-                    height: 70px;
+                    width: 45px;
+                    height: 45px;
                     border-radius: 50%;
-                    border: 3px solid white;
+                    border: 2px solid white;
                     object-fit: cover;
-                    margin-bottom: 5px;
+                    margin-bottom: 3px;
                 }
                 .default-photo {
-                    width: 70px;
-                    height: 70px;
+                    width: 45px;
+                    height: 45px;
                     border-radius: 50%;
                     background: rgba(255,255,255,0.2);
-                    border: 3px solid white;
+                    border: 2px solid white;
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    font-size: 12px;
+                    font-size: 8px;
                     font-weight: bold;
-                    margin-bottom: 5px;
+                    margin-bottom: 3px;
                 }
                 .info-section {
                     flex: 1;
-                    margin-left: 15px;
+                    margin-left: 12px;
                 }
                 .info-row {
-                    margin-bottom: 8px;
-                    font-size: 12px;
+                    margin-bottom: 6px;
+                    font-size: 10px;
                 }
                 .info-label {
                     font-weight: bold;
@@ -1884,18 +1952,18 @@ function printIdCard() {
                 }
                 .qr-section {
                     position: absolute;
-                    bottom: 10px;
-                    right: 10px;
+                    bottom: 8px;
+                    right: 8px;
                     background: white;
-                    padding: 5px;
-                    border-radius: 5px;
+                    padding: 3px;
+                    border-radius: 4px;
                 }
                 .status-badge {
                     background: #28a745;
                     color: white;
-                    padding: 2px 8px;
-                    border-radius: 10px;
-                    font-size: 10px;
+                    padding: 1px 6px;
+                    border-radius: 8px;
+                    font-size: 8px;
                     font-weight: bold;
                 }
                 @media print {
@@ -1915,7 +1983,7 @@ function printIdCard() {
                             '<div class="default-photo">STUDENT</div>' : 
                             `<img src="${studentImage}" alt="Student Photo" class="student-photo">`
                         }
-                        <div style="font-size: 10px; font-weight: bold;">${studentName}</div>
+                        <div style="font-size: 9px; font-weight: bold;">${studentName}</div>
                     </div>
                     <div class="info-section">
                         <div class="info-row">
@@ -1923,8 +1991,8 @@ function printIdCard() {
                             <span class="info-value">${studentId}</span>
                         </div>
                         <div class="info-row">
-                            <span class="info-label">Registration Date:</span>
-                            <span class="info-value">${registrationDate}</span>
+                            <span class="info-label">Username:</span>
+                            <span class="info-value">${username}</span>
                         </div>
                         <div class="info-row">
                             <span class="info-label">Status:</span>

@@ -138,7 +138,7 @@ class TeacherController extends Controller
 
             $teacher->update($validated);
             
-            return redirect()->back()->with('success', 'Teacher updated successfully');
+            return redirect()->route('admin.accounts.teachers.show', $id)->with('success', 'Teacher updated successfully');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Failed to update teacher: ' . $e->getMessage());
         }
@@ -161,7 +161,7 @@ class TeacherController extends Controller
                 ]);
             }
             
-            return redirect()->back()->with('success', 'Teacher deleted successfully');
+            return redirect()->route('admin.accounts.teachers.list')->with('success', 'Teacher deleted successfully');
         } catch (\Exception $e) {
             if (request()->ajax()) {
                 return response()->json([

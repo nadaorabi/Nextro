@@ -234,7 +234,7 @@ class StudentController extends Controller
 
             $student->update($validated);
             
-            return redirect()->back()->with('success', 'Student updated successfully');
+            return redirect()->route('admin.accounts.students.show', $id)->with('success', 'Student updated successfully');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Failed to update student: ' . $e->getMessage());
         }
@@ -257,7 +257,7 @@ class StudentController extends Controller
                 ]);
             }
             
-            return redirect()->back()->with('success', 'Student deleted successfully');
+            return redirect()->route('admin.accounts.students.list')->with('success', 'Student deleted successfully');
         } catch (\Exception $e) {
             if (request()->ajax()) {
                 return response()->json([

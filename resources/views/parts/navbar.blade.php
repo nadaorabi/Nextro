@@ -45,9 +45,9 @@
             <a href="{{ route('login') }}" class="auth-btn login me-2">
               <i class="las la-sign-in-alt"></i> Log In
             </a>
-            <a href="{{ route('register') }}" class="auth-btn register ms-2">
+            <!-- <a href="{{ route('register') }}" class="auth-btn register ms-2">
               <i class="las la-user-plus"></i> Register
-            </a>
+            </a> -->
             <a href="{{ route('staff.login') }}" class="auth-btn register ms-2">
               <i class="las la-user-tie"></i> Staff
             </a>

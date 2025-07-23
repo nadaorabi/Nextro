@@ -13,12 +13,33 @@
   <link href="https://demos.creative-tim.com/argon-dashboard-pro/assets/css/nucleo-svg.css" rel="stylesheet" />
   <link rel="stylesheet" href="{{ asset('css/argon-dashboard.css?v=2.1.0') }}">
   <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
   
   <style>
     /* Force English locale for date inputs only */
     input[type="date"] {
       direction: ltr !important;
       text-align: left !important;
+    }
+    
+    /* Custom purple-blue color for buttons */
+    .btn-purple-blue {
+      background-color: #6c5ce7;
+      border-color: #6c5ce7;
+      color: white;
+    }
+    
+    .btn-purple-blue:hover {
+      background-color: #5a4fcf;
+      border-color: #5a4fcf;
+      color: white;
+    }
+    
+    .btn-purple-blue:focus {
+      background-color: #5a4fcf;
+      border-color: #5a4fcf;
+      color: white;
+      box-shadow: 0 0 0 0.2rem rgba(108, 92, 231, 0.25);
     }
   </style>
 </head>
@@ -40,8 +61,11 @@
                   <p class="text-muted mb-0">Update and modify student information and account settings</p>
                 </div>
                 <div>
-                  <a href="{{ route('admin.accounts.students.show', $student->id) }}" class="btn btn-secondary">
+                  <a href="{{ route('admin.accounts.students.show', $student->id) }}" class="btn btn-secondary me-2">
                     <i class="fas fa-arrow-left"></i> Back to Student Details
+                  </a>
+                  <a href="{{ route('admin.accounts.students.list') }}" class="btn btn-purple-blue">
+                    <i class="fas fa-list"></i> Back to List
                   </a>
                 </div>
               </div>
