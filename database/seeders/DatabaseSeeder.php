@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
             AdminSeeder::class,
+            CreateAdminUserSeeder::class, // إنشاء حساب مدير جديد
             UpdateExistingUsersWithUserName::class, // تحديث المستخدمين الموجودين بـ user_name
             CompleteDatabaseSeeder::class, // إنشاء بيانات تجريبية شاملة
         ]);

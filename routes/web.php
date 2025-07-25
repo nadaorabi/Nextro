@@ -102,6 +102,7 @@ Route::prefix('admin')->middleware('isAdmin')->name('admin.')->group(function ()
         Route::delete('/{studentId}/courses/{enrollmentId}/unenroll', [StudentController::class, 'unenrollCourse'])->name('courses.unenroll');
         Route::delete('/{studentId}/packages/{packageId}/unenroll', [StudentController::class, 'unenrollPackage'])->name('packages.unenroll');
         Route::post('/{id}/add-transaction', [StudentController::class, 'addTransaction'])->name('add-transaction');
+        Route::post('/{id}/toggle-graduation', [StudentController::class, 'toggleGraduation'])->name('toggle-graduation');
     });
 
     // Teachers Management

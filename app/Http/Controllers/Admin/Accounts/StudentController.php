@@ -18,20 +18,23 @@ class StudentController extends Controller
 
         $totalStudents = User::where('role', 'student')->count();
         $activeStudents = User::where('role', 'student')->where('is_active', '1')->count();
-        $graduatedStudents = User::where('role', 'student')->where('is_active', '2')->count();
+        $graduatedStudents = User::where('role', 'student')->where('is_graduated', true)->count();
+        $notGraduatedStudents = User::where('role', 'student')->where('is_graduated', false)->count();
         $blockedStudents = User::where('role', 'student')->where('is_active', '0')->count();
 
         $studentsThisMonth = User::where('role', 'student')
             ->whereMonth('created_at', now()->month)
             ->count();
 
-        $students = $query->latest()->paginate(10)->appends($request->all());
+        // Get all students without pagination for frontend filtering
+        $students = $query->latest()->get();
 
         return view('admin.accounts.Student.index', compact(
             'students',
             'totalStudents',
             'activeStudents',
             'graduatedStudents',
+            'notGraduatedStudents',
             'blockedStudents',
             'studentsThisMonth'
         ));
@@ -589,6 +592,28 @@ class StudentController extends Controller
             return redirect()->back()->with('success', 'Transaction added successfully!');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Failed to add transaction: ' . $e->getMessage());
+        }
+    }
+
+    public function toggleGraduation($id)
+    {
+        try {
+            $student = User::where('role', 'student')->findOrFail($id);
+            $newStatus = $student->toggleGraduationStatus();
+            
+            $statusText = $newStatus ? 'Graduated' : 'Not Graduated';
+            
+            return response()->json([
+                'success' => true,
+                'message' => "Student graduation status changed to: {$statusText}",
+                'is_graduated' => $newStatus,
+                'status_text' => $statusText
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to change graduation status: ' . $e->getMessage()
+            ], 500);
         }
     }
 }
