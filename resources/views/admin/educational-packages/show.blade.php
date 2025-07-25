@@ -76,8 +76,14 @@
         }
 
         .package-image {
-            max-width: 200px;
-            border-radius: 10px;
+            max-width: 300px;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        /* تحسين الأيقونات */
+        .package-image .fas {
+            font-size: 3rem;
         }
 
         /* Enhanced Action Buttons */
@@ -345,8 +351,8 @@
                             <div class="card-body">
                                 <h5 class="card-title mb-4">Package Image</h5>
                                 
-                                @if($package->image)
-                                    <img src="{{ asset('storage/' . $package->image) }}" 
+                                @if($package->hasImage())
+                                    <img src="{{ $package->getImageUrl() }}" 
                                          alt="Package Image" class="img-fluid package-image">
                                 @else
                                     <div class="text-center py-4">

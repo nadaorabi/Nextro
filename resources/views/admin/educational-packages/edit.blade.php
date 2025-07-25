@@ -237,10 +237,10 @@
                                                 </small>
                                                 
                                                 <!-- Current Image Display -->
-                                                @if($package->image)
+                                                @if($package->hasImage())
                                                     <div class="mt-3">
                                                         <label class="form-label text-muted">Current Image:</label>
-                                                        <img src="{{ asset('storage/' . $package->image) }}" 
+                                                        <img src="{{ $package->getImageUrl() }}" 
                                                              alt="Current Package Image" class="current-image d-block mx-auto">
                                                     </div>
                                                 @endif

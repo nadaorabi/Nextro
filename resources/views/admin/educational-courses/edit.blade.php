@@ -211,10 +211,10 @@
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                                 <div class="mt-2 text-center">
-                                    @if($course->image)
-                                        <img id="editCourseImagePreview" src="{{ asset('storage/'.$course->image) }}" style="max-width:100%;max-height:180px;border-radius:10px;">
+                                    @if($course->hasImage())
+                                        <img id="editCourseImagePreview" src="{{ $course->getImageUrl() }}" style="max-width:100%;max-height:180px;border-radius:10px;">
                                     @else
-                                        <img id="editCourseImagePreview" src="{{ asset('images/default-course.png') }}" style="max-width:100%;max-height:180px;border-radius:10px;display:none;">
+                                        <img id="editCourseImagePreview" src="" style="max-width:100%;max-height:180px;border-radius:10px;display:none;">
                                     @endif
                                 </div>
                             </div>

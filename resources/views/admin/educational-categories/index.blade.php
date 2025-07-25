@@ -100,6 +100,31 @@
             -webkit-text-fill-color: transparent;
         }
 
+        /* تحسين عرض الصور */
+        .avatar {
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        
+        .img-thumbnail {
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        
+        .category-image {
+            object-fit: cover;
+            border-radius: 15px;
+        }
+
+        /* تحسين الأيقونات */
+        .avatar .fas {
+            font-size: 1.2rem;
+        }
+        
+        .course-image .fas {
+            font-size: 1.5rem;
+        }
+
         @keyframes bounce {
             0% { transform: translateY(0); }
             100% { transform: translateY(-20px); }
@@ -405,8 +430,15 @@
                                 <td>
                                     <div class="d-flex px-2 py-1">
                                         <div>
-                                            <img src="{{ $category->image ? asset('storage/' . $category->image) : asset('images/theme/category-default.png') }}"
-                                                class="avatar avatar-sm me-3" alt="category">
+                                            @if($category->hasImage())
+                                                <img src="{{ $category->getImageUrl() }}"
+                                                    class="avatar avatar-sm me-3" 
+                                                    alt="category">
+                                            @else
+                                                <div class="avatar avatar-sm me-3 bg-light d-flex align-items-center justify-content-center">
+                                                    <i class="fas fa-image text-muted"></i>
+                                                </div>
+                                            @endif
                                         </div>
                                         <div class="d-flex flex-column justify-content-center">
                                             <h6 class="mb-0 text-sm">{{ $category->name }}</h6>
@@ -591,9 +623,16 @@
                                         <div class="mt-3 text-center">
                                             <label class="form-label fw-bold text-success">Current Image:</label>
                                             <div class="position-relative d-inline-block">
-                                                <img src="{{ asset('storage/' . $category->image) }}"
-                                                    class="img-thumbnail rounded-3 shadow-sm"
-                                                    width="150" alt="Current category image">
+                                                @if($category->hasImage())
+                                                    <img src="{{ $category->getImageUrl() }}"
+                                                        class="img-thumbnail rounded-3 shadow-sm"
+                                                        width="150" 
+                                                        alt="Current category image">
+                                                @else
+                                                    <div class="img-thumbnail rounded-3 shadow-sm bg-light d-flex align-items-center justify-content-center" style="width: 150px; height: 150px;">
+                                                        <i class="fas fa-image text-muted" style="font-size: 2rem;"></i>
+                                                    </div>
+                                                @endif
                                                 <div class="position-absolute top-0 end-0">
                                                     <span class="badge bg-success rounded-pill">
                                                         <i class="fas fa-check"></i> Current

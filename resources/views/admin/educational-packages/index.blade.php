@@ -271,6 +271,17 @@
                 font-size: 0.875rem;
             }
         }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+        }
+
+        /* تحسين الأيقونات */
+        .avatar .fas {
+            font-size: 1.2rem;
+        }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 @endpush
@@ -437,16 +448,16 @@
                                             <tr>
                                                 <td>
                                         <div class="d-flex px-2 py-1">
-                                                                                    <div>
-                                                    @if($package->image)
-                                                        <img src="{{ asset('storage/' . $package->image) }}" 
-                                                    class="avatar avatar-sm me-3" alt="package">
-                                                    @else
-                                                <div class="avatar avatar-sm me-3 bg-gradient-primary d-flex align-items-center justify-content-center">
-                                                    <i class="fas fa-box text-white text-sm"></i>
-                                                        </div>
-                                                    @endif
-                                        </div>
+                                            <div>
+                                                @if($package->hasImage())
+                                                    <img src="{{ $package->getImageUrl() }}" 
+                                                        class="avatar avatar-sm me-3" alt="package">
+                                                @else
+                                                    <div class="avatar avatar-sm me-3 bg-light d-flex align-items-center justify-content-center">
+                                                        <i class="fas fa-image text-muted"></i>
+                                                    </div>
+                                                @endif
+                                            </div>
                                             <div class="d-flex flex-column justify-content-center">
                                                 <h6 class="mb-0 text-sm">{{ $package->name }}</h6>
                                                 <p class="text-xs text-secondary mb-0">

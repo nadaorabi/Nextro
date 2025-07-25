@@ -306,7 +306,7 @@
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
                                             <div class="mt-2 text-center">
-                                                <img id="courseImagePreview" src="{{ asset('images/default-course.png') }}" style="max-width:100%;max-height:180px;border-radius:10px;display:none;" alt="Course Image Preview">
+                                                <img id="courseImagePreview" src="" style="max-width:100%;max-height:180px;border-radius:10px;display:none;" alt="Course Image Preview">
                                             </div>
                                         </div>
                                     </div>

@@ -105,9 +105,16 @@
             }
 
             .course-image {
-                max-width: 300px;
-                border-radius: 15px;
-                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+                width: 200px;
+                height: 150px;
+                object-fit: cover;
+                border-radius: 10px;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            }
+
+            /* تحسين الأيقونات */
+            .course-image .fas {
+                font-size: 3rem;
             }
 
             .action-btn {
@@ -338,8 +345,8 @@
                                 <i class="fas fa-image me-2"></i>Course Image
                             </h5>
                             
-                            @if($course->image)
-                                <img src="{{ asset('storage/' . $course->image) }}" 
+                            @if($course->hasImage())
+                                <img src="{{ $course->getImageUrl() }}" 
                                     alt="Course Image" class="img-fluid course-image">
                             @else
                                 <div class="text-center py-4">

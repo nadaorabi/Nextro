@@ -181,6 +181,11 @@
             border-radius: 8px;
         }
 
+        /* تحسين الأيقونات */
+        .course-image .fas {
+            font-size: 1.5rem;
+        }
+
         .price-display {
             min-width: 120px;
         }
@@ -462,10 +467,12 @@
                             <tr data-title="{{ strtolower($course->title) }}" data-status="{{ $course->status }}"
                                 data-category="{{ strtolower($course->category?->name ?? '') }}">
                                 <td>
-                                    @if($course->image)
-                                        <img src="{{ asset('storage/'.$course->image) }}" class="course-image" alt="Course Image">
+                                    @if($course->hasImage())
+                                        <img src="{{ $course->getImageUrl() }}" class="course-image" alt="Course Image">
                                     @else
-                                        <img src="{{ asset('images/default-course.png') }}" class="course-image" alt="Course Image">
+                                        <div class="course-image bg-light d-flex align-items-center justify-content-center">
+                                            <i class="fas fa-image text-muted"></i>
+                                        </div>
                                     @endif
                                 </td>
                                 <td>
@@ -794,9 +801,15 @@
                                         <div class="mt-3 text-center">
                                             <label class="form-label fw-bold text-success">Current Image:</label>
                                             <div class="position-relative d-inline-block">
-                                                <img src="{{ asset('storage/' . $course->image) }}"
-                                                    class="img-thumbnail rounded-3 shadow-sm"
-                                                    width="150" alt="Current course image">
+                                                @if($course->hasImage())
+                                                    <img src="{{ $course->getImageUrl() }}"
+                                                        class="img-thumbnail rounded-3 shadow-sm"
+                                                        width="150" alt="Current course image">
+                                                @else
+                                                    <div class="img-thumbnail rounded-3 shadow-sm bg-light d-flex align-items-center justify-content-center" style="width: 150px; height: 150px;">
+                                                        <i class="fas fa-image text-muted" style="font-size: 2rem;"></i>
+                                                    </div>
+                                                @endif
                                                 <div class="position-absolute top-0 end-0">
                                                     <span class="badge bg-success rounded-pill">
                                                         <i class="fas fa-check"></i> Current

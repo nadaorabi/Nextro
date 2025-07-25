@@ -53,6 +53,11 @@
       border-radius: 15px;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     }
+
+    /* تحسين الأيقونات */
+    .category-image .fas {
+      font-size: 3rem;
+    }
     .list-group-item {
       border: 1px solid #e9ecef;
       margin-bottom: 0.5rem;
@@ -130,8 +135,15 @@
               <div class="row">
                 <!-- Category Image -->
                 <div class="col-md-3 text-center">
-                  <img src="{{ $category->image ? asset('storage/' . $category->image) : asset('images/theme/category-default.png') }}"
-                      class="category-image mb-3" alt="Category Image">
+                  @if($category->hasImage())
+                    <img src="{{ $category->getImageUrl() }}"
+                        class="category-image mb-3" 
+                        alt="Category Image">
+                  @else
+                    <div class="category-image mb-3 bg-light d-flex align-items-center justify-content-center">
+                      <i class="fas fa-image text-muted" style="font-size: 3rem;"></i>
+                    </div>
+                  @endif
                   
                   <!-- Status Badge -->
                   <div class="mb-3">

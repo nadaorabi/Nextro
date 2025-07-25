@@ -26,9 +26,20 @@
             transition: all 0.3s ease;
         }
 
-        .form-control:focus, .form-select:focus {
-            border-color: #667eea;
-            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        .form-control:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        }
+
+        /* تحسين عرض الصور */
+        .img-thumbnail {
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        
+        .category-image {
+            object-fit: cover;
+            border-radius: 15px;
         }
 
         .btn-primary {

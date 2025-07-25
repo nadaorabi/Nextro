@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class Course extends Model
 {
@@ -71,6 +72,19 @@ class Course extends Model
     public function packages() 
     { 
         return $this->belongsToMany(Package::class, 'package_courses'); 
+    }
+
+    public function hasImage()
+    {
+        return $this->image && Storage::disk('public')->exists($this->image);
+    }
+
+    public function getImageUrl()
+    {
+        if ($this->hasImage()) {
+            return asset('storage/' . $this->image);
+        }
+        return null;
     }
 
     // في app/Models/Course.php
