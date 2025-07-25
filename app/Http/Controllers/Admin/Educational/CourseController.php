@@ -41,12 +41,16 @@ class CourseController extends Controller
         }
     }
 
-    public function create()
+    public function create(Request $request)
     {
         try {
             $categories = Category::where('status', 'active')->get();
             $teachers = \App\Models\User::where('role', 'teacher')->where('is_active', true)->get();
-            return view('admin.educational-courses.create', compact('categories', 'teachers'));
+            
+            // Get selected category from URL parameter
+            $selectedCategoryId = $request->get('category_id');
+            
+            return view('admin.educational-courses.create', compact('categories', 'teachers', 'selectedCategoryId'));
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Error loading create form: ' . $e->getMessage());
         }
@@ -141,7 +145,8 @@ class CourseController extends Controller
             }
 
             return redirect()->route('admin.educational-courses.index')
-                ->with('success', 'Course created successfully!');
+                ->with('success', '🎉 Course created successfully! You can now schedule sessions or view all courses.')
+                ->with('show_course_modal', $course->id);
 
         } catch (\Exception $e) {
             return redirect()->back()
@@ -419,12 +424,12 @@ class CourseController extends Controller
                 'Content-Type' => 'text/csv',
                 'Content-Disposition' => 'attachment; filename="' . $filename . '"',
             ];
-
+            
             $callback = function() use ($courses) {
                 $file = fopen('php://output', 'w');
                 
                 // Add headers
-                fputcsv($file, ['ID', 'Title', 'Description', 'Category', 'Credit Hours', 'Status', 'Created At']);
+                fputcsv($file, ['ID', 'Title', 'Description', 'Category', 'Credit Hours', 'Price', 'Status', 'Created At']);
                 
                 // Add data
                 foreach ($courses as $course) {
@@ -432,8 +437,9 @@ class CourseController extends Controller
                         $course->id,
                         $course->title,
                         $course->description,
-                        $course->category->name ?? 'N/A',
+                        $course->category->name ?? 'No Category',
                         $course->credit_hours,
+                        $course->price,
                         $course->status,
                         $course->created_at->format('Y-m-d H:i:s')
                     ]);
@@ -441,7 +447,7 @@ class CourseController extends Controller
                 
                 fclose($file);
             };
-
+            
             return response()->stream($callback, 200, $headers);
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Error exporting courses: ' . $e->getMessage());

@@ -66,7 +66,9 @@ class CategoryController extends Controller
 
         Category::create($data);
 
-        return redirect()->route('admin.educational-categories.index')->with('success', 'Category created successfully.');
+        return redirect()->route('admin.educational-categories.index')
+            ->with('success', '🎉 Category created successfully! You can now create courses or view all categories.')
+            ->with('show_category_modal', Category::latest()->first()->id);
     }
 
     public function update(Request $request, Category $category)

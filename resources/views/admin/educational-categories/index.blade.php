@@ -125,6 +125,120 @@
             font-size: 1.5rem;
         }
 
+        /* تحسين modal */
+        .bg-gradient-success {
+            background: linear-gradient(45deg, #2dce89, #2dcecc) !important;
+        }
+        
+        .bg-light-success {
+            background-color: rgba(45, 206, 137, 0.1) !important;
+        }
+        
+        .modal-content {
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .modal.show .modal-dialog {
+            animation: modalSlideIn 0.3s ease-out;
+        }
+        
+        .modal.show .modal-content {
+            animation: modalContentSlideIn 0.4s ease-out;
+        }
+        
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        
+        @keyframes modalContentSlideIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        .modal-header {
+            padding: 1.5rem;
+            background: linear-gradient(45deg, #2dce89, #2dcecc) !important;
+        }
+        
+        .modal-body {
+            padding: 2rem;
+        }
+        
+        .modal-footer {
+            padding: 1.5rem;
+        }
+        
+        .btn-lg {
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-lg:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .btn-lg:active {
+            transform: scale(0.95);
+        }
+        
+        /* تحسين الانتقالات */
+        .col-md-6 .border {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .col-md-6 .border:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* تحسين الأيقونات */
+        .col-md-6 .border i {
+            transition: all 0.3s ease;
+        }
+        
+        .col-md-6 .border:hover i {
+            transform: scale(1.1);
+        }
+        
+        /* تحسين الأيقونات في modal */
+        .icon-shape i {
+            transition: all 0.3s ease;
+        }
+        
+        .modal.show .icon-shape i {
+            animation: iconBounce 0.6s ease-out;
+        }
+        
+        @keyframes iconBounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-10px);
+            }
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+
         @keyframes bounce {
             0% { transform: translateY(0); }
             100% { transform: translateY(-20px); }
@@ -705,6 +819,183 @@
 
             searchInput.addEventListener('input', filterCategories);
             statusFilter.addEventListener('change', filterCategories);
+            
+            // Add hover effects to option cards for category modal
+            const optionCards = document.querySelectorAll('#categoryCreatedModal .col-md-6 .border');
+            optionCards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-5px)';
+                    this.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.1)';
+                    
+                    // Animate icon
+                    const icon = this.querySelector('i');
+                    if (icon) {
+                        icon.style.transform = 'scale(1.1)';
+                    }
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                    this.style.boxShadow = 'none';
+                    
+                    // Reset icon
+                    const icon = this.querySelector('i');
+                    if (icon) {
+                        icon.style.transform = 'scale(1)';
+                    }
+                });
+            });
+            
+            // Add click effects to buttons for category modal
+            const modalButtons = document.querySelectorAll('#categoryCreatedModal .btn');
+            modalButtons.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    this.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        this.style.transform = 'scale(1)';
+                    }, 150);
+                });
+            });
+            
+            // Add animation to buttons for category modal
+            setTimeout(() => {
+                const buttons = document.querySelectorAll('#categoryCreatedModal .btn');
+                buttons.forEach((btn, index) => {
+                    setTimeout(() => {
+                        btn.style.transform = 'scale(1.05)';
+                        setTimeout(() => {
+                            btn.style.transform = 'scale(1)';
+                        }, 200);
+                    }, index * 200);
+                });
+            }, 500);
         });
+    </script>
+
+    <!-- Category Created Success Modal -->
+    <div class="modal fade" id="categoryCreatedModal" tabindex="-1" aria-labelledby="categoryCreatedModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header bg-gradient-success text-white border-0">
+                    <h5 class="modal-title" id="categoryCreatedModalLabel">
+                        <i class="fas fa-check-circle me-2"></i>Category Created Successfully!
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4 text-center">
+                    <div class="mb-4">
+                        <div class="icon icon-shape bg-gradient-success shadow-success text-center rounded-circle mx-auto mb-3" style="width: 80px; height: 80px;">
+                            <i class="fas fa-folder text-white text-lg opacity-10" style="font-size: 2rem; line-height: 80px;"></i>
+                        </div>
+                        <h4 class="text-success fw-bold mb-3">🎉 Excellent!</h4>
+                        <p class="text-muted mb-4">Your category has been created successfully. What would you like to do next?</p>
+                        <div class="alert alert-light border-0 bg-light-success">
+                            <i class="fas fa-lightbulb me-2 text-warning"></i>
+                            <strong>Tip:</strong> Create courses in this category to start organizing your educational content.
+                        </div>
+                        <div class="row mt-4">
+                            <div class="col-md-6">
+                                <div class="text-center p-3 border rounded-3 bg-light">
+                                    <i class="fas fa-plus fa-2x text-primary mb-2 d-block" style="transition: all 0.3s ease;"></i>
+                                    <h6 class="mb-1">Create Course</h6>
+                                    <small class="text-muted">Add a new course to this category</small>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="text-center p-3 border rounded-3 bg-light">
+                                    <i class="fas fa-list fa-2x text-info mb-2 d-block" style="transition: all 0.3s ease;"></i>
+                                    <h6 class="mb-1">View All Categories</h6>
+                                    <small class="text-muted">Manage all your categories</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer bg-white border-top justify-content-center">
+                    <a href="#" id="createCourseBtn" class="btn btn-primary btn-lg px-4 me-3">
+                        <i class="fas fa-plus me-2"></i>Create Course
+                    </a>
+                    <a href="{{ route('admin.educational-categories.index') }}" class="btn btn-outline-secondary btn-lg px-4">
+                        <i class="fas fa-list me-2"></i>View All Categories
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Show modal if category was just created
+        @if(session('show_category_modal'))
+            document.addEventListener('DOMContentLoaded', function() {
+                const categoryId = {{ session('show_category_modal') }};
+                const modal = new bootstrap.Modal(document.getElementById('categoryCreatedModal'));
+                
+                // Show modal with delay for better UX
+                setTimeout(() => {
+                    modal.show();
+                    
+                    // Animate icon after modal shows
+                    setTimeout(() => {
+                        const icon = document.querySelector('#categoryCreatedModal .icon-shape i');
+                        if (icon) {
+                            icon.style.animation = 'iconBounce 0.6s ease-out';
+                        }
+                    }, 100);
+                }, 300);
+                
+                // Set create course button href
+                document.getElementById('createCourseBtn').href = `{{ route('admin.educational-courses.create') }}?category_id=${categoryId}`;
+                
+                // Add animation to buttons
+                setTimeout(() => {
+                    const buttons = document.querySelectorAll('#categoryCreatedModal .btn');
+                    buttons.forEach((btn, index) => {
+                        setTimeout(() => {
+                            btn.style.transform = 'scale(1.05)';
+                            setTimeout(() => {
+                                btn.style.transform = 'scale(1)';
+                            }, 200);
+                        }, index * 200);
+                    });
+                }, 500);
+                
+                // Add hover effects to option cards
+                const optionCards = document.querySelectorAll('#categoryCreatedModal .col-md-6 .border');
+                optionCards.forEach(card => {
+                    card.addEventListener('mouseenter', function() {
+                        this.style.transform = 'translateY(-5px)';
+                        this.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.1)';
+                        
+                        // Animate icon
+                        const icon = this.querySelector('i');
+                        if (icon) {
+                            icon.style.transform = 'scale(1.1)';
+                        }
+                    });
+                    
+                    card.addEventListener('mouseleave', function() {
+                        this.style.transform = 'translateY(0)';
+                        this.style.boxShadow = 'none';
+                        
+                        // Reset icon
+                        const icon = this.querySelector('i');
+                        if (icon) {
+                            icon.style.transform = 'scale(1)';
+                        }
+                    });
+                });
+                
+                // Add click effects to buttons
+                const modalButtons = document.querySelectorAll('#categoryCreatedModal .btn');
+                modalButtons.forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        this.style.transform = 'scale(0.95)';
+                        setTimeout(() => {
+                            this.style.transform = 'scale(1)';
+                        }, 150);
+                    });
+                });
+            });
+        @endif
     </script>
 @endpush
