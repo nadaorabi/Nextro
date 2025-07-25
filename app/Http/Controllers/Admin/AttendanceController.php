@@ -17,16 +17,26 @@ class AttendanceController extends Controller
         foreach ($courses as $course) {
             foreach ($course->schedules as $schedule) {
                 $studentCount = \App\Models\Enrollment::where('course_id', $course->id)->count();
+                
                 // حساب الحضور للمحاضرة المحددة فقط
-                $attendanceCount = \App\Models\Attendance::whereIn('enrollment_id', \App\Models\Enrollment::where('course_id', $course->id)->pluck('id'))
+                $presentCount = \App\Models\Attendance::whereIn('enrollment_id', \App\Models\Enrollment::where('course_id', $course->id)->pluck('id'))
                     ->where('schedule_id', $schedule->id)
-                    
                     ->where('status', 'present')
                     ->count();
+                    
+                $absentCount = \App\Models\Attendance::whereIn('enrollment_id', \App\Models\Enrollment::where('course_id', $course->id)->pluck('id'))
+                    ->where('schedule_id', $schedule->id)
+                    ->where('status', 'absent')
+                    ->count();
+                    
+                // الطلاب الذين لم يتم أخذ الحضور لهم بعد (pending)
+                $pendingCount = $studentCount - $presentCount - $absentCount;
+                
                 $scheduleStats[$schedule->id] = [
                     'students' => $studentCount,
-                    'present' => $attendanceCount,
-                    'absent' => max($studentCount - $attendanceCount, 0),
+                    'present' => $presentCount,
+                    'absent' => $absentCount,
+                    'pending' => $pendingCount,
                 ];
             }
         }
@@ -117,15 +127,22 @@ class AttendanceController extends Controller
     {
         $schedule = \App\Models\Schedule::with(['course.courseInstructors.instructor', 'room'])->findOrFail($scheduleId);
         $studentCount = \App\Models\Enrollment::where('course_id', $schedule->course_id)->count();
+        
         // حساب الحضور للمحاضرة المحددة فقط
-        $presentEnrollmentIds = \App\Models\Attendance::where('schedule_id', $scheduleId)
+        $presentCount = \App\Models\Attendance::where('schedule_id', $scheduleId)
             ->where('date', date('Y-m-d'))
             ->where('status', 'present')
-            ->pluck('enrollment_id')
-            ->unique();
-        $currentAttendanceCount = $presentEnrollmentIds->count();
-        $absentCount = max($studentCount - $currentAttendanceCount, 0);
-        return view('admin.attendance.take', compact('schedule', 'studentCount', 'currentAttendanceCount', 'absentCount'));
+            ->count();
+            
+        $absentCount = \App\Models\Attendance::where('schedule_id', $scheduleId)
+            ->where('date', date('Y-m-d'))
+            ->where('status', 'absent')
+            ->count();
+            
+        // الطلاب الذين لم يتم أخذ الحضور لهم بعد (pending)
+        $pendingCount = $studentCount - $presentCount - $absentCount;
+        
+        return view('admin.attendance.take', compact('schedule', 'studentCount', 'presentCount', 'absentCount', 'pendingCount'));
     }
 
     // عرض QR codes للطلاب
@@ -548,15 +565,25 @@ class AttendanceController extends Controller
     {
         $schedule = \App\Models\Schedule::findOrFail($scheduleId);
         $studentCount = \App\Models\Enrollment::where('course_id', $schedule->course_id)->count();
-        $presentEnrollmentIds = \App\Models\Attendance::where('schedule_id', $scheduleId)
-            
+        
+        // حساب الحضور للمحاضرة المحددة فقط
+        $presentCount = \App\Models\Attendance::where('schedule_id', $scheduleId)
+            ->where('date', date('Y-m-d'))
             ->where('status', 'present')
-            ->pluck('enrollment_id')
-            ->unique();
-        $presentCount = $presentEnrollmentIds->count();
-        $absentCount = max($studentCount - $presentCount, 0);
+            ->count();
+            
+        $absentCount = \App\Models\Attendance::where('schedule_id', $scheduleId)
+            ->where('date', date('Y-m-d'))
+            ->where('status', 'absent')
+            ->count();
+            
+        // الطلاب الذين لم يتم أخذ الحضور لهم بعد (pending)
         $pendingCount = $studentCount - $presentCount - $absentCount;
-        $percentage = $studentCount > 0 ? round(($presentCount / $studentCount) * 100, 1) : 0;
+        
+        // حساب نسبة الحضور (تستثني الطلاب في الانتظار)
+        $totalMarked = $presentCount + $absentCount;
+        $percentage = $totalMarked > 0 ? round(($presentCount / $totalMarked) * 100, 1) : 0;
+        
         return response()->json([
             'total_students' => $studentCount,
             'present_count' => $presentCount,

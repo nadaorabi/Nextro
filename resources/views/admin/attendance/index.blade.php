@@ -183,12 +183,22 @@
                         <div class="text-center">
                           @php $stat = $scheduleStats[$schedule->id] ?? null; @endphp
                           @if($stat)
-                            <div class="d-flex align-items-center justify-content-center gap-1">
+                            <div class="d-flex align-items-center justify-content-center gap-1 flex-wrap">
                               <span class="badge bg-success">{{ $stat['present'] }} Present</span>
-                              <span class="badge bg-danger">{{ $stat['students'] - $stat['present'] }} Absent</span>
+                              <span class="badge bg-danger">{{ $stat['absent'] }} Absent</span>
+                              @if($stat['pending'] > 0)
+                                <span class="badge bg-secondary">{{ $stat['pending'] }} Pending</span>
+                              @endif
                             </div>
                             <div class="text-muted small mt-1">
-                              {{ $stat['students'] > 0 ? round(($stat['present'] / $stat['students']) * 100, 1) : 0 }}% Attendance
+                              @php
+                                $totalMarked = $stat['present'] + $stat['absent'];
+                                $attendancePercentage = $totalMarked > 0 ? round(($stat['present'] / $totalMarked) * 100, 1) : 0;
+                              @endphp
+                              {{ $attendancePercentage }}% Attendance
+                              @if($stat['pending'] > 0)
+                                <br><small class="text-warning">({{ $stat['pending'] }} not marked yet)</small>
+                              @endif
                             </div>
                           @else
                             <span class="text-muted">No data</span>

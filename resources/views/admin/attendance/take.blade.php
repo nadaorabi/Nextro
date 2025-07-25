@@ -90,7 +90,7 @@
                 <i class="fas fa-check-circle"></i>
               </div>
               <div class="stats-content">
-                <div class="stats-number" id="currentAttendance">{{ $currentAttendanceCount }}</div>
+                <div class="stats-number" id="currentAttendance">{{ $presentCount }}</div>
                 <div class="stats-label">Present</div>
                 <div class="stats-description">Students present</div>
               </div>
@@ -106,9 +106,25 @@
                 <i class="fas fa-exclamation-circle"></i>
               </div>
               <div class="stats-content">
-                <div class="stats-number" id="currentAbsence">{{ $studentCount - $currentAttendanceCount }}</div>
+                <div class="stats-number" id="currentAbsence">{{ $absentCount }}</div>
                 <div class="stats-label">Absent</div>
                 <div class="stats-description">Students absent</div>
+              </div>
+            </div>
+            <div class="stats-card-decoration"></div>
+          </div>
+        </div>
+        
+        <div class="col-md-3 mb-3">
+          <div class="stats-card stats-card-warning">
+            <div class="stats-card-body">
+              <div class="stats-icon">
+                <i class="fas fa-clock"></i>
+              </div>
+              <div class="stats-content">
+                <div class="stats-number" id="pendingCount">{{ $pendingCount }}</div>
+                <div class="stats-label">Pending</div>
+                <div class="stats-description">Not marked yet</div>
               </div>
             </div>
             <div class="stats-card-decoration"></div>
@@ -122,7 +138,11 @@
                 <i class="fas fa-chart-line"></i>
               </div>
               <div class="stats-content">
-                <div class="stats-number" id="attendancePercentage">{{ round(($currentAttendanceCount / $studentCount) * 100, 1) }}%</div>
+                @php
+                  $totalMarked = $presentCount + $absentCount;
+                  $attendancePercentage = $totalMarked > 0 ? round(($presentCount / $totalMarked) * 100, 1) : 0;
+                @endphp
+                <div class="stats-number" id="attendancePercentage">{{ $attendancePercentage }}%</div>
                 <div class="stats-label">Attendance Rate</div>
                 <div class="stats-description">Current rate</div>
               </div>
@@ -241,11 +261,23 @@
               </div>
               <div class="d-flex justify-content-between align-items-center mb-2">
                 <span>Present:</span>
-                <span class="badge bg-primary" id="attendanceCount">{{ $currentAttendanceCount }}</span>
+                <span class="badge bg-primary" id="attendanceCount">{{ $presentCount }}</span>
+              </div>
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <span>Absent:</span>
+                <span class="badge bg-danger" id="absentCount">{{ $absentCount }}</span>
+              </div>
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <span>Pending:</span>
+                <span class="badge bg-warning" id="pendingCount">{{ $pendingCount }}</span>
               </div>
               <div class="d-flex justify-content-between align-items-center mb-2">
                 <span>Attendance Rate:</span>
-                <span class="badge bg-success" id="attendancePercent">{{ round(($currentAttendanceCount / $studentCount) * 100, 1) }}%</span>
+                @php
+                  $totalMarked = $presentCount + $absentCount;
+                  $attendancePercentage = $totalMarked > 0 ? round(($presentCount / $totalMarked) * 100, 1) : 0;
+                @endphp
+                <span class="badge bg-success" id="attendancePercent">{{ $attendancePercentage }}%</span>
               </div>
               <div class="d-flex justify-content-between align-items-center mb-3">
                 <span>Last Scan:</span>
@@ -307,7 +339,7 @@
 @push('scripts')
 <script src="https://unpkg.com/html5-qrcode"></script>
 <script>
-let attendanceCount = {{ $currentAttendanceCount }};
+let attendanceCount = {{ $presentCount }};
 const recentScans = [];
 let html5QrcodeScanner = null;
 let currentFacingMode = "environment";
@@ -331,10 +363,19 @@ function updateStats() {
     .then(res => res.json())
     .then(data => {
       document.getElementById('currentAttendance').textContent = data.present_count;
-      document.getElementById('currentAbsence').textContent = data.total_students - data.present_count;
-      document.getElementById('attendancePercentage').textContent = data.percentage + '%';
+      document.getElementById('currentAbsence').textContent = data.absent_count;
+      document.getElementById('pendingCount').textContent = data.pending_count;
+      
+      // حساب نسبة الحضور
+      const totalMarked = data.present_count + data.absent_count;
+      const attendancePercentage = totalMarked > 0 ? Math.round((data.present_count / totalMarked) * 100 * 10) / 10 : 0;
+      
+      document.getElementById('attendancePercentage').textContent = attendancePercentage + '%';
       document.getElementById('attendanceCount').textContent = data.present_count;
-      document.getElementById('attendancePercent').textContent = data.percentage + '%';
+      document.getElementById('attendancePercent').textContent = attendancePercentage + '%';
+      document.getElementById('absentCount').textContent = data.absent_count;
+      document.getElementById('pendingCount').textContent = data.pending_count;
+      
       attendanceCount = data.present_count;
       loadPresentStudents();
     })

@@ -65,6 +65,73 @@
         </div>
       </div>
 
+      <!-- Attendance Statistics -->
+      <div class="row mb-4">
+        <div class="col-md-3 mb-3">
+          <div class="stats-card stats-card-primary">
+            <div class="stats-card-body">
+              <div class="stats-icon">
+                <i class="fas fa-users"></i>
+              </div>
+              <div class="stats-content">
+                <div class="stats-number">{{ $totalStudents }}</div>
+                <div class="stats-label">Total Students</div>
+                <div class="stats-description">Enrolled in course</div>
+              </div>
+            </div>
+            <div class="stats-card-decoration"></div>
+          </div>
+        </div>
+        
+        <div class="col-md-3 mb-3">
+          <div class="stats-card stats-card-success">
+            <div class="stats-card-body">
+              <div class="stats-icon">
+                <i class="fas fa-check-circle"></i>
+              </div>
+              <div class="stats-content">
+                <div class="stats-number">{{ $presentCount }}</div>
+                <div class="stats-label">Present</div>
+                <div class="stats-description">Students present</div>
+              </div>
+            </div>
+            <div class="stats-card-decoration"></div>
+          </div>
+        </div>
+        
+        <div class="col-md-3 mb-3">
+          <div class="stats-card stats-card-danger">
+            <div class="stats-card-body">
+              <div class="stats-icon">
+                <i class="fas fa-exclamation-circle"></i>
+              </div>
+              <div class="stats-content">
+                <div class="stats-number">{{ $absentCount }}</div>
+                <div class="stats-label">Absent</div>
+                <div class="stats-description">Students absent</div>
+              </div>
+            </div>
+            <div class="stats-card-decoration"></div>
+          </div>
+        </div>
+        
+        <div class="col-md-3 mb-3">
+          <div class="stats-card stats-card-warning">
+            <div class="stats-card-body">
+              <div class="stats-icon">
+                <i class="fas fa-clock"></i>
+              </div>
+              <div class="stats-content">
+                <div class="stats-number">{{ $pendingCount }}</div>
+                <div class="stats-label">Pending</div>
+                <div class="stats-description">Not marked yet</div>
+              </div>
+            </div>
+            <div class="stats-card-decoration"></div>
+          </div>
+        </div>
+      </div>
+
       <!-- Students Table -->
       <div class="card shadow-sm">
         <div class="card-header">
@@ -267,6 +334,97 @@ document.addEventListener('DOMContentLoaded', function() {
     padding: 1rem 0.75rem;
 }
 
+/* Stats Cards */
+.stats-card {
+    position: relative;
+    border-radius: 20px;
+    padding: 1.5rem;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border: none;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+}
+
+.stats-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.18);
+}
+
+.stats-card-body {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.stats-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: white;
+}
+
+.stats-content {
+    flex: 1;
+}
+
+.stats-number {
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 0.25rem;
+}
+
+.stats-label {
+    font-weight: 600;
+    color: #344767;
+    margin-bottom: 0.25rem;
+}
+
+.stats-description {
+    font-size: 0.875rem;
+    color: #6c757d;
+}
+
+.stats-card-decoration {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100px;
+    height: 100px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    transform: translate(30px, -30px);
+}
+
+.stats-card-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.stats-card-success {
+    background: linear-gradient(135deg, #2dce89 0%, #2dcecc 100%);
+    color: white;
+}
+
+.stats-card-danger {
+    background: linear-gradient(135deg, #f5365c 0%, #f56036 100%);
+    color: white;
+}
+
+.stats-card-warning {
+    background: linear-gradient(135deg, #fb6340 0%, #fbb140 100%);
+    color: white;
+}
+
+.stats-card-info {
+    background: linear-gradient(135deg, #11cdef 0%, #1171ef 100%);
+    color: white;
+}
+
 @media (max-width: 768px) {
     .table-responsive {
         font-size: 0.875rem;
@@ -280,6 +438,14 @@ document.addEventListener('DOMContentLoaded', function() {
     .d-flex.gap-1 {
         flex-direction: column;
         gap: 0.25rem !important;
+    }
+    
+    .stats-card {
+        margin-bottom: 1rem;
+    }
+    
+    .stats-number {
+        font-size: 1.5rem;
     }
 }
 </style>
