@@ -51,8 +51,8 @@ class AdminController extends Controller
             'payments_this_month' => Payment::whereMonth('payment_date', now()->month)
                 ->whereYear('payment_date', now()->year)
                 ->count(),
-            'total_revenue' => Payment::where('type', 'payment')->sum('amount'),
-            'revenue_this_month' => Payment::where('type', 'payment')
+            'total_revenue' => Payment::where('amount', '>', 0)->sum('amount'),
+            'revenue_this_month' => Payment::where('amount', '>', 0)
                 ->whereMonth('payment_date', now()->month)
                 ->whereYear('payment_date', now()->year)
                 ->sum('amount'),

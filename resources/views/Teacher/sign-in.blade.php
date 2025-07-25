@@ -92,8 +92,8 @@
   <div class="position-relative bg-gradient-primary m-2 px-3 py-4 border-radius-lg d-flex flex-column justify-content-center align-items-center overflow-hidden"
     style="background-image: url('https://raw.githubusercontent.com/creativetimofficial/public-assets/master/argon-dashboard-pro/assets/img/signin-ill.jpg'); background-size: cover; min-height: 180px;">
     <span class="mask" style="background: rgb(156, 200, 247);"></span>
-    <h4 class="mt-3 text-white font-weight-bolder position-relative" style="z-index:2;">"Attention is the new currency"</h4>
-    <p class="text-white position-relative" style="z-index:2;">The more effortless the writing looks, the more effort the writer actually put into the process.</p>
+    <h4 class="mt-3 text-white font-weight-bolder position-relative" style="z-index:2;">"Log in now"</h4>
+    <p class="text-white position-relative" style="z-index:2;">You are now heading towards becoming an admin or teacher in the strongest institute system in Syria</p>
   </div>
 </div>
             <div class="col-xl-4 col-lg-5 col-md-7 d-flex flex-column mx-lg-0 mx-auto">
@@ -136,8 +136,8 @@
               <div class="position-relative bg-gradient-primary h-100 m-3 px-7 border-radius-lg d-flex flex-column justify-content-center overflow-hidden" style="background-image: url('https://raw.githubusercontent.com/creativetimofficial/public-assets/master/argon-dashboard-pro/assets/img/signin-ill.jpg');
           background-size: cover;">
                  <span class="mask" style="background: rgb(156, 200, 247);"></span>
-                <h4 class="mt-5 text-white font-weight-bolder position-relative">"Attention is the new currency"</h4>
-                <p class="text-white position-relative">The more effortless the writing looks, the more effort the writer actually put into the process.</p>
+                <h4 class="mt-5 text-white font-weight-bolder position-relative">"Log in now"</h4>
+                <p class="text-white position-relative"> You are now heading towards becoming an admin or teacher in the strongest institute system in Syria.</p>
               </div>
             </div>
           </div>

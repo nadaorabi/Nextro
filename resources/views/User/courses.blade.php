@@ -2,6 +2,63 @@
 
 @section('title', 'Courses & Programs')
 
+@push('styles')
+<style>
+  .category-card {
+    transition: all 0.3s ease;
+    border-radius: 10px;
+    border: 1px solid #e9ecef;
+  }
+  
+  .category-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  }
+  
+  .card-body {
+    padding: 20px;
+  }
+  
+  .category-icon {
+    margin-bottom: 15px;
+  }
+  
+  .icon-circle {
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 15px;
+  }
+  
+  .icon-circle i {
+    font-size: 1.2rem;
+    color: white;
+  }
+  
+  .card-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: #333;
+  }
+  
+  .card-text {
+    font-size: 0.9rem;
+    color: #6c757d;
+    margin-bottom: 15px;
+  }
+  
+  .category-stats .badge {
+    font-size: 0.8rem;
+    padding: 0.5rem 1rem;
+  }
+</style>
+@endpush
+
 @section('hero')
 <div class="untree_co-hero overlay" style="background-image: url('{{ asset('images/img-school-3-min.jpg') }}');">
   <div class="container">
@@ -75,14 +132,32 @@
         <h3 class="text-center mb-4">Browse by Category</h3>
         <div class="row">
           @foreach($categories as $category)
-          <div class="col-lg-3 col-md-4 col-sm-6 mb-3">
+                      <div class="col-lg-3 col-md-4 col-sm-6 mb-3" data-aos="fade-up" data-aos-delay="{{ $loop->index * 100 }}">
             <a href="{{ route('courses_page', ['category' => $category->id]) }}" class="text-decoration-none">
-              <div class="card h-100 text-center category-card">
-                <div class="card-body">
-                  <i class="uil-graduation-cap mb-3" style="font-size: 2rem; color: #007bff;"></i>
+              <div class="card h-100 category-card">
+                <div class="card-body text-center">
+                  <div class="category-icon">
+                    @php
+                      $categoryIcons = [
+                        '9th Grade Scientific' => 'fas fa-flask',
+                        'Secondary Literary' => 'fas fa-book-open',
+                        'Business Administration' => 'fas fa-briefcase',
+                        'Programming' => 'fas fa-code',
+                        'Chess' => 'fas fa-chess',
+                        'Conversation' => 'fas fa-comments',
+                        'Languages' => 'fas fa-language',
+                      ];
+                      $iconClass = $categoryIcons[$category->name] ?? 'fas fa-graduation-cap';
+                    @endphp
+                    <div class="icon-circle">
+                      <i class="{{ $iconClass }}"></i>
+                    </div>
+                  </div>
                   <h5 class="card-title">{{ $category->name }}</h5>
                   <p class="card-text text-muted">{{ $category->description ?? 'Explore courses in this category' }}</p>
-                  <small class="text-muted">{{ $courses->where('category_id', $category->id)->count() }} courses available</small>
+                  <div class="category-stats">
+                    <span class="badge bg-primary rounded-pill">{{ $courses->where('category_id', $category->id)->count() }} courses</span>
+                  </div>
                 </div>
               </div>
             </a>
