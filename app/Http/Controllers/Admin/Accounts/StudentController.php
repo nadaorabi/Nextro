@@ -234,7 +234,7 @@ class StudentController extends Controller
 
             $student->update($validated);
             
-            return redirect()->route('admin.accounts.students.show', $id)->with('success', 'Student updated successfully');
+            return redirect()->back()->with('success', 'Student updated successfully');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Failed to update student: ' . $e->getMessage());
         }
@@ -257,7 +257,7 @@ class StudentController extends Controller
                 ]);
             }
             
-            return redirect()->route('admin.accounts.students.list')->with('success', 'Student deleted successfully');
+            return redirect()->back()->with('success', 'Student deleted successfully');
         } catch (\Exception $e) {
             if (request()->ajax()) {
                 return response()->json([
@@ -565,5 +565,30 @@ class StudentController extends Controller
             ->first();
         
         return $attendance ? $attendance->status : 'pending';
+    }
+
+    public function addTransaction(Request $request, $id)
+    {
+        try {
+            $request->validate([
+                'type' => 'required|in:student_fee,payment,refund,discount',
+                'amount' => 'required|numeric|min:0.01',
+                'notes' => 'nullable|string|max:500',
+            ]);
+
+            $student = User::where('role', 'student')->findOrFail($id);
+
+            Payment::create([
+                'user_id' => $student->id,
+                'type' => $request->type,
+                'amount' => $request->amount,
+                'payment_date' => now(),
+                'notes' => $request->notes ?? 'Transaction added by admin',
+            ]);
+
+            return redirect()->back()->with('success', 'Transaction added successfully!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Failed to add transaction: ' . $e->getMessage());
+        }
     }
 }
