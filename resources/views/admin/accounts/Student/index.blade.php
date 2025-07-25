@@ -14,6 +14,7 @@
     <link href="https://demos.creative-tim.com/argon-dashboard-pro/assets/css/nucleo-svg.css" rel="stylesheet" />
     <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
     <link id="pagestyle" href="{{ asset('css/argon-dashboard.css?v=2.1.0') }}" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
     <style>
         .custom-icon-style {
             display: inline-block;
@@ -913,7 +914,119 @@
                     modal.show();
                 }
             });
+
+            // معالجة أزرار QR Code
+            document.addEventListener('click', function(e) {
+                if (e.target.closest('.qr-button')) {
+                    const button = e.target.closest('.qr-button');
+                    const studentName = button.dataset.name;
+                    const studentId = button.dataset.id;
+                    const studentEmail = button.dataset.email;
+                    const studentAvatar = button.dataset.avatar;
+                    const registrationDate = button.dataset.registrationDate;
+                    
+                    // تحديث معلومات المودال
+                    document.getElementById('modal-student-name').textContent = studentName;
+                    document.getElementById('modal-student-id').textContent = studentId;
+                    document.getElementById('modal-student-email').textContent = studentEmail;
+                    document.getElementById('modal-student-avatar').src = studentAvatar;
+                    document.getElementById('modal-student-reg-date').textContent = registrationDate;
+                    
+                    // إنشاء QR Code
+                    generateQRCode(studentId);
+                }
+            });
         });
+
+        // Function لإنشاء QR Code
+        function generateQRCode(studentId) {
+            const qrcodeDiv = document.getElementById('qrcode');
+            qrcodeDiv.innerHTML = '';
+            
+            // استخدام مكتبة QRCode إذا كانت متوفرة
+            if (typeof QRCode !== 'undefined') {
+                new QRCode(qrcodeDiv, {
+                    text: studentId,
+                    width: 128,
+                    height: 128,
+                    colorDark: "#000000",
+                    colorLight: "#ffffff",
+                    correctLevel: QRCode.CorrectLevel.H
+                });
+            } else {
+                // إذا لم تكن المكتبة متوفرة، عرض نص بدلاً من ذلك
+                qrcodeDiv.innerHTML = `
+                    <div class="text-center p-4">
+                        <div class="bg-light border rounded p-3">
+                            <i class="fas fa-qrcode fa-3x text-muted mb-2"></i>
+                            <p class="mb-0"><strong>Student ID:</strong> ${studentId}</p>
+                            <small class="text-muted">QR Code would be generated here</small>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        // Function لطباعة بطاقة الطالب
+        function printStudentCard() {
+            window.print();
+        }
+
+        // Function لطباعة بيانات الدخول
+        function printCredentials(loginId, password, studentName) {
+            // إنشاء نافذة طباعة جديدة
+            const printWindow = window.open('', '_blank', 'width=600,height=400');
+            
+            printWindow.document.write(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Student Credentials - ${studentName}</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; margin: 20px; }
+                        .header { text-align: center; margin-bottom: 30px; }
+                        .credentials { border: 2px solid #333; padding: 20px; margin: 20px 0; }
+                        .field { margin: 10px 0; }
+                        .label { font-weight: bold; }
+                        .value { font-family: monospace; background: #f5f5f5; padding: 5px; }
+                        .warning { color: red; font-weight: bold; margin-top: 20px; }
+                        @media print {
+                            body { margin: 0; }
+                            .no-print { display: none; }
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="header">
+                        <h2>Student Login Credentials</h2>
+                        <h3>${studentName}</h3>
+                    </div>
+                    
+                    <div class="credentials">
+                        <div class="field">
+                            <span class="label">Student ID:</span>
+                            <span class="value">${loginId}</span>
+                        </div>
+                        <div class="field">
+                            <span class="label">Password:</span>
+                            <span class="value">${password}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="warning">
+                        ⚠️ Keep these credentials secure and do not share them publicly!
+                    </div>
+                    
+                    <div class="no-print" style="margin-top: 20px;">
+                        <button onclick="window.print()">Print</button>
+                        <button onclick="window.close()">Close</button>
+                    </div>
+                </body>
+                </html>
+            `);
+            
+            printWindow.document.close();
+        }
     </script>
     <!-- Github buttons -->
     <script async defer src="https://buttons.github.io/buttons.js"></script>
