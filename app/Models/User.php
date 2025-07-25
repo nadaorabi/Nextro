@@ -14,7 +14,7 @@ class User extends Authenticatable
     
     protected $fillable = [
         'name', 'user_name', 'email', 'gender', 'password', 'father_name', 'mother_name', 'mobile', 'alt_mobile',
-        'national_id', 'address', 'birth_date', 'notes', 'role', 'is_active', 'is_graduated', 'login_id','plain_password',
+        'national_id', 'address', 'birth_date', 'notes', 'role', 'is_active', 'is_graduated', 'is_experienced', 'login_id','plain_password',
         'specialization', 'note', 'image', 'phone', 'profile_image'
     ];
 
@@ -100,5 +100,17 @@ class User extends Authenticatable
         $this->is_graduated = !$this->is_graduated;
         $this->save();
         return $this->is_graduated;
+    }
+
+    public function isExperienced()
+    {
+        return $this->is_experienced === true;
+    }
+
+    public function toggleExperienceStatus()
+    {
+        $this->is_experienced = !$this->is_experienced;
+        $this->save();
+        return $this->is_experienced;
     }
 }

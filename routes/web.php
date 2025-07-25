@@ -114,6 +114,7 @@ Route::prefix('admin')->middleware('isAdmin')->name('admin.')->group(function ()
         Route::put('/{id}', [AdminTeacherController::class, 'update'])->name('update');
         Route::get('/{id}', [AdminTeacherController::class, 'show'])->name('show');
         Route::delete('/{id}', [AdminTeacherController::class, 'destroy'])->name('destroy');
+        Route::post('/{id}/toggle-experience', [AdminTeacherController::class, 'toggleExperience'])->name('toggle-experience');
     });
 
     // Admins Management

@@ -4,6 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="apple-touch-icon" sizes="76x76" href="{{ asset('images/apple-icon.png') }}">
     <link rel="icon" type="image/png" href="{{ asset('images/favicon.png') }}">
     <title>Teacher Management</title>
@@ -13,7 +14,8 @@
     <link href="https://demos.creative-tim.com/argon-dashboard-pro/assets/css/nucleo-svg.css" rel="stylesheet" />
     <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
     <link id="pagestyle" href="{{ asset('css/argon-dashboard.css?v=2.1.0') }}" rel="stylesheet" />
-    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         .custom-icon-style {
             display: inline-block;
@@ -431,12 +433,12 @@
                         <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
                             <div class="card stat-card info">
                                 <div class="stat-icon info">
-                                    <i class="fas fa-trophy"></i>
+                                    <i class="fas fa-star"></i>
                                 </div>
                                 <div class="stat-title">Experienced</div>
-                                <div class="stat-value">{{ $graduatedTeachers }}</div>
+                                <div class="stat-value">{{ $experiencedTeachers }}</div>
                                 <div class="stat-description">
-                                    <span class="highlight info">5+ years</span> experience
+                                    <span class="highlight info">{{ $totalTeachers > 0 ? round(($experiencedTeachers/$totalTeachers)*100) : 0 }}%</span> of teachers
                                 </div>
                             </div>
                         </div>
@@ -460,48 +462,40 @@
                         <div class="card-body p-3">
                             <div class="row">
                                 <div class="col-md-3">
-                                                            <div class="form-group">
-                            <label class="form-label">Teacher Status</label>
-                            <select id="status-filter" class="form-select">
-                                <option value="">All Statuses</option>
-                                <option>Active</option>
-                                <option>Experienced</option>
-                                <option>Inactive</option>
-                            </select>
-                        </div>
-                                </div>
-                                <div class="col-md-3">
                                     <div class="form-group">
-                                        <label class="form-label">Specialization</label>
-                                        <select id="specialization-filter" class="form-select">
-                                            <option value="">All Specializations</option>
-                                            <option>Mathematics</option>
-                                            <option>Science</option>
-                                            <option>English</option>
-                                            <option>Arabic</option>
-                                            <option>Computer Science</option>
+                                        <label class="form-label">Account Status</label>
+                                        <select id="account-filter" class="form-select">
+                                            <option value="">All Statuses</option>
+                                            <option value="active">Active</option>
+                                            <option value="inactive">Inactive</option>
                                         </select>
                                     </div>
                                 </div>
                                 <div class="col-md-3">
                                     <div class="form-group">
-                                        <label class="form-label">Registration Date</label>
-                                        <select id="date-filter" class="form-select">
-                                            <option value="">All Dates</option>
-                                            <option value="this_month">This Month</option>
-                                            <option value="last_month">Last Month</option>
-                                            <option value="last_3_months">Last 3 Months</option>
+                                        <label class="form-label">Experience Status</label>
+                                        <select id="experience-filter" class="form-select">
+                                            <option value="">All Teachers</option>
+                                            <option value="experienced">Experienced</option>
+                                            <option value="not-experienced">Not Experienced</option>
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Search</label>
                                         <div class="input-group">
                                             <span class="input-group-text"><i class="fas fa-search"></i></span>
-                                            <input id="search-input" type="text" class="form-control"
-                                                placeholder="Search by name, email, or ID...">
+                                            <input id="search-input" type="text" class="form-control" placeholder="Search by name, email, or teacher ID...">
                                         </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label class="form-label">&nbsp;</label>
+                                        <button id="clear-search" class="btn btn-secondary w-100">
+                                            <i class="fas fa-times"></i> Clear
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -518,8 +512,8 @@
                                             <th>Teacher Info</th>
                                             <th>ID</th>
                                             <th>Password</th>
-                                            <th>Specialization</th>
-                                            <th>Status</th>
+                                            <th>Experience Status</th>
+                                            <th>Account Status</th>
                                             <th>Reg. Date</th>
                                             <th>Actions</th>
                                         </tr>
@@ -548,7 +542,17 @@
                                                     <span class="text-xs font-weight-bold">{{ $teacher->plain_password ?? '-' }}</span>
                                                 </td>
                                                 <td>
-                                                    <span class="text-xs font-weight-bold">{{ $teacher->specialization ?? '-' }}</span>
+                                                    <div class="d-flex align-items-center">
+                                                        <span class="badge badge-sm {{ $teacher->is_experienced ? 'bg-gradient-warning' : 'bg-gradient-info' }} me-2">
+                                                            {{ $teacher->is_experienced ? 'Experienced' : 'Not Experienced' }}
+                                                        </span>
+                                                        <button class="btn btn-sm {{ $teacher->is_experienced ? 'btn-outline-warning' : 'btn-outline-info' }} toggle-experience-btn"
+                                                                data-teacher-id="{{ $teacher->id }}"
+                                                                data-current-status="{{ $teacher->is_experienced ? 'experienced' : 'not_experienced' }}"
+                                                                title="{{ $teacher->is_experienced ? 'Remove Experience' : 'Mark as Experienced' }}">
+                                                            <i class="fas {{ $teacher->is_experienced ? 'fa-star' : 'fa-user-tie' }}"></i>
+                                                        </button>
+                                                    </div>
                                                 </td>
                                                 <td>
                                                     <span class="badge badge-sm {{ $teacher->is_active ? 'bg-gradient-success' : 'bg-gradient-secondary' }}">
@@ -598,11 +602,9 @@
                                 </table>
                             </div>
 
-                            <!-- Pagination -->
+                            <!-- Results Count -->
                             <div class="d-flex justify-content-between align-items-center p-3">
-                                <p class="text-sm mb-0">Showing {{ $teachers->firstItem() }} -
-                                    {{ $teachers->lastItem() }} of {{ $teachers->total() }} teachers</p>
-                                {{ $teachers->links('pagination::bootstrap-4') }}
+                                <p class="text-sm mb-0">Showing {{ $teachers->count() }} of {{ $teachers->count() }} total teachers</p>
                             </div>
                         </div>
                     </div>
@@ -794,62 +796,65 @@
             });
 
             const searchInput = document.getElementById('search-input');
-            const statusFilter = document.getElementById('status-filter');
-            const specializationFilter = document.getElementById('specialization-filter');
-            const dateFilter = document.getElementById('date-filter');
+            const accountFilter = document.getElementById('account-filter');
+            const experienceFilter = document.getElementById('experience-filter');
+            const clearSearchBtn = document.getElementById('clear-search');
             const teachersTable = document.getElementById('teachers-table');
             const tableRows = teachersTable.querySelectorAll('tbody tr');
 
             function filterTeachers() {
                 const searchText = searchInput.value.toLowerCase();
-                const statusValue = statusFilter.value;
-                const specializationValue = specializationFilter.value;
-                const dateValue = dateFilter.value;
+                const accountValue = accountFilter.value;
+                const experienceValue = experienceFilter.value;
+                let visibleCount = 0;
 
                 tableRows.forEach(row => {
-                    const name = row.cells[0].querySelector('h6').textContent.toLowerCase();
-                    const email = row.cells[0].querySelector('p').textContent.toLowerCase();
-                    const teacherId = row.cells[1].textContent.toLowerCase().trim();
-                    const specialization = row.cells[3].textContent.trim();
-                    const status = row.cells[4].textContent.trim();
-                    const registrationDateText = row.cells[5].textContent.trim();
-                    const registrationDate = registrationDateText ? new Date(registrationDateText) : null;
-
-                    const searchMatch = name.includes(searchText) || email.includes(searchText) || teacherId.includes(searchText);
-                    const statusMatch = statusValue === '' || status === statusValue;
-                    const specializationMatch = specializationValue === '' || specialization === specializationValue;
-
-                    let dateMatch = true;
-                    if (dateValue && registrationDate) {
-                        const today = new Date();
-                        today.setHours(0, 0, 0, 0);
-
-                        if (dateValue === 'this_month') {
-                            dateMatch = registrationDate.getFullYear() === today.getFullYear() && registrationDate.getMonth() === today.getMonth();
-                        } else if (dateValue === 'last_month') {
-                            const lastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
-                            const thisMonth = new Date(today.getFullYear(), today.getMonth(), 1);
-                            dateMatch = registrationDate >= lastMonth && registrationDate < thisMonth;
-                        } else if (dateValue === 'last_3_months') {
-                            const threeMonthsAgo = new Date(today.getFullYear(), today.getMonth() - 3, today.getDate());
-                            dateMatch = registrationDate >= threeMonthsAgo && registrationDate <= new Date();
+                    let show = true;
+                    
+                    // فلترة حسب حالة الحساب
+                    if (accountValue) {
+                        const statusCell = row.querySelector('td:nth-child(5) span');
+                        const status = statusCell.textContent.trim().toLowerCase();
+                        if (accountValue === 'active' && status !== 'active') show = false;
+                        if (accountValue === 'inactive' && status !== 'inactive') show = false;
+                    }
+                    
+                    // فلترة حسب الخبرة
+                    if (experienceValue) {
+                        const expCell = row.querySelector('td:nth-child(4) span');
+                        const expStatus = expCell.textContent.trim().toLowerCase();
+                        if (experienceValue === 'experienced' && expStatus !== 'experienced') show = false;
+                        if (experienceValue === 'not-experienced' && expStatus !== 'not experienced') show = false;
+                    }
+                    
+                    // فلترة حسب البحث
+                    if (searchText) {
+                        const name = row.querySelector('td:nth-child(1) h6').textContent.toLowerCase();
+                        const mobile = row.querySelector('td:nth-child(1) p').textContent.toLowerCase();
+                        const id = row.querySelector('td:nth-child(2) span').textContent.toLowerCase();
+                        if (!name.includes(searchText) && !mobile.includes(searchText) && !id.includes(searchText)) {
+                            show = false;
                         }
-                    } else if (dateValue !== '') {
-                        dateMatch = false;
                     }
-
-                    if (searchMatch && statusMatch && specializationMatch && dateMatch) {
-                        row.style.display = '';
-                    } else {
-                        row.style.display = 'none';
-                    }
+                    
+                    row.style.display = show ? '' : 'none';
+                    if (show) visibleCount++;
                 });
+                
+                // تحديث العداد
+                const countElement = document.querySelector('.d-flex.justify-content-between.align-items-center p');
+                if (countElement) {
+                    countElement.textContent = `Showing ${visibleCount} of ${tableRows.length} total teachers`;
+                }
             }
 
             searchInput.addEventListener('keyup', filterTeachers);
-            statusFilter.addEventListener('change', filterTeachers);
-            specializationFilter.addEventListener('change', filterTeachers);
-            dateFilter.addEventListener('change', filterTeachers);
+            accountFilter.addEventListener('change', filterTeachers);
+            experienceFilter.addEventListener('change', filterTeachers);
+            clearSearchBtn.addEventListener('click', function() {
+                searchInput.value = '';
+                filterTeachers();
+            });
         });
 
         function printStudentCard() {
@@ -1038,6 +1043,83 @@
                 // Remove any error messages
                 const errorMessages = deleteModal.querySelectorAll('.alert-danger');
                 errorMessages.forEach(msg => msg.remove());
+            });
+        });
+
+        // كود زر الخبرة
+        document.addEventListener('DOMContentLoaded', function() {
+            // زر الخبرة
+            document.addEventListener('click', function(e) {
+                if (e.target.closest('.toggle-experience-btn')) {
+                    const button = e.target.closest('.toggle-experience-btn');
+                    const teacherId = button.dataset.teacherId;
+                    const teacherName = button.closest('tr').querySelector('td:nth-child(1) h6').textContent;
+                    const currentStatus = button.dataset.currentStatus;
+                    const isCurrentlyExperienced = currentStatus === 'experienced';
+                    
+                    // SweetAlert للتأكيد
+                    Swal.fire({
+                        title: 'Change Experience Status',
+                        text: `Are you sure you want to ${isCurrentlyExperienced ? 'remove experience from' : 'mark as experienced'} ${teacherName}?`,
+                        icon: 'question',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Yes, change it!',
+                        cancelButtonText: 'Cancel',
+                        reverseButtons: true
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            const originalHTML = button.innerHTML;
+                            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                            button.disabled = true;
+                            
+                            // إنشاء FormData
+                            const formData = new FormData();
+                            formData.append('_token', document.querySelector('meta[name="csrf-token"]').getAttribute('content'));
+                            
+                            fetch(`/admin/accounts/teachers/${teacherId}/toggle-experience`, {
+                                method: 'POST',
+                                body: formData
+                            })
+                            .then(response => {
+                                if (!response.ok) {
+                                    throw new Error('Network response was not ok');
+                                }
+                                return response.json();
+                            })
+                            .then(data => {
+                                if (data.success) {
+                                    // إظهار رسالة نجاح
+                                    Swal.fire({
+                                        title: 'Success!',
+                                        text: 'Experience status updated successfully!',
+                                        icon: 'success',
+                                        timer: 2000,
+                                        showConfirmButton: false
+                                    }).then(() => {
+                                        // Refresh الصفحة بعد النجاح
+                                        window.location.reload();
+                                    });
+                                } else {
+                                    throw new Error(data.message || 'Failed to update experience status');
+                                }
+                            })
+                            .catch(error => {
+                                button.innerHTML = originalHTML;
+                                button.disabled = false;
+                                
+                                // إظهار رسالة خطأ
+                                Swal.fire({
+                                    title: 'Error!',
+                                    text: error.message,
+                                    icon: 'error',
+                                    confirmButtonText: 'OK'
+                                });
+                            });
+                        }
+                    });
+                }
             });
         });
     </script>

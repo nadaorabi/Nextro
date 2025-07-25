@@ -16,20 +16,23 @@ class TeacherController extends Controller
 
         $totalTeachers = User::where('role', 'teacher')->count();
         $activeTeachers = User::where('role', 'teacher')->where('is_active', '1')->count();
-        $graduatedTeachers = User::where('role', 'teacher')->where('is_active', '2')->count();
+        $experiencedTeachers = User::where('role', 'teacher')->where('is_experienced', true)->count();
+        $notExperiencedTeachers = User::where('role', 'teacher')->where('is_experienced', false)->count();
         $blockedTeachers = User::where('role', 'teacher')->where('is_active', '0')->count();
 
         $teachersThisMonth = User::where('role', 'teacher')
             ->whereMonth('created_at', now()->month)
             ->count();
 
-        $teachers = $query->latest()->paginate(10)->appends($request->all());
+        // Get all teachers without pagination for frontend filtering
+        $teachers = $query->latest()->get();
 
         return view('admin.accounts.teacher.index', compact(
             'teachers',
             'totalTeachers',
             'activeTeachers',
-            'graduatedTeachers',
+            'experiencedTeachers',
+            'notExperiencedTeachers',
             'blockedTeachers',
             'teachersThisMonth'
         ));
@@ -171,6 +174,28 @@ class TeacherController extends Controller
             }
             
             return redirect()->back()->with('error', 'Failed to delete teacher: ' . $e->getMessage());
+        }
+    }
+
+    public function toggleExperience($id)
+    {
+        try {
+            $teacher = User::where('role', 'teacher')->findOrFail($id);
+            $newStatus = $teacher->toggleExperienceStatus();
+            
+            $statusText = $newStatus ? 'Experienced' : 'Not Experienced';
+            
+            return response()->json([
+                'success' => true,
+                'message' => "Teacher experience status changed to: {$statusText}",
+                'is_experienced' => $newStatus,
+                'status_text' => $statusText
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to change experience status: ' . $e->getMessage()
+            ], 500);
         }
     }
 } 
