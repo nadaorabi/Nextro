@@ -32,8 +32,11 @@
                   <p class="text-muted mb-0">Update admin information and account details</p>
                 </div>
                 <div>
-                  <a href="{{ route('admin.accounts.admins.show', $admin->id) }}" class="btn btn-secondary">
+                  <a href="{{ route('admin.accounts.admins.show', $admin->id) }}" class="btn btn-secondary me-2">
                     <i class="fas fa-arrow-left"></i> Back to Admin Details
+                  </a>
+                  <a href="{{ route('admin.accounts.admins.list') }}" class="btn btn-outline-secondary">
+                    <i class="fas fa-list"></i> Back to List
                   </a>
                 </div>
               </div>

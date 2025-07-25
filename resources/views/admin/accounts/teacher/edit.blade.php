@@ -13,6 +13,27 @@
   <link href="https://demos.creative-tim.com/argon-dashboard-pro/assets/css/nucleo-svg.css" rel="stylesheet" />
   <link rel="stylesheet" href="{{ asset('css/argon-dashboard.css?v=2.1.0') }}">
   <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+  <style>
+    /* Custom purple-blue color for buttons */
+    .btn-purple-blue {
+      background-color: #6c5ce7;
+      border-color: #6c5ce7;
+      color: white;
+    }
+    
+    .btn-purple-blue:hover {
+      background-color: #5a4fcf;
+      border-color: #5a4fcf;
+      color: white;
+    }
+    
+    .btn-purple-blue:focus {
+      background-color: #5a4fcf;
+      border-color: #5a4fcf;
+      color: white;
+      box-shadow: 0 0 0 0.2rem rgba(108, 92, 231, 0.25);
+    }
+  </style>
 </head>
 
 <body class="g-sidenav-show bg-gray-100">
@@ -32,8 +53,11 @@
                   <p class="text-muted mb-0">Update teacher information and account details</p>
                 </div>
                 <div>
-                  <a href="{{ route('admin.accounts.teachers.show', $teacher->id) }}" class="btn btn-secondary">
+                  <a href="{{ route('admin.accounts.teachers.show', $teacher->id) }}" class="btn btn-secondary me-2">
                     <i class="fas fa-arrow-left"></i> Back to Teacher Details
+                  </a>
+                  <a href="{{ route('admin.accounts.teachers.list') }}" class="btn btn-purple-blue">
+                    <i class="fas fa-list"></i> Back to List
                   </a>
                 </div>
               </div>

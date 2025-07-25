@@ -247,7 +247,7 @@
         <h5 class="modal-title" id="addTransactionModalLabel">Add New Transaction</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <form action="{{ route('admin.accounts.teachers.add-transaction', $teacher->id) }}" method="POST">
+      <form action="{{ route('admin.teachers.account.transaction.store', $teacher->id) }}" method="POST">
         @csrf
         <div class="modal-body">
           <div class="mb-3">

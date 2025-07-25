@@ -267,7 +267,7 @@ class TransactionController extends Controller
         }
 
         // حركات الأستاذ المالية
-        $payments = Payment::where('user_id', $teacher->id)
+        $allPayments = Payment::where('user_id', $teacher->id)
             ->orderByDesc('payment_date')
             ->paginate(20);
 
@@ -291,7 +291,18 @@ class TransactionController extends Controller
         // صافي الرصيد = الأرباح - الدفعات
         $netBalance = $totalEarnings - abs($totalPayouts);
 
-        return view('admin.teachers.account', compact('teacher', 'payments', 'balance', 'totalSalary', 'totalDeductions', 'totalEarnings', 'totalPayouts', 'netBalance'));
+        // نسبة العمولة (يمكن تعديلها حسب الحاجة)
+        $commissionRate = 30; // نسبة افتراضية 30%
+
+        // حساب الرصيد بعد كل معاملة
+        $balances = [];
+        $runningBalance = 0;
+        foreach ($allPayments as $payment) {
+            $runningBalance += $payment->amount;
+            $balances[$payment->id] = $runningBalance;
+        }
+
+        return view('admin.teachers.account', compact('teacher', 'allPayments', 'balance', 'totalSalary', 'totalDeductions', 'totalEarnings', 'totalPayouts', 'netBalance', 'commissionRate', 'balances'));
     }
 
     public function storeTeacherTransaction(Request $request, User $teacher)

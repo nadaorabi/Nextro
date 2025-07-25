@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="apple-touch-icon" sizes="76x76" href="{{ asset('images/apple-icon.png') }}">
   <link rel="icon" type="image/png" href="{{ asset('images/favicon.png') }}">
-  <title>Teacher Materials</title>
+  <title>Teacher materials files</title>
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
   <link href="https://demos.creative-tim.com/argon-dashboard-pro/assets/css/nucleo-icons.css" rel="stylesheet" />
   <link href="https://demos.creative-tim.com/argon-dashboard-pro/assets/css/nucleo-svg.css" rel="stylesheet" />
@@ -305,13 +305,13 @@
                 <i class="fas fa-book-open fa-2x"></i>
               </div>
               <div>
-                <h2 class="mb-1">Teacher Materials</h2>
-                <p class="mb-0 opacity-75">View all your study materials and lessons</p>
+                <h2 class="mb-1"> Teacher materials files</h2>
+                <p class="mb-0 opacity-75">View all your  materials files and lessons</p>
               </div>
             </div>
             <div class="mt-3 mt-md-0">
               <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addMaterialModal">
-                <i class="fas fa-plus"></i> Add New Material
+                <i class="fas fa-plus"></i> Add New files
               </button>
             </div>
           </div>
@@ -350,7 +350,7 @@
             <div class="card-header pb-0">
               <div class="d-flex align-items-center">
                 <i class="fas fa-table text-muted me-2"></i>
-                <h5 class="mb-0">Study Materials</h5>
+                <h5 class="mb-0">files Materials</h5>
               </div>
             </div>
             <div class="card-body px-0 pt-0 pb-2">
@@ -437,7 +437,7 @@
                     <tr>
                       <td colspan="6" class="text-center text-muted py-4 empty-state">
                         <i class="fas fa-calendar-times fa-2x mb-3 d-block"></i>
-                        <p class="mb-0">No study materials found</p>
+                        <p class="mb-0">No files materials found</p>
                       </td>
                     </tr>
                 @endforelse
@@ -455,7 +455,7 @@
         <form action="{{ route('teacher.materials.store') }}" method="POST" enctype="multipart/form-data">
           @csrf
           <div class="modal-header">
-            <h5 class="modal-title" id="addMaterialModalLabel">Add New Material</h5>
+            <h5 class="modal-title" id="addMaterialModalLabel">Add New file</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
