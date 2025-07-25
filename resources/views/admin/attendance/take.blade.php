@@ -241,6 +241,17 @@
           <div class="col-md-8">
             <div class="scanner-container position-relative bg-dark rounded">
               <div id="qr-reader" style="width: 100%"></div>
+              
+              <!-- منطقة عرض رسائل التأكيد -->
+              <div id="scan-message-overlay" class="position-absolute w-100 h-100 d-none" 
+                   style="top: 0; left: 0; background: rgba(0,0,0,0.8); z-index: 1000; display: flex; align-items: center; justify-content: center;">
+                <div class="text-center text-white">
+                  <div id="scan-message-icon" class="mb-3">
+                    <i class="fas fa-spinner fa-spin fa-2x"></i>
+                  </div>
+                  <div id="scan-message-text" class="h5 mb-0">Processing...</div>
+                </div>
+              </div>
             </div>
             <!-- Camera Controls -->
             <div class="mt-3 text-center">
@@ -355,6 +366,56 @@ function showToast(message, type = 'info') {
   toast.innerHTML = `${message}<button type="button" class="btn-close" data-bs-dismiss="alert"></button>`;
   document.body.appendChild(toast);
   setTimeout(() => toast.remove(), 5000);
+}
+
+// Show Scan Progress
+function showScanProgress(message, type = 'info') {
+  const overlay = document.getElementById('scan-message-overlay');
+  const messageText = document.getElementById('scan-message-text');
+  const messageIcon = document.getElementById('scan-message-icon');
+  
+  // تحديث النص
+  messageText.textContent = message;
+  
+  // تحديث الأيقونة حسب النوع
+  if (type === 'success') {
+    messageIcon.innerHTML = '<i class="fas fa-check-circle fa-2x text-success"></i>';
+  } else if (type === 'error') {
+    messageIcon.innerHTML = '<i class="fas fa-exclamation-circle fa-2x text-danger"></i>';
+  } else {
+    messageIcon.innerHTML = '<i class="fas fa-spinner fa-spin fa-2x text-info"></i>';
+  }
+  
+  // إظهار الـ overlay
+  overlay.classList.remove('d-none');
+  overlay.style.display = 'flex';
+}
+
+// Hide Scan Progress
+function hideScanProgress() {
+  const overlay = document.getElementById('scan-message-overlay');
+  overlay.classList.add('d-none');
+  overlay.style.display = 'none';
+}
+
+// Show Success Message
+function showScanSuccess(studentName) {
+  showScanProgress(`${studentName} marked as present successfully!`, 'success');
+  
+  // إخفاء الرسالة بعد 3 ثواني
+  setTimeout(() => {
+    hideScanProgress();
+  }, 3000);
+}
+
+// Show Error Message
+function showScanError(message) {
+  showScanProgress(message, 'error');
+  
+  // إخفاء الرسالة بعد 3 ثواني
+  setTimeout(() => {
+    hideScanProgress();
+  }, 3000);
 }
 
 // Update Statistics
@@ -532,6 +593,9 @@ function onScanSuccess(decodedText, decodedResult) {
   // Play beep sound
   document.getElementById('beepSound')?.play().catch(() => {});
 
+  // إظهار مؤشر التحميل في نافذة الكاميرا
+  showScanProgress('Processing scan...', 'info');
+
   // Send attendance data
   fetch(`{{ route('admin.attendance.scan') }}`, {
     method: 'POST',
@@ -546,23 +610,43 @@ function onScanSuccess(decodedText, decodedResult) {
   })
   .then(res => res.json())
   .then(data => {
-    if (data.status === 'success') {
-      showToast(`${data.student_name} marked as present`, 'success');
+    if (data.success) {
+      // إظهار رسالة نجاح مع تفاصيل الطالب
+      showScanSuccess(data.present_students?.[0]?.name || 'Student');
+      
+      // إضافة إلى قائمة المسح الأخير
       recentScans.unshift({
         id: decodedText,
-        name: data.student_name,
+        name: data.present_students?.[0]?.name || 'Unknown',
         time: new Date().toLocaleTimeString()
       });
       if (recentScans.length > 5) recentScans.pop();
       updateRecentScansList();
+      
+      // تحديث الإحصائيات
       updateStats();
       document.getElementById('lastScanTime').textContent = new Date().toLocaleTimeString();
+      
+      // إظهار رسالة نجاح في نافذة الكاميرا لمدة 3 ثواني
+      setTimeout(() => {
+        hideScanProgress();
+      }, 3000);
+      
     } else {
-      showToast(data.message, 'error');
+      // إظهار رسالة خطأ
+      showScanError(data.message || 'Failed to mark attendance');
+      
+      // إخفاء رسالة الخطأ بعد 3 ثواني
+      setTimeout(() => {
+        hideScanProgress();
+      }, 3000);
     }
   })
   .catch(err => {
-    showToast('Error processing scan', 'error');
+    showScanError('Error processing scan');
+    setTimeout(() => {
+      hideScanProgress();
+    }, 3000);
   });
 }
 
@@ -814,6 +898,51 @@ document.addEventListener('DOMContentLoaded', function() {
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+/* تحسين مظهر رسائل التأكيد */
+#scan-message-overlay {
+    backdrop-filter: blur(5px);
+    transition: all 0.3s ease;
+}
+
+#scan-message-overlay .text-white {
+    background: rgba(0, 0, 0, 0.9);
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    animation: messageSlideIn 0.3s ease-out;
+}
+
+@keyframes messageSlideIn {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* تحسين مظهر الأيقونات */
+#scan-message-icon i {
+    animation: iconPulse 1s ease-in-out infinite;
+}
+
+@keyframes iconPulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+/* تحسين مظهر النص */
+#scan-message-text {
+    font-weight: 600;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 @media (max-width: 768px) {
