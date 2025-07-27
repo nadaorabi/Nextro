@@ -34,10 +34,16 @@
         <div class="col-lg-8 col-md-10">
             <div class="card shadow-lg border-0">
                 <div class="card-header bg-primary text-white text-center py-3">
-                    <h5 class="mb-0">
-                        <i class="fas fa-robot me-2"></i>
-                        المساعد الذكي - Nextro
-                    </h5>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">
+                            <i class="fas fa-robot me-2"></i>
+                            المساعد الذكي - Nextro
+                        </h5>
+                        <div class="language-toggle">
+                            <button class="btn btn-sm btn-outline-light active" data-lang="ar">عربي</button>
+                            <button class="btn btn-sm btn-outline-light" data-lang="en">English</button>
+                        </div>
+                    </div>
                     <small>يمكنني مساعدتك في الاستفسارات عن الكورسات والتسجيل</small>
                 </div>
                 
@@ -218,6 +224,17 @@
     transition: all 0.2s ease;
 }
 
+.language-toggle {
+    display: flex;
+    gap: 5px;
+}
+
+.language-toggle .btn {
+    font-size: 12px;
+    padding: 4px 8px;
+    border-radius: 15px;
+}
+
 /* Loading Animation */
 .typing-indicator {
     display: flex;
@@ -289,6 +306,8 @@
 </style>
 
 <script>
+let currentLanguage = 'ar';
+
 document.addEventListener('DOMContentLoaded', function() {
     const chatMessages = document.getElementById('chat-messages');
     const messageInput = document.getElementById('message-input');
@@ -297,6 +316,34 @@ document.addEventListener('DOMContentLoaded', function() {
     const clearBtn = document.getElementById('clear-chat');
     const scrollBottomBtn = document.getElementById('scroll-bottom');
     const quickQuestions = document.querySelectorAll('.quick-question');
+    const languageBtns = document.querySelectorAll('.language-toggle .btn');
+
+    // Language toggle
+    languageBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const lang = this.getAttribute('data-lang');
+            setLanguage(lang);
+        });
+    });
+
+    function setLanguage(lang) {
+        currentLanguage = lang;
+        
+        // Update UI
+        languageBtns.forEach(btn => {
+            btn.classList.remove('active');
+        });
+        document.querySelector(`[data-lang="${lang}"]`).classList.add('active');
+        
+        // Update placeholder
+        if (lang === 'ar') {
+            messageInput.placeholder = 'اكتب رسالتك هنا...';
+            document.querySelector('.quick-actions small').textContent = 'أسئلة سريعة:';
+        } else {
+            messageInput.placeholder = 'Type your message here...';
+            document.querySelector('.quick-actions small').textContent = 'Quick Questions:';
+        }
+    }
 
     // Send message function
     function sendMessage(message) {
@@ -318,7 +365,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 'Content-Type': 'application/json',
                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
             },
-            body: JSON.stringify({ message: message })
+            body: JSON.stringify({ 
+                message: message,
+                language: currentLanguage
+            })
         })
         .then(response => response.json())
         .then(data => {
@@ -327,12 +377,18 @@ document.addEventListener('DOMContentLoaded', function() {
             if (data.success) {
                 addMessage(data.message, 'bot');
             } else {
-                addMessage('عذراً، حدث خطأ في الاتصال. يرجى المحاولة مرة أخرى.', 'bot');
+                const errorMsg = currentLanguage === 'ar' ? 
+                    'عذراً، حدث خطأ في الاتصال. يرجى المحاولة مرة أخرى.' :
+                    'Sorry, there was an error in the connection. Please try again later.';
+                addMessage(errorMsg, 'bot');
             }
         })
         .catch(error => {
             hideTypingIndicator();
-            addMessage('عذراً، حدث خطأ في الاتصال. يرجى المحاولة مرة أخرى.', 'bot');
+            const errorMsg = currentLanguage === 'ar' ? 
+                'عذراً، حدث خطأ في الاتصال. يرجى المحاولة مرة أخرى.' :
+                'Sorry, there was an error in the connection. Please try again later.';
+            addMessage(errorMsg, 'bot');
             console.error('Error:', error);
         });
     }
@@ -342,7 +398,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const messageDiv = document.createElement('div');
         messageDiv.className = `message ${sender}-message`;
         
-        const time = new Date().toLocaleTimeString('ar-SA', { 
+        const time = new Date().toLocaleTimeString(currentLanguage === 'ar' ? 'ar-SA' : 'en-US', { 
             hour: '2-digit', 
             minute: '2-digit' 
         });
@@ -350,7 +406,7 @@ document.addEventListener('DOMContentLoaded', function() {
         messageDiv.innerHTML = `
             <div class="message-content">
                 <div class="message-bubble">
-                    <div class="message-text">${text}</div>
+                    <div class="message-text">${formatMessage(text)}</div>
                     <div class="message-time">${time}</div>
                 </div>
             </div>
@@ -360,11 +416,26 @@ document.addEventListener('DOMContentLoaded', function() {
         scrollToBottom();
     }
 
+    // Format message with markdown-like syntax
+    function formatMessage(text) {
+        // Convert \n to <br>
+        text = text.replace(/\n/g, '<br>');
+        
+        // Bold text
+        text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        
+        // Lists
+        text = text.replace(/^•\s*(.*?)$/gm, '<li>$1</li>');
+        text = text.replace(/(<li>.*?<\/li>)/s, '<ul>$1</ul>');
+        
+        return text;
+    }
+
     // Show typing indicator
     function showTypingIndicator() {
         const typingDiv = document.createElement('div');
         typingDiv.className = 'message bot-message';
-        typingDiv.id = 'typing-indicator';
+        typingDiv.id = 'typingIndicator';
         typingDiv.innerHTML = `
             <div class="message-content">
                 <div class="typing-indicator">
@@ -380,7 +451,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Hide typing indicator
     function hideTypingIndicator() {
-        const typingIndicator = document.getElementById('typing-indicator');
+        const typingIndicator = document.getElementById('typingIndicator');
         if (typingIndicator) {
             typingIndicator.remove();
         }
@@ -410,7 +481,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Clear chat
     clearBtn.addEventListener('click', function() {
-        if (confirm('هل أنت متأكد من مسح جميع الرسائل؟')) {
+        if (confirm('هل تريد مسح جميع الرسائل؟')) {
             fetch('{{ route("chatbot.clear") }}', {
                 method: 'POST',
                 headers: {

@@ -369,15 +369,15 @@
           <a href="{{ route('teacher.profile') }}" class="profile-btn">
             <i class="fas fa-user"></i>
           </a>
-          <div class="d-flex align-items-center">
+                    <div class="d-flex align-items-center">
             <div class="teacher-avatar me-3">
               <i class="fas fa-chalkboard-teacher"></i>
-            </div>
-            <div>
+                        </div>
+                        <div>
               <h2 class="teacher-name">{{ $teacher->name }}</h2>
-            </div>
-          </div>
-        </div>
+                        </div>
+                    </div>
+                    </div>
         
         <!-- Card Body -->
         <div class="teacher-body">
@@ -387,9 +387,9 @@
               <div class="teacher-info-content">
                 <div class="teacher-info-label">ID Number</div>
                 <div class="teacher-info-value">{{ $teacher->login_id }}</div>
-              </div>
+                </div>
             </div>
-            
+
             <div class="teacher-info-item">
               <i class="fas fa-phone"></i>
               <div class="teacher-info-content">
@@ -413,12 +413,12 @@
               <div class="teacher-info-content">
                 <div class="teacher-info-label">Join Date</div>
                 <div class="teacher-info-value">{{ \Carbon\Carbon::parse($teacher->created_at)->format('Y-m-d') }}</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
       <div class="row">
         <!-- Number of Courses -->
         <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
@@ -433,8 +433,8 @@
                       <span class="text-success text-sm font-weight-bolder">+{{ $teacherCourses->count() }}</span>
                       Active Courses
                     </p>
-                  </div>
-                </div>
+                            </div>
+                        </div>
                 <div class="col-4 text-end">
                   <div class="icon icon-shape bg-gradient-primary shadow-primary text-center rounded-circle">
                     <i class="ni ni-books text-lg opacity-10" aria-hidden="true"></i>
@@ -442,9 +442,9 @@
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-        
+                    </div>
+                </div>
+                
         <!-- Number of Students -->
         <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
           <div class="card">
@@ -458,8 +458,8 @@
                       <span class="text-success text-sm font-weight-bolder">+{{ $totalStudents }}</span>
                       Registered Students
                     </p>
-                  </div>
-                </div>
+                            </div>
+                        </div>
                 <div class="col-4 text-end">
                   <div class="icon icon-shape bg-gradient-danger shadow-danger text-center rounded-circle">
                     <i class="ni ni-hat-3 text-lg opacity-10" aria-hidden="true"></i>
@@ -467,9 +467,9 @@
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-        
+                    </div>
+                </div>
+                
         <!-- Number of Sessions -->
         <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
           <div class="card">
@@ -483,23 +483,23 @@
                       <span class="text-success text-sm font-weight-bolder">+{{ $totalSchedules }}</span>
                       Scheduled Sessions
                     </p>
-                  </div>
-                </div>
+                            </div>
+                        </div>
                 <div class="col-4 text-end">
                   <div class="icon icon-shape bg-gradient-success shadow-success text-center rounded-circle">
                     <i class="ni ni-calendar-grid-58 text-lg opacity-10" aria-hidden="true"></i>
                   </div>
                 </div>
               </div>
+                    </div>
+                </div>
             </div>
-          </div>
-        </div>
-        
+
         <!-- Earnings -->
         <div class="col-xl-3 col-sm-6">
           <div class="card">
             <div class="card-body p-3">
-              <div class="row">
+                            <div class="row">
                 <div class="col-8">
                   <div class="numbers">
                     <p class="text-sm mb-0 text-uppercase font-weight-bold">Total Earnings</p>
@@ -508,18 +508,18 @@
                       <span class="text-success text-sm font-weight-bolder">USD</span>
                       Earnings
                     </p>
-                  </div>
-                </div>
+                                </div>
+                                </div>
                 <div class="col-4 text-end">
                   <div class="icon icon-shape bg-gradient-warning shadow-warning text-center rounded-circle">
                     <i class="ni ni-money-coins text-lg opacity-10" aria-hidden="true"></i>
-                  </div>
+                                </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-              </div>
             </div>
-          </div>
-        </div>
-      </div>
 
       <!-- Upcoming Schedules and Courses -->
       <div class="row mt-4">
@@ -530,16 +530,16 @@
               <h6 class="mb-0 main-purple">
                 <i class="fas fa-calendar-alt me-2 main-purple"></i>
                 Upcoming Schedules
-              </h6>
-            </div>
+                            </h6>
+                        </div>
             <div class="card-body p-3">
               @if($upcomingSchedules->count() > 0)
                 <div class="d-block d-md-none mb-2">
-                  <small class="text-muted">
+                                                    <small class="text-muted">
                     <i class="fas fa-info-circle me-1"></i>
                     Swipe left/right to view all schedules
-                  </small>
-                </div>
+                                                    </small>
+                                                </div>
                 @php
                   $days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
                   $timeSlots = ['9:00 AM', '10:00 AM', '11:00 AM', '12:00 PM', '1:00 PM', '2:00 PM', '3:00 PM', '4:00 PM'];
@@ -588,28 +588,28 @@
                               <div class="course-name text-xs font-weight-bold">{{ $schedule['course'] }}</div>
                               <div class="room-info text-xs">
                                 <strong>Room: {{ $schedule['room'] ?: 'N/A' }}</strong>
-                              </div>
-                            </div>
+                                                </div>
+                                            </div>
                           @else
                             <div class="empty-slot text-muted">-</div>
-                          @endif
+                                            @endif
                         </td>
-                        @endforeach
+                                        @endforeach
                       </tr>
-                      @endforeach
+                                    @endforeach
                     </tbody>
                   </table>
-                </div>
-              @else
+                                </div>
+                            @else
                 <div class="text-center text-muted py-4">
                   <i class="fas fa-calendar-times fa-2x mb-3"></i>
                   <p class="mb-0">No upcoming schedules</p>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
                 </div>
-              @endif
-            </div>
-          </div>
-        </div>
-        
+                
         <!-- Courses -->
         <div class="col-lg-5">
           <div class="card">
@@ -617,8 +617,8 @@
               <h6 class="mb-0 main-purple">
                 <i class="fas fa-book me-2 main-purple"></i>
                 My Courses
-              </h6>
-            </div>
+                            </h6>
+                        </div>
             <div class="card-body p-3">
               @if($teacherCourses->count() > 0)
                 <div class="table-responsive">
@@ -643,16 +643,16 @@
                       @endforeach
                     </tbody>
                   </table>
-                </div>
+                            </div>
               @else
                 <div class="text-center text-muted py-4">
                   <i class="fas fa-book fa-2x mb-3"></i>
                   <p class="mb-0">No courses assigned to you</p>
-                </div>
+                            </div>
               @endif
-            </div>
-          </div>
-        </div>
+                            </div>
+                        </div>
+                    </div>
       </div>
 
       <!-- Recent Payments -->
@@ -686,11 +686,11 @@
                     @endforeach
                   </tbody>
                 </table>
-              </div>
+                </div>
             </div>
-          </div>
         </div>
-      </div>
+    </div>
+</div>
       @endif
     </div>
   </main>

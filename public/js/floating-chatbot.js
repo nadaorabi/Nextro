@@ -10,6 +10,7 @@ class FloatingChatbot {
         this.createChatbotHTML();
         this.bindEvents();
         this.loadWelcomeMessage();
+        this.loadChatHistory();
     }
 
     createChatbotHTML() {
@@ -23,12 +24,14 @@ class FloatingChatbot {
                 <div class="chatbot-window" id="chatbotWindow">
                     <div class="chatbot-header">
                         <div>
-                            <h5><i class="fas fa-robot me-2"></i>Smart Assistant</h5>
+                            <h5><i class="fas fa-robot me-2"></i>AI Assistant</h5>
                             <small>Nextro Academic</small>
                         </div>
-                        <button class="close-btn" id="chatbotClose">
-                            <i class="fas fa-times"></i>
-                        </button>
+                        <div class="chatbot-controls">
+                            <button class="close-btn" id="chatbotClose">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
                     </div>
                     
                     <div class="chatbot-messages" id="chatbotMessages">
@@ -61,7 +64,7 @@ class FloatingChatbot {
                                 <button class="chatbot-quick-btn" data-question="What are the course fees?">
                                     💰 Course Fees
                                 </button>
-                                <button class="chatbot-quick-btn" data-question="Explain the concept of programming">
+                                <button class="chatbot-quick-btn" data-question="I need help with my studies">
                                     💡 Study Help
                                 </button>
                             </div>
@@ -89,6 +92,14 @@ class FloatingChatbot {
         document.getElementById('chatbotForm').addEventListener('submit', (e) => {
             e.preventDefault();
             this.sendMessage();
+        });
+
+        // Handle Enter key in textarea
+        document.getElementById('chatbotInput').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                this.sendMessage();
+            }
         });
 
         // Quick questions
@@ -122,19 +133,48 @@ class FloatingChatbot {
     }
 
     loadWelcomeMessage() {
-        const welcomeMessage = `
-            Hello! 👋 I am your smart academic assistant at Nextro.
-            I can help you with:
-            • Explaining study concepts and simplifying lessons
-            • Assisting with exercises and assignments
-            • Guiding you in research and projects
-            • Information about available courses
-            • Registration and admission procedures
-            
-            Ask me any academic or study-related question! 🎓
-        `;
+        const welcomeMessage = `Hello! I'm Nextro AI, your friendly academic assistant! 😊
+
+I'm here to help you with:
+• 📚 Explaining study concepts and simplifying lessons
+• 💡 Assisting with exercises and assignments
+• 🎯 Guiding you in research and projects
+• 📖 Information about available courses
+• 📝 Registration and admission procedures
+
+I remember our conversations and build upon them to give you personalized help! How can I assist you today? 🎓`;
         
         this.addMessage(welcomeMessage, 'bot');
+    }
+
+    async loadChatHistory() {
+        try {
+            const response = await fetch('/user/chatbot/history', {
+                method: 'GET',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                }
+            });
+            
+            if (response.ok) {
+                const history = await response.json();
+                if (history.length > 0) {
+                    // Add a separator
+                    this.addMessage("--- Previous Conversation ---", 'system');
+                    
+                    // Load last few messages from history
+                    const recentHistory = history.slice(-5);
+                    recentHistory.forEach(chat => {
+                        this.addMessage(chat.user_message, 'user', chat.timestamp);
+                        this.addMessage(chat.bot_response, 'bot', chat.timestamp);
+                    });
+                    
+                    this.addMessage("--- Current Session ---", 'system');
+                }
+            }
+        } catch (error) {
+            console.log('No chat history found or error loading history');
+        }
     }
 
     toggleChatbot() {
@@ -172,13 +212,12 @@ class FloatingChatbot {
         const input = document.getElementById('chatbotInput');
         const message = input.value.trim();
         
-        if (!message || this.isLoading) return;
-        
-        this.addMessage(message, 'user');
-        input.value = '';
-        this.autoResizeTextarea(input);
-        
-        this.sendToAPI(message);
+        if (message && !this.isLoading) {
+            this.addMessage(message, 'user');
+            this.sendToAPI(message);
+            input.value = '';
+            this.autoResizeTextarea(input);
+        }
     }
 
     async sendToAPI(message) {
@@ -193,7 +232,9 @@ class FloatingChatbot {
                     'Content-Type': 'application/json',
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
                 },
-                body: JSON.stringify({ message: message })
+                body: JSON.stringify({ 
+                    message: message
+                })
             });
             
             const data = await response.json();
@@ -203,48 +244,61 @@ class FloatingChatbot {
             if (data.success) {
                 this.addMessage(data.message, 'bot');
             } else {
-                this.addMessage('Sorry, there was an error in the connection. Please try again later.', 'bot');
+                const errorMsg = 'Sorry, there was an error in the connection. Please try again later.';
+                this.addMessage(errorMsg, 'bot');
             }
             
         } catch (error) {
             console.error('Chatbot Error:', error);
             this.hideTypingIndicator();
-            this.addMessage('Sorry, there was an error in the connection. Please try again later.', 'bot');
+            const errorMsg = 'Sorry, there was an error in the connection. Please try again later.';
+            this.addMessage(errorMsg, 'bot');
         }
         
         this.isLoading = false;
         this.enableInput();
     }
 
-    addMessage(text, sender) {
+    addMessage(message, sender, timestamp = null) {
         const messagesContainer = document.getElementById('chatbotMessages');
         const messageDiv = document.createElement('div');
         messageDiv.className = `chatbot-message ${sender}`;
         
-        const time = new Date().toLocaleTimeString('en-US', { 
+        const messageTime = timestamp || new Date().toLocaleTimeString('en-US', { 
             hour: '2-digit', 
             minute: '2-digit' 
         });
         
-        messageDiv.innerHTML = `
-            <div class="chatbot-message-content">
-                <div class="chatbot-message-bubble">
-                    ${this.formatMessage(text)}
+        if (sender === 'system') {
+            messageDiv.innerHTML = `
+                <div class="chatbot-message-content">
+                    <div class="chatbot-message-bubble system-message">
+                        <small>${message}</small>
+                    </div>
                 </div>
-                <div class="chatbot-message-time">${time}</div>
-            </div>
-        `;
+            `;
+        } else {
+            messageDiv.innerHTML = `
+                <div class="chatbot-message-content">
+                    <div class="chatbot-message-bubble">
+                        ${message}
+                    </div>
+                    <div class="chatbot-message-time">${messageTime}</div>
+                </div>
+            `;
+        }
         
         messagesContainer.appendChild(messageDiv);
         this.scrollToBottom();
         
-        // Store in history
-        this.messageHistory.push({ text, sender, time });
-    }
-
-    formatMessage(text) {
-        // Convert line breaks to <br>
-        return text.replace(/\n/g, '<br>');
+        // Store in history (only for user and bot messages)
+        if (sender !== 'system') {
+            this.messageHistory.push({
+                message: message,
+                sender: sender,
+                timestamp: messageTime
+            });
+        }
     }
 
     showTypingIndicator() {
@@ -252,6 +306,7 @@ class FloatingChatbot {
         const typingDiv = document.createElement('div');
         typingDiv.className = 'chatbot-message bot';
         typingDiv.id = 'typingIndicator';
+        
         typingDiv.innerHTML = `
             <div class="chatbot-message-content">
                 <div class="chatbot-typing">
@@ -261,6 +316,7 @@ class FloatingChatbot {
                 </div>
             </div>
         `;
+        
         messagesContainer.appendChild(typingDiv);
         this.scrollToBottom();
     }
@@ -304,25 +360,6 @@ class FloatingChatbot {
         const notification = document.getElementById('chatbotNotification');
         notification.style.display = 'flex';
     }
-
-    hideNotification() {
-        const notification = document.getElementById('chatbotNotification');
-        notification.style.display = 'none';
-    }
-
-    // Public methods for external use
-    open() {
-        this.openChatbot();
-    }
-
-    close() {
-        this.closeChatbot();
-    }
-
-    send(message) {
-        this.addMessage(message, 'user');
-        this.sendToAPI(message);
-    }
 }
 
 // Initialize chatbot when DOM is loaded
@@ -336,19 +373,20 @@ document.addEventListener('DOMContentLoaded', function() {
 // Global functions for external access
 window.openChatbot = function() {
     if (window.floatingChatbot) {
-        window.floatingChatbot.open();
+        window.floatingChatbot.openChatbot();
     }
 };
 
 window.closeChatbot = function() {
     if (window.floatingChatbot) {
-        window.floatingChatbot.close();
+        window.floatingChatbot.closeChatbot();
     }
 };
 
 window.sendChatbotMessage = function(message) {
     if (window.floatingChatbot) {
-        window.floatingChatbot.send(message);
+        window.floatingChatbot.addMessage(message, 'user');
+        window.floatingChatbot.sendToAPI(message);
     }
 };
 

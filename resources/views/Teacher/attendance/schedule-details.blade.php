@@ -42,7 +42,7 @@
                                 <div>
                                     <i class="fas fa-users fa-2x opacity-75"></i>
                                 </div>
-                            </div>
+                        </div>
                         </div>
                     </div>
                 </div>
@@ -57,7 +57,7 @@
                                 <div>
                                     <i class="fas fa-check-circle fa-2x opacity-75"></i>
                                 </div>
-                            </div>
+                        </div>
                         </div>
                     </div>
                 </div>
@@ -72,7 +72,7 @@
                                 <div>
                                     <i class="fas fa-times-circle fa-2x opacity-75"></i>
                                 </div>
-                            </div>
+                        </div>
                         </div>
                     </div>
                 </div>
@@ -87,7 +87,7 @@
                                 <div>
                                     <i class="fas fa-percentage fa-2x opacity-75"></i>
                                 </div>
-                            </div>
+                        </div>
                         </div>
                     </div>
                 </div>
@@ -115,22 +115,22 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse($enrollments as $enrollment)
-                                @php
+                        @forelse($enrollments as $enrollment)
+                        @php
                                     $attendance = $attendances->where('student_id', $enrollment->student_id)->first();
                                     $status = $attendance ? $attendance->status : 'absent';
-                                @endphp
+                        @endphp
                                 <tr>
                                     <td>
                                         <div class="d-flex align-items-center">
                                             <div class="avatar avatar-sm rounded-circle me-3">
                                                 <img src="{{ asset('images/defaults/default-student.jpg') }}" alt="Avatar" class="rounded-circle" width="40">
-                                            </div>
+                                    </div>
                                             <div>
                                                 <h6 class="mb-0">{{ $enrollment->student->name }}</h6>
                                                 <small class="text-muted">ID: {{ $enrollment->student->login_id ?? 'N/A' }}</small>
-                                            </div>
-                                        </div>
+                                    </div>
+                                </div>
                                     </td>
                                     <td>{{ $enrollment->student->email }}</td>
                                     <td>{{ $enrollment->student->mobile ?? 'Not specified' }}</td>
@@ -138,37 +138,37 @@
                                         @if($status == 'present')
                                             <span class="badge bg-success">
                                                 <i class="fas fa-check me-1"></i> Present
-                                            </span>
-                                        @else
+                                    </span>
+                                @else
                                             <span class="badge bg-danger">
                                                 <i class="fas fa-times me-1"></i> Absent
-                                            </span>
-                                        @endif
+                                    </span>
+                                @endif
                                     </td>
                                     <td>
-                                        @if($attendance && $attendance->marked_at)
+                                @if($attendance && $attendance->marked_at)
                                             {{ \Carbon\Carbon::parse($attendance->marked_at)->format('H:i A') }}
-                                        @else
+                                @else
                                             <span class="text-muted">-</span>
-                                        @endif
+                                @endif
                                     </td>
                                     <td class="text-center">
                                         @if($status == 'present')
                                             <button class="btn btn-outline-danger btn-sm" onclick="markAbsent({{ $enrollment->student_id }}, {{ $schedule->id }})">
                                                 <i class="fas fa-times me-1"></i> Absent
                                             </button>
-                                        @else
+                                @else
                                             <button class="btn btn-outline-success btn-sm" onclick="markPresent({{ $enrollment->student_id }}, {{ $schedule->id }})">
                                                 <i class="fas fa-check me-1"></i> Present
-                                            </button>
-                                        @endif
+                                        </button>
+                                    @endif
                                     </td>
                                 </tr>
-                                @empty
+                        @empty
                                 <tr>
                                     <td colspan="6" class="text-muted text-center">No students enrolled in this course</td>
                                 </tr>
-                                @endforelse
+                        @endforelse
                             </tbody>
                         </table>
                     </div>
@@ -212,55 +212,55 @@
 <script>
 function markPresent(studentId, scheduleId) {
     if (confirm('Do you want to mark this student as present?')) {
-        fetch('/teacher/attendance/mark-present', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-            },
-            body: JSON.stringify({
-                student_id: studentId,
-                schedule_id: scheduleId
-            })
+    fetch('/teacher/attendance/mark-present', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        },
+        body: JSON.stringify({
+            student_id: studentId,
+            schedule_id: scheduleId
         })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                location.reload();
-            } else {
-                alert('Error: ' + data.message);
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            location.reload();
+        } else {
+            alert('Error: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
             alert('An error occurred while marking attendance');
-        });
+    });
     }
 }
 
 function markAbsent(studentId, scheduleId) {
     if (confirm('Do you want to mark this student as absent?')) {
-        fetch('/teacher/attendance/mark-absent', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-            },
-            body: JSON.stringify({
-                student_id: studentId,
-                schedule_id: scheduleId
-            })
+    fetch('/teacher/attendance/mark-absent', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        },
+        body: JSON.stringify({
+            student_id: studentId,
+            schedule_id: scheduleId
         })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                location.reload();
-            } else {
-                alert('Error: ' + data.message);
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            location.reload();
+        } else {
+            alert('Error: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
             alert('An error occurred while marking absence');
         });
     }
