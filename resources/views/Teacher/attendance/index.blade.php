@@ -1,8 +1,8 @@
-{{-- Unified attendance system with admin --}}
 @extends('layouts.teacher')
+
+@section('title', 'Attendance Management')
+
 @section('content')
-
-
 <div class="container py-4">
   <div class="row justify-content-center">
     <div class="col-12" style="max-width:1200px;margin:auto;">
@@ -15,14 +15,14 @@
               <h4 class="mb-0"><i class="fas fa-clipboard-check me-2"></i>Attendance Management</h4>
               <p class="text-muted mb-0">Track and manage student attendance for all courses</p>
             </div>
-            <!-- <div class="d-flex gap-2">
-              <a href="{{ route('teacher.attendance.details') }}" class="btn btn-outline-primary">
+            <div class="d-flex gap-2">
+              <a href="{{ route('admin.attendance.details') }}" class="btn btn-outline-primary">
                 <i class="fas fa-chart-bar"></i> Attendance Reports
               </a>
               <a href="{{ route('admin.attendance.export') }}" class="btn btn-success">
                 <i class="fas fa-download"></i> Export Data
               </a>
-            </div> -->
+            </div>
           </div>
         </div>
       </div>
@@ -31,14 +31,8 @@
       <div class="row mb-4">
         @php
           $totalCourses = $courses->count();
-          $totalSchedules = $courses->sum(function($courseInstructor) { 
-            $course = $courseInstructor->course;
-            return $course && $course->schedules ? $course->schedules->count() : 0; 
-          });
-          $totalStudents = $courses->sum(function($courseInstructor) { 
-            $course = $courseInstructor->course;
-            return $course && $course->enrollments ? $course->enrollments->count() : 0; 
-          });
+          $totalSchedules = $courses->sum(function($course) { return $course->schedules->count(); });
+          $totalStudents = $courses->sum(function($course) { return $course->enrollments_count ?? 0; });
           $totalPresentToday = collect($scheduleStats)->sum('present');
         @endphp
         
@@ -146,95 +140,92 @@
                 </tr>
               </thead>
               <tbody>
-                @forelse($courses as $courseInstructor)
-                  @php $course = $courseInstructor->course; @endphp
-                  @if($course && $course->schedules)
-                    @forelse($course->schedules as $schedule)
-                      <tr>
-                        <td>
-                          <div>
-                            <div class="fw-bold text-primary">{{ $course->title }}</div>
-                            <div class="text-muted small">
-                              @if($course->category)
-                                <span class="badge bg-light text-dark">{{ $course->category->name }}</span>
-                              @endif
-                              @if($course->is_free)
-                                <span class="badge bg-success">Free</span>
-                              @else
-                                <span class="badge bg-info">{{ $course->price ?? 0 }} {{ $course->currency ?? 'USD' }}</span>
+                @forelse($courses as $course)
+                  @forelse($course->schedules as $schedule)
+                    <tr>
+                      <td>
+                        <div>
+                          <div class="fw-bold text-primary">{{ $course->title }}</div>
+                          <div class="text-muted small">
+                            @if($course->category)
+                              <span class="badge bg-light text-dark">{{ $course->category->name }}</span>
+                            @endif
+                            @if($course->is_free)
+                              <span class="badge bg-success">Free</span>
+                            @else
+                              <span class="badge bg-info">{{ $course->price ?? 0 }} {{ $course->currency ?? 'USD' }}</span>
+                            @endif
+                          </div>
+                          @if($course->courseInstructors->count() > 0)
+                            <div class="text-muted small mt-1">
+                              Instructor: {{ $course->courseInstructors->first()->instructor->name }}
+                            </div>
+                          @endif
+                        </div>
+                      </td>
+                      <td>
+                        <div>
+                          <div class="fw-bold">{{ __(ucfirst($schedule->day_of_week)) }}</div>
+                          <div class="text-muted">{{ substr($schedule->start_time, 0, 5) }} - {{ substr($schedule->end_time, 0, 5) }}</div>
+                        </div>
+                      </td>
+                      <td>
+                        <span class="badge bg-light text-dark">
+                          {{ $schedule->room ? ($schedule->room->room_number ?? $schedule->room->name) : 'Not Assigned' }}
+                        </span>
+                      </td>
+                      <td>
+                        <div class="text-center">
+                          <span class="badge bg-primary">{{ $course->enrollments_count ?? 0 }} Students</span>
+                        </div>
+                      </td>
+                      <td>
+                        <div class="text-center">
+                          @php $stat = $scheduleStats[$schedule->id] ?? null; @endphp
+                          @if($stat)
+                            <div class="d-flex align-items-center justify-content-center gap-1 flex-wrap">
+                              <span class="badge bg-success">{{ $stat['present'] }} Present</span>
+                              <span class="badge bg-danger">{{ $stat['absent'] }} Absent</span>
+                              @if($stat['pending'] > 0)
+                                <span class="badge bg-secondary">{{ $stat['pending'] }} Pending</span>
                               @endif
                             </div>
-                            @if($course->courseInstructors->count() > 0)
-                              <div class="text-muted small mt-1">
-                                Instructor: {{ $course->courseInstructors->first()->instructor->name }}
-                              </div>
-                            @endif
-                          </div>
-                        </td>
-                        <td>
-                          <div>
-                            <div class="fw-bold">{{ __(ucfirst($schedule->day_of_week)) }}</div>
-                            <div class="text-muted">{{ substr($schedule->start_time, 0, 5) }} - {{ substr($schedule->end_time, 0, 5) }}</div>
-                          </div>
-                        </td>
-                        <td>
-                          <span class="badge bg-light text-dark">
-                            {{ $schedule->room ? ($schedule->room->room_number ?? $schedule->room->name) : 'Not Assigned' }}
-                          </span>
-                        </td>
-                        <td>
-                          <div class="text-center">
-                            <span class="badge bg-primary">{{ $course->enrollments ? $course->enrollments->count() : 0 }} Students</span>
-                          </div>
-                        </td>
-                        <td>
-                          <div class="text-center">
-                            @php $stat = $scheduleStats[$schedule->id] ?? null; @endphp
-                            @if($stat)
-                              <div class="d-flex align-items-center justify-content-center gap-1 flex-wrap">
-                                <span class="badge bg-success">{{ $stat['present'] }} Present</span>
-                                <span class="badge bg-danger">{{ $stat['absent'] }} Absent</span>
-                                @if($stat['pending'] > 0)
-                                  <span class="badge bg-secondary">{{ $stat['pending'] }} Pending</span>
-                                @endif
-                              </div>
-                              <div class="text-muted small mt-1">
-                                @php
-                                  $totalMarked = $stat['present'] + $stat['absent'];
-                                  $attendancePercentage = $totalMarked > 0 ? round(($stat['present'] / $totalMarked) * 100, 1) : 0;
-                                @endphp
-                                {{ $attendancePercentage }}% Attendance
-                                @if($stat['pending'] > 0)
-                                  <br><small class="text-warning">({{ $stat['pending'] }} not marked yet)</small>
-                                @endif
-                              </div>
-                            @else
-                              <span class="text-muted">No data</span>
-                            @endif
-                          </div>
-                        </td>
-                        <td>
-                          <div class="d-flex gap-1 flex-wrap">
-                            <a href="{{ route('teacher.attendance.take', $schedule->id) }}" class="btn btn-sm btn-primary">
-                              <i class="fas fa-camera me-1"></i> Take Attendance
-                            </a>
-                            <a href="{{ route('teacher.attendance.qr-codes', $schedule->id) }}" class="btn btn-sm btn-info">
-                              <i class="fas fa-qrcode me-1"></i> QR Codes
-                            </a>
-                            <a href="{{ route('teacher.attendance.schedule-details', $schedule->id) }}" class="btn btn-sm btn-outline-secondary">
-                              <i class="fas fa-list me-1"></i> Details
-                            </a>
-                          </div>
-                        </td>
-                      </tr>
-                    @empty
-                      <tr>
-                        <td colspan="6" class="text-center text-muted py-3">
-                          No schedules found for {{ $course->title }}
-                        </td>
-                      </tr>
-                    @endforelse
-                  @endif
+                            <div class="text-muted small mt-1">
+                              @php
+                                $totalMarked = $stat['present'] + $stat['absent'];
+                                $attendancePercentage = $totalMarked > 0 ? round(($stat['present'] / $totalMarked) * 100, 1) : 0;
+                              @endphp
+                              {{ $attendancePercentage }}% Attendance
+                              @if($stat['pending'] > 0)
+                                <br><small class="text-warning">({{ $stat['pending'] }} not marked yet)</small>
+                              @endif
+                            </div>
+                          @else
+                            <span class="text-muted">No data</span>
+                          @endif
+                        </div>
+                      </td>
+                      <td>
+                        <div class="d-flex gap-1 flex-wrap">
+                          <a href="{{ route('admin.attendance.take', $schedule->id) }}" class="btn btn-sm btn-primary">
+                            <i class="fas fa-camera me-1"></i> Take Attendance
+                          </a>
+                          <a href="{{ route('admin.attendance.qr-codes', $schedule->id) }}" class="btn btn-sm btn-info">
+                            <i class="fas fa-qrcode me-1"></i> QR Codes
+                          </a>
+                          <a href="{{ route('admin.attendance.schedule-details', $schedule->id) }}" class="btn btn-sm btn-outline-secondary">
+                            <i class="fas fa-list me-1"></i> Details
+                          </a>
+                        </div>
+                      </td>
+                    </tr>
+                  @empty
+                    <tr>
+                      <td colspan="6" class="text-center text-muted py-3">
+                        No schedules found for {{ $course->title }}
+                      </td>
+                    </tr>
+                  @endforelse
                 @empty
                   <tr>
                     <td colspan="6" class="text-center text-muted py-5">

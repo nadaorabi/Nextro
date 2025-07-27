@@ -497,7 +497,7 @@ class TeacherController extends Controller
         $teacher = auth()->user();
         
         // جلب الكورسات التي يدرسها المعلم مع الجداول والعلاقات
-        $teacherCourses = \App\Models\CourseInstructor::where('instructor_id', $teacher->id)
+        $courses = \App\Models\CourseInstructor::where('instructor_id', $teacher->id)
             ->with([
                 'course.category', 
                 'course.schedules.room', 
@@ -507,7 +507,39 @@ class TeacherController extends Controller
             ])
             ->get();
         
-        return view('teacher.QR-scan', compact('teacher', 'teacherCourses'));
+        $scheduleStats = [];
+        foreach ($courses as $courseInstructor) {
+            $course = $courseInstructor->course;
+            
+            // التحقق من وجود الكورس والجداول
+            if ($course && $course->schedules) {
+                foreach ($course->schedules as $schedule) {
+                    $studentCount = \App\Models\Enrollment::where('course_id', $course->id)->count();
+                    
+                    // حساب الحضور للمحاضرة المحددة فقط
+                    $presentCount = \App\Models\Attendance::whereIn('enrollment_id', \App\Models\Enrollment::where('course_id', $course->id)->pluck('id'))
+                        ->where('schedule_id', $schedule->id)
+                        ->where('status', 'present')
+                        ->count();
+                        
+                    $absentCount = \App\Models\Attendance::whereIn('enrollment_id', \App\Models\Enrollment::where('course_id', $course->id)->pluck('id'))
+                        ->where('schedule_id', $schedule->id)
+                        ->where('status', 'absent')
+                        ->count();
+                        
+                    // الطلاب الذين لم يتم أخذ الحضور لهم بعد (pending)
+                    $pendingCount = $studentCount - $presentCount - $absentCount;
+                    
+                    $scheduleStats[$schedule->id] = [
+                        'students' => $studentCount,
+                        'present' => $presentCount,
+                        'absent' => $absentCount,
+                        'pending' => $pendingCount,
+                    ];
+                }
+            }
+        }
+        return view('teacher.QR-scan', compact('teacher', 'courses', 'scheduleStats'));
     }
     public function financeCoursesReport()
     {

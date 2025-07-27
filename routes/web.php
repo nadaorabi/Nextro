@@ -285,15 +285,26 @@ Route::prefix('teacher')->middleware(['isTeacher', 'password.changed'])->name('t
     
     // Attendance Management for Teachers
     Route::prefix('attendance')->name('attendance.')->group(function () {
-        Route::get('/details', [\App\Http\Controllers\Teacher\AttendanceController::class, 'details'])->name('details');
+
+        Route::get('/', [TeacherController::class, 'QR_scan'])->name('index'); //
+        Route::get('/details', [\App\Http\Controllers\Admin\AttendanceController::class, 'details'])->name('details');
         Route::get('/schedule/{schedule}/details', [\App\Http\Controllers\Teacher\AttendanceController::class, 'scheduleDetails'])->name('schedule-details');
+        Route::get('/take/{schedule}', [\App\Http\Controllers\Teacher\AttendanceController::class, 'take'])->name('take');
         Route::get('/qr-codes/{schedule}', [\App\Http\Controllers\Teacher\AttendanceController::class, 'studentQRCodes'])->name('qr-codes');
         Route::post('/scan', [\App\Http\Controllers\Teacher\AttendanceController::class, 'scan'])->name('scan');
         Route::post('/mark-present', [\App\Http\Controllers\Teacher\AttendanceController::class, 'markPresent'])->name('mark-present');
         Route::post('/mark-absent', [\App\Http\Controllers\Teacher\AttendanceController::class, 'markAbsent'])->name('mark-absent');
         Route::get('/export', [\App\Http\Controllers\Teacher\AttendanceController::class, 'export'])->name('export');
+
+        Route::get('enrollment/{enrollment}', [\App\Http\Controllers\Admin\AttendanceController::class, 'attendanceByEnrollment'])->name('by-enrollment');
+        
+        // Routes جديدة للميزات المطلوبة
+        Route::get('/schedule/{schedule}/stats', [\App\Http\Controllers\Teacher\AttendanceController::class, 'getStats'])->name('get-stats');
+        Route::get('/schedule/{schedule}/present-students', [\App\Http\Controllers\Teacher\AttendanceController::class, 'getPresentStudents'])->name('get-present-students');
+        Route::post('/remove-attendance', [\App\Http\Controllers\Teacher\AttendanceController::class, 'removeAttendance'])->name('remove');
+
+        Route::get('/details', [\App\Http\Controllers\Teacher\AttendanceController::class, 'details'])->name('details');
         Route::get('enrollment/{enrollment}', [\App\Http\Controllers\Teacher\AttendanceController::class, 'attendanceByEnrollment'])->name('by-enrollment');
-        Route::get('/take/{schedule}', [\App\Http\Controllers\Teacher\AttendanceController::class, 'take'])->name('take');
     });
 
     // Teacher Materials
